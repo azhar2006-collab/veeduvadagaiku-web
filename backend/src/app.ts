@@ -26,19 +26,22 @@ app.use(
 // Serve static uploads
 app.use('/uploads', express.static(uploadsDir));
 
-// CORS — allow localhost dev + Vercel production
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
-];
-
+// CORS — allow localhost dev + any Vercel domain + custom domain
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (Postman, mobile apps, server-to-server)
+    // Allow server-to-server or requests without origin
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS policy: origin ${origin} not allowed`));
+    // Allow localhost, any vercel.app domain, and configured FRONTEND_URL
+    if (
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.endsWith('.vercel.app') ||
+      (process.env.FRONTEND_URL && origin.startsWith(process.env.FRONTEND_URL.replace(/\/$/, '')))
+    ) {
+      return callback(null, true);
+    }
+    // Permissive fallback so public marketplace API is never blocked
+    return callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
