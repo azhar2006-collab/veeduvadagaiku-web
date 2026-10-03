@@ -44,16 +44,19 @@ export const HomePage: React.FC = () => {
     limit: 6,
     sortBy: 'newest',
   });
+  const featuredProperties = Array.isArray(featuredData?.data) ? featuredData.data : [];
 
   const { data: housesData, isLoading: loadingHouses } = useProperties({
     propertyType: 'HOUSE',
     limit: 3,
   });
+  const houseProperties = Array.isArray(housesData?.data) ? housesData.data : [];
 
   const { data: shopsData, isLoading: loadingShops } = useProperties({
     propertyType: 'SHOP',
     limit: 3,
   });
+  const shopProperties = Array.isArray(shopsData?.data) ? shopsData.data : [];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -346,7 +349,7 @@ export const HomePage: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredData?.data.map((prop) => (
+            {featuredProperties.map((prop) => (
               <PropertyCard key={prop.id} property={prop} />
             ))}
           </div>
@@ -378,7 +381,7 @@ export const HomePage: React.FC = () => {
                 <div key={i} className="h-80 bg-gray-200 rounded-2xl animate-pulse" />
               ))
             ) : (
-              housesData?.data.map((prop) => (
+              houseProperties.map((prop) => (
                 <PropertyCard key={prop.id} property={prop} />
               ))
             )}
@@ -410,7 +413,7 @@ export const HomePage: React.FC = () => {
               <div key={i} className="h-80 bg-gray-100 rounded-2xl animate-pulse" />
             ))
           ) : (
-            shopsData?.data.map((prop) => (
+            shopProperties.map((prop) => (
               <PropertyCard key={prop.id} property={prop} />
             ))
           )}
