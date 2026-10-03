@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+// Normalize base API URL
+const getApiBaseUrl = () => {
+  let url = import.meta.env.VITE_API_URL;
+  if (!url) {
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://veeduvadagaiku-web-production.up.railway.app';
+  }
+  url = url.trim();
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  return url.replace(/\/$/, '');
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
