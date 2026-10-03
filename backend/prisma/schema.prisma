@@ -1,0 +1,206 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+  OWNER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum PropertyType {
+  HOUSE
+  SHOP
+}
+
+enum FurnishingStatus {
+  FURNISHED
+  SEMI_FURNISHED
+  UNFURNISHED
+}
+
+enum PropertyStatus {
+  DRAFT
+  PAYMENT_PENDING
+  PENDING_APPROVAL
+  PUBLISHED
+  REJECTED
+  EXPIRED
+  REMOVED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum EnquiryStatus {
+  NEW
+  READ
+  REPLIED
+  CLOSED
+}
+
+model User {
+  id           String     @id @default(cuid())
+  firebaseUid  String?    @unique
+  name         String
+  email        String?    @unique
+  mobile       String?    @unique
+  role         UserRole   @default(USER)
+  profileImage String?
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  owner      Owner?
+  favourites Favourite[]
+  enquiries  Enquiry[]   @relation("UserEnquiries")
+  payments   Payment[]
+}
+
+model Owner {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio        String?
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  properties Property[]
+  payments   Payment[]
+  enquiries  Enquiry[]  @relation("OwnerEnquiries")
+}
+
+model Property {
+  id              String           @id @default(cuid())
+  ownerId         String
+  owner           Owner            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  propertyType    PropertyType
+  title           String
+  description     String           @db.Text
+  rent            Float
+  deposit         Float
+  locality        String
+  address         String
+  latitude        Float?
+  longitude       Float?
+  propertySize    Float
+  bedrooms        Int?
+  rooms           Int?
+  furnishing      FurnishingStatus @default(UNFURNISHED)
+  amenities       String[]         @default([])
+  availability    DateTime
+  contactPhone    Boolean          @default(true)
+  contactWhatsapp Boolean          @default(true)
+  contactEnquiry  Boolean          @default(true)
+  status          PropertyStatus   @default(DRAFT)
+  rejectionReason String?
+  viewCount       Int              @default(0)
+  planId          String?
+  plan            ListingPlan?     @relation(fields: [planId], references: [id])
+  expiresAt       DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  images     PropertyImage[]
+  payments   Payment[]
+  enquiries  Enquiry[]
+  favourites Favourite[]
+}
+
+model PropertyImage {
+  id           String   @id @default(cuid())
+  propertyId   String
+  property     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  imageUrl     String
+  publicId     String
+  isPrimary    Boolean  @default(false)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model ListingPlan {
+  id           String   @id @default(cuid())
+  name         String
+  price        Float
+  durationDays Int
+  description  String
+  features     String[] @default([])
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  properties Property[]
+  payments   Payment[]
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  user              User          @relation(fields: [userId], references: [id])
+  ownerId           String
+  owner             Owner         @relation(fields: [ownerId], references: [id])
+  propertyId        String
+  property          Property      @relation(fields: [propertyId], references: [id])
+  planId            String
+  plan              ListingPlan   @relation(fields: [planId], references: [id])
+  amount            Float
+  currency          String        @default("INR")
+  paymentStatus     PaymentStatus @default(PENDING)
+  cfOrderId         String?       @unique
+  paymentSessionId  String?
+  paymentMethod     String?
+  razorpayOrderId   String?       @unique
+  razorpayPaymentId String?       @unique
+  razorpaySignature String?
+  transactionId     String?       @unique
+  failureReason     String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Enquiry {
+  id         String        @id @default(cuid())
+  propertyId String
+  property   Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User          @relation("UserEnquiries", fields: [userId], references: [id])
+  ownerId    String
+  owner      Owner         @relation("OwnerEnquiries", fields: [ownerId], references: [id])
+  message    String        @db.Text
+  phone      String?
+  status     EnquiryStatus @default(NEW)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Favourite {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
