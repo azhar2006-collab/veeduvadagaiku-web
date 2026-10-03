@@ -26,9 +26,7 @@
     "react-router-dom": "^6.21.0",
     "swiper": "^11.0.5",
     "zod": "^3.22.4",
-    "zustand": "^4.4.7"
-  },
-  "devDependencies": {
+    "zustand": "^4.4.7",
     "@types/node": "^20.19.43",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
