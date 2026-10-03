@@ -125,10 +125,10 @@ export const AddPropertyPage: React.FC = () => {
       await propertyService.uploadImages(newPropertyId, files);
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
-      toast.success('Property created! Now select a listing plan to proceed.');
+      toast.success('Property submitted for admin review! We\'ll publish it once approved.');
 
-      // Step 3: Redirect to payment page to select plan
-      navigate(`/owner/payment?propertyId=${newPropertyId}`);
+      // Redirect to my properties page (payment disabled)
+      navigate('/owner/properties');
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Failed to create property. Please try again.');
@@ -147,7 +147,7 @@ export const AddPropertyPage: React.FC = () => {
           List Your Chennai Property
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Provide complete details and photos. Once paid and approved by admin, your listing goes live.
+          Provide complete details and photos. Once submitted, admin will review and publish your listing.
         </p>
       </div>
 

@@ -4,7 +4,7 @@ import { Navbar } from '../components/common/Navbar';
 import { Footer } from '../components/common/Footer';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
 import { useAuth } from '../hooks/useAuth';
-import { LayoutDashboard, Building2, PlusCircle, CreditCard, MessageSquare, UserCheck } from 'lucide-react';
+import { LayoutDashboard, Building2, PlusCircle, MessageSquare, UserCheck } from 'lucide-react';
 
 export const OwnerLayout: React.FC = () => {
   const { isAuthenticated, isOwner } = useAuth();
@@ -21,7 +21,6 @@ export const OwnerLayout: React.FC = () => {
     { label: 'Dashboard', href: '/owner/dashboard', icon: LayoutDashboard },
     { label: 'My Properties', href: '/owner/properties', icon: Building2 },
     { label: 'Add New Property', href: '/owner/properties/add', icon: PlusCircle },
-    { label: 'Listing Plans', href: '/owner/listing-plans', icon: CreditCard },
     { label: 'Tenant Enquiries', href: '/owner/enquiries', icon: MessageSquare },
     { label: 'Owner Profile', href: '/owner/profile', icon: UserCheck },
   ];
