@@ -3,10 +3,13 @@ import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
 import { successResponse, ApiError } from '../utils/response';
 import { createPaymentOrderSchema, verifyPaymentSchema } from '../utils/validators';
-import cashfree from '../config/cashfree';
+import cashfree, { isCashfreeConfigured } from '../config/cashfree';
 
 export async function createOrder(req: AuthRequest, res: Response, next: NextFunction) {
   try {
+    if (!isCashfreeConfigured()) {
+      throw new ApiError(503, 'Payment gateway not configured yet. Please contact support.');
+    }
     const { propertyId, planId } = createPaymentOrderSchema.parse(req.body);
     const owner = await prisma.owner.findUnique({ where: { userId: req.user!.id } });
     if (!owner) throw new ApiError(403, 'Owner profile not found');

@@ -10,4 +10,9 @@ const clientSecret = process.env.CASHFREE_SECRET_KEY || '';
 
 const cashfree = new Cashfree(environment, clientId, clientSecret);
 
+/** Returns true only if Cashfree API keys are actually configured */
+export function isCashfreeConfigured(): boolean {
+  return !!(process.env.CASHFREE_APP_ID && process.env.CASHFREE_SECRET_KEY);
+}
+
 export default cashfree;
