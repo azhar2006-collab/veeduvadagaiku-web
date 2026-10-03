@@ -32,12 +32,17 @@ export class ErrorBoundary extends Component<Props, State> {
               <AlertCircle className="w-8 h-8" />
             </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">Something went wrong</h2>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-gray-500 text-sm mb-4">
               We encountered an unexpected error. Please refresh the page or try again later.
             </p>
+            {this.state.error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-left text-xs font-mono text-red-700 overflow-auto max-h-32">
+                <p className="font-bold">{this.state.error.name}: {this.state.error.message}</p>
+              </div>
+            )}
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium text-sm rounded-xl transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-xl transition"
             >
               <RefreshCw className="w-4 h-4" />
               Reload Application
