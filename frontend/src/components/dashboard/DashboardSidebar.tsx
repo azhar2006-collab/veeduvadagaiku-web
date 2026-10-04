@@ -28,8 +28,19 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ title, items
     <aside className="w-full lg:w-64 bg-white rounded-2xl border border-gray-100 p-4 shadow-sm h-fit">
       {/* Logo */}
       <div className="px-2 pb-4 mb-2 border-b border-gray-100 flex items-center gap-2.5">
-        <img src="/logo-badge.jpg" alt="Veedu Vadagaiku" className="w-8 h-8 rounded-lg object-cover" />
-        <img src="/logo-header.jpg" alt="Veedu Vadagaiku" className="h-5 object-contain" />
+        <img
+          src="/logo-badge.jpg"
+          alt="Veedu Vadagaiku"
+          className="w-8 h-8 rounded-full object-cover ring-1 ring-emerald-500/30"
+        />
+        <div>
+          <span className="text-sm font-black tracking-tight text-gray-900 block leading-tight">
+            Veedu<span className="text-emerald-600">Vadagaiku</span>
+          </span>
+          <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase block">
+            Chennai Rentals
+          </span>
+        </div>
       </div>
 
       {/* User Mini Profile */}

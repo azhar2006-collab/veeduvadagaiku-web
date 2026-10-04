@@ -45,17 +45,17 @@ export const AdminLayout: React.FC = () => {
             <img
               src="/logo-badge.jpg"
               alt="Veedu Vadagaiku"
-              className="w-9 h-9 rounded-lg object-cover"
+              className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/40"
             />
-            <img
-              src="/logo-header.jpg"
-              alt="Veedu Vadagaiku"
-              className="h-6 object-contain hidden sm:block"
-            />
-            <span className="font-extrabold text-sm text-orange-400 sm:hidden tracking-tight">
-              Admin Portal
-            </span>
-            <span className="hidden sm:inline text-gray-400 font-normal text-sm">| Admin Portal</span>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-base tracking-tight text-white">
+                Veedu<span className="text-emerald-400">Vadagaiku</span>
+              </span>
+              <span className="text-gray-600">|</span>
+              <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
+                Admin Portal
+              </span>
+            </div>
           </div>
           <Link
             to="/"
