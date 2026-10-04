@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding database with ONLY verified House and Shop images...');
+  console.log('[Seed] Seeding database with verified House and Shop listings...');
 
   // 1. Create Default Listing Plans
   const plans = [
@@ -49,7 +49,7 @@ async function main() {
       create: plan,
     });
   }
-  console.log('✅ Listing plans ready');
+  console.log('[Seed] Listing plans ready');
 
   // 2. Create Demo Admin User
   const adminUser = await prisma.user.upsert({
@@ -63,7 +63,7 @@ async function main() {
       status: 'ACTIVE',
     },
   });
-  console.log('✅ Admin account ready:', adminUser.email);
+  console.log('[Seed] Admin account ready:', adminUser.email);
 
   // 3. Create Demo Landlord / Owner
   const demoOwnerUser = await prisma.user.upsert({
@@ -87,7 +87,7 @@ async function main() {
       isVerified: true,
     },
   });
-  console.log('✅ Demo Owner ready:', demoOwnerUser.name);
+  console.log('[Seed] Demo Owner ready:', demoOwnerUser.name);
 
   // 4. Strict Real Estate Properties: ONLY HOUSES and ONLY SHOPS (Zero Cars, Zero Offices)
   const propertiesData = [
@@ -456,7 +456,7 @@ async function main() {
     });
   }
 
-  console.log(`✅ Seeded ${propertiesData.length} Verified Properties: ONLY real houses and ONLY real retail shops!`);
+  console.log(`[Seed] Seeded ${propertiesData.length} Verified Properties: houses and retail shops.`);
 }
 
 main()

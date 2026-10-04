@@ -6,7 +6,7 @@ A complete, production-ready rental marketplace web application connecting tenan
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 1. [Architecture & Tech Stack](#architecture--tech-stack)
 2. [Project Structure](#project-structure)
 3. [Environment Variables](#environment-variables)
@@ -288,7 +288,7 @@ The backend API will be available at: `http://localhost:5000`
 
 Use this checklist to verify the full end-to-end functionality:
 
-### 🏠 Public Tenant Flow
+### Public Tenant Flow
 - [ ] Open homepage: hero search displays Chennai localities, house/shop selector, and budget.
 - [ ] Filter by "Houses" and "Shops" — correct listings are rendered.
 - [ ] Select Chennai locality (e.g., Anna Nagar, T. Nagar, Velachery) and check filtered results.
@@ -298,7 +298,7 @@ Use this checklist to verify the full end-to-end functionality:
 - [ ] Send direct enquiry: verifies authentication, creates database record, and notifies owner.
 - [ ] Toggle shortlist heart icon: property appears in Tenant Dashboard under Saved Properties.
 
-### 🏢 Property Owner Flow
+### Property Owner Flow
 - [ ] Register as Property Owner via Phone OTP or Google Sign-In.
 - [ ] Complete owner profile.
 - [ ] Add Property: select House or Shop, specify Chennai locality, address, rent, deposit, size, and amenities.
@@ -309,7 +309,7 @@ Use this checklist to verify the full end-to-end functionality:
 - [ ] Complete payment: backend verifies cryptographic HMAC signature, sets payment to `SUCCESS`, and moves property status to `PENDING_APPROVAL`.
 - [ ] Verify that property is **NOT** visible in public search yet.
 
-### 🛡️ Admin Moderation Flow
+### Admin Moderation Flow
 - [ ] Access `/admin/login` and authenticate with an admin account.
 - [ ] Admin Dashboard displays correct live counts (total properties, published, pending approvals, revenue).
 - [ ] Navigate to `/admin/pending`: review paid listing details, uploaded photos, and owner contact.

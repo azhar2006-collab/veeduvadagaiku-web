@@ -17,7 +17,6 @@ import {
   Info,
   ChevronLeft,
   ChevronRight,
-  Flame,
   ArrowRight,
   SlidersHorizontal,
 } from 'lucide-react';
@@ -78,7 +77,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
       if (direction === 'right') {
         // Like / Favourites action
         toggleFavourite(currentProperty.id);
-        toast.success(`Saved "${currentProperty.title}" to shortlist! ❤️`, {
+        toast.success(`Saved "${currentProperty.title}" to shortlist!`, {
           duration: 2500,
           position: 'top-center',
           style: {
@@ -90,7 +89,6 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
         });
       } else {
         toast('Passed to next rental', {
-          icon: '👋',
           duration: 1500,
           position: 'top-center',
         });
@@ -111,14 +109,14 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
   // Undo / Rewind last swiped property
   const handleUndo = () => {
     if (swipedHistory.length === 0) {
-      toast('No swiped properties to undo', { icon: 'ℹ️' });
+      toast('No swiped properties to undo');
       return;
     }
     const [lastSwiped, ...restHistory] = swipedHistory;
     setDeck((prev) => [lastSwiped.property, ...prev]);
     setSwipedHistory(restHistory);
     setPhotoIndex(0);
-    toast.success(`Restored "${lastSwiped.property.title}"`, { icon: '🔄' });
+    toast.success(`Restored "${lastSwiped.property.title}"`);
   };
 
   // Restart / Reset Deck
@@ -127,7 +125,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
     setSwipedHistory([]);
     setPhotoIndex(0);
     setDragOffset({ x: 0, y: 0 });
-    toast.success('Deck reshuffled! Browse Chennai rentals again.', { icon: '✨' });
+    toast.success('Deck reshuffled! Browse Chennai rentals again.');
   };
 
   // Drag Gesture Handlers (Mouse & Touch)
@@ -222,7 +220,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                 : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Flame className="w-3.5 h-3.5 text-amber-400" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
             <span>All Chennai</span>
           </button>
           <button
@@ -268,8 +266,8 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
         {deck.length === 0 ? (
           /* Empty Deck State */
           <div className="w-full h-full bg-gradient-to-b from-[#0B1B3D] to-[#064E3B] rounded-3xl p-8 border border-emerald-800/40 text-white flex flex-col items-center justify-center text-center space-y-6 shadow-2xl animate-fade-in">
-            <div className="w-20 h-20 bg-emerald-500/20 border border-emerald-400/30 rounded-full flex items-center justify-center text-4xl shadow-inner shadow-emerald-500/30 animate-bounce">
-              🎉
+            <div className="w-20 h-20 bg-emerald-500/20 border border-emerald-400/30 rounded-full flex items-center justify-center shadow-inner shadow-emerald-500/30">
+              <Sparkles className="w-10 h-10 text-amber-300" />
             </div>
 
             <div className="space-y-2">
@@ -423,7 +421,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                       opacity: swipeDirection === 'right' ? 1 : likeOpacity,
                     }}
                   >
-                    LIKE ❤️
+                    SHORTLIST
                   </div>
 
                   {/* PASS Stamp */}
@@ -433,7 +431,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                       opacity: swipeDirection === 'left' ? 1 : passOpacity,
                     }}
                   >
-                    PASS ✕
+                    PASS
                   </div>
 
                   {/* Top Badges */}

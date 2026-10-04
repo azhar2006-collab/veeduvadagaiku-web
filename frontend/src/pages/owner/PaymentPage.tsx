@@ -98,7 +98,7 @@ export const PaymentPage: React.FC = () => {
           // User cancelled or error occurred
           const msg = result.error.message || 'Payment cancelled or failed';
           if (result.error.type === 'USER_DROP') {
-            toast('Payment window closed. You can retry anytime.', { icon: 'ℹ️' });
+            toast('Payment window closed. You can retry anytime.');
           } else {
             navigate(
               `/owner/payment/result?status=failure&paymentId=${paymentId}&message=${encodeURIComponent(msg)}`

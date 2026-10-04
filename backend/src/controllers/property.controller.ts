@@ -248,7 +248,7 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
           imageUrl = result.secure_url;
           publicId = result.public_id;
         } catch (cloudErr) {
-          console.warn('⚠️ Cloudinary upload failed, falling back to local storage:', cloudErr);
+          console.warn('[Upload] Cloudinary upload failed, falling back to local storage:', cloudErr);
         }
       }
 

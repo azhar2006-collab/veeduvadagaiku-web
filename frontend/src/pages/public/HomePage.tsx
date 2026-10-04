@@ -287,8 +287,8 @@ export const HomePage: React.FC = () => {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </div>
             </div>
-            <div className="hidden sm:block text-5xl opacity-80 group-hover:scale-110 transition">
-              🏡
+            <div className="hidden sm:flex w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 items-center justify-center group-hover:scale-110 group-hover:bg-emerald-100 transition">
+              <Building2 className="w-8 h-8" />
             </div>
           </Link>
 
@@ -311,8 +311,8 @@ export const HomePage: React.FC = () => {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </div>
             </div>
-            <div className="hidden sm:block text-5xl opacity-80 group-hover:scale-110 transition">
-              🏪
+            <div className="hidden sm:flex w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 items-center justify-center group-hover:scale-110 group-hover:bg-amber-100 transition">
+              <Store className="w-8 h-8" />
             </div>
           </Link>
         </div>
