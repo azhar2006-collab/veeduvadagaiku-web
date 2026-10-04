@@ -26,6 +26,12 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ title, items
 
   return (
     <aside className="w-full lg:w-64 bg-white rounded-2xl border border-gray-100 p-4 shadow-sm h-fit">
+      {/* Logo */}
+      <div className="px-2 pb-4 mb-2 border-b border-gray-100 flex items-center gap-2.5">
+        <img src="/logo-badge.jpg" alt="Veedu Vadagaiku" className="w-8 h-8 rounded-lg object-cover" />
+        <img src="/logo-header.jpg" alt="Veedu Vadagaiku" className="h-5 object-contain" />
+      </div>
+
       {/* User Mini Profile */}
       <div className="p-4 mb-4 bg-orange-50/60 rounded-xl border border-orange-100/80">
         <div className="flex items-center gap-3">

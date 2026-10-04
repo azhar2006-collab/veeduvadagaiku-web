@@ -5,14 +5,10 @@ import {
   MapPin,
   Building2,
   Store,
-  ShieldCheck,
   CheckCircle2,
   ArrowRight,
-  TrendingUp,
   Sparkles,
-  Flame,
   Layers,
-  HelpCircle,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
@@ -86,7 +82,7 @@ export const HomePage: React.FC = () => {
     <div className="space-y-16 sm:space-y-24 pb-16">
       <SEOHead
         title="Find Your Next Home or Shop in Chennai | Veedu Vadagaiku"
-        description="Chennai’s premier rental marketplace with interactive Tinder-style swipe discovery. Verified houses, apartments and commercial shops direct from owners."
+        description="Chennai's premier rental marketplace. Verified houses, apartments and commercial shops direct from owners. Zero brokerage."
       />
 
       {/* Hero Section */}
@@ -98,22 +94,24 @@ export const HomePage: React.FC = () => {
 
         <div className="relative max-w-5xl mx-auto space-y-6">
           {/* Top Tagline */}
-          <div className="text-center space-y-3">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/70 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm animate-fade-in">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/70 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span>வாடகை-குத்தகை • Direct from Chennai Landlords</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15]">
-              Find Your Match in <span className="text-amber-400 underline decoration-amber-400 decoration-wavy decoration-2">Chennai</span>
+              Chennai's Trusted<br />
+              <span className="text-amber-400">Rental Marketplace</span>
             </h1>
 
-            <p className="max-w-xl mx-auto text-xs sm:text-sm text-slate-300 font-medium">
-              Swipe right to shortlist properties you love, swipe left to pass. Direct owner contacts with zero brokerage.
+            <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-300 font-medium leading-relaxed">
+              Discover verified houses, apartments & commercial spaces across Chennai.
+              Connect directly with owners — no brokers, no hidden charges.
             </p>
           </div>
 
-          {/* View Mode Switcher (Tinder Swipe vs Search Filter) */}
+          {/* View Mode Switcher */}
           <div className="flex items-center justify-center pt-1 pb-2">
             <div className="inline-flex items-center p-1.5 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg">
               <button
@@ -125,8 +123,8 @@ export const HomePage: React.FC = () => {
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
-                <Flame className="w-4 h-4 text-amber-400" />
-                <span>Tinder Swipe Mode</span>
+                <Layers className="w-4 h-4 text-amber-400" />
+                <span>Discover Properties</span>
               </button>
 
               <button
@@ -146,12 +144,12 @@ export const HomePage: React.FC = () => {
 
           {/* MAIN INTERACTIVE AREA */}
           {viewMode === 'tinder' ? (
-            /* Tinder Mode Card Stack */
+            /* Swipe Discovery Mode */
             <div className="pt-2 animate-fade-in">
               {loadingDeck ? (
                 <div className="w-full max-w-md mx-auto aspect-[3/4.4] min-h-[510px] bg-white/5 border border-white/10 rounded-3xl animate-pulse flex flex-col items-center justify-center gap-3">
-                  <Flame className="w-12 h-12 text-emerald-400 animate-bounce" />
-                  <p className="text-xs text-gray-400 font-semibold">Loading Chennai rental deck...</p>
+                  <Sparkles className="w-12 h-12 text-emerald-400 animate-bounce" />
+                  <p className="text-xs text-gray-400 font-semibold">Loading Chennai rentals...</p>
                 </div>
               ) : (
                 <PropertyTinderDeck
@@ -206,7 +204,7 @@ export const HomePage: React.FC = () => {
                       onChange={(e) => setPropertyType(e.target.value as any)}
                       className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
                     >
-                      <option value="">Houses & Shops</option>
+                      <option value="">Houses &amp; Shops</option>
                       <option value="HOUSE">House / Flat / Villa</option>
                       <option value="SHOP">Commercial Shop</option>
                     </select>
@@ -257,7 +255,7 @@ export const HomePage: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-amber-400" />
-              <span>Direct WhatsApp & Call</span>
+              <span>Direct WhatsApp &amp; Call</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-amber-400" />
@@ -325,7 +323,7 @@ export const HomePage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">
-              <TrendingUp className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
               Handpicked Deals
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-gray-900">
@@ -468,9 +466,9 @@ export const HomePage: React.FC = () => {
               <div className="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-black text-xl mx-auto shadow-lg shadow-emerald-600/30">
                 1
               </div>
-              <h3 className="text-lg font-bold">Swipe or Search Rentals</h3>
+              <h3 className="text-lg font-bold">Browse & Discover Rentals</h3>
               <p className="text-sm text-gray-400">
-                Swipe right on homes or shops you love, or filter by your favorite locality, price bracket, and furnishing.
+                Explore properties using our card-based discovery view or filter by locality, price bracket, and furnishing.
               </p>
             </div>
 

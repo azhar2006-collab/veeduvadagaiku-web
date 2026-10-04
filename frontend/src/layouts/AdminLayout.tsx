@@ -42,12 +42,20 @@ export const AdminLayout: React.FC = () => {
       <header className="bg-gray-900 text-white border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center font-bold text-white">
-              V
-            </div>
-            <span className="font-extrabold text-base tracking-tight">
-              Veedu Vadagaiku <span className="text-orange-500 font-normal">| Admin Portal</span>
+            <img
+              src="/logo-badge.jpg"
+              alt="Veedu Vadagaiku"
+              className="w-9 h-9 rounded-lg object-cover"
+            />
+            <img
+              src="/logo-header.jpg"
+              alt="Veedu Vadagaiku"
+              className="h-6 object-contain hidden sm:block"
+            />
+            <span className="font-extrabold text-sm text-orange-400 sm:hidden tracking-tight">
+              Admin Portal
             </span>
+            <span className="hidden sm:inline text-gray-400 font-normal text-sm">| Admin Portal</span>
           </div>
           <Link
             to="/"

@@ -530,7 +530,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
         )}
       </div>
 
-      {/* Tinder Action Buttons Bar */}
+      {/* Property Action Buttons Bar */}
       {deck.length > 0 && currentProperty && (
         <div className="w-full flex items-center justify-center gap-4 sm:gap-6 mt-6 z-30">
           {/* Rewind / Undo */}
