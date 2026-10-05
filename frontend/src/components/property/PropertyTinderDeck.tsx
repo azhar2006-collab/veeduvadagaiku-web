@@ -416,7 +416,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
                   {/* LIKE / SHORTLIST Stamp */}
                   <div
-                    className="absolute top-10 left-6 z-30 pointer-events-none border-4 border-emerald-400 bg-emerald-950/80 backdrop-blur-md text-emerald-300 px-4 py-1.5 rounded-2xl font-black text-xl sm:text-2xl uppercase tracking-widest rotate-[-15deg] shadow-2xl transition-opacity duration-150"
+                    className="absolute top-10 left-6 z-30 pointer-events-none border-2 border-emerald-400 bg-emerald-950/80 backdrop-blur-md text-emerald-300 px-4 py-1.5 rounded-2xl font-semibold text-lg sm:text-xl uppercase tracking-widest rotate-[-15deg] shadow-2xl transition-opacity duration-150"
                     style={{
                       opacity: swipeDirection === 'right' ? 1 : likeOpacity,
                     }}
@@ -426,7 +426,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
                   {/* PASS Stamp */}
                   <div
-                    className="absolute top-10 right-6 z-30 pointer-events-none border-4 border-rose-500 bg-rose-950/80 backdrop-blur-md text-rose-300 px-4 py-1.5 rounded-2xl font-black text-xl sm:text-2xl uppercase tracking-widest rotate-[15deg] shadow-2xl transition-opacity duration-150"
+                    className="absolute top-10 right-6 z-30 pointer-events-none border-2 border-rose-500 bg-rose-950/80 backdrop-blur-md text-rose-300 px-4 py-1.5 rounded-2xl font-semibold text-lg sm:text-xl uppercase tracking-widest rotate-[15deg] shadow-2xl transition-opacity duration-150"
                     style={{
                       opacity: swipeDirection === 'left' ? 1 : passOpacity,
                     }}
@@ -436,7 +436,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
                   {/* Top Badges */}
                   <div className="absolute top-8 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-900/80 backdrop-blur-md border border-white/20 text-white text-xs font-extrabold rounded-full shadow-lg">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-900/80 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded-full shadow-lg">
                       {currentProperty.propertyType === 'HOUSE' ? (
                         <>
                           <Building2 className="w-3.5 h-3.5 text-amber-400" />
@@ -450,7 +450,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                       )}
                     </span>
 
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600/90 backdrop-blur-md text-white text-[11px] font-bold rounded-full shadow-sm">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600/90 backdrop-blur-md text-white text-[11px] font-medium rounded-full shadow-sm">
                       <CheckCircle2 className="w-3 h-3 text-white" />
                       <span>Verified Owner</span>
                     </span>
@@ -461,14 +461,14 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                     {/* Price & Deposit */}
                     <div className="flex items-baseline justify-between">
                       <div>
-                        <span className="text-3xl font-black tracking-tight text-white drop-shadow-md">
+                        <span className="text-2xl sm:text-3xl font-semibold tracking-tight text-white drop-shadow-md">
                           ₹{currentProperty.rent.toLocaleString('en-IN')}
                         </span>
-                        <span className="text-xs font-semibold text-emerald-300 ml-1">/ month</span>
+                        <span className="text-xs font-normal text-emerald-300 ml-1">/ month</span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] uppercase font-bold text-gray-300 block">Deposit</span>
-                        <span className="text-xs font-extrabold text-amber-400">
+                        <span className="text-[10px] uppercase font-normal text-gray-300 block">Deposit</span>
+                        <span className="text-xs font-medium text-amber-400">
                           ₹{currentProperty.deposit.toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -476,10 +476,10 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
                     {/* Title & Locality */}
                     <div>
-                      <h3 className="text-lg font-black text-white leading-snug line-clamp-1 drop-shadow">
+                      <h3 className="text-lg font-medium text-white leading-snug line-clamp-1 drop-shadow">
                         {currentProperty.title}
                       </h3>
-                      <div className="flex items-center gap-1.5 text-xs text-amber-300 font-semibold mt-0.5">
+                      <div className="flex items-center gap-1.5 text-xs text-amber-300 font-normal mt-0.5">
                         <MapPin className="w-3.5 h-3.5 text-amber-400" />
                         <span>{currentProperty.locality}, Chennai</span>
                       </div>
@@ -488,17 +488,17 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                     {/* Specs Chips */}
                     <div className="flex items-center gap-2 flex-wrap pt-1">
                       {currentProperty.propertyType === 'HOUSE' && currentProperty.bedrooms && (
-                        <span className="px-2.5 py-1 bg-white/15 backdrop-blur-md rounded-lg text-xs font-semibold flex items-center gap-1">
+                        <span className="px-2.5 py-1 bg-white/15 backdrop-blur-md rounded-lg text-xs font-normal flex items-center gap-1">
                           <Bed className="w-3.5 h-3.5 text-amber-400" />
                           <span>{currentProperty.bedrooms} BHK</span>
                         </span>
                       )}
-                      <span className="px-2.5 py-1 bg-white/15 backdrop-blur-md rounded-lg text-xs font-semibold flex items-center gap-1">
+                      <span className="px-2.5 py-1 bg-white/15 backdrop-blur-md rounded-lg text-xs font-normal flex items-center gap-1">
                         <Maximize2 className="w-3.5 h-3.5 text-emerald-400" />
                         <span>{currentProperty.propertySize} sq.ft</span>
                       </span>
                       {currentProperty.furnishing && (
-                        <span className="px-2.5 py-1 bg-white/15 backdrop-blur-md rounded-lg text-xs font-semibold flex items-center gap-1">
+                        <span className="px-2.5 py-1 bg-white/15 backdrop-blur-md rounded-lg text-xs font-normal flex items-center gap-1">
                           <Sofa className="w-3.5 h-3.5 text-amber-400" />
                           <span className="capitalize">{currentProperty.furnishing.replace('_', ' ').toLowerCase()}</span>
                         </span>
@@ -509,12 +509,12 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                     {currentProperty.amenities && currentProperty.amenities.length > 0 && (
                       <div className="flex items-center gap-1.5 overflow-hidden text-[10px] text-gray-300">
                         {currentProperty.amenities.slice(0, 3).map((amenity, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-md border border-white/10 truncate">
+                          <span key={i} className="px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-md border border-white/10 truncate font-normal">
                             ✓ {amenity}
                           </span>
                         ))}
                         {currentProperty.amenities.length > 3 && (
-                          <span className="text-[10px] text-amber-300 font-bold">
+                          <span className="text-[10px] text-amber-300 font-medium">
                             +{currentProperty.amenities.length - 3} more
                           </span>
                         )}
