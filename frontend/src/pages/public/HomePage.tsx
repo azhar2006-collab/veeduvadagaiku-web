@@ -86,11 +86,40 @@ export const HomePage: React.FC = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#060D1E] via-[#0B1B3D] to-[#064E3B] text-white pt-8 pb-16 md:pt-14 md:pb-24 px-4 sm:px-6 lg:px-8 border-b border-emerald-900/40">
-        {/* Background Decorative patterns */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-400 rounded-full blur-3xl opacity-20 pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-600 rounded-full blur-3xl opacity-30 pointer-events-none" />
+      <section className="relative overflow-hidden text-white pt-8 pb-16 md:pt-14 md:pb-24 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(160deg, #040A17 0%, #0B2545 45%, #0A1F40 70%, #071628 100%)' }}>
+
+        {/* Fine dot grid */}
+        <div className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#C59B27 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+
+        {/* Diagonal lines */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'repeating-linear-gradient(45deg, #fff 0, #fff 1px, transparent 0, transparent 50%)', backgroundSize: '20px 20px' }} />
+
+        {/* Top-right gold radial glow */}
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(197,155,39,0.18) 0%, transparent 70%)' }} />
+
+        {/* Bottom-left deep blue glow */}
+        <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(11,37,69,0.8) 0%, transparent 65%)' }} />
+
+        {/* Gold horizontal beam */}
+        <div className="absolute left-0 right-0 h-px pointer-events-none" style={{ top: 'calc(50% - 80px)', background: 'linear-gradient(90deg, transparent, rgba(197,155,39,0.15) 30%, rgba(197,155,39,0.25) 50%, rgba(197,155,39,0.15) 70%, transparent)' }} />
+
+        {/* City skyline silhouette */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none select-none opacity-[0.06]">
+          <svg viewBox="0 0 1440 180" preserveAspectRatio="none" className="w-full h-28 sm:h-36" fill="#C59B27">
+            <path d="M0,180 L0,120 L40,120 L40,80 L60,80 L60,60 L80,60 L80,80 L120,80 L120,40 L135,40 L135,30 L140,30 L140,40 L155,40 L155,80 L180,80 L180,60 L200,60 L200,50 L205,50 L205,60 L220,60 L220,80 L260,80 L260,90 L280,90 L280,50 L300,50 L300,90 L320,90 L320,70 L340,70 L340,55 L350,55 L350,45 L360,45 L360,55 L370,55 L370,70 L400,70 L400,90 L440,90 L440,60 L460,60 L460,30 L470,30 L470,20 L480,20 L480,30 L490,30 L490,60 L520,60 L520,80 L560,80 L560,50 L580,50 L580,80 L620,80 L620,60 L640,60 L640,40 L655,40 L655,25 L665,25 L665,40 L680,40 L680,60 L700,60 L700,80 L740,80 L740,90 L780,90 L780,65 L800,65 L800,45 L815,45 L815,35 L825,35 L825,45 L840,45 L840,65 L860,65 L860,90 L900,90 L900,70 L920,70 L920,50 L940,50 L940,70 L960,70 L960,80 L1000,80 L1000,55 L1020,55 L1020,35 L1035,35 L1035,25 L1045,25 L1045,35 L1060,35 L1060,55 L1080,55 L1080,80 L1120,80 L1120,60 L1140,60 L1140,90 L1180,90 L1180,70 L1200,70 L1200,50 L1220,50 L1220,70 L1260,70 L1260,85 L1300,85 L1300,60 L1320,60 L1320,40 L1340,40 L1340,60 L1360,60 L1360,85 L1400,85 L1400,120 L1440,120 L1440,180 Z" />
+          </svg>
+        </div>
+
+        {/* Gold wave at bottom */}
+        <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+          <svg viewBox="0 0 1440 40" preserveAspectRatio="none" className="w-full h-8 sm:h-10">
+            <path d="M0,20 C240,40 480,0 720,20 C960,40 1200,0 1440,20 L1440,40 L0,40 Z" fill="rgba(197,155,39,0.08)" />
+            <path d="M0,28 C360,10 720,40 1080,20 C1260,10 1380,28 1440,32 L1440,40 L0,40 Z" fill="rgba(197,155,39,0.05)" />
+          </svg>
+        </div>
+
+        {/* Top gold accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, #C59B27 20%, #F59E0B 50%, #C59B27 80%, transparent)' }} />
 
         <div className="relative max-w-5xl mx-auto space-y-6">
           {/* Top Tagline */}
@@ -342,7 +371,22 @@ export const HomePage: React.FC = () => {
         {loadingFeatured ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-80 bg-gray-100 rounded-2xl animate-pulse" />
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
+                <div className="aspect-[16/10] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
+                <div className="p-5 space-y-3">
+                  <div className="h-3 w-24 bg-gray-200 rounded-full" />
+                  <div className="h-4 w-3/4 bg-gray-200 rounded-full" />
+                  <div className="flex gap-3 pt-2 border-t border-gray-100">
+                    <div className="h-3 w-16 bg-gray-200 rounded-full" />
+                    <div className="h-3 w-14 bg-gray-200 rounded-full" />
+                    <div className="h-3 w-18 bg-gray-200 rounded-full" />
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="h-5 w-28 bg-gray-200 rounded-lg" />
+                    <div className="h-8 w-24 bg-gray-200 rounded-xl" />
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
@@ -376,7 +420,22 @@ export const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {loadingHouses ? (
               [...Array(3)].map((_, i) => (
-                <div key={i} className="h-80 bg-gray-200 rounded-2xl animate-pulse" />
+                <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
+                  <div className="aspect-[16/10] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-3 w-24 bg-gray-200 rounded-full" />
+                    <div className="h-4 w-3/4 bg-gray-200 rounded-full" />
+                    <div className="flex gap-3 pt-2 border-t border-gray-100">
+                      <div className="h-3 w-16 bg-gray-200 rounded-full" />
+                      <div className="h-3 w-14 bg-gray-200 rounded-full" />
+                      <div className="h-3 w-16 bg-gray-200 rounded-full" />
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="h-5 w-28 bg-gray-200 rounded-lg" />
+                      <div className="h-8 w-24 bg-gray-200 rounded-xl" />
+                    </div>
+                  </div>
+                </div>
               ))
             ) : (
               houseProperties.map((prop) => (
@@ -408,7 +467,22 @@ export const HomePage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {loadingShops ? (
             [...Array(3)].map((_, i) => (
-              <div key={i} className="h-80 bg-gray-100 rounded-2xl animate-pulse" />
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
+                <div className="aspect-[16/10] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />
+                <div className="p-5 space-y-3">
+                  <div className="h-3 w-24 bg-gray-200 rounded-full" />
+                  <div className="h-4 w-3/4 bg-gray-200 rounded-full" />
+                  <div className="flex gap-3 pt-2 border-t border-gray-100">
+                    <div className="h-3 w-16 bg-gray-200 rounded-full" />
+                    <div className="h-3 w-14 bg-gray-200 rounded-full" />
+                    <div className="h-3 w-16 bg-gray-200 rounded-full" />
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="h-5 w-28 bg-gray-200 rounded-lg" />
+                    <div className="h-8 w-24 bg-gray-200 rounded-xl" />
+                  </div>
+                </div>
+              </div>
             ))
           ) : (
             shopProperties.map((prop) => (

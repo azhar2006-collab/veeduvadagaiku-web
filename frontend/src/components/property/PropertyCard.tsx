@@ -45,7 +45,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           src={primaryImg}
           alt={property.title}
           loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src =
+              'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80';
+          }}
         />
 
         {/* Type Badge */}
