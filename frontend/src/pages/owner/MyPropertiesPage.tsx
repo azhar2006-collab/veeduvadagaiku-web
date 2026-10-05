@@ -9,14 +9,12 @@ import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
 import {
   Building2,
-  Store,
-  PlusCircle,
   Edit,
   Trash2,
-  CreditCard,
   Eye,
   AlertCircle,
   ExternalLink,
+  PlusCircle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -87,53 +85,57 @@ export const MyPropertiesPage: React.FC = () => {
               'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
 
             const canEdit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
-            const needsPayment = prop.status === 'DRAFT' || prop.status === 'PAYMENT_PENDING';
 
             return (
               <div
                 key={prop.id}
-                className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:border-gray-200 transition space-y-4"
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-gray-200 transition overflow-hidden"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  {/* Left: Thumbnail & Main info */}
-                  <div className="flex items-start gap-4">
+                <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4">
+                  {/* Left: Thumbnail */}
+                  <div className="shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
                     <img
                       src={primaryImg}
-                      alt=""
-                      className="w-20 h-20 rounded-xl object-cover bg-gray-100 shrink-0"
+                      alt={prop.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
+                      }}
                     />
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <PropertyStatusBadge status={prop.status} />
-                        <span className="text-[11px] font-bold text-gray-400 uppercase">
-                          {prop.propertyType}
-                        </span>
-                      </div>
+                  </div>
 
-                      <h3 className="font-bold text-base text-gray-900 line-clamp-1">
-                        {prop.title}
-                      </h3>
+                  {/* Center: Info */}
+                  <div className="flex-1 min-w-0 space-y-1.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <PropertyStatusBadge status={prop.status} />
+                      <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded-full">
+                        {prop.propertyType === 'HOUSE' ? 'House' : 'Commercial Shop'}
+                      </span>
+                    </div>
 
-                      <p className="text-xs text-gray-500 font-medium">
-                        {prop.locality}, Chennai • Rent: ₹{prop.rent.toLocaleString('en-IN')}/mo •
+                    <h3 className="font-bold text-base text-gray-900 line-clamp-1 leading-snug">
+                      {prop.title}
+                    </h3>
+
+                    <p className="text-xs text-gray-500 font-medium">
+                      {prop.locality}, Chennai
+                    </p>
+
+                    <div className="flex items-center gap-3 text-xs font-semibold text-gray-600 flex-wrap">
+                      <span className="bg-gray-50 px-2 py-1 rounded-lg border border-gray-200">
+                        Rent: ₹{prop.rent.toLocaleString('en-IN')}/mo
+                      </span>
+                      <span className="bg-gray-50 px-2 py-1 rounded-lg border border-gray-200">
                         Deposit: ₹{prop.deposit.toLocaleString('en-IN')}
-                      </p>
+                      </span>
                     </div>
                   </div>
 
-                  {/* Right: Actions Buttons */}
-                  <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
-                    {/* Pay button if pending */}
-                    {needsPayment && (
-                      <Link
-                        to={`/owner/payment?propertyId=${prop.id}`}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white font-extrabold text-xs rounded-xl shadow-sm hover:shadow transition"
-                      >
-                        <CreditCard className="w-3.5 h-3.5" />
-                        <span>Pay Listing Fee</span>
-                      </Link>
-                    )}
-
+                  {/* Right: Actions */}
+                  <div className="flex flex-row sm:flex-col items-center gap-2 sm:shrink-0 sm:pt-1 border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
                     {/* View Live (if published) */}
                     {prop.status === 'PUBLISHED' && (
                       <Link
@@ -169,9 +171,24 @@ export const MyPropertiesPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Pending Admin Approval Banner */}
+                {(prop.status === 'DRAFT' || prop.status === 'PENDING_APPROVAL') && (
+                  <div className="mx-4 mb-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2.5 text-xs text-amber-800">
+                    <Eye className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+                    <div>
+                      <span className="font-bold block text-amber-900">
+                        Pending Admin Approval
+                      </span>
+                      <span className="text-amber-700 leading-relaxed">
+                        Your property has been submitted and is under review by our admin team. It will be published once approved. This typically takes 24–48 hours.
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Rejection Notice Banner */}
                 {prop.status === 'REJECTED' && prop.rejectionReason && (
-                  <div className="p-3 bg-red-50 rounded-xl border border-red-200 flex items-start gap-2 text-xs text-red-700">
+                  <div className="mx-4 mb-4 p-3 bg-red-50 rounded-xl border border-red-200 flex items-start gap-2 text-xs text-red-700">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
                       <span className="font-bold">Admin Rejection Feedback: </span>
