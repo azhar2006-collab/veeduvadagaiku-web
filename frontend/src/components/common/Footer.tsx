@@ -4,25 +4,24 @@ import { Home, Phone, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#060D1E] text-slate-300 pt-16 pb-12 border-t border-emerald-950/80">
+    <footer className="bg-[#040A17] text-slate-300 pt-16 pb-12 border-t border-slate-800/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand Info */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <img
-                src="/logo-badge.jpg"
-                alt="Veedu Vadagaiku"
-                className="w-12 h-12 rounded-full object-cover shadow-lg ring-2 ring-emerald-500/40"
-              />
-              <span className="text-xl font-black text-white tracking-tight">
-                Veedu<span className="text-emerald-400">Vadagaiku</span>
-              </span>
+            <div className="mb-4">
+              <div className="bg-white p-2.5 rounded-2xl inline-block shadow-md">
+                <img
+                  src="/logo-full.png"
+                  alt="Veedu Vadagaiku"
+                  className="h-12 sm:h-14 w-auto object-contain"
+                />
+              </div>
             </div>
             <p className="text-sm text-slate-400 mb-4 leading-relaxed">
               வீடு வாடகைக்கு — Chennai's dedicated rental marketplace for verified houses and prime commercial shops. Connecting property owners with verified tenants.
             </p>
-            <div className="flex items-center gap-2 text-xs text-amber-300 font-semibold bg-emerald-950/70 p-2.5 rounded-lg border border-amber-500/30">
+            <div className="flex items-center gap-2 text-xs text-amber-300 font-semibold bg-[#0B2545]/70 p-2.5 rounded-lg border border-amber-500/30">
               <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
               100% Admin-Verified Listings Only
             </div>

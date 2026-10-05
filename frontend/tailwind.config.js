@@ -4,57 +4,71 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Core Brand Palette derived from the Veedu Vadagaiku Emblem
+        // Core Brand Palette derived from the 3D Navy & Gold Veedu Vadagaiku Logo
         brand: {
-          navy: '#0B1B3D',
+          navy: '#0B2545',
           'navy-dark': '#060D1E',
-          'navy-light': '#152C5B',
-          emerald: '#065F46',
-          'emerald-light': '#059669',
-          'emerald-dark': '#023828',
+          'navy-deep': '#040A17',
+          'navy-light': '#163B6B',
+          blue: '#1E3A8A',
           gold: '#C59B27',
-          'gold-light': '#E8C862',
+          'gold-light': '#F59E0B',
           'gold-dark': '#9A7818',
+          'gold-metallic': '#D4AF37',
         },
-        // Primary Brand Color: Luxury Emerald Green
+        // Primary Brand Color: Royal Navy Blue
         primary: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#047857', // Main Brand Emerald
-          700: '#065f46',
-          800: '#064e3b',
-          900: '#022c22',
+          50: '#f0f6fe',
+          100: '#e0edfd',
+          200: '#bddbfb',
+          300: '#8ec0f8',
+          400: '#579df3',
+          500: '#2667c9',
+          600: '#0B2545', // Signature Royal Navy
+          700: '#081c36', // Deep Royal Navy Hover
+          800: '#061529',
+          900: '#040d1a',
         },
-        // Seamlessly map 'orange' utility classes to the rich Emerald & Gold theme
+        // Map 'emerald' to the Signature Royal Navy Blue
+        emerald: {
+          50: '#f0f6fe',
+          100: '#e0edfd',
+          200: '#bddbfb',
+          300: '#8ec0f8',
+          400: '#579df3',
+          500: '#1d54a5',
+          600: '#0B2545', // Signature Royal Navy
+          700: '#081c36', // Deep Navy Hover
+          800: '#061529',
+          900: '#040d1a',
+          950: '#02070e',
+        },
+        // Map 'orange' to the Polished Metallic Gold
         orange: {
-          50: '#ecfdf5',
-          100: '#d1fae5',
-          200: '#a7f3d0',
-          300: '#6ee7b7',
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669', // Vibrant Emerald Primary
-          700: '#047857', // Deep Emerald Hover
-          800: '#065f46',
-          900: '#064e3b',
-          950: '#022c22',
+          50: '#fdfbf2',
+          100: '#fbf4dc',
+          200: '#f6e5b3',
+          300: '#efcf81',
+          400: '#e5b84f',
+          500: '#d4af37', // Polished Metallic Gold
+          600: '#c59b27', // Signature Logo Gold
+          700: '#a17a14', // Deep Burnished Gold Hover
+          800: '#7d5c0b',
+          900: '#5c4105',
+          950: '#060D1E',
         },
         // Accent Gold / Amber
         gold: {
-          50: '#fefce8',
-          100: '#fef9c3',
-          200: '#fef08a',
-          300: '#fde047',
-          400: '#facc15',
-          500: '#eab308',
-          600: '#ca8a04',
-          700: '#a16207',
-          800: '#854d0e',
-          900: '#713f12',
+          50: '#fdfbf2',
+          100: '#fbf4dc',
+          200: '#f6e5b3',
+          300: '#efcf81',
+          400: '#e5b84f',
+          500: '#d4af37',
+          600: '#c59b27',
+          700: '#a17a14',
+          800: '#7d5c0b',
+          900: '#5c4105',
         },
       },
       fontFamily: {

@@ -19,20 +19,12 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-3 group py-1">
             <img
-              src="/logo-badge.jpg"
-              alt="Veedu Vadagaiku"
-              className="w-12 h-12 rounded-full object-cover shadow-md ring-2 ring-emerald-600/30 group-hover:scale-105 transition-transform"
+              src="/logo-full.png"
+              alt="Veedu Vadagaiku - Chennai's Rental Marketplace"
+              className="h-12 sm:h-14 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-sm"
             />
-            <div>
-              <span className="text-xl font-black tracking-tight text-slate-900 block leading-tight">
-                Veedu<span className="text-emerald-700">Vadagaiku</span>
-              </span>
-              <span className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase block">
-                வாடகை-குத்தகை • Chennai
-              </span>
-            </div>
           </Link>
 
           {/* Desktop Navigation */}

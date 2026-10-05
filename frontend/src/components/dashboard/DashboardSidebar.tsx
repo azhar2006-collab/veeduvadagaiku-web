@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { LucideIcon, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -27,20 +27,14 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ title, items
   return (
     <aside className="w-full lg:w-64 bg-white rounded-2xl border border-gray-100 p-4 shadow-sm h-fit">
       {/* Logo */}
-      <div className="px-2 pb-4 mb-2 border-b border-gray-100 flex items-center gap-2.5">
-        <img
-          src="/logo-badge.jpg"
-          alt="Veedu Vadagaiku"
-          className="w-8 h-8 rounded-full object-cover ring-1 ring-emerald-500/30"
-        />
-        <div>
-          <span className="text-sm font-black tracking-tight text-gray-900 block leading-tight">
-            Veedu<span className="text-emerald-600">Vadagaiku</span>
-          </span>
-          <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase block">
-            Chennai Rentals
-          </span>
-        </div>
+      <div className="px-1 pb-4 mb-3 border-b border-gray-100 flex items-center justify-center">
+        <Link to="/" className="block hover:opacity-95 transition">
+          <img
+            src="/logo-full.png"
+            alt="Veedu Vadagaiku"
+            className="h-10 sm:h-11 w-auto object-contain"
+          />
+        </Link>
       </div>
 
       {/* User Mini Profile */}

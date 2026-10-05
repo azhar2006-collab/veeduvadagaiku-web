@@ -39,23 +39,22 @@ export const AdminLayout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Admin Top Header */}
-      <header className="bg-gray-900 text-white border-b border-gray-800 sticky top-0 z-40">
+      <header className="bg-[#060D1E] text-white border-b border-slate-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img
-              src="/logo-badge.jpg"
-              alt="Veedu Vadagaiku"
-              className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/40"
-            />
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-base tracking-tight text-white">
-                Veedu<span className="text-emerald-400">Vadagaiku</span>
-              </span>
-              <span className="text-gray-600">|</span>
-              <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
-                Admin Portal
-              </span>
-            </div>
+            <Link to="/" className="flex items-center gap-2">
+              <div className="bg-white px-2.5 py-1 rounded-xl shadow-sm hover:opacity-95 transition">
+                <img
+                  src="/logo-full.png"
+                  alt="Veedu Vadagaiku"
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+            </Link>
+            <span className="text-slate-700">|</span>
+            <span className="text-xs font-extrabold text-amber-400 uppercase tracking-widest bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/20">
+              Admin Portal
+            </span>
           </div>
           <Link
             to="/"
