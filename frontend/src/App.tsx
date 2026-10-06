@@ -53,7 +53,7 @@ export const App: React.FC = () => {
   React.useEffect(() => {
     const mountTime = Date.now();
     const MIN_DISPLAY = 3000; // hold for at least 3 seconds
-    const ANIM_DURATION = 700; // matches CSS preloaderSlideUp duration
+    const ANIM_DURATION = 1500; // matches CSS preloaderSlideUp duration
 
     const dismiss = () => {
       const preloader = document.getElementById('preloader');
