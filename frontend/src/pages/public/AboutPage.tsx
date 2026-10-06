@@ -54,18 +54,18 @@ export const AboutPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-[#FAF4E6] via-[#F8F1E0] to-[#F4E8D0] rounded-3xl p-8 sm:p-12 text-[#1E2329] shadow-xl border border-[#E5DAC4] flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2">
-          <h3 className="text-2xl font-black">Are you a Property Owner in Chennai?</h3>
-          <p className="text-sm text-orange-100 max-w-md">
+          <h3 className="text-2xl font-bold text-gray-900">Are you a Property Owner in Chennai?</h3>
+          <p className="text-sm text-gray-700 max-w-md">
             Reach thousands of prospective tenants searching daily. List your house or commercial shop in under 5 minutes.
           </p>
         </div>
         <a
           href="/owner/properties/add"
-          className="px-6 py-3.5 bg-gray-950 hover:bg-black text-white font-extrabold text-sm rounded-xl shadow-lg transition whitespace-nowrap"
+          className="px-6 py-3.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-md shadow-[#D4AF37]/25 transition whitespace-nowrap"
         >
-          Post Free Ad / Register
+          Post Property / Register
         </a>
       </div>
     </div>

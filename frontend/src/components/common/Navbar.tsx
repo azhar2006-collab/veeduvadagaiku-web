@@ -206,7 +206,7 @@ export const Navbar: React.FC = () => {
             {/* Language Switcher Button (Desktop) */}
             <LanguageSwitcher />
 
-            {/* NoBroker style "Post Free Property" CTA in Lite Gold */}
+            {/* NoBroker style "Post Property" CTA in Lite Gold */}
             {isOwner ? (
               <Link
                 to="/owner/properties/add"

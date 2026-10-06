@@ -189,7 +189,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.contact': 'தொடர்பு கொள்ள',
     'nav.login': 'உள்நுழைக',
     'nav.register': 'பதிவு செய்க',
-    'nav.postProperty': 'இலவச விளம்பரம்',
+    'nav.postProperty': 'சொத்தை பதிவேற்றுக',
     'nav.listProperty': 'சொத்தை பதிவேற்றுக',
     'nav.myProperties': 'எனது சொத்துக்கள்',
     'nav.enquiries': 'விசாரணைகள்',
