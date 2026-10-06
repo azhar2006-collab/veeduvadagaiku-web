@@ -86,7 +86,7 @@ export const HomePage: React.FC = () => {
       />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden text-white pt-8 pb-16 md:pt-14 md:pb-24 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(160deg, #040A17 0%, #0B2545 45%, #0A1F40 70%, #071628 100%)' }}>
+      <section className="relative overflow-x-hidden text-white pt-8 pb-20 md:pt-14 md:pb-24 px-4 sm:px-6 lg:px-8" style={{ background: 'linear-gradient(160deg, #040A17 0%, #0B2545 45%, #0A1F40 70%, #071628 100%)' }}>
 
         {/* Fine dot grid */}
         <div className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#C59B27 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
@@ -121,52 +121,59 @@ export const HomePage: React.FC = () => {
         {/* Top gold accent line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent, #C59B27 20%, #F59E0B 50%, #C59B27 80%, transparent)' }} />
 
-        <div className="relative max-w-5xl mx-auto space-y-6">
+        <div className="relative max-w-5xl mx-auto space-y-7 sm:space-y-8">
           {/* Top Tagline */}
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/70 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs sm:text-sm font-medium tracking-wide shadow-sm">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>வாடகை-குத்தகை • Direct from Chennai Landlords</span>
+          <div className="text-center space-y-3 sm:space-y-4 max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-amber-200/90 text-[11px] sm:text-xs font-medium tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Direct from verified Chennai landlords</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.15]">
-              Chennai's Trusted<br />
-              <span className="text-amber-400">Rental Marketplace</span>
+            <h1 className="text-[1.75rem] sm:text-5xl lg:text-[3.25rem] font-semibold tracking-tight leading-[1.12] text-white">
+              Find your next rental
+              <span className="block text-amber-400 mt-1">without the brokerage</span>
             </h1>
 
-            <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-              Discover verified houses, apartments & commercial spaces across Chennai.
-              Connect directly with owners — no brokers, no hidden charges.
+            <p className="max-w-lg mx-auto text-sm sm:text-base text-slate-300/95 font-normal leading-relaxed">
+              Swipe through houses and shops, shortlist favourites, and contact owners on WhatsApp or call — all in one place.
             </p>
           </div>
 
           {/* View Mode Switcher */}
-          <div className="flex items-center justify-center pt-1 pb-2">
-            <div className="inline-flex items-center p-1.5 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg">
+          <div className="flex items-center justify-center">
+            <div
+              className="inline-flex items-center p-1 rounded-2xl bg-white/[0.06] backdrop-blur-md border border-white/10 shadow-lg"
+              role="tablist"
+              aria-label="Browse mode"
+            >
               <button
                 type="button"
+                role="tab"
+                aria-selected={viewMode === 'tinder'}
                 onClick={() => setViewMode('tinder')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
+                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
                   viewMode === 'tinder'
-                    ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-md shadow-emerald-600/30'
-                    : 'text-gray-300 hover:text-white'
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-slate-300 hover:text-white'
                 }`}
               >
-                <Layers className="w-4 h-4 text-amber-400" />
-                <span>Discover Properties</span>
+                <Layers className="w-4 h-4 text-amber-300" />
+                <span>Swipe to discover</span>
               </button>
 
               <button
                 type="button"
+                role="tab"
+                aria-selected={viewMode === 'search'}
                 onClick={() => setViewMode('search')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
+                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
                   viewMode === 'search'
-                    ? 'bg-white text-gray-900 shadow-md'
-                    : 'text-gray-300 hover:text-white'
+                    ? 'bg-white text-slate-900 shadow-md'
+                    : 'text-slate-300 hover:text-white'
                 }`}
               >
                 <Search className="w-4 h-4 text-emerald-600" />
-                <span>Search & Filter</span>
+                <span>Search & filter</span>
               </button>
             </div>
           </div>
@@ -174,11 +181,11 @@ export const HomePage: React.FC = () => {
           {/* MAIN INTERACTIVE AREA */}
           {viewMode === 'tinder' ? (
             /* Swipe Discovery Mode */
-            <div className="pt-2 animate-fade-in">
+            <div className="w-full flex flex-col items-center pt-1 animate-fade-in">
               {loadingDeck ? (
-                <div className="w-full max-w-md mx-auto aspect-[3/4.4] min-h-[510px] bg-white/5 border border-white/10 rounded-3xl animate-pulse flex flex-col items-center justify-center gap-3">
-                  <Sparkles className="w-12 h-12 text-emerald-400 animate-bounce" />
-                  <p className="text-xs text-gray-400 font-normal">Loading Chennai rentals...</p>
+                <div className="w-full max-w-sm sm:max-w-md mx-auto aspect-[3/4.15] min-h-[380px] sm:min-h-[510px] bg-white/[0.04] border border-white/10 rounded-3xl animate-pulse flex flex-col items-center justify-center gap-3">
+                  <Sparkles className="w-10 h-10 text-amber-400/80" />
+                  <p className="text-xs text-slate-400 font-normal">Loading listings…</p>
                 </div>
               ) : (
                 <PropertyTinderDeck
@@ -277,18 +284,18 @@ export const HomePage: React.FC = () => {
           )}
 
           {/* Quick Metrics Bar */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-slate-300 text-xs sm:text-sm font-medium">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-amber-400" />
-              <span>100% Verified Owners</span>
+          <div className="pt-2 sm:pt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:gap-x-10 text-slate-400 text-[11px] sm:text-xs font-normal">
+            <div className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Verified owners</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-amber-400" />
-              <span>Direct WhatsApp &amp; Call</span>
+            <div className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>WhatsApp &amp; call</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-amber-400" />
-              <span>Zero Tenant Brokerage</span>
+            <div className="inline-flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Zero tenant brokerage</span>
             </div>
           </div>
         </div>

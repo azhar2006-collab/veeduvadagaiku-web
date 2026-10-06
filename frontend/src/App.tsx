@@ -50,6 +50,17 @@ import { ManagePlansPage } from './pages/admin/ManagePlansPage';
 import { ManageEnquiriesPage } from './pages/admin/ManageEnquiriesPage';
 
 export const App: React.FC = () => {
+  React.useEffect(() => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      preloader.style.opacity = '0';
+      preloader.style.visibility = 'hidden';
+      setTimeout(() => {
+        preloader.remove();
+      }, 450);
+    }
+  }, []);
+
   return (
     <Routes>
       {/* ─── Public Routes ─── */}

@@ -49,7 +49,12 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
   const [photoIndex, setPhotoIndex] = useState<number>(0);
 
   const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const isDraggingRef = useRef(false);
   const cardRef = useRef<HTMLDivElement | null>(null);
+
+  const SWIPE_THRESHOLD = 72;
+  const SWIPE_OUT_MS = 180;
 
   // Sync deck when input properties change
   useEffect(() => {
@@ -99,9 +104,10 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
         setSwipedHistory((prev) => [{ property: currentProperty, direction }, ...prev]);
         setDeck((prev) => prev.slice(1));
         setSwipeDirection(null);
+        dragOffsetRef.current = { x: 0, y: 0 };
         setDragOffset({ x: 0, y: 0 });
         setPhotoIndex(0);
-      }, 300);
+      }, SWIPE_OUT_MS);
     },
     [currentProperty, swipeDirection, toggleFavourite]
   );
@@ -124,8 +130,18 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
     setDeck(properties);
     setSwipedHistory([]);
     setPhotoIndex(0);
+    isDraggingRef.current = false;
+    dragOffsetRef.current = { x: 0, y: 0 };
     setDragOffset({ x: 0, y: 0 });
     toast.success('Deck reshuffled! Browse Chennai rentals again.');
+  };
+
+  const releasePointer = (pointerId: number) => {
+    try {
+      cardRef.current?.releasePointerCapture(pointerId);
+    } catch {
+      /* capture may already be released */
+    }
   };
 
   // Drag Gesture Handlers (Mouse & Touch)
@@ -133,32 +149,51 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
     if ((e.target as HTMLElement).closest('.deck-action-prevent-drag')) {
       return;
     }
+    isDraggingRef.current = true;
     setIsDragging(true);
     dragStartRef.current = { x: e.clientX, y: e.clientY };
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    dragOffsetRef.current = { x: 0, y: 0 };
+    cardRef.current?.setPointerCapture(e.pointerId);
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!isDragging) return;
+    if (!isDraggingRef.current) return;
     const deltaX = e.clientX - dragStartRef.current.x;
     const deltaY = e.clientY - dragStartRef.current.y;
-    setDragOffset({ x: deltaX, y: deltaY });
+    const next = { x: deltaX, y: deltaY };
+    dragOffsetRef.current = next;
+    setDragOffset(next);
   };
 
   const onPointerUp = (e: React.PointerEvent) => {
-    if (!isDragging) return;
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
     setIsDragging(false);
-    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
+    releasePointer(e.pointerId);
 
-    const threshold = 110;
-    if (dragOffset.x > threshold) {
+    const deltaX = e.clientX - dragStartRef.current.x;
+    const deltaY = e.clientY - dragStartRef.current.y;
+
+    if (deltaX > SWIPE_THRESHOLD) {
       handleSwipe('right');
-    } else if (dragOffset.x < -threshold) {
+    } else if (deltaX < -SWIPE_THRESHOLD) {
       handleSwipe('left');
+    } else if (Math.abs(deltaX) < 14 && Math.abs(deltaY) < 14 && currentProperty) {
+      navigate(`/property/${currentProperty.id}`);
+      dragOffsetRef.current = { x: 0, y: 0 };
+      setDragOffset({ x: 0, y: 0 });
     } else {
-      // Snap back to center
+      dragOffsetRef.current = { x: 0, y: 0 };
       setDragOffset({ x: 0, y: 0 });
     }
+  };
+
+  const onPointerCancel = (e: React.PointerEvent) => {
+    isDraggingRef.current = false;
+    setIsDragging(false);
+    releasePointer(e.pointerId);
+    dragOffsetRef.current = { x: 0, y: 0 };
+    setDragOffset({ x: 0, y: 0 });
   };
 
   // Keyboard navigation
@@ -198,26 +233,28 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
   const cardTransform = swipeDirection
     ? swipeDirection === 'right'
-      ? 'translate3d(120%, 0, 0) rotate(25deg)'
-      : 'translate3d(-120%, 0, 0) rotate(-25deg)'
+      ? 'translate3d(105%, 0, 0) rotate(18deg)'
+      : 'translate3d(-105%, 0, 0) rotate(-18deg)'
     : isDragging
-    ? `translate3d(${dragOffset.x}px, ${dragOffset.y * 0.3}px, 0) rotate(${rotationAngle}deg)`
+    ? `translate3d(${dragOffset.x}px, ${dragOffset.y * 0.25}px, 0) rotate(${rotationAngle}deg)`
     : 'translate3d(0, 0, 0) rotate(0deg)';
 
-  const cardTransition = isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 1, 0.5, 1)';
+  const cardTransition = isDragging
+    ? 'none'
+    : `transform ${SWIPE_OUT_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
 
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col items-center select-none">
+    <div className="w-full max-w-sm sm:max-w-md mx-auto flex flex-col items-center select-none px-1">
       {/* Category Pills & Deck Header */}
-      <div className="w-full flex items-center justify-between gap-2 mb-4 px-2">
-        <div className="inline-flex items-center gap-1.5 p-1 bg-gray-900/80 backdrop-blur-md rounded-2xl border border-gray-800 shadow-md">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-3 mb-5">
+        <div className="inline-flex items-center gap-1 p-1 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg">
           <button
             type="button"
             onClick={() => onFilterChange?.('')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
               selectedType === ''
                 ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-gray-400 hover:text-white'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
@@ -226,10 +263,10 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
           <button
             type="button"
             onClick={() => onFilterChange?.('HOUSE')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
               selectedType === 'HOUSE'
                 ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-gray-400 hover:text-white'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <Building2 className="w-3.5 h-3.5" />
@@ -238,10 +275,10 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
           <button
             type="button"
             onClick={() => onFilterChange?.('SHOP')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
               selectedType === 'SHOP'
                 ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-gray-400 hover:text-white'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <Store className="w-3.5 h-3.5" />
@@ -250,17 +287,17 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
         </div>
 
         {/* Counter */}
-        <div className="text-right">
-          <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-400">
-            {deck.length > 0 ? `${deck.length} Left` : '0 Left'}
+        <div className="text-center sm:text-right">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-400/90">
+            {deck.length > 0 ? `${deck.length} remaining` : 'All viewed'}
           </span>
-          <div className="text-[10px] text-gray-400 font-medium">Swipe to Explore</div>
+          <div className="text-[10px] text-slate-400 font-normal">Swipe or tap buttons below</div>
         </div>
       </div>
 
       {/* Card Stack Area */}
       <div
-        className="relative w-full aspect-[3/4.2] sm:aspect-[3/4.4] min-h-[510px] max-h-[580px]"
+        className="relative w-full mx-auto aspect-[3/4.15] sm:aspect-[3/4.35] min-h-[380px] sm:min-h-[510px] max-h-[70vh] sm:max-h-[580px]"
         style={{ perspective: '1000px' }}
       >
         {deck.length === 0 ? (
@@ -358,12 +395,14 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}
-                onPointerCancel={onPointerUp}
-                className="absolute inset-0 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing touch-none bg-gray-950 border border-white/20 shadow-2xl transition-shadow duration-300"
+                onPointerCancel={onPointerCancel}
+                className="absolute inset-0 rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing touch-none bg-gray-950 border border-white/15 shadow-2xl transition-shadow duration-300"
                 style={{
                   zIndex: 10,
                   transform: cardTransform,
+                  transformOrigin: 'center center',
                   transition: cardTransition,
+                  willChange: isDragging || swipeDirection ? 'transform' : 'auto',
                 }}
               >
                 {/* Background Image Carousel */}
@@ -457,7 +496,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                   </div>
 
                   {/* Bottom Property Info Sheet */}
-                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-20 text-white space-y-3 pointer-events-none">
+                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 z-20 text-white space-y-3">
                     {/* Price & Deposit */}
                     <div className="flex items-baseline justify-between">
                       <div>
@@ -507,7 +546,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
                     {/* Amenities Pill Previews */}
                     {currentProperty.amenities && currentProperty.amenities.length > 0 && (
-                      <div className="flex items-center gap-1.5 overflow-hidden text-[10px] text-gray-300">
+                      <div className="flex items-center gap-1.5 overflow-hidden text-[10px] text-gray-300 pointer-events-none">
                         {currentProperty.amenities.slice(0, 3).map((amenity, i) => (
                           <span key={i} className="px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-md border border-white/10 truncate font-normal">
                             ✓ {amenity}
@@ -520,6 +559,14 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                         )}
                       </div>
                     )}
+
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/property/${currentProperty.id}`)}
+                      className="deck-action-prevent-drag w-full mt-1 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-sm font-medium text-white backdrop-blur-md transition active:scale-[0.98] pointer-events-auto"
+                    >
+                      View full listing
+                    </button>
                   </div>
                 </div>
               </div>
@@ -530,14 +577,14 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
 
       {/* Property Action Buttons Bar */}
       {deck.length > 0 && currentProperty && (
-        <div className="w-full flex items-center justify-center gap-4 sm:gap-6 mt-6 z-30">
+        <div className="w-full max-w-sm mx-auto flex items-center justify-center gap-2.5 sm:gap-5 mt-5 sm:mt-6 z-30 px-1">
           {/* Rewind / Undo */}
           <button
             type="button"
             onClick={handleUndo}
             disabled={swipedHistory.length === 0}
             aria-label="Undo last swipe"
-            className="w-12 h-12 rounded-full bg-white border border-gray-200 text-amber-500 hover:text-amber-600 hover:border-amber-400 hover:bg-amber-50/50 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center active:scale-90 disabled:opacity-40 disabled:pointer-events-none"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/95 border border-white/40 text-amber-600 hover:text-amber-700 hover:border-amber-300 shadow-lg transition-transform duration-150 flex items-center justify-center active:scale-90 disabled:opacity-40 disabled:pointer-events-none"
           >
             <RotateCcw className="w-5 h-5" />
           </button>
@@ -547,9 +594,9 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
             type="button"
             onClick={() => handleSwipe('left')}
             aria-label="Pass property"
-            className="w-16 h-16 rounded-full bg-white border-2 border-rose-200 text-rose-500 hover:bg-rose-50 hover:border-rose-400 hover:text-rose-600 shadow-xl hover:shadow-2xl transition-all duration-200 flex items-center justify-center active:scale-90 group"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white border-2 border-rose-200/90 text-rose-500 hover:bg-rose-50 hover:border-rose-400 shadow-xl transition-transform duration-150 flex items-center justify-center active:scale-90"
           >
-            <X className="w-8 h-8 stroke-[2.5] group-hover:scale-110 transition-transform" />
+            <X className="w-7 h-7 sm:w-8 sm:h-8 stroke-[2.5]" />
           </button>
 
           {/* Info / View Full Page */}
@@ -557,7 +604,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
             type="button"
             onClick={() => navigate(`/property/${currentProperty.id}`)}
             aria-label="View property details"
-            className="w-12 h-12 rounded-full bg-white border border-gray-200 text-blue-600 hover:text-blue-700 hover:border-blue-400 hover:bg-blue-50/50 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center active:scale-90"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/95 border border-white/40 text-primary-600 hover:text-primary-700 shadow-lg transition-transform duration-150 flex items-center justify-center active:scale-90"
           >
             <Info className="w-5 h-5" />
           </button>
@@ -567,9 +614,9 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
             type="button"
             onClick={() => handleSwipe('right')}
             aria-label="Like and shortlist property"
-            className="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-600 to-green-500 text-white shadow-xl shadow-emerald-600/30 hover:shadow-2xl hover:shadow-emerald-600/40 hover:scale-105 transition-all duration-200 flex items-center justify-center active:scale-90 group"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-emerald-600 to-emerald-500 text-white shadow-xl shadow-emerald-900/40 transition-transform duration-150 flex items-center justify-center active:scale-90"
           >
-            <Heart className="w-8 h-8 fill-white group-hover:scale-110 transition-transform" />
+            <Heart className="w-7 h-7 sm:w-8 sm:h-8 fill-white" />
           </button>
 
           {/* Direct Landlord Call or WhatsApp */}
@@ -581,7 +628,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Chat on WhatsApp"
-              className="w-12 h-12 rounded-full bg-white border border-emerald-200 text-emerald-600 hover:text-emerald-700 hover:border-emerald-400 hover:bg-emerald-50/50 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center active:scale-90"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/95 border border-white/40 text-emerald-600 hover:text-emerald-700 shadow-lg transition-transform duration-150 flex items-center justify-center active:scale-90"
             >
               <MessageCircle className="w-5 h-5 fill-emerald-600 text-white" />
             </a>
@@ -589,7 +636,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
             <Link
               to={`/property/${currentProperty.id}`}
               aria-label="Call landlord"
-              className="w-12 h-12 rounded-full bg-white border border-gray-200 text-emerald-600 hover:bg-emerald-50 shadow-lg transition-all duration-200 flex items-center justify-center active:scale-90"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white/95 border border-white/40 text-emerald-600 shadow-lg transition-transform duration-150 flex items-center justify-center active:scale-90"
             >
               <Phone className="w-5 h-5" />
             </Link>
@@ -598,14 +645,14 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
       )}
 
       {/* Swipe Hint */}
-      <div className="mt-4 flex items-center gap-4 text-[11px] text-gray-400 font-medium">
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />
-          Swipe Left: <strong>Pass</strong>
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[11px] text-slate-400 font-normal">
+        <span className="inline-flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+          Pass
         </span>
-        <span className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
-          Swipe Right: <strong>Shortlist</strong>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          Shortlist
         </span>
       </div>
     </div>

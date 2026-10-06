@@ -17,6 +17,28 @@
     <title>Veedu Vadagaiku - Chennai Rental Marketplace</title>
   </head>
   <body>
+    <!-- Instant Preloader: White background with centered logo only -->
+    <div id="preloader" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999;background-color:#ffffff;display:flex;align-items:center;justify-content:center;transition:opacity 0.45s ease,visibility 0.45s ease;">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;">
+        <img
+          src="/logo-full.png"
+          alt="Veedu Vadagaiku"
+          style="width:260px;max-width:78vw;height:auto;object-fit:contain;animation:preloaderPulse 1.8s ease-in-out infinite;"
+        />
+      </div>
+    </div>
+    <style>
+      @keyframes preloaderPulse {
+        0%, 100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.65;
+          transform: scale(0.97);
+        }
+      }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
