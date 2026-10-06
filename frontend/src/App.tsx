@@ -51,14 +51,22 @@ import { ManageEnquiriesPage } from './pages/admin/ManageEnquiriesPage';
 
 export const App: React.FC = () => {
   React.useEffect(() => {
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-      preloader.style.opacity = '0';
-      preloader.style.visibility = 'hidden';
-      setTimeout(() => {
-        preloader.remove();
-      }, 450);
-    }
+    const mountTime = Date.now();
+    const MIN_DISPLAY = 3000; // hold for at least 3 seconds
+    const ANIM_DURATION = 700; // matches CSS preloaderSlideUp duration
+
+    const dismiss = () => {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.classList.add('preloader-exit');
+        setTimeout(() => preloader.remove(), ANIM_DURATION);
+      }
+    };
+
+    const elapsed = Date.now() - mountTime;
+    const delay = Math.max(0, MIN_DISPLAY - elapsed);
+    const timer = setTimeout(dismiss, delay);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
