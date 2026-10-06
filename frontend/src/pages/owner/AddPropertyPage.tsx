@@ -612,10 +612,10 @@ export const AddPropertyPage: React.FC = () => {
         </div>
 
         {/* Submit Action */}
-        <div className="bg-orange-50 border border-orange-200 p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-[#FCFAF5] border border-[#E8DFC8] p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <Info className="w-5 h-5 text-orange-600 shrink-0" />
-            <p className="text-xs text-orange-900 leading-relaxed font-medium">
+            <Info className="w-5 h-5 text-[#C5A059] shrink-0" />
+            <p className="text-xs text-gray-700 leading-relaxed font-medium">
               After clicking Save, you will be directed to select a Listing Subscription Plan (from ₹499) to verify and submit your property for admin approval.
             </p>
           </div>
@@ -623,7 +623,7 @@ export const AddPropertyPage: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3.5 bg-orange-600 hover:bg-orange-700 text-white font-extrabold text-sm rounded-xl shadow-lg shadow-orange-600/30 transition active:scale-95 disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-lg shadow-[#D4AF37]/25 transition active:scale-95 disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
           >
             <span>{isSubmitting ? 'Uploading Photos...' : 'Save & Select Plan'}</span>
             <ArrowRight className="w-4 h-4" />

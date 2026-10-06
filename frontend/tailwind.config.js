@@ -4,71 +4,70 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Core Brand Palette derived from the 3D Navy & Gold Veedu Vadagaiku Logo
+        // NoBroker-inspired White and Lite Gold Design System
+        nobroker: {
+          bg: '#FFFFFF',
+          surface: '#FAF8F5',
+          card: '#FFFFFF',
+          border: '#EBE3D0',
+          borderLight: '#F5EFE3',
+          gold: '#C5A059',
+          goldLight: '#FAF4E6',
+          goldDark: '#9A7818',
+          goldMuted: '#D8BC76',
+          textMain: '#1E2329',
+          textMuted: '#5A6573',
+        },
         brand: {
-          navy: '#0B2545',
-          'navy-dark': '#060D1E',
-          'navy-deep': '#040A17',
-          'navy-light': '#163B6B',
-          blue: '#1E3A8A',
-          gold: '#C59B27',
-          'gold-light': '#F59E0B',
+          gold: '#C5A059',
+          'gold-light': '#FAF4E6',
           'gold-dark': '#9A7818',
           'gold-metallic': '#D4AF37',
+          surface: '#FAF8F5',
+          border: '#EBE3D0',
+          navy: '#1A2A3A',
+          'navy-dark': '#111A24',
+          'navy-deep': '#0A121A',
         },
-        // Primary Brand Color: Royal Navy Blue
+        // Primary Theme: Lite Gold
         primary: {
-          50: '#f0f6fe',
-          100: '#e0edfd',
-          200: '#bddbfb',
-          300: '#8ec0f8',
-          400: '#579df3',
-          500: '#2667c9',
-          600: '#0B2545', // Signature Royal Navy
-          700: '#081c36', // Deep Royal Navy Hover
-          800: '#061529',
-          900: '#040d1a',
+          50: '#FDFBF7',
+          100: '#FAF4E6',
+          200: '#F3E8CE',
+          300: '#E6D3A3',
+          400: '#D8BC76',
+          500: '#C5A059', // Signature Lite Gold
+          600: '#B08B40', // Rich Lite Gold
+          700: '#8F6E2D',
+          800: '#6F5320',
+          900: '#4C3612',
         },
-        // Map 'emerald' to the Signature Royal Navy Blue
-        emerald: {
-          50: '#f0f6fe',
-          100: '#e0edfd',
-          200: '#bddbfb',
-          300: '#8ec0f8',
-          400: '#579df3',
-          500: '#1d54a5',
-          600: '#0B2545', // Signature Royal Navy
-          700: '#081c36', // Deep Navy Hover
-          800: '#061529',
-          900: '#040d1a',
-          950: '#02070e',
-        },
-        // Map 'orange' to the Polished Metallic Gold
+        // Map 'orange' to Lite Gold for seamless compatibility
         orange: {
-          50: '#fdfbf2',
-          100: '#fbf4dc',
-          200: '#f6e5b3',
-          300: '#efcf81',
-          400: '#e5b84f',
-          500: '#d4af37', // Polished Metallic Gold
-          600: '#c59b27', // Signature Logo Gold
-          700: '#a17a14', // Deep Burnished Gold Hover
-          800: '#7d5c0b',
-          900: '#5c4105',
-          950: '#060D1E',
+          50: '#FDFBF7',
+          100: '#FAF4E6',
+          200: '#F3E8CE',
+          300: '#E6D3A3',
+          400: '#D8BC76',
+          500: '#D4AF37',
+          600: '#C5A059', // Signature Lite Gold
+          700: '#B08B40',
+          800: '#8F6E2D',
+          900: '#6F5320',
+          950: '#4C3612',
         },
-        // Accent Gold / Amber
+        // Accent Gold
         gold: {
-          50: '#fdfbf2',
-          100: '#fbf4dc',
-          200: '#f6e5b3',
-          300: '#efcf81',
-          400: '#e5b84f',
-          500: '#d4af37',
-          600: '#c59b27',
-          700: '#a17a14',
-          800: '#7d5c0b',
-          900: '#5c4105',
+          50: '#FDFBF7',
+          100: '#FAF4E6',
+          200: '#F3E8CE',
+          300: '#E6D3A3',
+          400: '#D8BC76',
+          500: '#D4AF37',
+          600: '#C5A059',
+          700: '#B08B40',
+          800: '#8F6E2D',
+          900: '#4C3612',
         },
       },
       fontFamily: {

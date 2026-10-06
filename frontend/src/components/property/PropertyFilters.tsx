@@ -33,7 +33,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
   ).length;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+    <div className="bg-white rounded-2xl border border-[#EFE8D8] p-5 shadow-xs">
       {/* Mobile Toggle Bar */}
       <div className="flex lg:hidden items-center justify-between">
         <button

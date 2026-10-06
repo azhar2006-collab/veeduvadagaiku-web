@@ -47,9 +47,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   };
 
   return (
-    <div className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-orange-200 transition-all duration-300 flex flex-col overflow-hidden relative">
+    <div className="group bg-white rounded-2xl border border-[#EBE3D0] hover:border-[#C5A059] shadow-xs hover:shadow-xl hover:shadow-[#D4AF37]/12 transition-all duration-300 flex flex-col overflow-hidden relative">
       {/* Image container */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#FAF7F0]">
         <img
           src={primaryImg}
           alt={property.title}
@@ -64,22 +64,27 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
 
         {/* Badges container */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900/80 backdrop-blur-md text-white text-xs font-medium rounded-lg shadow-sm">
+          {/* NoBroker style Zero Brokerage Tag */}
+          <span className="px-2.5 py-1 bg-white/95 backdrop-blur-md text-[#9A7818] border border-[#E8DFC8] text-[11px] font-bold rounded-lg shadow-xs">
+            0% Brokerage
+          </span>
+
+          <div className="flex items-center gap-1 px-2.5 py-1 bg-gray-900/80 backdrop-blur-md text-white text-[11px] font-semibold rounded-lg shadow-xs">
             {property.propertyType === 'HOUSE' ? (
               <>
-                <Building2 className="w-3.5 h-3.5 text-orange-400" />
+                <Building2 className="w-3 h-3 text-[#D4AF37]" />
                 <span>{t('card.house')}</span>
               </>
             ) : (
               <>
-                <Store className="w-3.5 h-3.5 text-amber-400" />
+                <Store className="w-3 h-3 text-[#D4AF37]" />
                 <span>{t('card.shop')}</span>
               </>
             )}
           </div>
 
           {isTamil && (
-            <span className="px-2 py-1 bg-[#C59B27] backdrop-blur-md text-white text-[11px] font-bold rounded-lg shadow-sm">
+            <span className="px-2 py-1 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white text-[10px] font-bold rounded-lg shadow-xs">
               தமிழ்
             </span>
           )}
@@ -96,71 +101,65 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all ${
             favorited
               ? 'bg-red-500 text-white shadow-lg shadow-red-500/30'
-              : 'bg-white/80 text-gray-700 hover:bg-white hover:text-red-500'
+              : 'bg-white/90 text-gray-700 hover:bg-white hover:text-red-500 shadow-xs'
           }`}
         >
           <Heart className={`w-4 h-4 ${favorited ? 'fill-current' : ''}`} />
         </button>
 
-        {/* Rent Tag */}
-        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-orange-600/95 backdrop-blur-md text-white rounded-lg shadow-md">
-          <div className="text-base font-semibold leading-none">{formattedRent}</div>
-          <span className="text-[10px] font-normal text-orange-100">{t('card.perMonth')}</span>
+        {/* Rent Highlight Ribbon */}
+        <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-white/95 backdrop-blur-md border border-[#E8DFC8] rounded-xl shadow-md">
+          <div className="text-base font-bold text-[#1E2329] leading-none">{formattedRent}</div>
+          <span className="text-[10px] font-semibold text-[#9A7818]">{t('card.perMonth')}</span>
         </div>
       </div>
 
       {/* Body Details */}
-      <div className="p-5 flex-1 flex flex-col">
-        {/* Locality */}
-        <div className="flex items-center gap-1.5 text-xs font-medium text-orange-600 mb-1">
-          <MapPin className="w-3.5 h-3.5" />
-          <span>{property.locality}, Chennai</span>
-        </div>
-
-        {/* Title */}
-        <Link to={`/property/${property.id}`}>
-          <h3 className="font-medium text-gray-900 text-base leading-snug line-clamp-1 group-hover:text-orange-600 transition">
-            {property.title}
-          </h3>
-        </Link>
-
-        {/* Features row */}
-        <div className="grid grid-cols-3 gap-2 py-3 my-3 border-y border-gray-100 text-gray-600 text-xs">
-          {property.propertyType === 'HOUSE' ? (
-            <div className="flex items-center gap-1.5">
-              <Bed className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="truncate">
-                {property.bedrooms ? `${property.bedrooms} ${t('card.bhk')}` : `1 ${t('card.rooms')}`}
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1.5">
-              <Store className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="truncate">
-                {property.rooms ? `${property.rooms} ${t('card.rooms')}` : t('card.shop')}
-              </span>
-            </div>
-          )}
-
-          <div className="flex items-center gap-1.5">
-            <Maximize2 className="w-4 h-4 text-gray-400 shrink-0" />
-            <span className="truncate">{property.propertySize} {t('card.sqft')}</span>
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+        <div>
+          {/* Locality */}
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 mb-1">
+            <MapPin className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+            <span className="truncate">{property.locality}, Chennai</span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <Sofa className="w-4 h-4 text-gray-400 shrink-0" />
-            <span className="truncate">{furnishingLabel[property.furnishing] || t('card.unfurnished')}</span>
+          {/* Title */}
+          <Link to={`/property/${property.id}`}>
+            <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-1 group-hover:text-[#B08B40] transition">
+              {property.title}
+            </h3>
+          </Link>
+        </div>
+
+        {/* NoBroker Signature 3-Column Spec Box */}
+        <div className="bg-[#FCFAF5] rounded-xl p-2.5 border border-[#EFE8D8] grid grid-cols-3 divide-x divide-[#EFE8D8] text-center text-xs">
+          <div className="px-1">
+            <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">{t('card.deposit')}</span>
+            <span className="font-bold text-gray-800 truncate block mt-0.5">{formattedDeposit}</span>
+          </div>
+
+          <div className="px-1">
+            <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">
+              {property.propertyType === 'HOUSE' ? t('card.bhk') : t('card.rooms')}
+            </span>
+            <span className="font-bold text-gray-800 truncate block mt-0.5">
+              {property.bedrooms ? `${property.bedrooms} BHK` : `${property.rooms || 1} Rooms`}
+            </span>
+          </div>
+
+          <div className="px-1">
+            <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">{t('card.sqft')}</span>
+            <span className="font-bold text-gray-800 truncate block mt-0.5">{property.propertySize} sq.ft</span>
           </div>
         </div>
 
-        {/* Deposit, WhatsApp share & View details action */}
-        <div className="mt-auto flex items-center justify-between pt-1">
-          <div>
-            <span className="text-[11px] text-gray-400 block font-normal">{t('card.deposit')}</span>
-            <span className="text-xs font-medium text-gray-700">{formattedDeposit}</span>
+        {/* Card Footer: WhatsApp direct share & View / Get Owner Details button */}
+        <div className="flex items-center justify-between pt-1 gap-2">
+          <div className="text-[11px] text-gray-500 font-medium truncate">
+            {furnishingLabel[property.furnishing] || t('card.unfurnished')}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <a
               href={getWhatsAppShareUrl(property, lang)}
               target="_blank"
@@ -168,14 +167,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               onClick={(e) => e.stopPropagation()}
               title={t('card.shareWhatsapp')}
               aria-label="Share on WhatsApp"
-              className="p-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white rounded-xl transition-all shadow-sm flex items-center justify-center active:scale-95"
+              className="p-2 bg-[#FCFAF5] hover:bg-[#25D366] text-[#25D366] hover:text-white rounded-xl border border-[#E8DFC8] transition-all shadow-2xs flex items-center justify-center active:scale-95"
             >
               <MessageCircle className="w-4 h-4 fill-current" />
             </a>
 
             <Link
               to={`/property/${property.id}`}
-              className="px-4 py-2 bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white font-medium text-xs rounded-xl transition-all"
+              className="px-3.5 py-2 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-xs rounded-xl transition-all shadow-xs shadow-[#D4AF37]/20"
             >
               {t('card.viewDetails')}
             </Link>

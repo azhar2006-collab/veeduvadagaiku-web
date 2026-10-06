@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store } from 'lucide-react';
+import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, MapPin, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -9,7 +9,7 @@ export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userDropdown, setUserDropdown] = useState(false);
   const { user, isAuthenticated, isOwner, isAdmin, logout } = useAuth();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -18,50 +18,58 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EFE8D8] shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group py-1">
-            <img
-              src="/logo-full.png"
-              alt="Veedu Vadagaiku - Chennai's Rental Marketplace"
-              className="h-12 sm:h-14 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-sm"
-            />
-          </Link>
+          {/* Logo & City Selector (NoBroker style) */}
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center gap-3 group py-1">
+              <img
+                src="/logo-full.png"
+                alt="Veedu Vadagaiku - Chennai's Rental Marketplace"
+                className="h-11 sm:h-13 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
+              />
+            </Link>
+
+            {/* NoBroker style City Indicator */}
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
+              <MapPin className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span>Chennai</span>
+            </div>
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-7">
             <Link
               to="/properties"
-              className="text-sm font-medium text-gray-600 hover:text-orange-600 transition flex items-center gap-1.5"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-4 h-4 text-[#C5A059]" />
               {t('nav.allRentals')}
             </Link>
             <Link
               to="/houses"
-              className="text-sm font-medium text-gray-600 hover:text-orange-600 transition flex items-center gap-1.5"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
             >
-              <Building2 className="w-4 h-4" />
+              <Building2 className="w-4 h-4 text-[#C5A059]" />
               {t('nav.houses')}
             </Link>
             <Link
               to="/shops"
-              className="text-sm font-medium text-gray-600 hover:text-orange-600 transition flex items-center gap-1.5"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
             >
-              <Store className="w-4 h-4" />
+              <Store className="w-4 h-4 text-[#C5A059]" />
               {t('nav.shops')}
             </Link>
             <Link
               to="/about"
-              className="text-sm font-medium text-gray-600 hover:text-orange-600 transition"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition"
             >
               {t('nav.about')}
             </Link>
             <Link
               to="/contact"
-              className="text-sm font-medium text-gray-600 hover:text-orange-600 transition"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition"
             >
               {t('nav.contact')}
             </Link>
@@ -73,22 +81,22 @@ export const Navbar: React.FC = () => {
               <div className="relative">
                 <button
                   onClick={() => setUserDropdown(!userDropdown)}
-                  className="flex items-center gap-2 p-1.5 pl-3 pr-2 rounded-full border border-gray-200 hover:border-gray-300 transition"
+                  className="flex items-center gap-2 p-1.5 pl-3 pr-2 rounded-full bg-white border border-[#E8DFC8] hover:border-[#C5A059] transition shadow-xs"
                 >
                   <span className="text-sm font-medium text-gray-800">
                     {user?.name.split(' ')[0]}
                   </span>
-                  <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-medium text-xs">
+                  <div className="w-8 h-8 rounded-full bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-xs">
                     {user?.name?.charAt(0).toUpperCase()}
                   </div>
                 </button>
 
                 {userDropdown && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 animate-slide-up z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-[#EFE8D8] py-2 animate-slide-up z-50">
+                    <div className="px-4 py-2 border-b border-[#F0E8D5]">
                       <p className="text-xs text-gray-400 font-normal">Signed in as</p>
-                      <p className="text-sm font-semibold text-gray-900 truncate">{user?.name}</p>
-                      <span className="inline-block px-2 py-0.5 mt-1 text-[10px] font-medium rounded-full bg-orange-100 text-orange-700">
+                      <p className="text-sm font-bold text-gray-900 truncate">{user?.name}</p>
+                      <span className="inline-block px-2 py-0.5 mt-1 text-[10px] font-bold rounded-full bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8]">
                         {user?.role}
                       </span>
                     </div>
@@ -97,7 +105,7 @@ export const Navbar: React.FC = () => {
                       <Link
                         to="/admin/dashboard"
                         onClick={() => setUserDropdown(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                       >
                         Admin Dashboard
                       </Link>
@@ -106,28 +114,28 @@ export const Navbar: React.FC = () => {
                         <Link
                           to="/owner/dashboard"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           Owner Dashboard
                         </Link>
                         <Link
                           to="/owner/properties"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           My Properties
                         </Link>
                         <Link
                           to="/owner/enquiries"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           Enquiries
                         </Link>
                         <Link
                           to="/owner/profile"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           Profile
                         </Link>
@@ -137,29 +145,29 @@ export const Navbar: React.FC = () => {
                         <Link
                           to="/user/dashboard"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           User Dashboard
                         </Link>
                         <Link
                           to="/user/favourites"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
-                          <Heart className="w-4 h-4 text-orange-500" />
+                          <Heart className="w-4 h-4 text-[#C5A059]" />
                           Saved Properties
                         </Link>
                         <Link
                           to="/user/enquiries"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           My Enquiries
                         </Link>
                         <Link
                           to="/user/profile"
                           onClick={() => setUserDropdown(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           <User className="w-4 h-4" />
                           Profile
@@ -167,7 +175,7 @@ export const Navbar: React.FC = () => {
                       </>
                     )}
 
-                    <div className="border-t border-gray-100 my-1"></div>
+                    <div className="border-t border-[#F0E8D5] my-1"></div>
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
@@ -179,16 +187,16 @@ export const Navbar: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="text-sm font-medium text-gray-600 hover:text-orange-600 transition px-3 py-2"
+                  className="text-sm font-semibold text-gray-700 hover:text-[#B08B40] transition px-3 py-2"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className="text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-xl transition"
+                  className="text-sm font-bold text-[#9A7818] bg-[#FAF4E6] hover:bg-[#F5EAD4] border border-[#E8DFC8] px-3.5 py-2 rounded-xl transition shadow-2xs"
                 >
                   {t('nav.register')}
                 </Link>
@@ -198,11 +206,11 @@ export const Navbar: React.FC = () => {
             {/* Language Switcher Button (Desktop) */}
             <LanguageSwitcher />
 
-            {/* Post Property CTA */}
+            {/* NoBroker style "Post Free Property" CTA in Lite Gold */}
             {isOwner ? (
               <Link
                 to="/owner/properties/add"
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-medium text-sm shadow-md shadow-orange-500/20 transition active:scale-95"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white rounded-xl font-bold text-sm shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
               >
                 <PlusCircle className="w-4 h-4" />
                 {t('nav.postProperty')}
@@ -210,7 +218,7 @@ export const Navbar: React.FC = () => {
             ) : (
               <Link
                 to={isAuthenticated ? '/owner/dashboard' : '/login?role=OWNER'}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-medium text-sm shadow-md shadow-orange-500/20 transition active:scale-95"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white rounded-xl font-bold text-sm shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
               >
                 <PlusCircle className="w-4 h-4" />
                 {t('nav.listProperty')}
@@ -223,7 +231,7 @@ export const Navbar: React.FC = () => {
             <LanguageSwitcher />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-gray-600 hover:text-orange-600 rounded-lg hover:bg-gray-100 transition"
+              className="p-2 text-gray-700 hover:text-[#B08B40] rounded-xl hover:bg-[#FAF7F0] transition"
               aria-label="Toggle menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -234,55 +242,55 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 pt-3 pb-6 space-y-3 animate-fade-in shadow-lg">
+        <div className="md:hidden border-t border-[#EFE8D8] bg-white px-4 pt-3 pb-6 space-y-3 animate-fade-in shadow-xl">
           <Link
             to="/properties"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             {t('nav.allRentals')}
           </Link>
           <Link
             to="/houses"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             {t('nav.houses')}
           </Link>
           <Link
             to="/shops"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             {t('nav.shops')}
           </Link>
           <Link
             to="/about"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             {t('nav.about')}
           </Link>
           <Link
             to="/contact"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             {t('nav.contact')}
           </Link>
 
-          <div className="border-t border-gray-100 pt-3">
+          <div className="border-t border-[#F0E8D5] pt-3">
             {isAuthenticated ? (
               <div className="space-y-2">
                 <div className="px-3 py-1">
                   <p className="text-xs text-gray-400 font-normal">Logged in as</p>
-                  <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
+                  <p className="text-sm font-bold text-gray-900">{user?.name}</p>
                 </div>
                 {isAdmin ? (
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setIsOpen(false)}
-                    className="block px-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 rounded-lg"
+                    className="block px-3 py-2 text-sm font-semibold text-[#9A7818] bg-[#FAF4E6] rounded-xl"
                   >
                     Admin Dashboard
                   </Link>
@@ -291,21 +299,21 @@ export const Navbar: React.FC = () => {
                     <Link
                       to="/owner/dashboard"
                       onClick={() => setIsOpen(false)}
-                      className="block px-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 rounded-lg"
+                      className="block px-3 py-2 text-sm font-semibold text-[#9A7818] bg-[#FAF4E6] rounded-xl"
                     >
                       {t('nav.dashboard')}
                     </Link>
                     <Link
                       to="/owner/properties"
                       onClick={() => setIsOpen(false)}
-                      className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
+                      className="block px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-[#FAF7F0] rounded-xl"
                     >
                       {t('nav.myProperties')}
                     </Link>
                     <Link
                       to="/owner/properties/add"
                       onClick={() => setIsOpen(false)}
-                      className="block px-3 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg text-center"
+                      className="block px-3 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] rounded-xl text-center shadow-md shadow-[#D4AF37]/20"
                     >
                       + {t('nav.postProperty')}
                     </Link>
@@ -315,14 +323,14 @@ export const Navbar: React.FC = () => {
                     <Link
                       to="/user/dashboard"
                       onClick={() => setIsOpen(false)}
-                      className="block px-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 rounded-lg"
+                      className="block px-3 py-2 text-sm font-semibold text-[#9A7818] bg-[#FAF4E6] rounded-xl"
                     >
                       {t('nav.dashboard')}
                     </Link>
                     <Link
                       to="/user/favourites"
                       onClick={() => setIsOpen(false)}
-                      className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
+                      className="block px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-[#FAF7F0] rounded-xl"
                     >
                       {t('nav.saved')}
                     </Link>
@@ -333,7 +341,7 @@ export const Navbar: React.FC = () => {
                     handleLogout();
                     setIsOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg"
+                  className="w-full text-left px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl"
                 >
                   {t('nav.logout')}
                 </button>
@@ -343,14 +351,14 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/login"
                   onClick={() => setIsOpen(false)}
-                  className="text-center py-2.5 px-4 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl"
+                  className="text-center py-2.5 px-4 text-sm font-semibold text-gray-700 bg-[#FAF7F0] border border-[#E8DFC8] rounded-xl"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setIsOpen(false)}
-                  className="text-center py-2.5 px-4 text-sm font-medium text-white bg-orange-600 rounded-xl"
+                  className="text-center py-2.5 px-4 text-sm font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] rounded-xl shadow-md shadow-[#D4AF37]/20"
                 >
                   {t('nav.register')}
                 </Link>

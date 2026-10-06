@@ -353,16 +353,16 @@ export const PropertyDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Owner Profile Card */}
-            <div className="flex items-center gap-3 p-3.5 bg-orange-50/60 rounded-2xl border border-orange-100">
-              <div className="w-12 h-12 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
-                {property.owner?.user?.name?.charAt(0) || <User className="w-5 h-5" />}
+            {/* Owner Profile Card (White & Lite Gold) */}
+            <div className="flex items-center gap-3 p-3.5 bg-[#FCFAF5] rounded-2xl border border-[#E8DFC8]">
+              <div className="w-12 h-12 rounded-full bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-base shadow-2xs">
+                {property.owner?.user?.name?.charAt(0) || <User className="w-5 h-5 text-[#C5A059]" />}
               </div>
               <div className="min-w-0">
-                <h4 className="text-sm font-extrabold text-gray-900 truncate">
+                <h4 className="text-sm font-bold text-gray-900 truncate">
                   {property.owner?.user?.name || 'Chennai Property Owner'}
                 </h4>
-                <p className="text-xs text-orange-700 font-medium">{t('detail.verifiedOwner')}</p>
+                <p className="text-xs text-[#9A7818] font-semibold">{t('detail.verifiedOwner')}</p>
               </div>
             </div>
 
@@ -372,10 +372,21 @@ export const PropertyDetailPage: React.FC = () => {
                 <>
                   {/* Verified Owner Phone Display */}
                   {cleanPhone && (
-                    <div className="flex items-center justify-between px-3.5 py-2.5 bg-gray-50 rounded-xl border border-gray-200/80 text-xs font-semibold text-gray-700">
+                    <div className="flex items-center justify-between px-3.5 py-2.5 bg-white rounded-xl border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
                       <span className="text-gray-400">Landlord Mobile</span>
                       <span className="font-mono text-gray-900 font-bold">+91 {cleanPhone.slice(-10)}</span>
                     </div>
+                  )}
+
+                  {/* Call Owner Button */}
+                  {property.contactPhone && cleanPhone && (
+                    <a
+                      href={`tel:+91${cleanPhone.slice(-10)}`}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
+                    >
+                      <Phone className="w-5 h-5" />
+                      <span>{t('detail.callOwner')}</span>
+                    </a>
                   )}
 
                   {/* WhatsApp Button */}
@@ -388,30 +399,19 @@ export const PropertyDetailPage: React.FC = () => {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-md shadow-emerald-600/20 transition active:scale-95"
+                      className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-[#25D366] hover:bg-[#20BA5A] text-white font-bold text-sm rounded-xl shadow-md shadow-[#25D366]/20 transition active:scale-95"
                     >
                       <MessageCircle className="w-5 h-5 fill-current" />
                       <span>{t('detail.chatWhatsapp')}</span>
                     </a>
                   )}
-
-                  {/* Call Owner Button */}
-                  {property.contactPhone && cleanPhone && (
-                    <a
-                      href={`tel:+91${cleanPhone.slice(-10)}`}
-                      className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-extrabold text-sm rounded-xl shadow-md shadow-orange-600/20 transition active:scale-95"
-                    >
-                      <Phone className="w-5 h-5" />
-                      <span>{t('detail.callOwner')}</span>
-                    </a>
-                  )}
                 </>
               ) : (
                 /* Locked Phone Number State — Requires Login by Mobile Number Only */
-                <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200/80 space-y-3 text-center">
+                <div className="p-4 bg-[#FCFAF5] rounded-2xl border border-[#E8DFC8] space-y-3 text-center shadow-xs">
                   <div className="flex items-center justify-between text-xs px-1">
                     <span className="text-gray-500 font-medium">{t('detail.verifiedOwner')}</span>
-                    <span className="font-mono font-bold text-gray-700 tracking-wider">
+                    <span className="font-mono font-bold text-gray-800 tracking-wider">
                       {t('detail.maskedPhone')}
                     </span>
                   </div>
@@ -419,7 +419,7 @@ export const PropertyDetailPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPhoneLoginModal(true)}
-                    className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-orange-600/20 transition active:scale-95"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
                   >
                     <Lock className="w-4 h-4" />
                     <span>{t('detail.loginToViewPhone')}</span>
@@ -436,9 +436,9 @@ export const PropertyDetailPage: React.FC = () => {
                 href={getWhatsAppShareUrl(property, lang)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold rounded-xl border border-emerald-200 transition"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-white hover:bg-[#FCFAF5] text-gray-700 hover:text-gray-900 text-xs font-bold rounded-xl border border-[#E8DFC8] transition shadow-2xs"
               >
-                <MessageCircle className="w-4 h-4 fill-current text-emerald-600" />
+                <MessageCircle className="w-4 h-4 fill-current text-[#25D366]" />
                 <span>
                   {lang === 'ta' ? 'வாட்ஸ்அப்பில் நண்பர்களுக்கு பகிர்க' : 'Share Property on WhatsApp'}
                 </span>

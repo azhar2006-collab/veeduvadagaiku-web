@@ -11,7 +11,7 @@
   }
 
   body {
-    @apply bg-slate-50 text-slate-800 font-sans antialiased selection:bg-[#0B2545] selection:text-white font-normal;
+    @apply bg-[#FAFAF8] text-slate-800 font-sans antialiased selection:bg-[#C5A059] selection:text-white font-normal;
     letter-spacing: -0.01em;
   }
 
@@ -27,14 +27,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f8f6f0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d8cdb8;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C59B27;
+  background: #C5A059;
 }

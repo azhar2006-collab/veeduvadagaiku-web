@@ -25,12 +25,12 @@ export const PhoneLoginModal: React.FC<PhoneLoginModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100 space-y-6 animate-slide-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+      <div className="relative w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#EFE8D8] space-y-6 animate-slide-up">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition"
+          className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-[#FAF6ED] transition"
           aria-label="Close"
         >
           <X className="w-5 h-5" />
@@ -38,10 +38,10 @@ export const PhoneLoginModal: React.FC<PhoneLoginModalProps> = ({
 
         {/* Header */}
         <div className="text-center space-y-2 pt-2">
-          <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mx-auto shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-[#FCFAF5] text-[#C5A059] border border-[#E8DFC8] flex items-center justify-center mx-auto shadow-xs">
             <Lock className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-black text-gray-900 tracking-tight">
+          <h3 className="text-xl font-bold text-gray-900 tracking-tight">
             {lang === 'ta'
               ? 'மொபைல் எண் மூலம் உள்நுழைக'
               : 'Login with Mobile Number'}
@@ -54,7 +54,7 @@ export const PhoneLoginModal: React.FC<PhoneLoginModalProps> = ({
         </div>
 
         {/* Phone OTP Form */}
-        <div className="bg-gray-50/70 p-4 sm:p-5 rounded-2xl border border-gray-100">
+        <div className="bg-[#FCFAF5] p-4 sm:p-5 rounded-2xl border border-[#EFE8D8]">
           <PhoneOTPForm
             role="USER"
             containerId="recaptcha-modal-container"
@@ -63,8 +63,8 @@ export const PhoneLoginModal: React.FC<PhoneLoginModalProps> = ({
         </div>
 
         {/* Security badge */}
-        <div className="flex items-center justify-center gap-2 text-xs text-gray-400 pt-1">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+        <div className="flex items-center justify-center gap-2 text-xs text-gray-500 pt-1">
+          <ShieldCheck className="w-4 h-4 text-[#C5A059]" />
           <span>
             {lang === 'ta'
               ? 'சரிபார்க்கப்பட்ட பாதுகாப்பான உள்நுழைவு'
