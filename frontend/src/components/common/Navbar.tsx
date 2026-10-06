@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useLanguage } from '../../context/LanguageContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [userDropdown, setUserDropdown] = useState(false);
   const { user, isAuthenticated, isOwner, isAdmin, logout } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -34,33 +37,33 @@ export const Navbar: React.FC = () => {
               className="text-sm font-medium text-gray-600 hover:text-orange-600 transition flex items-center gap-1.5"
             >
               <Search className="w-4 h-4" />
-              All Rentals
+              {t('nav.allRentals')}
             </Link>
             <Link
               to="/houses"
               className="text-sm font-medium text-gray-600 hover:text-orange-600 transition flex items-center gap-1.5"
             >
               <Building2 className="w-4 h-4" />
-              Houses
+              {t('nav.houses')}
             </Link>
             <Link
               to="/shops"
               className="text-sm font-medium text-gray-600 hover:text-orange-600 transition flex items-center gap-1.5"
             >
               <Store className="w-4 h-4" />
-              Shops
+              {t('nav.shops')}
             </Link>
             <Link
               to="/about"
               className="text-sm font-medium text-gray-600 hover:text-orange-600 transition"
             >
-              About
+              {t('nav.about')}
             </Link>
             <Link
               to="/contact"
               className="text-sm font-medium text-gray-600 hover:text-orange-600 transition"
             >
-              Contact
+              {t('nav.contact')}
             </Link>
           </div>
 
@@ -181,16 +184,19 @@ export const Navbar: React.FC = () => {
                   to="/login"
                   className="text-sm font-medium text-gray-600 hover:text-orange-600 transition px-3 py-2"
                 >
-                  Log in
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="text-sm font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-xl transition"
                 >
-                  Register
+                  {t('nav.register')}
                 </Link>
               </div>
             )}
+
+            {/* Language Switcher Button (Desktop) */}
+            <LanguageSwitcher />
 
             {/* Post Property CTA */}
             {isOwner ? (
@@ -199,7 +205,7 @@ export const Navbar: React.FC = () => {
                 className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-medium text-sm shadow-md shadow-orange-500/20 transition active:scale-95"
               >
                 <PlusCircle className="w-4 h-4" />
-                Post Property
+                {t('nav.postProperty')}
               </Link>
             ) : (
               <Link
@@ -207,16 +213,18 @@ export const Navbar: React.FC = () => {
                 className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-medium text-sm shadow-md shadow-orange-500/20 transition active:scale-95"
               >
                 <PlusCircle className="w-4 h-4" />
-                List Your Property
+                {t('nav.listProperty')}
               </Link>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Actions: Language Switcher + Menu Button */}
           <div className="flex md:hidden items-center gap-2">
+            <LanguageSwitcher />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-2 text-gray-600 hover:text-orange-600 rounded-lg hover:bg-gray-100 transition"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -232,35 +240,35 @@ export const Navbar: React.FC = () => {
             onClick={() => setIsOpen(false)}
             className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
           >
-            All Rentals
+            {t('nav.allRentals')}
           </Link>
           <Link
             to="/houses"
             onClick={() => setIsOpen(false)}
             className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
           >
-            Houses for Rent
+            {t('nav.houses')}
           </Link>
           <Link
             to="/shops"
             onClick={() => setIsOpen(false)}
             className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
           >
-            Shops for Rent
+            {t('nav.shops')}
           </Link>
           <Link
             to="/about"
             onClick={() => setIsOpen(false)}
             className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
           >
-            About Us
+            {t('nav.about')}
           </Link>
           <Link
             to="/contact"
             onClick={() => setIsOpen(false)}
             className="block px-3 py-2 text-base font-medium text-gray-800 hover:bg-orange-50 rounded-lg"
           >
-            Contact
+            {t('nav.contact')}
           </Link>
 
           <div className="border-t border-gray-100 pt-3">
@@ -285,21 +293,21 @@ export const Navbar: React.FC = () => {
                       onClick={() => setIsOpen(false)}
                       className="block px-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 rounded-lg"
                     >
-                      Owner Dashboard
+                      {t('nav.dashboard')}
                     </Link>
                     <Link
                       to="/owner/properties"
                       onClick={() => setIsOpen(false)}
                       className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
                     >
-                      My Properties
+                      {t('nav.myProperties')}
                     </Link>
                     <Link
                       to="/owner/properties/add"
                       onClick={() => setIsOpen(false)}
                       className="block px-3 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg text-center"
                     >
-                      + Add New Property
+                      + {t('nav.postProperty')}
                     </Link>
                   </>
                 ) : (
@@ -309,14 +317,14 @@ export const Navbar: React.FC = () => {
                       onClick={() => setIsOpen(false)}
                       className="block px-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 rounded-lg"
                     >
-                      User Dashboard
+                      {t('nav.dashboard')}
                     </Link>
                     <Link
                       to="/user/favourites"
                       onClick={() => setIsOpen(false)}
                       className="block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg"
                     >
-                      Saved Properties
+                      {t('nav.saved')}
                     </Link>
                   </>
                 )}
@@ -327,7 +335,7 @@ export const Navbar: React.FC = () => {
                   }}
                   className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </div>
             ) : (
@@ -337,14 +345,14 @@ export const Navbar: React.FC = () => {
                   onClick={() => setIsOpen(false)}
                   className="text-center py-2.5 px-4 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl"
                 >
-                  Log in
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setIsOpen(false)}
                   className="text-center py-2.5 px-4 text-sm font-medium text-white bg-orange-600 rounded-xl"
                 >
-                  Register
+                  {t('nav.register')}
                 </Link>
               </div>
             )}

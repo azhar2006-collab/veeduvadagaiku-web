@@ -8,10 +8,11 @@ import toast from 'react-hot-toast';
 
 interface PhoneOTPFormProps {
   role?: 'USER' | 'OWNER';
+  containerId?: string;
   onSuccess?: () => void;
 }
 
-export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({ role, onSuccess }) => {
+export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({ role, containerId = 'recaptcha-container', onSuccess }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'PHONE' | 'OTP'>('PHONE');
@@ -26,7 +27,7 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({ role, onSuccess }) =
     // Initialize invisible recaptcha
     if (!recaptchaVerifierRef.current) {
       try {
-        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(auth, containerId, {
           size: 'invisible',
           callback: () => {},
         });
@@ -128,7 +129,7 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({ role, onSuccess }) =
 
   return (
     <div>
-      <div id="recaptcha-container"></div>
+      <div id={containerId}></div>
 
       {step === 'PHONE' ? (
         <form onSubmit={handleSendOtp} className="space-y-4">

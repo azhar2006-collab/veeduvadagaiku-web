@@ -1,0 +1,393 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+export type Language = 'en' | 'ta';
+
+interface LanguageContextType {
+  lang: Language;
+  setLang: (lang: Language) => void;
+  toggleLang: () => void;
+  t: (key: string, fallback?: string) => string;
+}
+
+export const translations: Record<Language, Record<string, string>> = {
+  en: {
+    // Navigation
+    'nav.allRentals': 'All Rentals',
+    'nav.houses': 'Houses for Rent',
+    'nav.shops': 'Shops for Rent',
+    'nav.about': 'About Us',
+    'nav.contact': 'Contact',
+    'nav.login': 'Log in',
+    'nav.register': 'Register',
+    'nav.postProperty': 'Post Property',
+    'nav.listProperty': 'List Your Property',
+    'nav.myProperties': 'My Properties',
+    'nav.enquiries': 'Enquiries',
+    'nav.saved': 'Saved Properties',
+    'nav.profile': 'Profile',
+    'nav.dashboard': 'Dashboard',
+    'nav.logout': 'Logout',
+    'nav.switchLang': 'தமிழ்',
+
+    // Hero Section
+    'hero.badge': "Chennai's Dedicated Rental Marketplace",
+    'hero.title1': 'Find Your Ideal',
+    'hero.titleHouse': 'Rental House',
+    'hero.titleOr': 'or',
+    'hero.titleShop': 'Commercial Shop',
+    'hero.titleEnd': 'in Chennai',
+    'hero.desc': 'Zero brokerage. 100% verified listings. Connect directly with landlords across all Chennai localities.',
+    'hero.searchPlaceholder': 'Search by Chennai locality (e.g. Anna Nagar, T. Nagar, Velachery...)',
+    'hero.selectLocality': 'All Chennai Localities',
+    'hero.allTypes': 'All Rentals',
+    'hero.house': 'Residential House',
+    'hero.shop': 'Commercial Shop',
+    'hero.maxBudget': 'Max Budget',
+    'hero.searchBtn': 'Search Rentals',
+    'hero.zeroBrokerage': 'Zero Brokerage',
+    'hero.zeroBrokerageDesc': 'Connect directly with genuine owners',
+    'hero.verifiedListings': 'Verified Listings',
+    'hero.verifiedListingsDesc': 'Admin-checked photos & real locations',
+    'hero.instantConnect': 'Direct Phone & WhatsApp',
+    'hero.instantConnectDesc': 'Zero middleman commission',
+    'hero.popularLocalities': 'Popular Localities',
+
+    // Home Sections
+    'home.featuredTitle': 'Featured Rental Listings',
+    'home.featuredSubtitle': 'Handpicked verified homes and commercial spaces across Chennai',
+    'home.housesTitle': 'Houses & Apartments for Rent',
+    'home.housesSubtitle': 'Comfortable 1, 2, 3 BHK homes for families and bachelors in Chennai',
+    'home.shopsTitle': 'Commercial Shops & Spaces',
+    'home.shopsSubtitle': 'Prime retail spots and roadside shops with high footfall',
+    'home.viewAll': 'View All',
+    'home.exploreMode': 'Explore Rentals',
+    'home.cardDeck': 'Tinder Swipe Deck',
+    'home.searchGrid': 'Search & Grid View',
+
+    // Property Card
+    'card.house': 'House',
+    'card.shop': 'Shop',
+    'card.perMonth': '/ month',
+    'card.deposit': 'Deposit',
+    'card.viewDetails': 'View Details',
+    'card.shareWhatsapp': 'Share on WhatsApp',
+    'card.tamil': 'தமிழ்',
+    'card.furnished': 'Furnished',
+    'card.semiFurnished': 'Semi-Furnished',
+    'card.unfurnished': 'Unfurnished',
+    'card.sqft': 'sq.ft',
+    'card.rooms': 'Rooms',
+    'card.bhk': 'BHK',
+
+    // Property Detail
+    'detail.share': 'Share',
+    'detail.shareWhatsapp': 'WhatsApp Share',
+    'detail.save': 'Save',
+    'detail.saved': 'Saved',
+    'detail.verified': 'Admin Verified',
+    'detail.views': 'views',
+    'detail.superBuiltUp': 'Super Built-up',
+    'detail.furnishing': 'Furnishing',
+    'detail.availableFrom': 'Available From',
+    'detail.about': 'About this Property',
+    'detail.amenities': 'Amenities & Highlights',
+    'detail.address': 'Location Address',
+    'detail.securityDeposit': 'Security Deposit',
+    'detail.verifiedOwner': 'Verified Owner',
+    'detail.callOwner': 'Call Landlord',
+    'detail.chatWhatsapp': 'Chat on WhatsApp',
+    'detail.sendEnquiry': 'Send Direct Enquiry',
+    'detail.zeroBrokerage': 'Zero brokerage fee for tenants. Connect directly with landlords.',
+    'detail.loginToViewPhone': 'Log in with Mobile Number to View Contact',
+    'detail.loginRequirement': 'To protect property owners from spam and scrapers, please log in with your mobile number to view the landlord’s phone number and connect directly.',
+    'detail.mobileRequired': 'Verified mobile login required to call or WhatsApp landlord',
+    'detail.maskedPhone': '+91 98••••••••',
+
+    // Filter & Search
+    'filter.title': 'Filter Rentals',
+    'filter.reset': 'Reset',
+    'filter.resetAll': 'Reset All',
+    'filter.propertyType': 'Property Type',
+    'filter.propertyCategory': 'Property Category',
+    'filter.locality': 'Chennai Locality',
+    'filter.allAreas': 'All Chennai Areas',
+    'filter.budget': 'Monthly Rent (₹)',
+    'filter.bedrooms': 'Bedrooms (BHK)',
+    'filter.furnishing': 'Furnishing Status',
+    'filter.all': 'All',
+    'filter.sortBy': 'Sort By',
+    'filter.newest': 'Newest First',
+    'filter.rentAsc': 'Rent: Low to High',
+    'filter.rentDesc': 'Rent: High to Low',
+    'filter.results': 'properties available for rent in Chennai',
+    'filter.noResults': 'No rentals found matching your criteria',
+    'properties.title': 'Chennai Rental Listings',
+    'properties.count': 'verified properties available',
+    'properties.loading': 'Finding properties...',
+
+    // Post Property
+    'post.listingLang': 'Listing Language / பட்டியல் மொழி',
+    'post.listingLangDesc': 'Choose whether this property should be posted in English or தமிழ் (Tamil).',
+    'post.english': 'English',
+    'post.tamil': 'தமிழ் (Tamil)',
+    'post.tamilTip': 'தமிழ் தேர்வு செய்யப்பட்டுள்ளது: தலைப்பு, விளக்கம் மற்றும் வசதிகள் தமிழில் பதிவு செய்யப்படும்.',
+    'post.title': 'Property Title',
+    'post.titlePlaceholderEn': 'e.g., Spacious 2 BHK Independent House in Anna Nagar',
+    'post.titlePlaceholderTa': 'எ.கா: அண்ணா நகரில் 2 BHK விசாலமான தனி வீடு வாடகைக்கு',
+    'post.desc': 'Detailed Description',
+    'post.descPlaceholderEn': 'Describe features, water facilities (Metro water/borewell), parking, nearby landmarks, pet policy...',
+    'post.descPlaceholderTa': 'வீட்டின் சிறப்பம்சங்கள், 24 மணி நேர மெட்ரோ தண்ணீர் வசதி, கார் பார்க்கிங், அருகிலுள்ள அடையாளங்கள், வாடகை நிபந்தனைகள்...',
+    'post.locality': 'Chennai Locality',
+    'post.address': 'Complete Address & Landmarks',
+    'post.addressPlaceholderEn': 'Door No, Street Name, Landmark, Chennai - Pin code',
+    'post.addressPlaceholderTa': 'கதவு எண், தெரு பெயர், அடையாளம், சென்னை - அஞ்சல் குறியீடு',
+    'post.rent': 'Monthly Rent (₹)',
+    'post.deposit': 'Security Deposit (₹)',
+    'post.size': 'Super Built-up Area (Sq.ft)',
+    'post.bedrooms': 'Bedrooms (BHK)',
+    'post.rooms': 'Number of Rooms',
+    'post.furnishing': 'Furnishing Status',
+    'post.amenities': 'Select Amenities & Highlights',
+    'post.uploadPhotos': 'Upload Property Photos',
+    'post.submit': 'Post Rental Listing',
+
+    // Footer
+    'footer.tagline': "வீடு வாடகைக்கு — Chennai's dedicated rental marketplace for verified houses and prime commercial shops. Connecting property owners with verified tenants.",
+    'footer.adminVerified': '100% Admin-Verified Listings Only',
+    'footer.quickLinks': 'Explore Rentals',
+    'footer.forOwners': 'For Property Owners',
+    'footer.contactUs': 'Contact & Support',
+    'footer.chennaiOffice': 'Chennai Office',
+    'footer.allProperties': 'All Chennai Properties',
+    'footer.housesApartments': 'Houses & Apartments for Rent',
+    'footer.commercialShops': 'Commercial Shops for Rent',
+    'footer.rentalsAnnaNagar': 'Rentals in Anna Nagar',
+    'footer.rentalsTNagar': 'Rentals in T. Nagar',
+    'footer.rentalsVelachery': 'Rentals in Velachery',
+    'footer.postAd': 'Post House / Shop Ad',
+    'footer.plans': 'Listing Plans & Pricing',
+    'footer.ownerPortal': 'Owner Portal & Analytics',
+    'footer.howItWorks': 'How Listing Works',
+    'footer.supportHotline': 'Owner Support Hotline',
+    'footer.terms': 'Terms & Conditions',
+    'footer.privacy': 'Privacy Policy',
+    'footer.adminAccess': 'Admin Access',
+    'footer.rights': 'All rights reserved. Made with pride for Chennai.',
+
+    // Common Pagination
+    'common.prev': 'Prev',
+    'common.next': 'Next',
+    'common.page': 'Page',
+    'common.of': 'of',
+  },
+  ta: {
+    // Navigation
+    'nav.allRentals': 'அனைத்து வாடகை சொத்துக்கள்',
+    'nav.houses': 'வாடகை வீடுகள்',
+    'nav.shops': 'வாடகை கடைகள்',
+    'nav.about': 'எங்களைப் பற்றி',
+    'nav.contact': 'தொடர்பு கொள்ள',
+    'nav.login': 'உள்நுழைக',
+    'nav.register': 'பதிவு செய்க',
+    'nav.postProperty': 'இலவச விளம்பரம்',
+    'nav.listProperty': 'சொத்தை பதிவேற்றுக',
+    'nav.myProperties': 'எனது சொத்துக்கள்',
+    'nav.enquiries': 'விசாரணைகள்',
+    'nav.saved': 'சேமிக்கப்பட்டவை',
+    'nav.profile': 'சுயவிவரம்',
+    'nav.dashboard': 'டாஷ்போர்டு',
+    'nav.logout': 'வெளியேறு',
+    'nav.switchLang': 'English',
+
+    // Hero Section
+    'hero.badge': 'சென்னையின் பிரத்யேக வாடகை இணையதளம்',
+    'hero.title1': 'சென்னையில் உங்கள் கனவு',
+    'hero.titleHouse': 'வாடகை வீடு',
+    'hero.titleOr': 'மற்றும்',
+    'hero.titleShop': 'வணிக கடை',
+    'hero.titleEnd': 'எளிதாக வாடகைக்கு பெறுங்கள்',
+    'hero.desc': 'இடைத்தரகர் கட்டணம் இல்லை (0% Brokerage). 100% சரிபார்க்கப்பட்ட பட்டியல்கள். சென்னை முழுவதும் உரிமையாளருடன் நேரடி தொடர்பு.',
+    'hero.searchPlaceholder': 'சென்னை பகுதி வாரியாக தேடுங்கள் (எ.கா: அண்ணா நகர், தி. நகர், வேளச்சேரி...)',
+    'hero.selectLocality': 'அனைத்து சென்னை பகுதிகள்',
+    'hero.allTypes': 'அனைத்து வாடகைகள்',
+    'hero.house': 'குடியிருப்பு வீடு',
+    'hero.shop': 'வணிக கடை',
+    'hero.maxBudget': 'அதிகபட்ச வாடகை',
+    'hero.searchBtn': 'வாடகை தேடு',
+    'hero.zeroBrokerage': 'இடைத்தரகர் இல்லை',
+    'hero.zeroBrokerageDesc': 'உரிமையாளருடன் நேரடி தொடர்பு',
+    'hero.verifiedListings': 'சரிபார்க்கப்பட்டவை',
+    'hero.verifiedListingsDesc': 'உண்மையான புகைப்படங்கள் மற்றும் இடங்கள்',
+    'hero.instantConnect': 'நேரடி அழைப்பு & வாட்ஸ்அப்',
+    'hero.instantConnectDesc': 'தாமதமின்றி உடனே பேசலாம்',
+    'hero.popularLocalities': 'பிரபலமான பகுதிகள்',
+
+    // Home Sections
+    'home.featuredTitle': 'சிறப்பு வாடகை பட்டியல்கள்',
+    'home.featuredSubtitle': 'சென்னை முழுவதும் தேர்ந்தெடுக்கப்பட்ட சரிபார்க்கப்பட்ட வீடுகள் மற்றும் கடைகள்',
+    'home.housesTitle': 'சென்னையில் வாடகை வீடுகள் & அபார்ட்மெண்ட்',
+    'home.housesSubtitle': 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான 1, 2, 3 BHK வீடுகள்',
+    'home.shopsTitle': 'வணிக கடைகள் & அலுவலக இடங்கள்',
+    'home.shopsSubtitle': 'அதிக மக்கள் நடமாட்டம் உள்ள மெயின் ரோடு கடைகள்',
+    'home.viewAll': 'அனைத்தும் காண்க',
+    'home.exploreMode': 'தேடல் முறை',
+    'home.cardDeck': 'கார்டு ஸ்வைப் முறை',
+    'home.searchGrid': 'பட்டியல் காட்சி',
+
+    // Property Card
+    'card.house': 'வீடு',
+    'card.shop': 'வணிக கடை',
+    'card.perMonth': '/ மாதம்',
+    'card.deposit': 'முன்பணம்',
+    'card.viewDetails': 'விவரம் காண்க',
+    'card.shareWhatsapp': 'வாட்ஸ்அப்பில் பகிர்க',
+    'card.tamil': 'தமிழ்',
+    'card.furnished': 'முழு வசதியுடன்',
+    'card.semiFurnished': 'பகுதி வசதியுடன்',
+    'card.unfurnished': 'வசதிகள் இன்றி',
+    'card.sqft': 'சதுர அடி',
+    'card.rooms': 'அறைகள்',
+    'card.bhk': 'BHK',
+
+    // Property Detail
+    'detail.share': 'பகிர்',
+    'detail.shareWhatsapp': 'வாட்ஸ்அப் பகிர்வு',
+    'detail.save': 'சேமி',
+    'detail.saved': 'சேமிக்கப்பட்டது',
+    'detail.verified': 'சரிபார்க்கப்பட்டது',
+    'detail.views': 'பார்வைகள்',
+    'detail.superBuiltUp': 'பரப்பளவு',
+    'detail.furnishing': 'பர்னிச்சர் நிலை',
+    'detail.availableFrom': 'கிடைக்கும் நாள்',
+    'detail.about': 'இந்த சொத்தின் விவரம்',
+    'detail.amenities': 'வசதிகள் மற்றும் சிறப்பம்சங்கள்',
+    'detail.address': 'முழு முகவரி',
+    'detail.securityDeposit': 'பாதுகாப்பு முன்பணம்',
+    'detail.verifiedOwner': 'உரிமையாளர்',
+    'detail.callOwner': 'உரிமையாளரை அழைக்க',
+    'detail.chatWhatsapp': 'வாட்ஸ்அப் மூலம் பேச',
+    'detail.sendEnquiry': 'நேரடி தகவல் அனுப்ப',
+    'detail.zeroBrokerage': 'வாடகைதாரர்களுக்கு இடைத்தரகர் கட்டணம் எதுவும் இல்லை. உரிமையாளருடன் நேரடியாக பேசுங்கள்.',
+    'detail.loginToViewPhone': 'உரிமையாளர் எண் பார்க்க மொபைல் மூலம் உள்நுழைக',
+    'detail.loginRequirement': 'வீட்டு உரிமையாளர்களின் பாதுகாப்பிற்காக, உங்கள் மொபைல் எண்ணை உள்ளிட்டு உள்நுழைந்த பிறகு உரிமையாளரின் தொலைபேசி எண்ணை பார்க்கலாம்.',
+    'detail.mobileRequired': 'உரிமையாளரை தொடர்பு கொள்ள மொபைல் உள்நுழைவு அவசியம்',
+    'detail.maskedPhone': '+91 98••••••••',
+
+    // Filter & Search
+    'filter.title': 'வாடகை வடிகட்டி',
+    'filter.reset': 'மீட்டமைக்க',
+    'filter.resetAll': 'அனைத்தும் மீட்டமை',
+    'filter.propertyType': 'சொத்து வகை',
+    'filter.propertyCategory': 'சொத்து பிரிவு',
+    'filter.locality': 'சென்னை பகுதி',
+    'filter.allAreas': 'அனைத்து சென்னை பகுதிகள்',
+    'filter.budget': 'மாத வாடகை (₹)',
+    'filter.bedrooms': 'படுக்கையறைகள் (BHK)',
+    'filter.furnishing': 'பர்னிச்சர் வசதி',
+    'filter.all': 'அனைத்தும்',
+    'filter.sortBy': 'வரிசைப்படுத்து',
+    'filter.newest': 'புதியவை முதலில்',
+    'filter.rentAsc': 'வாடகை: குறைவு முதல் அதிகம்',
+    'filter.rentDesc': 'வாடகை: அதிகம் முதல் குறைவு',
+    'filter.results': 'சென்னையில் வாடகைக்கு கிடைக்கும் சொத்துக்கள்',
+    'filter.noResults': 'உங்கள் தேடலுக்கு ஏற்ற சொத்துக்கள் கிடைக்கவில்லை',
+    'properties.title': 'சென்னையில் வாடகை பட்டியல்கள்',
+    'properties.count': 'சரிபார்க்கப்பட்ட சொத்துக்கள் உள்ளன',
+    'properties.loading': 'சொத்துக்கள் தேடப்படுகின்றன...',
+
+    // Post Property
+    'post.listingLang': 'பட்டியல் மொழி / Listing Language',
+    'post.listingLangDesc': 'இந்த சொத்தை தமிழில் அல்லது ஆங்கிலத்தில் பதிவேற்ற தேர்வு செய்யவும்.',
+    'post.english': 'ஆங்கிலம் (English)',
+    'post.tamil': 'தமிழ் (Tamil)',
+    'post.tamilTip': 'தமிழ் தேர்வு செய்யப்பட்டுள்ளது: தலைப்பு, விளக்கம் மற்றும் வசதிகள் தமிழில் பதிவு செய்யப்படும்.',
+    'post.title': 'விளம்பர தலைப்பு (Title)',
+    'post.titlePlaceholderEn': 'e.g., Spacious 2 BHK Independent House in Anna Nagar',
+    'post.titlePlaceholderTa': 'எ.கா: அண்ணா நகரில் 2 BHK விசாலமான தனி வீடு வாடகைக்கு',
+    'post.desc': 'முழு விவரங்கள் (Description)',
+    'post.descPlaceholderEn': 'Describe features, water facilities (Metro water/borewell), parking, nearby landmarks...',
+    'post.descPlaceholderTa': 'வீட்டின் சிறப்பம்சங்கள், 24 மணி நேர மெட்ரோ தண்ணீர் வசதி, கார் பார்க்கிங், அருகிலுள்ள அடையாளங்கள், வாடகை நிபந்தனைகள்...',
+    'post.locality': 'சென்னை பகுதி (Locality)',
+    'post.address': 'முழு முகவரி மற்றும் அடையாளம் (Address)',
+    'post.addressPlaceholderEn': 'Door No, Street Name, Landmark, Chennai - Pin code',
+    'post.addressPlaceholderTa': 'கதவு எண், தெரு பெயர், அடையாளம், சென்னை - அஞ்சல் குறியீடு',
+    'post.rent': 'மாத வாடகை (₹)',
+    'post.deposit': 'பாதுகாப்பு முன்பணம் (₹)',
+    'post.size': 'பரப்பளவு (Sq.ft)',
+    'post.bedrooms': 'படுக்கையறைகள் (BHK)',
+    'post.rooms': 'அறைகள் எண்ணிக்கை',
+    'post.furnishing': 'பர்னிச்சர் வசதி',
+    'post.amenities': 'வசதிகள் & சிறப்பம்சங்கள் தேர்வு செய்க',
+    'post.uploadPhotos': 'புகைப்படங்களை பதிவேற்றுக',
+    'post.submit': 'வாடகை விளம்பரத்தை சமர்ப்பிக்க',
+
+    // Footer
+    'footer.tagline': 'வீடு வாடகைக்கு — சென்னையின் நம்பகமான வாடகை தளம். சரிபார்க்கப்பட்ட வீடுகள் மற்றும் பிரைம் வணிக கடைகளை உரிமையாளர்களிடமிருந்து நேரடியாக வாடகைக்கு பெறலாம்.',
+    'footer.adminVerified': '100% நிர்வாகியால் சரிபார்க்கப்பட்ட பட்டியல்கள்',
+    'footer.quickLinks': 'வாடகையை கண்டறிய',
+    'footer.forOwners': 'சொத்து உரிமையாளர்களுக்கு',
+    'footer.contactUs': 'தொடர்பு & உதவி',
+    'footer.chennaiOffice': 'சென்னை அலுவலகம்',
+    'footer.allProperties': 'அனைத்து சென்னை சொத்துக்கள்',
+    'footer.housesApartments': 'வாடகை வீடுகள் & அபார்ட்மெண்ட்',
+    'footer.commercialShops': 'வணிக கடைகள் வாடகைக்கு',
+    'footer.rentalsAnnaNagar': 'அண்ணா நகரில் வாடகை வீடுகள்',
+    'footer.rentalsTNagar': 'தி. நகரில் வாடகை வீடுகள்',
+    'footer.rentalsVelachery': 'வேளச்சேரியில் வாடகை வீடுகள்',
+    'footer.postAd': 'வாடகை விளம்பரம் செய்க',
+    'footer.plans': 'விளம்பர திட்டங்கள்',
+    'footer.ownerPortal': 'உரிமையாளர் போர்டல்',
+    'footer.howItWorks': 'எவ்வாறு செயல்படுகிறது',
+    'footer.supportHotline': 'உரிமையாளர் உதவி மையம்',
+    'footer.terms': 'விதிமுறைகள் & நிபந்தனைகள்',
+    'footer.privacy': 'தனியுரிமைக் கொள்கை',
+    'footer.adminAccess': 'நிர்வாகி உள்நுழைவு',
+    'footer.rights': 'அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை. சென்னையின் வாடகை தளம்.',
+
+    // Common Pagination
+    'common.prev': 'முந்தைய',
+    'common.next': 'அடுத்த',
+    'common.page': 'பக்கம்',
+    'common.of': 'இல்',
+  },
+};
+
+const LanguageContext = createContext<LanguageContextType>({
+  lang: 'en',
+  setLang: () => {},
+  toggleLang: () => {},
+  t: (key: string, fallback?: string) => fallback || key,
+});
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [lang, setLangState] = useState<Language>(() => {
+    const saved = localStorage.getItem('vv_lang');
+    return saved === 'ta' || saved === 'en' ? saved : 'en';
+  });
+
+  const setLang = (newLang: Language) => {
+    setLangState(newLang);
+    localStorage.setItem('vv_lang', newLang);
+    document.documentElement.lang = newLang;
+  };
+
+  const toggleLang = () => {
+    setLang(lang === 'en' ? 'ta' : 'en');
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const t = (key: string, fallback?: string): string => {
+    return translations[lang]?.[key] || translations['en']?.[key] || fallback || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, toggleLang, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export const useLanguage = () => useContext(LanguageContext);

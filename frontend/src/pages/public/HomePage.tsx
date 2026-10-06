@@ -14,9 +14,11 @@ import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
 import { PropertyTinderDeck } from '../../components/property/PropertyTinderDeck';
 import { SEOHead } from '../../components/common/SEOHead';
+import { useLanguage } from '../../context/LanguageContext';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { lang, t } = useLanguage();
   const [viewMode, setViewMode] = useState<'tinder' | 'search'>('tinder');
   const [deckType, setDeckType] = useState<'HOUSE' | 'SHOP' | ''>('');
 
@@ -126,16 +128,19 @@ export const HomePage: React.FC = () => {
           <div className="text-center space-y-3 sm:space-y-4 max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-amber-200/90 text-[11px] sm:text-xs font-medium tracking-wide">
               <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Direct from verified Chennai landlords</span>
+              <span>{t('hero.badge')}</span>
             </div>
 
             <h1 className="text-[1.75rem] sm:text-5xl lg:text-[3.25rem] font-semibold tracking-tight leading-[1.12] text-white">
-              Find your next rental
-              <span className="block text-amber-400 mt-1">without the brokerage</span>
+              {t('hero.title1')}{' '}
+              <span className="text-amber-400">{t('hero.titleHouse')}</span>{' '}
+              {t('hero.titleOr')}{' '}
+              <span className="text-amber-400">{t('hero.titleShop')}</span>{' '}
+              {t('hero.titleEnd')}
             </h1>
 
             <p className="max-w-lg mx-auto text-sm sm:text-base text-slate-300/95 font-normal leading-relaxed">
-              Swipe through houses and shops, shortlist favourites, and contact owners on WhatsApp or call — all in one place.
+              {t('hero.desc')}
             </p>
           </div>
 
@@ -158,7 +163,7 @@ export const HomePage: React.FC = () => {
                 }`}
               >
                 <Layers className="w-4 h-4 text-amber-300" />
-                <span>Swipe to discover</span>
+                <span>{t('home.cardDeck')}</span>
               </button>
 
               <button
@@ -173,7 +178,7 @@ export const HomePage: React.FC = () => {
                 }`}
               >
                 <Search className="w-4 h-4 text-emerald-600" />
-                <span>Search & filter</span>
+                <span>{t('home.searchGrid')}</span>
               </button>
             </div>
           </div>
@@ -205,7 +210,7 @@ export const HomePage: React.FC = () => {
                 {/* Locality Dropdown */}
                 <div className="relative text-left">
                   <label className="block text-[11px] font-medium uppercase text-gray-500 tracking-wider mb-1 ml-1">
-                    Chennai Locality
+                    {t('filter.locality')}
                   </label>
                   <div className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 transition">
                     <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -214,7 +219,7 @@ export const HomePage: React.FC = () => {
                       onChange={(e) => setLocality(e.target.value)}
                       className="w-full bg-transparent text-sm font-normal text-gray-800 focus:outline-none cursor-pointer"
                     >
-                      <option value="">All Chennai Areas</option>
+                      <option value="">{t('hero.selectLocality')}</option>
                       {localities.map((loc) => (
                         <option key={loc} value={loc}>
                           {loc}
@@ -227,7 +232,7 @@ export const HomePage: React.FC = () => {
                 {/* Property Type Dropdown */}
                 <div className="relative text-left">
                   <label className="block text-[11px] font-medium uppercase text-gray-500 tracking-wider mb-1 ml-1">
-                    Property Category
+                    {t('filter.propertyType')}
                   </label>
                   <div className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 transition">
                     {propertyType === 'SHOP' ? (
@@ -240,9 +245,9 @@ export const HomePage: React.FC = () => {
                       onChange={(e) => setPropertyType(e.target.value as any)}
                       className="w-full bg-transparent text-sm font-normal text-gray-800 focus:outline-none cursor-pointer"
                     >
-                      <option value="">Houses &amp; Shops</option>
-                      <option value="HOUSE">House / Flat / Villa</option>
-                      <option value="SHOP">Commercial Shop</option>
+                      <option value="">{t('hero.allTypes')}</option>
+                      <option value="HOUSE">{t('card.house')}</option>
+                      <option value="SHOP">{t('card.shop')}</option>
                     </select>
                   </div>
                 </div>
@@ -250,7 +255,7 @@ export const HomePage: React.FC = () => {
                 {/* Max Rent */}
                 <div className="relative text-left">
                   <label className="block text-[11px] font-medium uppercase text-gray-500 tracking-wider mb-1 ml-1">
-                    Budget (Max Rent)
+                    {t('hero.maxBudget')}
                   </label>
                   <div className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 p-2.5 rounded-xl border border-gray-200 transition">
                     <span className="text-sm font-medium text-gray-400 pl-1">₹</span>
@@ -259,7 +264,7 @@ export const HomePage: React.FC = () => {
                       onChange={(e) => setMaxRent(e.target.value)}
                       className="w-full bg-transparent text-sm font-normal text-gray-800 focus:outline-none cursor-pointer"
                     >
-                      <option value="">Any Budget</option>
+                      <option value="">{lang === 'ta' ? 'அனைத்து பட்ஜெட்' : 'Any Budget'}</option>
                       <option value="10000">Up to ₹10,000</option>
                       <option value="15000">Up to ₹15,000</option>
                       <option value="25000">Up to ₹25,000</option>
@@ -276,7 +281,7 @@ export const HomePage: React.FC = () => {
                     className="w-full h-[48px] flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-xl shadow-lg transition active:scale-[0.98]"
                   >
                     <Search className="w-4 h-4 text-white" />
-                    <span>Search Rentals</span>
+                    <span>{t('hero.searchBtn')}</span>
                   </button>
                 </div>
               </form>
@@ -287,15 +292,15 @@ export const HomePage: React.FC = () => {
           <div className="pt-2 sm:pt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:gap-x-10 text-slate-400 text-[11px] sm:text-xs font-normal">
             <div className="inline-flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Verified owners</span>
+              <span>{t('hero.verifiedListings')}</span>
             </div>
             <div className="inline-flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>WhatsApp &amp; call</span>
+              <span>{t('hero.instantConnect')}</span>
             </div>
             <div className="inline-flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Zero tenant brokerage</span>
+              <span>{t('hero.zeroBrokerage')}</span>
             </div>
           </div>
         </div>
@@ -313,13 +318,15 @@ export const HomePage: React.FC = () => {
                 <Building2 className="w-6 h-6" />
               </div>
               <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 group-hover:text-emerald-600 transition">
-                Houses for Rent
+                {t('nav.houses')}
               </h3>
               <p className="text-sm text-gray-500 max-w-xs">
-                Independent houses, apartments, and villas for families & bachelors in Chennai.
+                {lang === 'ta'
+                  ? 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான தனி வீடுகள், அபார்ட்மெண்ட்கள் மற்றும் வில்லாக்கள்.'
+                  : 'Independent houses, apartments, and villas for families & bachelors in Chennai.'}
               </p>
               <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 pt-2">
-                <span>Browse Houses</span>
+                <span>{t('home.viewAll')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </div>
             </div>
@@ -337,13 +344,15 @@ export const HomePage: React.FC = () => {
                 <Store className="w-6 h-6" />
               </div>
               <h3 className="text-xl sm:text-2xl font-semibold text-gray-900 group-hover:text-amber-600 transition">
-                Commercial Shops for Rent
+                {t('nav.shops')}
               </h3>
               <p className="text-sm text-gray-500 max-w-xs">
-                Retail showrooms, office spaces, and road-facing shops in prime commercial hubs.
+                {lang === 'ta'
+                  ? 'அதிக மக்கள் நடமாட்டம் உள்ள மெயின் ரோடு வணிக கடைகள், ஷோரூம்கள் மற்றும் அலுவலக இடங்கள்.'
+                  : 'Retail showrooms, office spaces, and road-facing shops in prime commercial hubs.'}
               </p>
               <div className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 pt-2">
-                <span>Browse Commercial Shops</span>
+                <span>{t('home.viewAll')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </div>
             </div>
@@ -360,17 +369,17 @@ export const HomePage: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-emerald-600 mb-1">
               <Sparkles className="w-4 h-4" />
-              Handpicked Deals
+              {lang === 'ta' ? 'சிறந்த தேர்வுகள்' : 'Handpicked Deals'}
             </div>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
-              Featured Chennai Rentals
+              {t('home.featuredTitle')}
             </h2>
           </div>
           <Link
             to="/properties"
             className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700 transition"
           >
-            <span>Explore All Properties</span>
+            <span>{t('home.viewAll')}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -411,15 +420,15 @@ export const HomePage: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
-                Latest Houses & Flats
+                {t('home.housesTitle')}
               </h2>
-              <p className="text-sm text-gray-500 mt-1">Comfortable living spaces across Chennai</p>
+              <p className="text-sm text-gray-500 mt-1">{t('home.housesSubtitle')}</p>
             </div>
             <Link
               to="/houses"
               className="text-xs sm:text-sm font-medium text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
             >
-              <span>View All Houses</span>
+              <span>{t('home.viewAll')}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -458,15 +467,15 @@ export const HomePage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
-              Commercial Shops for Rent
+              {t('home.shopsTitle')}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">Grow your business in Chennai's prominent retail markets</p>
+            <p className="text-sm text-gray-500 mt-1">{t('home.shopsSubtitle')}</p>
           </div>
           <Link
             to="/shops"
             className="text-xs sm:text-sm font-medium text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
           >
-            <span>View All Commercial Shops</span>
+            <span>{t('home.viewAll')}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -503,10 +512,12 @@ export const HomePage: React.FC = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-2">
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-gray-900">
-            Popular Chennai Localities
+            {t('hero.popularLocalities')}
           </h2>
           <p className="text-sm text-gray-500 font-normal">
-            Quickly browse available houses and shops in Chennai's high-demand neighborhoods.
+            {lang === 'ta'
+              ? 'சென்னையின் முக்கிய பகுதிகளில் கிடைக்கும் வாடகை வீடுகள் மற்றும் கடைகளை கண்டறியுங்கள்.'
+              : "Quickly browse available houses and shops in Chennai's high-demand neighborhoods."}
           </p>
         </div>
 

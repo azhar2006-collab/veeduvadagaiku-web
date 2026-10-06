@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, MapPin, Bed, Maximize2, Sofa, Building2, Store } from 'lucide-react';
+import { Heart, MapPin, Bed, Maximize2, Sofa, Building2, Store, MessageCircle } from 'lucide-react';
 import { Property } from '../../types';
 import { useFavourites } from '../../hooks/useFavourites';
+import { useLanguage } from '../../context/LanguageContext';
+import { getWhatsAppShareUrl } from '../../utils/shareUtils';
 
 interface PropertyCardProps {
   property: Property;
@@ -10,7 +12,14 @@ interface PropertyCardProps {
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const { isFavourite, toggleFavourite, isPending } = useFavourites();
+  const { lang, t } = useLanguage();
   const favorited = isFavourite(property.id);
+
+  // Check if listing was posted in Tamil
+  const isTamil =
+    property.amenities?.some((a) => a.includes('[LANG:TA]') || a.includes('தமிழ்')) ||
+    /[\u0B80-\u0BFF]/.test(property.title || '') ||
+    /[\u0B80-\u0BFF]/.test(property.description || '');
 
   // Format currency
   const formattedRent = new Intl.NumberFormat('en-IN', {
@@ -32,9 +41,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80';
 
   const furnishingLabel: Record<string, string> = {
-    FURNISHED: 'Furnished',
-    SEMI_FURNISHED: 'Semi-Furnished',
-    UNFURNISHED: 'Unfurnished',
+    FURNISHED: t('card.furnished'),
+    SEMI_FURNISHED: t('card.semiFurnished'),
+    UNFURNISHED: t('card.unfurnished'),
   };
 
   return (
@@ -53,18 +62,26 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           }}
         />
 
-        {/* Type Badge */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 bg-gray-900/80 backdrop-blur-md text-white text-xs font-medium rounded-lg shadow-sm">
-          {property.propertyType === 'HOUSE' ? (
-            <>
-              <Building2 className="w-3.5 h-3.5 text-orange-400" />
-              <span>House</span>
-            </>
-          ) : (
-            <>
-              <Store className="w-3.5 h-3.5 text-amber-400" />
-              <span>Commercial Shop</span>
-            </>
+        {/* Badges container */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-900/80 backdrop-blur-md text-white text-xs font-medium rounded-lg shadow-sm">
+            {property.propertyType === 'HOUSE' ? (
+              <>
+                <Building2 className="w-3.5 h-3.5 text-orange-400" />
+                <span>{t('card.house')}</span>
+              </>
+            ) : (
+              <>
+                <Store className="w-3.5 h-3.5 text-amber-400" />
+                <span>{t('card.shop')}</span>
+              </>
+            )}
+          </div>
+
+          {isTamil && (
+            <span className="px-2 py-1 bg-[#C59B27] backdrop-blur-md text-white text-[11px] font-bold rounded-lg shadow-sm">
+              தமிழ்
+            </span>
           )}
         </div>
 
@@ -88,7 +105,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         {/* Rent Tag */}
         <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-orange-600/95 backdrop-blur-md text-white rounded-lg shadow-md">
           <div className="text-base font-semibold leading-none">{formattedRent}</div>
-          <span className="text-[10px] font-normal text-orange-100">/ month</span>
+          <span className="text-[10px] font-normal text-orange-100">{t('card.perMonth')}</span>
         </div>
       </div>
 
@@ -112,39 +129,57 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           {property.propertyType === 'HOUSE' ? (
             <div className="flex items-center gap-1.5">
               <Bed className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="truncate">{property.bedrooms ? `${property.bedrooms} BHK` : '1 Room'}</span>
+              <span className="truncate">
+                {property.bedrooms ? `${property.bedrooms} ${t('card.bhk')}` : `1 ${t('card.rooms')}`}
+              </span>
             </div>
           ) : (
             <div className="flex items-center gap-1.5">
               <Store className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="truncate">{property.rooms ? `${property.rooms} Rooms` : 'Shop Space'}</span>
+              <span className="truncate">
+                {property.rooms ? `${property.rooms} ${t('card.rooms')}` : t('card.shop')}
+              </span>
             </div>
           )}
 
           <div className="flex items-center gap-1.5">
             <Maximize2 className="w-4 h-4 text-gray-400 shrink-0" />
-            <span className="truncate">{property.propertySize} sq.ft</span>
+            <span className="truncate">{property.propertySize} {t('card.sqft')}</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             <Sofa className="w-4 h-4 text-gray-400 shrink-0" />
-            <span className="truncate">{furnishingLabel[property.furnishing] || 'Unfurnished'}</span>
+            <span className="truncate">{furnishingLabel[property.furnishing] || t('card.unfurnished')}</span>
           </div>
         </div>
 
-        {/* Deposit & View details action */}
+        {/* Deposit, WhatsApp share & View details action */}
         <div className="mt-auto flex items-center justify-between pt-1">
           <div>
-            <span className="text-[11px] text-gray-400 block font-normal">Deposit</span>
+            <span className="text-[11px] text-gray-400 block font-normal">{t('card.deposit')}</span>
             <span className="text-xs font-medium text-gray-700">{formattedDeposit}</span>
           </div>
 
-          <Link
-            to={`/property/${property.id}`}
-            className="px-4 py-2 bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white font-medium text-xs rounded-xl transition-all"
-          >
-            View Details
-          </Link>
+          <div className="flex items-center gap-2">
+            <a
+              href={getWhatsAppShareUrl(property, lang)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              title={t('card.shareWhatsapp')}
+              aria-label="Share on WhatsApp"
+              className="p-2 bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white rounded-xl transition-all shadow-sm flex items-center justify-center active:scale-95"
+            >
+              <MessageCircle className="w-4 h-4 fill-current" />
+            </a>
+
+            <Link
+              to={`/property/${property.id}`}
+              className="px-4 py-2 bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white font-medium text-xs rounded-xl transition-all"
+            >
+              {t('card.viewDetails')}
+            </Link>
+          </div>
         </div>
       </div>
     </div>

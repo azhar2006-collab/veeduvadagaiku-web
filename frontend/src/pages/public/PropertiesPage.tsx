@@ -6,8 +6,10 @@ import { PropertyFilters as FilterComponent } from '../../components/property/Pr
 import { PropertyFilters as FilterType } from '../../types';
 import { SEOHead } from '../../components/common/SEOHead';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export const PropertiesPage: React.FC = () => {
+  const { t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Read initial filters from search params
@@ -67,17 +69,17 @@ export const PropertiesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-200 gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            Chennai Rental Listings
+            {t('properties.title')}
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            {pagination ? `${pagination.total} verified properties available` : 'Finding properties...'}
+            {pagination ? `${pagination.total} ${t('properties.count')}` : t('properties.loading')}
           </p>
         </div>
 
         {/* Quick Sort */}
         <div className="flex items-center gap-2">
           <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-            Sort by:
+            {t('filter.sortBy')}:
           </label>
           <select
             value={filters.sortBy || 'newest'}
@@ -86,9 +88,9 @@ export const PropertiesPage: React.FC = () => {
             }
             className="bg-white border border-gray-200 text-xs sm:text-sm font-semibold text-gray-800 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
-            <option value="newest">Newest First</option>
-            <option value="rent_asc">Rent: Low to High</option>
-            <option value="rent_desc">Rent: High to Low</option>
+            <option value="newest">{t('filter.newest')}</option>
+            <option value="rent_asc">{t('filter.rentAsc')}</option>
+            <option value="rent_desc">{t('filter.rentDesc')}</option>
           </select>
         </div>
       </div>
@@ -117,11 +119,11 @@ export const PropertiesPage: React.FC = () => {
                 className="flex items-center gap-1 px-4 py-2 text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Prev</span>
+                <span>{t('common.prev')}</span>
               </button>
 
               <span className="text-xs sm:text-sm font-semibold text-gray-600">
-                Page {pagination.page} of {pagination.totalPages}
+                {t('common.page')} {pagination.page} {t('common.of')} {pagination.totalPages}
               </span>
 
               <button
@@ -129,7 +131,7 @@ export const PropertiesPage: React.FC = () => {
                 disabled={!pagination.hasNext}
                 className="flex items-center gap-1 px-4 py-2 text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition"
               >
-                <span>Next</span>
+                <span>{t('common.next')}</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>

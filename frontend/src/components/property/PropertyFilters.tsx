@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Filter, RotateCcw, Building2, Store, Check } from 'lucide-react';
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface PropertyFiltersProps {
   filters: FilterType;
@@ -14,6 +15,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
   onChange,
   onReset,
 }) => {
+  const { t } = useLanguage();
   const { data: localitiesRes } = useLocalities();
   const localities = localitiesRes?.data || [];
   const [isOpenMobile, setIsOpenMobile] = useState(false);
@@ -39,7 +41,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           className="flex items-center gap-2 font-bold text-gray-900 text-sm py-1"
         >
           <Filter className="w-4 h-4 text-orange-600" />
-          <span>Filters {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
+          <span>{t('filter.title')} {activeFilterCount > 0 && `(${activeFilterCount})`}</span>
         </button>
         {activeFilterCount > 0 && (
           <button
@@ -47,7 +49,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             className="text-xs font-semibold text-orange-600 flex items-center gap-1 hover:underline"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            Reset
+            {t('filter.reset')}
           </button>
         )}
       </div>
@@ -57,7 +59,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         <div className="hidden lg:flex items-center justify-between pb-3 border-b border-gray-100">
           <div className="flex items-center gap-2 font-bold text-gray-900 text-sm">
             <Filter className="w-4 h-4 text-orange-600" />
-            <span>Filter Rentals</span>
+            <span>{t('filter.title')}</span>
           </div>
           {activeFilterCount > 0 && (
             <button
@@ -65,7 +67,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               className="text-xs font-semibold text-gray-400 hover:text-orange-600 flex items-center gap-1 transition"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              Reset All
+              {t('filter.resetAll')}
             </button>
           )}
         </div>
@@ -73,7 +75,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         {/* Property Type Radio */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
-            Property Category
+            {t('filter.propertyCategory')}
           </label>
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -88,7 +90,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               }`}
             >
               <Building2 className="w-4 h-4" />
-              House
+              {t('card.house')}
             </button>
             <button
               type="button"
@@ -102,7 +104,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               }`}
             >
               <Store className="w-4 h-4" />
-              Shop
+              {t('card.shop')}
             </button>
           </div>
         </div>
@@ -110,14 +112,14 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         {/* Chennai Locality */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            Chennai Locality
+            {t('filter.locality')}
           </label>
           <select
             value={filters.locality || ''}
             onChange={(e) => handleFieldChange('locality', e.target.value)}
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition"
           >
-            <option value="">All Chennai Areas</option>
+            <option value="">{t('filter.allAreas')}</option>
             {localities.map((loc) => (
               <option key={loc} value={loc}>
                 {loc}
@@ -129,13 +131,13 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         {/* Rent Range */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            Monthly Rent (₹)
+            {t('filter.budget')}
           </label>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <input
                 type="number"
-                placeholder="Min ₹"
+                placeholder={t('filter.minRent', 'Min ₹')}
                 value={filters.minRent || ''}
                 onChange={(e) =>
                   handleFieldChange('minRent', e.target.value ? Number(e.target.value) : '')
@@ -146,7 +148,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             <div>
               <input
                 type="number"
-                placeholder="Max ₹"
+                placeholder={t('filter.maxRent', 'Max ₹')}
                 value={filters.maxRent || ''}
                 onChange={(e) =>
                   handleFieldChange('maxRent', e.target.value ? Number(e.target.value) : '')
@@ -161,7 +163,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         {filters.propertyType !== 'SHOP' && (
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-              Bedrooms (BHK)
+              {t('filter.bedrooms')}
             </label>
             <div className="flex flex-wrap gap-2">
               {[1, 2, 3, 4].map((num) => (
@@ -200,13 +202,13 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         {/* Furnishing */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            Furnishing
+            {t('filter.furnishing')}
           </label>
           <div className="space-y-1.5">
             {[
-              { val: 'FURNISHED', label: 'Fully Furnished' },
-              { val: 'SEMI_FURNISHED', label: 'Semi-Furnished' },
-              { val: 'UNFURNISHED', label: 'Unfurnished' },
+              { val: 'FURNISHED', label: t('card.furnished') },
+              { val: 'SEMI_FURNISHED', label: t('card.semiFurnished') },
+              { val: 'UNFURNISHED', label: t('card.unfurnished') },
             ].map(({ val, label }) => {
               const isSelected = filters.furnishing === val;
               return (
@@ -231,16 +233,16 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         {/* Sort Order */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            Sort Listings
+            {t('filter.sortBy')}
           </label>
           <select
             value={filters.sortBy || 'newest'}
             onChange={(e) => handleFieldChange('sortBy', e.target.value as any)}
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition"
           >
-            <option value="newest">Newest First</option>
-            <option value="rent_asc">Rent: Low to High</option>
-            <option value="rent_desc">Rent: High to Low</option>
+            <option value="newest">{t('filter.newest')}</option>
+            <option value="rent_asc">{t('filter.rentAsc')}</option>
+            <option value="rent_desc">{t('filter.rentDesc')}</option>
           </select>
         </div>
       </div>

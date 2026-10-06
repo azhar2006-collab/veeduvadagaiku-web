@@ -72,8 +72,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Outfit', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Outfit', 'sans-serif'],
+        sans: ['Outfit', 'Noto Sans Tamil', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Outfit', 'Noto Sans Tamil', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

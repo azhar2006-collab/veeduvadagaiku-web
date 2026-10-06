@@ -6,6 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { queryClient } from './lib/queryClient';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { LanguageProvider } from './context/LanguageContext';
 import App from './App';
 import './index.css';
 
@@ -14,9 +15,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <App />
-            <Toaster
+          <LanguageProvider>
+            <BrowserRouter>
+              <App />
+              <Toaster
               position="top-right"
               toastOptions={{
                 duration: 4000,
@@ -42,7 +44,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               }}
             />
           </BrowserRouter>
-        </QueryClientProvider>
+        </LanguageProvider>
+      </QueryClientProvider>
       </HelmetProvider>
     </ErrorBoundary>
   </React.StrictMode>

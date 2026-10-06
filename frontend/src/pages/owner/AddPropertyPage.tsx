@@ -21,6 +21,9 @@ export const AddPropertyPage: React.FC = () => {
   const { data: localitiesRes } = useLocalities();
   const localities = localitiesRes?.data || [];
 
+  // Listing Language state (English or Tamil)
+  const [listingLanguage, setListingLanguage] = useState<'EN' | 'TA'>('EN');
+
   // Form states
   const [propertyType, setPropertyType] = useState<'HOUSE' | 'SHOP'>('HOUSE');
   const [title, setTitle] = useState('');
@@ -47,7 +50,7 @@ export const AddPropertyPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const houseAmenitiesList = [
+  const houseAmenitiesListEn = [
     '24/7 Metro Water',
     'Covered Car Parking',
     'Two Wheeler Parking',
@@ -61,7 +64,21 @@ export const AddPropertyPage: React.FC = () => {
     'Near Bus Stand',
   ];
 
-  const shopAmenitiesList = [
+  const houseAmenitiesListTa = [
+    '24/7 குடிநீர் வசதி (Metro Water)',
+    'கார் பார்க்கிங் (Car Parking)',
+    'இருசக்கர வாகன பார்க்கிங் (Bike Parking)',
+    'லிப்ட் வசதி (Lift / Elevator)',
+    'பாதுகாப்பு வசதி & CCTV (Security)',
+    'பவர் பேக்கப் (Power Backup)',
+    'ஏசி வசதி (Air Conditioner)',
+    'மாடுலர் சமையலறை (Modular Kitchen)',
+    'பால்கனி (Balcony)',
+    'மெட்ரோ நிலையம் அருகில் (Near Metro)',
+    'பேருந்து நிலையம் அருகில் (Near Bus Stand)',
+  ];
+
+  const shopAmenitiesListEn = [
     'Main Road Facing',
     'Heavy Footfall Zone',
     'High Ceiling',
@@ -74,7 +91,27 @@ export const AddPropertyPage: React.FC = () => {
     'Loading / Unloading Bay',
   ];
 
-  const currentAmenities = propertyType === 'HOUSE' ? houseAmenitiesList : shopAmenitiesList;
+  const shopAmenitiesListTa = [
+    'மெயின் ரோடு வசதி (Main Road Facing)',
+    'அதிக மக்கள் நடமாட்டம் (Heavy Footfall)',
+    'உயரமான கூரை (High Ceiling)',
+    '3 பேஸ் மின்சாரம் (Three Phase Power)',
+    'கண்ணாடி முகப்பு (Glass Frontage)',
+    'ரோலிங் ஷட்டர் (Rolling Shutter)',
+    'குடிநீர் இணைப்பு (Water Connection)',
+    'வாடிக்கையாளர் பார்க்கிங் (Customer Parking)',
+    'இணைக்கப்பட்ட கழிப்பறை (Attached Restroom)',
+    'ஏற்றுதல் / இறக்குதல் வசதி (Loading Bay)',
+  ];
+
+  const currentAmenities =
+    propertyType === 'HOUSE'
+      ? listingLanguage === 'TA'
+        ? houseAmenitiesListTa
+        : houseAmenitiesListEn
+      : listingLanguage === 'TA'
+      ? shopAmenitiesListTa
+      : shopAmenitiesListEn;
 
   const toggleAmenity = (name: string) => {
     if (selectedAmenities.includes(name)) {
@@ -112,7 +149,7 @@ export const AddPropertyPage: React.FC = () => {
         bedrooms: propertyType === 'HOUSE' ? parseInt(bedrooms) : null,
         rooms: propertyType === 'SHOP' ? parseInt(rooms) : null,
         furnishing,
-        amenities: selectedAmenities,
+        amenities: listingLanguage === 'TA' ? ['[LANG:TA]', ...selectedAmenities] : selectedAmenities,
         availability: new Date(availability).toISOString(),
         contactPhone,
         contactWhatsapp,
@@ -152,10 +189,66 @@ export const AddPropertyPage: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Step 1: Property Type */}
+        {/* Step 1: Listing Language Selection */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              1. Listing Language / விளம்பர மொழி
+            </label>
+            <span className="text-xs font-semibold text-orange-600">
+              {listingLanguage === 'TA' ? 'தமிழில் விளம்பரம் தேர்வு செய்யப்பட்டுள்ளது' : 'English listing selected'}
+            </span>
+          </div>
+
+          <p className="text-xs text-gray-500">
+            Choose whether this property should be posted in English or தமிழ். If Tamil is selected, your listing will be presented in Tamil with specialized Tamil amenity tags!
+          </p>
+
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                setListingLanguage('EN');
+                setSelectedAmenities([]);
+              }}
+              className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition ${
+                listingLanguage === 'EN'
+                  ? 'border-orange-500 bg-orange-50/50 text-orange-950 font-bold shadow-sm'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-600'
+              }`}
+            >
+              <span className="text-2xl">🇬🇧</span>
+              <div className="text-left">
+                <div className="text-sm font-bold">English</div>
+                <div className="text-[11px] text-gray-500">Post details in English</div>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setListingLanguage('TA');
+                setSelectedAmenities([]);
+              }}
+              className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition ${
+                listingLanguage === 'TA'
+                  ? 'border-[#C59B27] bg-amber-50/50 text-amber-950 font-bold shadow-sm'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-600'
+              }`}
+            >
+              <span className="text-2xl">🇮🇳</span>
+              <div className="text-left">
+                <div className="text-sm font-bold">தமிழ் (Tamil)</div>
+                <div className="text-[11px] text-gray-500">தமிழில் பதிவேற்றுக</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* Step 2: Property Type */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            1. Select Property Type
+            2. Select Property Type / சொத்து வகை
           </label>
           <div className="grid grid-cols-2 gap-4">
             <button
@@ -174,8 +267,12 @@ export const AddPropertyPage: React.FC = () => {
                 <Building2 className="w-6 h-6" />
               </div>
               <div className="text-left">
-                <h4 className="font-bold text-base">House / Flat / Villa</h4>
-                <p className="text-xs text-gray-500">Residential homes for families & bachelors</p>
+                <h4 className="font-bold text-base">
+                  {listingLanguage === 'TA' ? 'குடியிருப்பு வீடு / அபார்ட்மெண்ட்' : 'House / Flat / Villa'}
+                </h4>
+                <p className="text-xs text-gray-500">
+                  {listingLanguage === 'TA' ? 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான வீடுகள்' : 'Residential homes for families & bachelors'}
+                </p>
               </div>
             </button>
 
@@ -195,29 +292,64 @@ export const AddPropertyPage: React.FC = () => {
                 <Store className="w-6 h-6" />
               </div>
               <div className="text-left">
-                <h4 className="font-bold text-base">Commercial Shop</h4>
-                <p className="text-xs text-gray-500">Retail shops, showrooms, office spaces</p>
+                <h4 className="font-bold text-base">
+                  {listingLanguage === 'TA' ? 'வணிக கடை / ஷோரூம்' : 'Commercial Shop'}
+                </h4>
+                <p className="text-xs text-gray-500">
+                  {listingLanguage === 'TA' ? 'சில்லறை கடைகள், வணிக இடங்கள், அலுவலகங்கள்' : 'Retail shops, showrooms, office spaces'}
+                </p>
               </div>
             </button>
           </div>
         </div>
 
-        {/* Step 2: Basic Details */}
+        {/* Step 3: Basic Details */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            2. Property Specifications
+            3. Property Specifications / விவரங்கள்
           </label>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Property Title
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {listingLanguage === 'TA' ? 'விளம்பர தலைப்பு (Title)' : 'Property Title'}
+                </label>
+                {listingLanguage === 'TA' && (
+                  <span className="text-[11px] text-gray-400 font-medium">விரைவு தலைப்பை தேர்வு செய்யலாம்:</span>
+                )}
+              </div>
+
+              {listingLanguage === 'TA' && (
+                <div className="flex flex-wrap gap-2 mb-2.5">
+                  {[
+                    '2 BHK தனி வீடு வாடகைக்கு',
+                    '3 BHK தனி வீடு வாடகைக்கு',
+                    'அபார்ட்மெண்ட் வீடு வாடகைக்கு',
+                    'வணிக கடை வாடகைக்கு',
+                    'அலுவலக இடம் வாடகைக்கு',
+                  ].map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => setTitle(chip)}
+                      className="px-2.5 py-1 text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg border border-amber-200/80 transition font-medium"
+                    >
+                      + {chip}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <input
                 type="text"
                 required
                 minLength={5}
-                placeholder="e.g. Spacious 2 BHK Independent House with Car Parking"
+                placeholder={
+                  listingLanguage === 'TA'
+                    ? 'எ.கா: அண்ணா நகரில் 2 BHK விசாலமான தனி வீடு வாடகைக்கு'
+                    : 'e.g. Spacious 2 BHK Independent House with Car Parking'
+                }
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -326,13 +458,17 @@ export const AddPropertyPage: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Full Physical Address (Street, Landmark, Chennai PIN)
+                {listingLanguage === 'TA' ? 'முழு முகவரி மற்றும் அடையாளம் (Address)' : 'Full Physical Address (Street, Landmark, Chennai PIN)'}
               </label>
               <textarea
                 rows={2}
                 required
                 minLength={10}
-                placeholder="Door No. 14, 2nd Main Road, Near Shanti Theatre, Anna Nagar, Chennai - 600040"
+                placeholder={
+                  listingLanguage === 'TA'
+                    ? 'கதவு எண் 14, 2வது மெயின் ரோடு, சாந்தி தியேட்டர் அருகில், அண்ணா நகர், சென்னை - 600040'
+                    : 'Door No. 14, 2nd Main Road, Near Shanti Theatre, Anna Nagar, Chennai - 600040'
+                }
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -342,22 +478,28 @@ export const AddPropertyPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Furnishing Status
+                  {listingLanguage === 'TA' ? 'பர்னிச்சர் வசதி (Furnishing)' : 'Furnishing Status'}
                 </label>
                 <select
                   value={furnishing}
                   onChange={(e) => setFurnishing(e.target.value as any)}
                   className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  <option value="UNFURNISHED">Unfurnished</option>
-                  <option value="SEMI_FURNISHED">Semi-Furnished</option>
-                  <option value="FURNISHED">Fully Furnished</option>
+                  <option value="UNFURNISHED">
+                    {listingLanguage === 'TA' ? 'வசதிகள் இன்றி (Unfurnished)' : 'Unfurnished'}
+                  </option>
+                  <option value="SEMI_FURNISHED">
+                    {listingLanguage === 'TA' ? 'பகுதி வசதியுடன் (Semi-Furnished)' : 'Semi-Furnished'}
+                  </option>
+                  <option value="FURNISHED">
+                    {listingLanguage === 'TA' ? 'முழு வசதியுடன் (Fully Furnished)' : 'Fully Furnished'}
+                  </option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Available From Date
+                  {listingLanguage === 'TA' ? 'வாடகைக்கு கிடைக்கும் நாள்' : 'Available From Date'}
                 </label>
                 <input
                   type="date"
@@ -371,13 +513,17 @@ export const AddPropertyPage: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Detailed Property Description
+                {listingLanguage === 'TA' ? 'முழு விவரங்கள் (Description)' : 'Detailed Property Description'}
               </label>
               <textarea
                 rows={4}
                 required
                 minLength={20}
-                placeholder="Highlight neighborhood advantages, water sources, natural ventilation, preferred tenants (family/professionals/retail businesses), etc."
+                placeholder={
+                  listingLanguage === 'TA'
+                    ? 'வீட்டின் சிறப்பம்சங்கள், 24 மணி நேர மெட்ரோ குடிநீர் வசதி, கார் பார்க்கிங், அருகிலுள்ள பேருந்து/மெட்ரோ நிலையங்கள், வாடகை நிபந்தனைகள்...'
+                    : 'Highlight neighborhood advantages, water sources, natural ventilation, preferred tenants (family/professionals/retail businesses), etc.'
+                }
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
