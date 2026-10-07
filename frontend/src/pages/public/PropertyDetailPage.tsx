@@ -476,7 +476,7 @@ export const PropertyDetailPage: React.FC = () => {
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 text-lg font-bold"
               >
-                ✕
+                x
               </button>
             </div>
 

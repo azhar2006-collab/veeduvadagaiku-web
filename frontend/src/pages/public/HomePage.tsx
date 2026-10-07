@@ -12,14 +12,14 @@ import {
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
-import { PropertyTinderDeck } from '../../components/property/PropertyTinderDeck';
+import { PropertySwipeDeck } from '../../components/property/PropertySwipeDeck';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
-  const [viewMode, setViewMode] = useState<'tinder' | 'search'>('tinder');
+  const [viewMode, setViewMode] = useState<'swipe' | 'search'>('swipe');
   const [deckType, setDeckType] = useState<'HOUSE' | 'SHOP' | ''>('');
 
   const [locality, setLocality] = useState('');
@@ -29,7 +29,7 @@ export const HomePage: React.FC = () => {
   const { data: localitiesRes } = useLocalities();
   const localities = localitiesRes?.data || [];
 
-  // Fetch properties for the Tinder Deck
+  // Fetch properties for the Swipe Deck
   const { data: deckRes, isLoading: loadingDeck } = useProperties({
     propertyType: deckType || undefined,
     limit: 25,
@@ -178,10 +178,10 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'tinder'}
-                onClick={() => setViewMode('tinder')}
+                aria-selected={viewMode === 'swipe'}
+                onClick={() => setViewMode('swipe')}
                 className={`hidden sm:flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  viewMode === 'tinder'
+                  viewMode === 'swipe'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -193,7 +193,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* MAIN INTERACTIVE AREA */}
-          {viewMode === 'tinder' ? (
+          {viewMode === 'swipe' ? (
             /* Swipe Discovery Mode */
             <div className="w-full flex flex-col items-center pt-1 animate-fade-in">
               {loadingDeck ? (
@@ -202,7 +202,7 @@ export const HomePage: React.FC = () => {
                   <p className="text-xs text-gray-500 font-normal">Loading listings…</p>
                 </div>
               ) : (
-                <PropertyTinderDeck
+                <PropertySwipeDeck
                   properties={deckProperties}
                   selectedType={deckType}
                   onFilterChange={setDeckType}

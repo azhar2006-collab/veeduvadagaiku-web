@@ -24,13 +24,13 @@ import { Property } from '../../types';
 import { useFavourites } from '../../hooks/useFavourites';
 import toast from 'react-hot-toast';
 
-interface PropertyTinderDeckProps {
+interface PropertySwipeDeckProps {
   properties: Property[];
   onFilterChange?: (type: 'HOUSE' | 'SHOP' | '') => void;
   selectedType?: 'HOUSE' | 'SHOP' | '';
 }
 
-export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
+export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
   properties,
   onFilterChange,
   selectedType = '',
@@ -549,7 +549,7 @@ export const PropertyTinderDeck: React.FC<PropertyTinderDeckProps> = ({
                       <div className="flex items-center gap-1.5 overflow-hidden text-[10px] text-gray-300 pointer-events-none">
                         {currentProperty.amenities.slice(0, 3).map((amenity, i) => (
                           <span key={i} className="px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-md border border-white/10 truncate font-normal">
-                            ✓ {amenity}
+                            - {amenity}
                           </span>
                         ))}
                         {currentProperty.amenities.length > 3 && (

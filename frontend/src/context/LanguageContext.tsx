@@ -61,7 +61,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.shopsSubtitle': 'Prime retail spots and roadside shops with high footfall',
     'home.viewAll': 'View All',
     'home.exploreMode': 'Explore Rentals',
-    'home.cardDeck': 'Tinder Swipe Deck',
+    'home.cardDeck': 'Swipe Deck',
     'home.searchGrid': 'Search & Grid View',
 
     // Property Card
