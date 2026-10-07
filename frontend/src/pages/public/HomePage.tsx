@@ -91,27 +91,27 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-16">
+    <div className="space-y-10 sm:space-y-20 pb-16">
       <SEOHead
         title="Find Your Next Home or Shop in Chennai | Veedu Vadagaiku"
         description="Chennai's premier rental marketplace. Verified houses, apartments and commercial shops direct from owners. Zero brokerage."
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
-      <section className="relative overflow-x-hidden pt-6 pb-10 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
+      <section className="relative overflow-x-hidden pt-4 pb-6 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
         {/* Subtle decorative gold radial glows */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
         <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 65%)' }} />
 
-        <div className="relative max-w-5xl mx-auto space-y-6 sm:space-y-7">
+        <div className="relative max-w-5xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
-          <div className="text-center space-y-2 sm:space-y-3 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[11px] sm:text-xs font-bold tracking-wide shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
-              <span>{t('hero.badge')}</span>
+          <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
+              <span className="text-center leading-snug">{t('hero.badge')}</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-black tracking-tight leading-[1.15] text-[#1E2329]">
+            <h1 className="text-2xl sm:text-4xl lg:text-[3.25rem] font-black tracking-tight leading-[1.2] text-[#1E2329]">
               {t('hero.title1')}{' '}
               <span className="text-[#C5A059]">{t('hero.titleHouse')}</span>{' '}
               {t('hero.titleOr')}{' '}
@@ -352,7 +352,7 @@ export const HomePage: React.FC = () => {
           )}
 
           {/* NoBroker-style Trust Guarantee Badges */}
-          <div className="pt-2 sm:pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto">
+          <div className="pt-1 sm:pt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 max-w-3xl mx-auto">
             <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-[#EFE8D8] shadow-2xs">
               <div className="w-9 h-9 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-5 h-5 text-[#C5A059]" />
@@ -387,12 +387,12 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Browse By Category Section - 4 Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5 sm:-mt-6 relative z-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 sm:-mt-6 relative z-20">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {/* 1. Houses */}
           <Link
             to="/houses"
-            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
+            className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
             <div className="space-y-2.5">
               <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
@@ -416,7 +416,7 @@ export const HomePage: React.FC = () => {
           {/* 2. Commercial Shops */}
           <Link
             to="/shops"
-            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
+            className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
             <div className="space-y-2.5">
               <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
@@ -440,7 +440,7 @@ export const HomePage: React.FC = () => {
           {/* 3. Hostels & PG */}
           <Link
             to="/hostels"
-            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
+            className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
             <div className="space-y-2.5">
               <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
@@ -464,7 +464,7 @@ export const HomePage: React.FC = () => {
           {/* 4. Marriage Halls / Kalyana Mandapam */}
           <Link
             to="/marriage-halls"
-            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
+            className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
             <div className="space-y-2.5">
               <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
@@ -495,7 +495,7 @@ export const HomePage: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
               <span>{lang === 'ta' ? 'சிறந்த தேர்வுகள்' : 'Handpicked Deals'}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-900">
               {t('home.featuredTitle')}
             </h2>
           </div>
@@ -633,9 +633,9 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Popular Chennai Areas Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-900">
             {t('hero.popularLocalities')}
           </h2>
           <p className="text-sm text-gray-600 font-normal">
@@ -645,18 +645,18 @@ export const HomePage: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
           {popularLocalities.map((loc) => (
             <Link
               key={loc}
               to={`/properties?locality=${encodeURIComponent(loc)}`}
-              className="p-4 bg-white rounded-2xl border border-[#EFE8D8] hover:border-[#C5A059] hover:shadow-md transition text-center group"
+              className="p-2.5 sm:p-4 bg-white rounded-2xl border border-[#EFE8D8] hover:border-[#C5A059] hover:shadow-md transition text-center group"
             >
-              <MapPin className="w-5 h-5 text-[#C5A059] mx-auto mb-2 group-hover:scale-110 transition" />
-              <h4 className="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#9A7818] transition">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] mx-auto mb-1 sm:mb-2 group-hover:scale-110 transition" />
+              <h4 className="text-[10px] sm:text-sm font-semibold text-gray-800 group-hover:text-[#9A7818] transition leading-tight">
                 {loc}
               </h4>
-              <span className="text-[11px] text-gray-500 font-normal">View rentals</span>
+              <span className="hidden sm:block text-[11px] text-gray-500 font-normal">View rentals</span>
             </Link>
           ))}
         </div>

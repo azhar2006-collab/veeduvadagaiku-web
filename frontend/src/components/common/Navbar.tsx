@@ -20,14 +20,14 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EFE8D8] shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo & City Selector (NoBroker style) */}
           <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-3 group py-1">
               <img
                 src="/logo-full.png"
                 alt="Veedu Vadagaiku - Chennai's Rental Marketplace"
-                className="h-11 sm:h-13 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
+                className="h-8 sm:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
               />
             </Link>
 
@@ -256,54 +256,61 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-[#EFE8D8] bg-white px-4 pt-3 pb-6 space-y-3 animate-fade-in shadow-xl">
+        <div className="md:hidden border-t border-[#EFE8D8] bg-white px-4 pt-3 pb-6 space-y-0.5 animate-fade-in shadow-xl">
           <Link
             to="/properties"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <Search className="w-4 h-4 text-[#C5A059]" />
             {t('nav.allRentals')}
           </Link>
           <Link
             to="/houses"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <Building2 className="w-4 h-4 text-[#C5A059]" />
             {t('nav.houses')}
           </Link>
           <Link
             to="/shops"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <Store className="w-4 h-4 text-[#C5A059]" />
             {t('nav.shops')}
           </Link>
           <Link
             to="/hostels"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <Users className="w-4 h-4 text-[#C5A059]" />
             {t('nav.hostels')}
           </Link>
           <Link
             to="/marriage-halls"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <Sparkles className="w-4 h-4 text-[#C5A059]" />
             {t('nav.marriageHalls')}
           </Link>
           <Link
             to="/about"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <User className="w-4 h-4 text-[#C5A059]" />
             {t('nav.about')}
           </Link>
           <Link
             to="/contact"
             onClick={() => setIsOpen(false)}
-            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
+            <User className="w-4 h-4 text-[#C5A059]" />
             {t('nav.contact')}
           </Link>
 
@@ -375,22 +382,31 @@ export const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 pt-2">
+              <>
                 <Link
-                  to="/login"
+                  to="/login?role=OWNER"
                   onClick={() => setIsOpen(false)}
-                  className="text-center py-2.5 px-4 text-sm font-semibold text-gray-700 bg-[#FAF7F0] border border-[#E8DFC8] rounded-xl"
+                  className="block text-center py-3 px-4 text-sm font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] rounded-xl shadow-md"
                 >
-                  {t('nav.login')}
+                  List Your Property Free
                 </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setIsOpen(false)}
-                  className="text-center py-2.5 px-4 text-sm font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] rounded-xl shadow-md shadow-[#D4AF37]/20"
-                >
-                  {t('nav.register')}
-                </Link>
-              </div>
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <Link
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="text-center py-2.5 px-4 text-sm font-semibold text-gray-700 bg-[#FAF7F0] border border-[#E8DFC8] rounded-xl"
+                  >
+                    {t('nav.login')}
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setIsOpen(false)}
+                    className="text-center py-2.5 px-4 text-sm font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] rounded-xl shadow-md shadow-[#D4AF37]/20"
+                  >
+                    {t('nav.register')}
+                  </Link>
+                </div>
+              </>
             )}
           </div>
         </div>
