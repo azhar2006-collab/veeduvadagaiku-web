@@ -32,13 +32,14 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.switchLang': 'தமிழ்',
 
     // Hero Section
-    'hero.badge': "Chennai's Dedicated Rental Marketplace",
+    'hero.badge': "Chennai's Pure Rental Webapp — No Strings, No Brokerage",
     'hero.title1': 'Find Your Ideal',
     'hero.titleHouse': 'Rental House',
     'hero.titleOr': 'or',
     'hero.titleShop': 'Commercial Shop',
     'hero.titleEnd': 'in Chennai',
-    'hero.desc': 'Zero brokerage. 100% verified listings. Connect directly with landlords across all Chennai localities.',
+    'hero.desc': "Chennai's Pure Rental Webapp — No Strings, No Brokerage",
+    'hero.descSub': 'நேரடி. நேர்மை. நிபந்தனை இல்லை.',
     'hero.searchPlaceholder': 'Search by Chennai locality (e.g. Anna Nagar, T. Nagar, Velachery...)',
     'hero.selectLocality': 'All Chennai Localities',
     'hero.allTypes': 'All Rentals',
@@ -221,13 +222,14 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.switchLang': 'English',
 
     // Hero Section
-    'hero.badge': 'சென்னையின் பிரத்யேக வாடகை இணையதளம்',
+    'hero.badge': 'சென்னையின் தூய வாடகை இணையதளம் — தரகர் இல்லை, நிபந்தனை இல்லை',
     'hero.title1': 'சென்னையில் உங்கள் கனவு',
     'hero.titleHouse': 'வாடகை வீடு',
     'hero.titleOr': 'மற்றும்',
     'hero.titleShop': 'வணிக கடை',
     'hero.titleEnd': 'எளிதாக வாடகைக்கு பெறுங்கள்',
-    'hero.desc': 'இடைத்தரகர் கட்டணம் இல்லை (0% Brokerage). 100% சரிபார்க்கப்பட்ட பட்டியல்கள். சென்னை முழுவதும் உரிமையாளருடன் நேரடி தொடர்பு.',
+    'hero.desc': 'தரகர் இல்லை. நிபந்தனை இல்லை. நேரடி உரிமையாளர் தொடர்பு.',
+    'hero.descSub': 'நேரடி. நேர்மை. நிபந்தனை இல்லை.',
     'hero.searchPlaceholder': 'சென்னை பகுதி வாரியாக தேடுங்கள் (எ.கா: அண்ணா நகர், தி. நகர், வேளச்சேரி...)',
     'hero.selectLocality': 'அனைத்து சென்னை பகுதிகள்',
     'hero.allTypes': 'அனைத்து வாடகைகள்',

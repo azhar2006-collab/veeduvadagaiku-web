@@ -119,8 +119,11 @@ export const HomePage: React.FC = () => {
               {t('hero.titleEnd')}
             </h1>
 
-            <p className="max-w-xl mx-auto text-sm sm:text-base text-gray-600 font-normal leading-relaxed">
+            <p className="max-w-xl mx-auto text-sm sm:text-base text-gray-700 font-semibold leading-relaxed">
               {t('hero.desc')}
+            </p>
+            <p className="max-w-xl mx-auto text-xs sm:text-sm text-[#9A7818] font-medium leading-relaxed">
+              {t('hero.descSub')}
             </p>
           </div>
 
