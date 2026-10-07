@@ -56,9 +56,9 @@ export const PaymentResultPage: React.FC = () => {
       <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-100 shadow-xl text-center space-y-6">
         {verifying ? (
           <div className="py-12 space-y-4">
-            <Loader2 className="w-12 h-12 text-emerald-600 animate-spin mx-auto" />
+            <Loader2 className="w-12 h-12 text-[#C5A059] animate-spin mx-auto" />
             <p className="text-sm font-semibold text-gray-700">
-              Confirming payment status with Cashfree...
+              Confirming payment status with Razorpay...
             </p>
           </div>
         ) : isSuccess ? (

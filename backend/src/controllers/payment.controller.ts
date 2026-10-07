@@ -1,131 +1,237 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
 import { successResponse, ApiError } from '../utils/response';
-import { createPaymentOrderSchema, verifyPaymentSchema } from '../utils/validators';
-import cashfree, { isCashfreeConfigured } from '../config/cashfree';
+import razorpay, { razorpayKeyId, razorpayKeySecret, isRazorpayConfigured } from '../config/razorpay';
+import cashfree from '../config/cashfree';
 
-export async function createOrder(req: AuthRequest, res: Response, next: NextFunction) {
+/**
+ * Razorpay: Create Order
+ * POST /api/create-order or POST /api/payments/create-order
+ * Request: { amount (paise), currency, receipt, propertyId, planId }
+ * Returns: { order_id, amount, currency, ... }
+ */
+export async function createRazorpayOrder(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    if (!isCashfreeConfigured()) {
-      throw new ApiError(503, 'Payment gateway not configured yet. Please contact support.');
-    }
-    const { propertyId, planId } = createPaymentOrderSchema.parse(req.body);
-    const owner = await prisma.owner.findUnique({ where: { userId: req.user!.id } });
-    if (!owner) throw new ApiError(403, 'Owner profile not found');
-
-    const property = await prisma.property.findFirst({ where: { id: propertyId, ownerId: owner.id } });
-    if (!property) throw new ApiError(404, 'Property not found or not authorized');
-
-    if (property.status !== 'DRAFT' && property.status !== 'REJECTED') {
-      throw new ApiError(400, 'Payment can only be made for draft or rejected properties');
+    if (!isRazorpayConfigured()) {
+      return res.status(500).json({
+        success: false,
+        message: 'Razorpay is not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env',
+      });
     }
 
-    const plan = await prisma.listingPlan.findFirst({ where: { id: planId, isActive: true } });
-    if (!plan) throw new ApiError(404, 'Listing plan not found');
+    const { propertyId, planId, currency = 'INR', receipt, notes } = req.body;
+    let amount = req.body.amount;
 
-    // Check for pending payment to prevent duplicates
-    const existingPending = await prisma.payment.findFirst({
-      where: { propertyId, paymentStatus: 'PENDING' },
-    });
-    if (existingPending) {
-      throw new ApiError(409, 'A pending payment already exists for this property');
+    let property: any = null;
+    let plan: any = null;
+    let owner: any = null;
+
+    // If propertyId and planId are provided, handle listing plan checkout flow
+    if (propertyId && planId) {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Authentication required for property plan payment',
+        });
+      }
+
+      owner = await prisma.owner.findUnique({ where: { userId: req.user.id } });
+      if (!owner) {
+        return res.status(403).json({
+          success: false,
+          message: 'Owner profile not found',
+        });
+      }
+
+      property = await prisma.property.findFirst({ where: { id: propertyId, ownerId: owner.id } });
+      if (!property) {
+        return res.status(404).json({
+          success: false,
+          message: 'Property not found or not authorized',
+        });
+      }
+
+      if (property.status !== 'DRAFT' && property.status !== 'REJECTED') {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment can only be made for draft or rejected properties',
+        });
+      }
+
+      plan = await prisma.listingPlan.findFirst({ where: { id: planId, isActive: true } });
+      if (!plan) {
+        return res.status(404).json({
+          success: false,
+          message: 'Listing plan not found',
+        });
+      }
+
+      // Convert rupees to paise (e.g., ₹299 -> 29900 paise)
+      amount = Math.round(plan.price * 100);
     }
 
-    const orderId = `vv_${propertyId.slice(0, 8)}_${Date.now()}`;
-    const returnUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/owner/payment/result?status={payment_status}&orderId=${orderId}`;
+    // Amount validation: must be at least 100 paise (₹1)
+    if (amount === undefined || amount === null || typeof amount !== 'number' || isNaN(amount)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Amount is required and must be a number in paise',
+      });
+    }
 
-    // Create Cashfree order
-    const cfResponse = await cashfree.PGCreateOrder({
-      order_id: orderId,
-      order_amount: plan.price,
-      order_currency: 'INR',
-      customer_details: {
-        customer_id: req.user!.id,
-        customer_name: req.user!.name || 'Customer',
-        customer_email: req.user!.email || 'noreply@veeduvadagaiku.com',
-        customer_phone: req.user!.mobile || '9999999999',
+    if (amount < 100) {
+      return res.status(400).json({
+        success: false,
+        message: 'Minimum amount must be at least 100 paise (₹1)',
+      });
+    }
+
+    const orderReceipt = receipt || (propertyId ? `rcpt_prop_${propertyId.slice(0, 8)}_${Date.now()}` : `rcpt_${Date.now()}`);
+
+    const options = {
+      amount: Math.round(amount),
+      currency: currency || 'INR',
+      receipt: String(orderReceipt).slice(0, 40), // Razorpay receipt max 40 chars
+      notes: {
+        ...(notes || {}),
+        ...(propertyId ? { propertyId } : {}),
+        ...(planId ? { planId } : {}),
+        ...(req.user?.id ? { userId: req.user.id } : {}),
       },
-      order_meta: {
-        return_url: returnUrl,
-        notify_url: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/payments/webhook`,
-      },
-      order_note: `Listing plan: ${plan.name} for property ${propertyId}`,
+    };
+
+    let razorpayOrder: any;
+    try {
+      razorpayOrder = await razorpay.orders.create(options);
+    } catch (rzpErr: any) {
+      if (rzpErr?.statusCode === 401) {
+        return res.status(401).json({
+          success: false,
+          message: 'Razorpay authentication failed. Invalid API credentials.',
+        });
+      }
+      return res.status(500).json({
+        success: false,
+        message: rzpErr?.error?.description || rzpErr?.message || 'Failed to create order with Razorpay',
+      });
+    }
+
+    // Save payment record if in property-plan flow
+    let paymentRecord: any = null;
+    if (property && plan && owner && req.user) {
+      paymentRecord = await prisma.payment.create({
+        data: {
+          userId: req.user.id,
+          ownerId: owner.id,
+          propertyId: property.id,
+          planId: plan.id,
+          amount: plan.price,
+          currency: currency || 'INR',
+          razorpayOrderId: razorpayOrder.id,
+          paymentStatus: 'PENDING',
+        },
+      });
+
+      await prisma.property.update({
+        where: { id: property.id },
+        data: { status: 'PAYMENT_PENDING', planId: plan.id },
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      order_id: razorpayOrder.id,
+      id: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      receipt: razorpayOrder.receipt,
+      key_id: razorpayKeyId,
+      paymentId: paymentRecord?.id,
+      message: 'Razorpay order created successfully',
     });
-
-    const cfOrderData = cfResponse.data as any;
-    const paymentSessionId: string = cfOrderData.payment_session_id;
-    const cfOrderId: string = cfOrderData.cf_order_id?.toString() || orderId;
-
-    // Save payment record
-    const payment = await prisma.payment.create({
-      data: {
-        userId: req.user!.id,
-        ownerId: owner.id,
-        propertyId,
-        planId,
-        amount: plan.price,
-        cfOrderId: orderId,
-        paymentSessionId,
-        paymentStatus: 'PENDING',
-      },
-    });
-
-    // Update property status
-    await prisma.property.update({
-      where: { id: propertyId },
-      data: { status: 'PAYMENT_PENDING', planId },
-    });
-
-    res.status(201).json(
-      successResponse({
-        paymentId: payment.id,
-        orderId,
-        cfOrderId,
-        paymentSessionId,
-        amount: plan.price,
-        currency: 'INR',
-      }, 'Payment order created')
-    );
   } catch (error) {
     next(error);
   }
 }
 
-export async function verifyPayment(req: AuthRequest, res: Response, next: NextFunction) {
+/**
+ * Razorpay: Verify Payment Signature
+ * POST /api/verify-payment or POST /api/payments/verify
+ * Algorithm: HMAC-SHA256(order_id + "|" + payment_id, KEY_SECRET)
+ */
+export async function verifyRazorpayPayment(req: Request, res: Response, next: NextFunction) {
   try {
-    const { orderId, paymentId } = verifyPaymentSchema.parse(req.body);
-
-    const payment = await prisma.payment.findFirst({
-      where: paymentId ? { id: paymentId, cfOrderId: orderId } : { cfOrderId: orderId },
-      include: { plan: true },
-    });
-    if (!payment) throw new ApiError(404, 'Payment record not found');
-
-    // If already verified via webhook or previous check, return immediately
-    if (payment.paymentStatus === 'SUCCESS') {
-      res.json(successResponse({ payment }, 'Payment already verified successfully.'));
-      return;
+    if (!isRazorpayConfigured()) {
+      return res.status(500).json({
+        success: false,
+        message: 'Razorpay is not configured on the server',
+      });
     }
 
-    // Fetch payment status from Cashfree
-    const cfRes = await cashfree.PGOrderFetchPayments(orderId);
-    const paymentsData = cfRes.data as any[];
+    const order_id = req.body.razorpay_order_id || req.body.order_id;
+    const payment_id = req.body.razorpay_payment_id || req.body.payment_id;
+    const signature = req.body.razorpay_signature || req.body.signature;
 
-    const successfulPayment = Array.isArray(paymentsData)
-      ? paymentsData.find((p: any) => p.payment_status === 'SUCCESS')
-      : null;
+    if (!order_id || !payment_id || !signature) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required parameters. razorpay_order_id, razorpay_payment_id, and razorpay_signature are required.',
+      });
+    }
 
-    if (successfulPayment) {
-      const [updatedPayment] = await prisma.$transaction([
+    // Generate expected HMAC-SHA256 signature
+    const text = `${order_id}|${payment_id}`;
+    const generatedSignature = crypto
+      .createHmac('sha256', razorpayKeySecret)
+      .update(text)
+      .digest('hex');
+
+    const isMatch = generatedSignature === signature;
+
+    if (!isMatch) {
+      // Find matching payment record if any and mark as FAILED
+      const payment = await prisma.payment.findFirst({
+        where: { razorpayOrderId: order_id },
+      });
+
+      if (payment) {
+        await prisma.payment.update({
+          where: { id: payment.id },
+          data: {
+            paymentStatus: 'FAILED',
+            failureReason: 'Signature mismatch verification failed',
+          },
+        });
+
+        await prisma.property.update({
+          where: { id: payment.propertyId },
+          data: { status: 'DRAFT' },
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: 'Payment verification failed: Signature mismatch',
+      });
+    }
+
+    // Signatures match! Update database record if exists
+    const payment = await prisma.payment.findFirst({
+      where: { razorpayOrderId: order_id },
+      include: { plan: true },
+    });
+
+    let updatedPayment: any = null;
+    if (payment) {
+      [updatedPayment] = await prisma.$transaction([
         prisma.payment.update({
           where: { id: payment.id },
           data: {
             paymentStatus: 'SUCCESS',
-            transactionId: successfulPayment.cf_payment_id?.toString(),
-            paymentMethod: successfulPayment.payment_method
-              ? JSON.stringify(successfulPayment.payment_method)
-              : null,
+            razorpayPaymentId: payment_id,
+            razorpaySignature: signature,
+            transactionId: payment_id,
           },
         }),
         prisma.property.update({
@@ -133,25 +239,28 @@ export async function verifyPayment(req: AuthRequest, res: Response, next: NextF
           data: { status: 'PENDING_APPROVAL' },
         }),
       ]);
-
-      res.json(successResponse({ payment: updatedPayment }, 'Payment verified. Property is now pending admin approval.'));
-    } else {
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { paymentStatus: 'FAILED', failureReason: 'Payment not successful per Cashfree' },
-      });
-      await prisma.property.update({
-        where: { id: payment.propertyId },
-        data: { status: 'DRAFT' },
-      });
-      throw new ApiError(400, 'Payment was not successful. Please try again.');
     }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Payment verified successfully',
+      order_id,
+      payment_id,
+      payment: updatedPayment || undefined,
+    });
   } catch (error) {
     next(error);
   }
 }
 
-export async function cashfreeWebhook(req: AuthRequest, res: Response, next: NextFunction) {
+// Aliases for backwards compatibility with existing route references
+export const createOrder = createRazorpayOrder;
+export const verifyPayment = verifyRazorpayPayment;
+
+/**
+ * Webhook handler for Cashfree (legacy fallback)
+ */
+export async function cashfreeWebhook(req: Request, res: Response, next: NextFunction) {
   try {
     const rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
     const signature = req.headers['x-webhook-signature'] as string;
@@ -199,33 +308,15 @@ export async function cashfreeWebhook(req: AuthRequest, res: Response, next: Nex
       }
     }
 
-    if (event === 'PAYMENT_FAILED_WEBHOOK' && orderData?.order_id) {
-      const payment = await prisma.payment.findFirst({
-        where: { cfOrderId: orderData.order_id },
-      });
-      if (payment) {
-        await prisma.$transaction([
-          prisma.payment.update({
-            where: { id: payment.id },
-            data: {
-              paymentStatus: 'FAILED',
-              failureReason: paymentData?.error_details?.error_description || 'Payment failed',
-            },
-          }),
-          prisma.property.update({
-            where: { id: payment.propertyId },
-            data: { status: 'DRAFT' },
-          }),
-        ]);
-      }
-    }
-
     res.json({ received: true });
   } catch (error) {
     next(error);
   }
 }
 
+/**
+ * Payment history for authenticated owner
+ */
 export async function getPaymentHistory(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const owner = await prisma.owner.findUnique({ where: { userId: req.user!.id } });

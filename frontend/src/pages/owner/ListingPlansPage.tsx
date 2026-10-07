@@ -5,6 +5,7 @@ import { planService } from '../../services/plan.service';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
 import { Check, Zap, Sparkles, ShieldCheck } from 'lucide-react';
+import { RazorpayCheckoutButton } from '../../components/payment/RazorpayCheckoutButton';
 
 export const ListingPlansPage: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -99,11 +100,30 @@ export const ListingPlansPage: React.FC = () => {
         </div>
       )}
 
-      <div className="p-6 bg-emerald-50/60 rounded-3xl border border-emerald-100 flex items-center gap-4 text-xs text-emerald-950">
-        <ShieldCheck className="w-6 h-6 text-emerald-600 shrink-0" />
-        <p className="leading-relaxed">
-          <strong>Safe & Secure Indian Payments:</strong> All transactions are processed via Cashfree (UPI, Cards, Net Banking) with instant server-side verification. Your property moves immediately to the admin verification queue.
-        </p>
+      <div className="p-6 bg-[#FCFAF5] rounded-3xl border border-[#E8DFC8] space-y-4">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="w-6 h-6 text-[#C5A059] shrink-0" />
+          <div>
+            <h3 className="text-sm font-bold text-gray-900">Razorpay Standard Checkout</h3>
+            <p className="text-xs text-gray-600">
+              Safe & Secure Indian Payments: All transactions are processed via Razorpay (UPI, Cards, Net Banking, Wallets) with instant HMAC-SHA256 signature verification.
+            </p>
+          </div>
+        </div>
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#EFE8D8]">
+          <span className="text-xs text-gray-500 font-medium">
+            Demo & Testing: Verify Razorpay Standard Checkout modal (₹1 minimum test)
+          </span>
+          <div className="w-full sm:w-auto">
+            <RazorpayCheckoutButton
+              amount={100}
+              description="Razorpay Checkout Test"
+              className="px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-sm hover:brightness-105 active:scale-95 transition"
+            >
+              Test Razorpay Checkout (₹1)
+            </RazorpayCheckoutButton>
+          </div>
+        </div>
       </div>
     </div>
   );

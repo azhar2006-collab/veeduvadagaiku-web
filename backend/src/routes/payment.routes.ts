@@ -1,15 +1,24 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth';
+import { authenticate, optionalAuth } from '../middleware/auth';
 import { requireOwner } from '../middleware/ownerAuth';
-import { createOrder, verifyPayment, cashfreeWebhook, getPaymentHistory } from '../controllers/payment.controller';
+import {
+  createRazorpayOrder,
+  verifyRazorpayPayment,
+  cashfreeWebhook,
+  getPaymentHistory,
+} from '../controllers/payment.controller';
 
 const router = Router();
 
-// Cashfree webhook — no auth required, signature verified inside controller
-router.post('/webhook', cashfreeWebhook as any);
+// Razorpay standard checkout endpoints
+router.post('/create-order', optionalAuth, createRazorpayOrder);
+router.post('/verify', verifyRazorpayPayment);
+router.post('/verify-payment', verifyRazorpayPayment);
 
-router.post('/create-order', authenticate, requireOwner, createOrder);
-router.post('/verify', authenticate, requireOwner, verifyPayment);
+// Payment history
 router.get('/history', authenticate, requireOwner, getPaymentHistory);
+
+// Legacy Cashfree webhook
+router.post('/webhook', cashfreeWebhook as any);
 
 export default router;
