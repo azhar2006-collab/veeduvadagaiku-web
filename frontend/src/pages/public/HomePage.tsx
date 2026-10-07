@@ -3,14 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Search,
   MapPin,
-  Building2,
-  Store,
-  Users,
-  PartyPopper,
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  Layers,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
@@ -91,14 +86,14 @@ export const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-10 sm:space-y-20 pb-16">
+    <div className="space-y-6 sm:space-y-16 pb-12">
       <SEOHead
         title="Find Your Next Home or Shop in Chennai | Veedu Vadagaiku"
         description="Chennai's premier rental marketplace. Verified houses, apartments and commercial shops direct from owners. Zero brokerage."
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
-      <section className="relative overflow-x-hidden pt-4 pb-6 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
+      <section className="relative overflow-x-hidden pt-4 pb-4 sm:pb-6 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
         {/* Subtle decorative gold radial glows */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
         <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 65%)' }} />
@@ -128,9 +123,9 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* NoBroker-style Tab Switcher with 4 Categories + Swipe Deck */}
-          <div className="flex items-center justify-center overflow-x-auto py-1">
+          <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar py-1 px-4 sm:px-0">
             <div
-              className="inline-flex items-center p-1 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap"
+              className="inline-flex items-center p-1 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap shrink-0 sm:mx-auto"
               role="tablist"
               aria-label="Browse mode"
             >
@@ -142,7 +137,7 @@ export const HomePage: React.FC = () => {
                   setViewMode('search');
                   setSelectedCategory('');
                 }}
-                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'search' && selectedCategory === ''
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
@@ -287,15 +282,6 @@ export const HomePage: React.FC = () => {
                     {t('filter.propertyCategory')}
                   </label>
                   <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
-                    {selectedCategory === 'SHOP' ? (
-                      <Store className="w-4 h-4 text-[#C5A059] shrink-0" />
-                    ) : selectedCategory === 'HOSTEL' ? (
-                      <Users className="w-4 h-4 text-[#C5A059] shrink-0" />
-                    ) : selectedCategory === 'MARRIAGE_HALL' ? (
-                      <PartyPopper className="w-4 h-4 text-[#C5A059] shrink-0" />
-                    ) : (
-                      <Building2 className="w-4 h-4 text-[#C5A059] shrink-0" />
-                    )}
                     <select
                       value={selectedCategory}
                       onChange={(e) => setSelectedCategory(e.target.value as any)}
@@ -347,34 +333,34 @@ export const HomePage: React.FC = () => {
           )}
 
           {/* NoBroker-style Trust Guarantee Badges */}
-          <div className="pt-1 sm:pt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 max-w-3xl mx-auto">
-            <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-9 h-9 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-5 h-5 text-[#C5A059]" />
+          <div className="pt-1 sm:pt-3 grid grid-cols-3 gap-1.5 sm:gap-3 max-w-3xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
               </div>
-              <div className="text-left">
-                <p className="text-xs font-bold text-gray-900">{t('hero.zeroBrokerage')}</p>
-                <p className="text-[11px] text-gray-500">{t('hero.zeroBrokerageDesc')}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-9 h-9 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-5 h-5 text-[#C5A059]" />
-              </div>
-              <div className="text-left">
-                <p className="text-xs font-bold text-gray-900">{t('hero.verifiedListings')}</p>
-                <p className="text-[11px] text-gray-500">{t('hero.verifiedListingsDesc')}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.zeroBrokerage')}</p>
+                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.zeroBrokerageDesc')}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-9 h-9 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-5 h-5 text-[#C5A059]" />
+            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
               </div>
-              <div className="text-left">
-                <p className="text-xs font-bold text-gray-900">{t('hero.instantConnect')}</p>
-                <p className="text-[11px] text-gray-500">{t('hero.instantConnectDesc')}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.verifiedListings')}</p>
+                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.verifiedListingsDesc')}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.instantConnect')}</p>
+                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.instantConnectDesc')}</p>
               </div>
             </div>
           </div>

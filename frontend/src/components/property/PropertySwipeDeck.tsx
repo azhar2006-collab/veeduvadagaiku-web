@@ -6,8 +6,6 @@ import {
   RotateCcw,
   Sparkles,
   MapPin,
-  Building2,
-  Store,
   Bed,
   Maximize2,
   Sofa,
@@ -263,25 +261,23 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
           <button
             type="button"
             onClick={() => onFilterChange?.('HOUSE')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
               selectedType === 'HOUSE'
                 ? 'bg-emerald-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Building2 className="w-3.5 h-3.5" />
             <span>Houses</span>
           </button>
           <button
             type="button"
             onClick={() => onFilterChange?.('SHOP')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${
               selectedType === 'SHOP'
                 ? 'bg-emerald-600 text-white shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Store className="w-3.5 h-3.5" />
             <span>Shops</span>
           </button>
         </div>
@@ -475,17 +471,11 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
 
                   {/* Top Badges */}
                   <div className="absolute top-8 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-900/80 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded-full shadow-lg">
+                    <span className="inline-flex items-center px-3 py-1 bg-gray-900/80 backdrop-blur-md border border-white/20 text-white text-xs font-medium rounded-full shadow-lg">
                       {currentProperty.propertyType === 'HOUSE' ? (
-                        <>
-                          <Building2 className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Residential House</span>
-                        </>
+                        <span>Residential House</span>
                       ) : (
-                        <>
-                          <Store className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Commercial Shop</span>
-                        </>
+                        <span>Commercial Shop</span>
                       )}
                     </span>
 
