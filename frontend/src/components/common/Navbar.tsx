@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, MapPin, ChevronDown } from 'lucide-react';
+import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -60,6 +60,20 @@ export const Navbar: React.FC = () => {
             >
               <Store className="w-4 h-4 text-[#C5A059]" />
               {t('nav.shops')}
+            </Link>
+            <Link
+              to="/hostels"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
+            >
+              <Users className="w-4 h-4 text-[#C5A059]" />
+              {t('nav.hostels')}
+            </Link>
+            <Link
+              to="/marriage-halls"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
+            >
+              <Sparkles className="w-4 h-4 text-[#C5A059]" />
+              {t('nav.marriageHalls')}
             </Link>
             <Link
               to="/about"
@@ -263,6 +277,20 @@ export const Navbar: React.FC = () => {
             className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             {t('nav.shops')}
+          </Link>
+          <Link
+            to="/hostels"
+            onClick={() => setIsOpen(false)}
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+          >
+            {t('nav.hostels')}
+          </Link>
+          <Link
+            to="/marriage-halls"
+            onClick={() => setIsOpen(false)}
+            className="block px-3 py-2 text-base font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+          >
+            {t('nav.marriageHalls')}
           </Link>
           <Link
             to="/about"

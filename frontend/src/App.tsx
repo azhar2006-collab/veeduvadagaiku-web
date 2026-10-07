@@ -12,6 +12,8 @@ import { HomePage } from './pages/public/HomePage';
 import { PropertiesPage } from './pages/public/PropertiesPage';
 import { HousesPage } from './pages/public/HousesPage';
 import { ShopsPage } from './pages/public/ShopsPage';
+import { HostelsPage } from './pages/public/HostelsPage';
+import { MarriageHallsPage } from './pages/public/MarriageHallsPage';
 import { PropertyDetailPage } from './pages/public/PropertyDetailPage';
 import { AboutPage } from './pages/public/AboutPage';
 import { ContactPage } from './pages/public/ContactPage';
@@ -77,6 +79,8 @@ export const App: React.FC = () => {
         <Route path="/properties" element={<PropertiesPage />} />
         <Route path="/houses" element={<HousesPage />} />
         <Route path="/shops" element={<ShopsPage />} />
+        <Route path="/hostels" element={<HostelsPage />} />
+        <Route path="/marriage-halls" element={<MarriageHallsPage />} />
         <Route path="/property/:id" element={<PropertyDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />

@@ -5,6 +5,7 @@ import { Property } from '../../types';
 import { useFavourites } from '../../hooks/useFavourites';
 import { useLanguage } from '../../context/LanguageContext';
 import { getWhatsAppShareUrl } from '../../utils/shareUtils';
+import { getPropertyCategory, getCategoryBadgeInfo } from '../../utils/categoryUtils';
 
 interface PropertyCardProps {
   property: Property;
@@ -69,19 +70,17 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             0% Brokerage
           </span>
 
-          <div className="flex items-center gap-1 px-2.5 py-1 bg-gray-900/80 backdrop-blur-md text-white text-[11px] font-semibold rounded-lg shadow-xs">
-            {property.propertyType === 'HOUSE' ? (
-              <>
-                <Building2 className="w-3 h-3 text-[#D4AF37]" />
-                <span>{t('card.house')}</span>
-              </>
-            ) : (
-              <>
-                <Store className="w-3 h-3 text-[#D4AF37]" />
-                <span>{t('card.shop')}</span>
-              </>
-            )}
-          </div>
+          {(() => {
+            const category = getPropertyCategory(property);
+            const badge = getCategoryBadgeInfo(category, lang);
+            const BadgeIcon = badge.Icon;
+            return (
+              <div className={`flex items-center gap-1 px-2.5 py-1 ${badge.badgeBg} ${badge.badgeText} border ${badge.badgeBorder} backdrop-blur-md text-[11px] font-semibold rounded-lg shadow-xs`}>
+                <BadgeIcon className="w-3 h-3 text-[#D4AF37]" />
+                <span>{badge.label}</span>
+              </div>
+            );
+          })()}
 
           {isTamil && (
             <span className="px-2 py-1 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white text-[10px] font-bold rounded-lg shadow-xs">
@@ -139,12 +138,43 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </div>
 
           <div className="px-1">
-            <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">
-              {property.propertyType === 'HOUSE' ? t('card.bhk') : t('card.rooms')}
-            </span>
-            <span className="font-bold text-gray-800 truncate block mt-0.5">
-              {property.bedrooms ? `${property.bedrooms} BHK` : `${property.rooms || 1} Rooms`}
-            </span>
+            {(() => {
+              const cat = getPropertyCategory(property);
+              if (cat === 'MARRIAGE_HALL') {
+                return (
+                  <>
+                    <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">
+                      {lang === 'ta' ? 'அரங்கம்' : 'Hall Space'}
+                    </span>
+                    <span className="font-bold text-gray-800 truncate block mt-0.5">
+                      {property.rooms ? `${property.rooms * 100} Pax` : 'Grand Hall'}
+                    </span>
+                  </>
+                );
+              }
+              if (cat === 'HOSTEL') {
+                return (
+                  <>
+                    <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">
+                      {lang === 'ta' ? 'படுக்கை' : 'Sharing / Beds'}
+                    </span>
+                    <span className="font-bold text-gray-800 truncate block mt-0.5">
+                      {property.bedrooms ? `${property.bedrooms} Sharing` : `${property.rooms || 1} Rooms`}
+                    </span>
+                  </>
+                );
+              }
+              return (
+                <>
+                  <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">
+                    {property.propertyType === 'HOUSE' ? t('card.bhk') : t('card.rooms')}
+                  </span>
+                  <span className="font-bold text-gray-800 truncate block mt-0.5">
+                    {property.bedrooms ? `${property.bedrooms} BHK` : `${property.rooms || 1} Rooms`}
+                  </span>
+                </>
+              );
+            })()}
           </div>
 
           <div className="px-1">

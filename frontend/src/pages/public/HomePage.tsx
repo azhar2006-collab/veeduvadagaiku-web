@@ -5,9 +5,12 @@ import {
   MapPin,
   Building2,
   Store,
+  Users,
+  PartyPopper,
   CheckCircle2,
   ArrowRight,
   Sparkles,
+  Layers,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
@@ -18,11 +21,11 @@ import { useLanguage } from '../../context/LanguageContext';
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
-  const [viewMode, setViewMode] = useState<'swipe' | 'search'>('swipe');
+  const [viewMode, setViewMode] = useState<'search' | 'swipe'>('search');
+  const [selectedCategory, setSelectedCategory] = useState<'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' | ''>('');
   const [deckType, setDeckType] = useState<'HOUSE' | 'SHOP' | ''>('');
 
   const [locality, setLocality] = useState('');
-  const [propertyType, setPropertyType] = useState<'HOUSE' | 'SHOP' | ''>('');
   const [maxRent, setMaxRent] = useState('');
 
   const { data: localitiesRes } = useLocalities();
@@ -59,7 +62,15 @@ export const HomePage: React.FC = () => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (locality) params.append('locality', locality);
-    if (propertyType) params.append('propertyType', propertyType);
+    if (selectedCategory === 'HOUSE') {
+      params.append('propertyType', 'HOUSE');
+    } else if (selectedCategory === 'SHOP') {
+      params.append('propertyType', 'SHOP');
+    } else if (selectedCategory === 'HOSTEL') {
+      params.append('category', 'HOSTEL');
+    } else if (selectedCategory === 'MARRIAGE_HALL') {
+      params.append('category', 'MARRIAGE_HALL');
+    }
     if (maxRent) params.append('maxRent', maxRent);
     navigate(`/properties?${params.toString()}`);
   };
@@ -87,14 +98,14 @@ export const HomePage: React.FC = () => {
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
-      <section className="relative overflow-x-hidden pt-8 pb-16 md:pt-12 md:pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
+      <section className="relative overflow-x-hidden pt-6 pb-10 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
         {/* Subtle decorative gold radial glows */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
         <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 65%)' }} />
 
-        <div className="relative max-w-5xl mx-auto space-y-7 sm:space-y-8">
+        <div className="relative max-w-5xl mx-auto space-y-6 sm:space-y-7">
           {/* Top Tagline */}
-          <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto">
+          <div className="text-center space-y-2 sm:space-y-3 max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[11px] sm:text-xs font-bold tracking-wide shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
               <span>{t('hero.badge')}</span>
@@ -113,62 +124,100 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* NoBroker-style Tab Switcher */}
-          <div className="flex items-center justify-center">
+          {/* NoBroker-style Tab Switcher with 4 Categories + Swipe Deck */}
+          <div className="flex items-center justify-center overflow-x-auto py-1">
             <div
-              className="inline-flex items-center p-1 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs"
+              className="inline-flex items-center p-1 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap"
               role="tablist"
               aria-label="Browse mode"
             >
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && propertyType !== 'SHOP'}
+                aria-selected={viewMode === 'search' && selectedCategory === ''}
                 onClick={() => {
                   setViewMode('search');
-                  setPropertyType('');
+                  setSelectedCategory('');
                 }}
-                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  viewMode === 'search' && propertyType === ''
+                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  viewMode === 'search' && selectedCategory === ''
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <span>{lang === 'ta' ? 'அனைத்து வாடகை' : 'All Rentals'}</span>
+                <span>{lang === 'ta' ? 'அனைத்தும்' : 'All Rentals'}</span>
               </button>
 
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && propertyType === 'HOUSE'}
+                aria-selected={viewMode === 'search' && selectedCategory === 'HOUSE'}
                 onClick={() => {
                   setViewMode('search');
-                  setPropertyType('HOUSE');
+                  setSelectedCategory('HOUSE');
                 }}
-                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  viewMode === 'search' && propertyType === 'HOUSE'
+                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  viewMode === 'search' && selectedCategory === 'HOUSE'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
+                <Building2 className="w-3.5 h-3.5" />
                 <span>{t('card.house')}</span>
               </button>
 
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && propertyType === 'SHOP'}
+                aria-selected={viewMode === 'search' && selectedCategory === 'SHOP'}
                 onClick={() => {
                   setViewMode('search');
-                  setPropertyType('SHOP');
+                  setSelectedCategory('SHOP');
                 }}
-                className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
-                  viewMode === 'search' && propertyType === 'SHOP'
+                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  viewMode === 'search' && selectedCategory === 'SHOP'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
+                <Store className="w-3.5 h-3.5" />
                 <span>{t('card.shop')}</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'search' && selectedCategory === 'HOSTEL'}
+                onClick={() => {
+                  setViewMode('search');
+                  setSelectedCategory('HOSTEL');
+                }}
+                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  viewMode === 'search' && selectedCategory === 'HOSTEL'
+                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>{t('card.hostel')}</span>
+              </button>
+
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'search' && selectedCategory === 'MARRIAGE_HALL'}
+                onClick={() => {
+                  setViewMode('search');
+                  setSelectedCategory('MARRIAGE_HALL');
+                }}
+                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                  viewMode === 'search' && selectedCategory === 'MARRIAGE_HALL'
+                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <PartyPopper className="w-3.5 h-3.5" />
+                <span>{t('card.marriageHall')}</span>
               </button>
 
               <button
@@ -176,12 +225,13 @@ export const HomePage: React.FC = () => {
                 role="tab"
                 aria-selected={viewMode === 'swipe'}
                 onClick={() => setViewMode('swipe')}
-                className={`hidden sm:flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 ${
+                className={`hidden md:flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'swipe'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
+                <Layers className="w-3.5 h-3.5" />
                 <span>{t('home.cardDeck')}</span>
               </button>
             </div>
@@ -206,7 +256,7 @@ export const HomePage: React.FC = () => {
             </div>
           ) : (
             /* NoBroker-style Classic Search Box */
-            <div className="pt-2 max-w-4xl mx-auto animate-fade-in">
+            <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
               <form
                 onSubmit={handleSearch}
                 className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl shadow-[#D4AF37]/10 border border-[#E8DFC8] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-center"
@@ -233,25 +283,31 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Property Type Dropdown */}
+                {/* Property Category Dropdown */}
                 <div className="relative text-left">
                   <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider mb-1 ml-1">
-                    {t('filter.propertyType')}
+                    {t('filter.propertyCategory')}
                   </label>
                   <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
-                    {propertyType === 'SHOP' ? (
+                    {selectedCategory === 'SHOP' ? (
                       <Store className="w-4 h-4 text-[#C5A059] shrink-0" />
+                    ) : selectedCategory === 'HOSTEL' ? (
+                      <Users className="w-4 h-4 text-[#C5A059] shrink-0" />
+                    ) : selectedCategory === 'MARRIAGE_HALL' ? (
+                      <PartyPopper className="w-4 h-4 text-[#C5A059] shrink-0" />
                     ) : (
                       <Building2 className="w-4 h-4 text-[#C5A059] shrink-0" />
                     )}
                     <select
-                      value={propertyType}
-                      onChange={(e) => setPropertyType(e.target.value as any)}
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value as any)}
                       className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
                     >
                       <option value="">{t('hero.allTypes')}</option>
                       <option value="HOUSE">{t('card.house')}</option>
                       <option value="SHOP">{t('card.shop')}</option>
+                      <option value="HOSTEL">{t('card.hostel')}</option>
+                      <option value="MARRIAGE_HALL">{t('card.marriageHall')}</option>
                     </select>
                   </div>
                 </div>
@@ -327,58 +383,102 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Browse By Category Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 relative z-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      {/* Browse By Category Section - 4 Categories */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-5 sm:-mt-6 relative z-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {/* 1. Houses */}
           <Link
             to="/houses"
-            className="group bg-white rounded-3xl p-6 sm:p-8 border border-[#EFE8D8] shadow-md hover:shadow-xl hover:border-[#C5A059] transition-all flex items-center justify-between"
+            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-2">
-              <div className="w-12 h-12 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
-                <Building2 className="w-6 h-6 text-[#C5A059]" />
+            <div className="space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
+                <Building2 className="w-5 h-5 text-[#C5A059]" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
                 {t('nav.houses')}
               </h3>
-              <p className="text-sm text-gray-600 max-w-xs">
+              <p className="text-xs text-gray-600 leading-relaxed">
                 {lang === 'ta'
-                  ? 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான தனி வீடுகள், அபார்ட்மெண்ட்கள் மற்றும் வில்லாக்கள்.'
-                  : 'Independent houses, apartments, and villas for families & bachelors in Chennai.'}
+                  ? 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான தனி வீடுகள், பிளாட்டுகள் மற்றும் வில்லாக்கள்.'
+                  : 'Independent houses, apartments, and villas for families & bachelors.'}
               </p>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-2">
-                <span>{t('home.viewAll')}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-              </div>
             </div>
-            <div className="hidden sm:flex w-16 h-16 rounded-2xl bg-[#FCFAF5] text-[#C5A059] border border-[#E8DFC8] items-center justify-center group-hover:scale-105 group-hover:bg-[#FAF4E6] transition">
-              <Building2 className="w-8 h-8" />
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+              <span>{t('home.viewAll')}</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
             </div>
           </Link>
 
+          {/* 2. Commercial Shops */}
           <Link
             to="/shops"
-            className="group bg-white rounded-3xl p-6 sm:p-8 border border-[#EFE8D8] shadow-md hover:shadow-xl hover:border-[#C5A059] transition-all flex items-center justify-between"
+            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-2">
-              <div className="w-12 h-12 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
-                <Store className="w-6 h-6 text-[#C5A059]" />
+            <div className="space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
+                <Store className="w-5 h-5 text-[#C5A059]" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
                 {t('nav.shops')}
               </h3>
-              <p className="text-sm text-gray-600 max-w-xs">
+              <p className="text-xs text-gray-600 leading-relaxed">
                 {lang === 'ta'
-                  ? 'அதிக மக்கள் நடமாட்டம் உள்ள மெயின் ரோடு வணிக கடைகள், ஷோரூம்கள் மற்றும் அலுவலக இடங்கள்.'
+                  ? 'அதிக மக்கள் நடமாட்டம் உள்ள மெயின் ரோடு வணிக கடைகள் & அலுவலக இடங்கள்.'
                   : 'Retail showrooms, office spaces, and road-facing shops in prime commercial hubs.'}
               </p>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-2">
-                <span>{t('home.viewAll')}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-              </div>
             </div>
-            <div className="hidden sm:flex w-16 h-16 rounded-2xl bg-[#FCFAF5] text-[#C5A059] border border-[#E8DFC8] items-center justify-center group-hover:scale-105 group-hover:bg-[#FAF4E6] transition">
-              <Store className="w-8 h-8" />
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+              <span>{t('home.viewAll')}</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+            </div>
+          </Link>
+
+          {/* 3. Hostels & PG */}
+          <Link
+            to="/hostels"
+            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
+                <Users className="w-5 h-5 text-[#C5A059]" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+                {t('nav.hostels')}
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {lang === 'ta'
+                  ? 'மாணவர்கள் மற்றும் பணிபுரிபவர்களுக்கான பாதுகாப்பான மகளிர் & ஆடவர் விடுதிகள், மேன்ஷன்.'
+                  : 'Safe, verified Gents & Ladies hostels, PG stays, and mansions in Chennai.'}
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+              <span>{t('home.viewAll')}</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+            </div>
+          </Link>
+
+          {/* 4. Marriage Halls / Kalyana Mandapam */}
+          <Link
+            to="/marriage-halls"
+            className="group bg-white rounded-2xl p-5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
+          >
+            <div className="space-y-2.5">
+              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
+                <PartyPopper className="w-5 h-5 text-[#C5A059]" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+                {t('nav.marriageHalls')}
+              </h3>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                {lang === 'ta'
+                  ? 'திருமணம், வரவேற்பு மற்றும் விசேஷங்களுக்கான பிரம்மாண்ட மண்டபங்கள் & மினி ஹால்கள்.'
+                  : 'Spacious wedding halls, mini-mandapams, and party halls across Chennai.'}
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+              <span>{t('home.viewAll')}</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
             </div>
           </Link>
         </div>

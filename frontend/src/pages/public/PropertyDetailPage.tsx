@@ -29,6 +29,7 @@ import { PropertyImageGallery } from '../../components/property/PropertyImageGal
 import { PhoneLoginModal } from '../../components/auth/PhoneLoginModal';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
+import { getPropertyCategory, getCategoryBadgeInfo } from '../../utils/categoryUtils';
 import toast from 'react-hot-toast';
 
 export const PropertyDetailPage: React.FC = () => {
@@ -148,14 +149,25 @@ export const PropertyDetailPage: React.FC = () => {
       {/* Top Breadcrumb & Actions Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100">
         <div className="flex items-center gap-2 text-xs font-semibold text-gray-500">
-          <Link to="/" className="hover:text-orange-600">Home</Link>
+          <Link to="/" className="hover:text-[#B08B40]">Home</Link>
           <span>/</span>
-          <Link
-            to={property.propertyType === 'HOUSE' ? '/houses' : '/shops'}
-            className="hover:text-orange-600"
-          >
-            {property.propertyType === 'HOUSE' ? t('nav.houses') : t('nav.shops')}
-          </Link>
+          {(() => {
+            const cat = getPropertyCategory(property);
+            const badge = getCategoryBadgeInfo(cat, lang);
+            const route =
+              cat === 'HOSTEL'
+                ? '/hostels'
+                : cat === 'MARRIAGE_HALL'
+                ? '/marriage-halls'
+                : cat === 'SHOP'
+                ? '/shops'
+                : '/houses';
+            return (
+              <Link to={route} className="hover:text-[#B08B40]">
+                {badge.label}
+              </Link>
+            );
+          })()}
           <span>/</span>
           <span className="text-gray-900 truncate max-w-xs">{property.locality}</span>
         </div>
@@ -204,19 +216,17 @@ export const PropertyDetailPage: React.FC = () => {
           {/* Header & Badges */}
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-orange-100 text-orange-800">
-                {property.propertyType === 'HOUSE' ? (
-                  <>
-                    <Building2 className="w-3.5 h-3.5" />
-                    {t('card.house')}
-                  </>
-                ) : (
-                  <>
-                    <Store className="w-3.5 h-3.5" />
-                    {t('card.shop')}
-                  </>
-                )}
-              </span>
+              {(() => {
+                const cat = getPropertyCategory(property);
+                const badge = getCategoryBadgeInfo(cat, lang);
+                const BadgeIcon = badge.Icon;
+                return (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8]">
+                    <BadgeIcon className="w-3.5 h-3.5 text-[#C5A059]" />
+                    {badge.label}
+                  </span>
+                );
+              })()}
 
               {isTamil && (
                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-[#C59B27] text-white">

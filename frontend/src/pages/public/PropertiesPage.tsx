@@ -7,6 +7,7 @@ import { PropertyFilters as FilterType } from '../../types';
 import { SEOHead } from '../../components/common/SEOHead';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { filterByExtendedCategory } from '../../utils/categoryUtils';
 
 export const PropertiesPage: React.FC = () => {
   const { t } = useLanguage();
@@ -15,6 +16,7 @@ export const PropertiesPage: React.FC = () => {
   // Read initial filters from search params
   const [filters, setFilters] = useState<FilterType>({
     propertyType: (searchParams.get('propertyType') as any) || '',
+    category: (searchParams.get('category') as any) || '',
     locality: searchParams.get('locality') || '',
     minRent: searchParams.get('minRent') ? Number(searchParams.get('minRent')) : '',
     maxRent: searchParams.get('maxRent') ? Number(searchParams.get('maxRent')) : '',
@@ -38,6 +40,14 @@ export const PropertiesPage: React.FC = () => {
 
   const { data, isLoading } = useProperties(filters);
 
+  const rawProperties = data?.data || [];
+  const displayProperties = React.useMemo(() => {
+    if (filters.category) {
+      return filterByExtendedCategory(rawProperties, filters.category);
+    }
+    return rawProperties;
+  }, [rawProperties, filters.category]);
+
   const handleFilterChange = (newFilters: FilterType) => {
     setFilters(newFilters);
   };
@@ -45,6 +55,7 @@ export const PropertiesPage: React.FC = () => {
   const handleReset = () => {
     setFilters({
       propertyType: '',
+      category: '',
       locality: '',
       minRent: '',
       maxRent: '',
@@ -108,7 +119,7 @@ export const PropertiesPage: React.FC = () => {
 
         {/* Property Grid & Pagination */}
         <div className="lg:col-span-3 space-y-8">
-          <PropertyGrid properties={data?.data || []} isLoading={isLoading} />
+          <PropertyGrid properties={displayProperties} isLoading={isLoading} />
 
           {/* Pagination Controls */}
           {pagination && pagination.totalPages > 1 && (

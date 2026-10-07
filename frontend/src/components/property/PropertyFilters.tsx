@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Filter, RotateCcw, Building2, Store, Check } from 'lucide-react';
+import { Filter, RotateCcw, Building2, Store, Users, PartyPopper, Check } from 'lucide-react';
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
 import { useLanguage } from '../../context/LanguageContext';
@@ -72,7 +72,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           )}
         </div>
 
-        {/* Property Type Radio */}
+        {/* Property Category Radio */}
         <div>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
             {t('filter.propertyCategory')}
@@ -80,31 +80,86 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
-              onClick={() =>
-                handleFieldChange('propertyType', filters.propertyType === 'HOUSE' ? '' : 'HOUSE')
-              }
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold border transition ${
-                filters.propertyType === 'HOUSE'
-                  ? 'bg-orange-50 border-orange-500 text-orange-600 shadow-sm'
-                  : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+              onClick={() => {
+                const isSelected = filters.category === 'HOUSE' || (!filters.category && filters.propertyType === 'HOUSE');
+                onChange({
+                  ...filters,
+                  propertyType: isSelected ? undefined : 'HOUSE',
+                  category: isSelected ? undefined : 'HOUSE',
+                  page: 1,
+                });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
+                filters.category === 'HOUSE' || (!filters.category && filters.propertyType === 'HOUSE')
+                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
               }`}
             >
-              <Building2 className="w-4 h-4" />
-              {t('card.house')}
+              <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span className="truncate">{t('card.house')}</span>
             </button>
+
             <button
               type="button"
-              onClick={() =>
-                handleFieldChange('propertyType', filters.propertyType === 'SHOP' ? '' : 'SHOP')
-              }
-              className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold border transition ${
-                filters.propertyType === 'SHOP'
-                  ? 'bg-orange-50 border-orange-500 text-orange-600 shadow-sm'
-                  : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+              onClick={() => {
+                const isSelected = filters.category === 'SHOP' || (!filters.category && filters.propertyType === 'SHOP');
+                onChange({
+                  ...filters,
+                  propertyType: isSelected ? undefined : 'SHOP',
+                  category: isSelected ? undefined : 'SHOP',
+                  page: 1,
+                });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
+                filters.category === 'SHOP' || (!filters.category && filters.propertyType === 'SHOP')
+                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
               }`}
             >
-              <Store className="w-4 h-4" />
-              {t('card.shop')}
+              <Store className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span className="truncate">{t('card.shop')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const isSelected = filters.category === 'HOSTEL';
+                onChange({
+                  ...filters,
+                  propertyType: isSelected ? undefined : 'HOUSE',
+                  category: isSelected ? undefined : 'HOSTEL',
+                  page: 1,
+                });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
+                filters.category === 'HOSTEL'
+                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span className="truncate">{t('filter.hostel')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const isSelected = filters.category === 'MARRIAGE_HALL';
+                onChange({
+                  ...filters,
+                  propertyType: isSelected ? undefined : 'SHOP',
+                  category: isSelected ? undefined : 'MARRIAGE_HALL',
+                  page: 1,
+                });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
+                filters.category === 'MARRIAGE_HALL'
+                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
+              }`}
+            >
+              <PartyPopper className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span className="truncate">{t('card.marriageHall')}</span>
             </button>
           </div>
         </div>

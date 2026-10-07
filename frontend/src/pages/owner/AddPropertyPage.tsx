@@ -8,6 +8,8 @@ import { SEOHead } from '../../components/common/SEOHead';
 import {
   Building2,
   Store,
+  Users,
+  PartyPopper,
   UploadCloud,
   CheckCircle,
   ArrowRight,
@@ -25,6 +27,7 @@ export const AddPropertyPage: React.FC = () => {
   const [listingLanguage, setListingLanguage] = useState<'EN' | 'TA'>('EN');
 
   // Form states
+  const [category, setCategory] = useState<'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL'>('HOUSE');
   const [propertyType, setPropertyType] = useState<'HOUSE' | 'SHOP'>('HOUSE');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -104,8 +107,68 @@ export const AddPropertyPage: React.FC = () => {
     'ஏற்றுதல் / இறக்குதல் வசதி (Loading Bay)',
   ];
 
+  const hostelAmenitiesListEn = [
+    'Nutritious Food Provided (3 Times)',
+    'High-Speed Wi-Fi',
+    'Washing Machine & Laundry',
+    '24/7 Warden & Security',
+    'CCTV Surveillance',
+    'Attached Restroom / Geyser',
+    'Air Conditioner (AC)',
+    'Purified RO Drinking Water',
+    'Daily Housekeeping',
+    'Two Wheeler Parking',
+  ];
+
+  const hostelAmenitiesListTa = [
+    '3 வேளை சத்தான உணவு (Food Provided)',
+    'வைஃபை இணைய வசதி (Wi-Fi)',
+    'வாஷிங் மெஷின் வசதி (Washing Machine)',
+    '24/7 வார்டன் & பாதுகாப்பு (Security)',
+    'CCTV கேமரா கண்காணிப்பு',
+    'அட்டாச்டு பாத்ரூம் & கீசர் (Geyser)',
+    'ஏசி வசதி (Air Conditioner)',
+    'RO சுத்திகரிக்கப்பட்ட குடிநீர் (RO Water)',
+    'தினசரி துப்புரவு (Daily Cleaning)',
+    'பைக் பார்க்கிங் (Bike Parking)',
+  ];
+
+  const marriageHallAmenitiesListEn = [
+    'Air Conditioned Central Hall (AC)',
+    'Spacious Dining Hall (500+ Seating)',
+    'Bride & Groom AC Deluxe Rooms',
+    'High Capacity Generator Backup',
+    'Dedicated Car Parking (100+ Cars)',
+    'Modern Commercial Kitchen & Vessels',
+    'Grand Stage & Lighting Setup',
+    'Lift / Elevator for Elders',
+    'Audio PA Sound System Installed',
+    'Near Bus Depot & Main Road Access',
+  ];
+
+  const marriageHallAmenitiesListTa = [
+    'மைய குளிர்சாதன அரங்கம் (Central AC Hall)',
+    'விசாலமான உணவுக்கூடம் (Dining Hall 500+)',
+    'மணமக்கள் ஏசி சொகுசு அறைகள் (Bride/Groom Rooms)',
+    'முழு மின் ஜெனரேட்டர் பேக்கப் (Generator)',
+    'பிரமாண்ட கார் பார்க்கிங் (100+ Cars Parking)',
+    'நவீன சமையலறை & பாத்திரங்கள் (Kitchen)',
+    'பிரம்மாண்ட மேடை & அலங்கார விளக்குகள் (Stage)',
+    'லிப்ட் வசதி (Lift / Elevator)',
+    'அதிநவீன ஒலி பெருக்கி வசதி (Sound System)',
+    'பிரதான சாலை & பஸ் ஸ்டாண்ட் அருகில்',
+  ];
+
   const currentAmenities =
-    propertyType === 'HOUSE'
+    category === 'HOSTEL'
+      ? listingLanguage === 'TA'
+        ? hostelAmenitiesListTa
+        : hostelAmenitiesListEn
+      : category === 'MARRIAGE_HALL'
+      ? listingLanguage === 'TA'
+        ? marriageHallAmenitiesListTa
+        : marriageHallAmenitiesListEn
+      : category === 'HOUSE'
       ? listingLanguage === 'TA'
         ? houseAmenitiesListTa
         : houseAmenitiesListEn
@@ -136,20 +199,38 @@ export const AddPropertyPage: React.FC = () => {
     try {
       setIsSubmitting(true);
 
+      let finalDesc = description.trim();
+      const finalAmenities = [...selectedAmenities];
+      if (listingLanguage === 'TA') {
+        finalAmenities.unshift('[LANG:TA]');
+      }
+
+      if (category === 'HOSTEL') {
+        if (!finalDesc.includes('[CATEGORY:HOSTEL]')) {
+          finalDesc = `${finalDesc}\n\n[CATEGORY:HOSTEL]`;
+        }
+        finalAmenities.push('[CATEGORY:HOSTEL]');
+      } else if (category === 'MARRIAGE_HALL') {
+        if (!finalDesc.includes('[CATEGORY:MARRIAGE_HALL]')) {
+          finalDesc = `${finalDesc}\n\n[CATEGORY:MARRIAGE_HALL]`;
+        }
+        finalAmenities.push('[CATEGORY:MARRIAGE_HALL]');
+      }
+
       // Step 1: Create draft property
       const res = await propertyService.createProperty({
-        propertyType,
+        propertyType: category === 'SHOP' || category === 'MARRIAGE_HALL' ? 'SHOP' : 'HOUSE',
         title: title.trim(),
-        description: description.trim(),
+        description: finalDesc,
         rent: parseFloat(rent),
         deposit: parseFloat(deposit),
         locality,
         address: address.trim(),
         propertySize: parseFloat(propertySize),
-        bedrooms: propertyType === 'HOUSE' ? parseInt(bedrooms) : null,
-        rooms: propertyType === 'SHOP' ? parseInt(rooms) : null,
+        bedrooms: category === 'HOUSE' || category === 'HOSTEL' ? parseInt(bedrooms) : null,
+        rooms: category === 'SHOP' || category === 'MARRIAGE_HALL' ? parseInt(rooms) : null,
         furnishing,
-        amenities: listingLanguage === 'TA' ? ['[LANG:TA]', ...selectedAmenities] : selectedAmenities,
+        amenities: finalAmenities,
         availability: new Date(availability).toISOString(),
         contactPhone,
         contactWhatsapp,
@@ -245,29 +326,31 @@ export const AddPropertyPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 2: Property Type */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
+        {/* Step 2: Property Category */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EFE8D8] shadow-xs space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            2. Select Property Type / சொத்து வகை
+            2. Select Property Category / சொத்து பிரிவு
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 1. House */}
             <button
               type="button"
               onClick={() => {
+                setCategory('HOUSE');
                 setPropertyType('HOUSE');
                 setSelectedAmenities([]);
               }}
-              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition ${
-                propertyType === 'HOUSE'
-                  ? 'border-orange-500 bg-orange-50/50 text-orange-900 shadow-sm'
+              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition text-left ${
+                category === 'HOUSE'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 shadow-xs'
                   : 'border-gray-200 hover:border-gray-300 text-gray-700'
               }`}
             >
-              <div className="p-3 bg-orange-100 text-orange-600 rounded-xl">
-                <Building2 className="w-6 h-6" />
+              <div className="p-3 bg-white text-[#9A7818] border border-[#E8DFC8] rounded-xl shrink-0">
+                <Building2 className="w-6 h-6 text-[#C5A059]" />
               </div>
-              <div className="text-left">
-                <h4 className="font-bold text-base">
+              <div>
+                <h4 className="font-bold text-base text-gray-900">
                   {listingLanguage === 'TA' ? 'குடியிருப்பு வீடு / அபார்ட்மெண்ட்' : 'House / Flat / Villa'}
                 </h4>
                 <p className="text-xs text-gray-500">
@@ -276,27 +359,83 @@ export const AddPropertyPage: React.FC = () => {
               </div>
             </button>
 
+            {/* 2. Shop */}
             <button
               type="button"
               onClick={() => {
+                setCategory('SHOP');
                 setPropertyType('SHOP');
                 setSelectedAmenities([]);
               }}
-              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition ${
-                propertyType === 'SHOP'
-                  ? 'border-amber-500 bg-amber-50/50 text-amber-900 shadow-sm'
+              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition text-left ${
+                category === 'SHOP'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 shadow-xs'
                   : 'border-gray-200 hover:border-gray-300 text-gray-700'
               }`}
             >
-              <div className="p-3 bg-amber-100 text-amber-600 rounded-xl">
-                <Store className="w-6 h-6" />
+              <div className="p-3 bg-white text-[#9A7818] border border-[#E8DFC8] rounded-xl shrink-0">
+                <Store className="w-6 h-6 text-[#C5A059]" />
               </div>
-              <div className="text-left">
-                <h4 className="font-bold text-base">
-                  {listingLanguage === 'TA' ? 'வணிக கடை / ஷோரூம்' : 'Commercial Shop'}
+              <div>
+                <h4 className="font-bold text-base text-gray-900">
+                  {listingLanguage === 'TA' ? 'வணிக கடை / ஷோரூம்' : 'Commercial Shop / Office'}
                 </h4>
                 <p className="text-xs text-gray-500">
                   {listingLanguage === 'TA' ? 'சில்லறை கடைகள், வணிக இடங்கள், அலுவலகங்கள்' : 'Retail shops, showrooms, office spaces'}
+                </p>
+              </div>
+            </button>
+
+            {/* 3. Hostel / PG */}
+            <button
+              type="button"
+              onClick={() => {
+                setCategory('HOSTEL');
+                setPropertyType('HOUSE');
+                setSelectedAmenities([]);
+              }}
+              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition text-left ${
+                category === 'HOSTEL'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 shadow-xs'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+              }`}
+            >
+              <div className="p-3 bg-white text-[#9A7818] border border-[#E8DFC8] rounded-xl shrink-0">
+                <Users className="w-6 h-6 text-[#C5A059]" />
+              </div>
+              <div>
+                <h4 className="font-bold text-base text-gray-900">
+                  {listingLanguage === 'TA' ? 'விடுதி / மேன்ஷன் / PG' : 'Hostel & PG / Mansion'}
+                </h4>
+                <p className="text-xs text-gray-500">
+                  {listingLanguage === 'TA' ? 'மகளிர் & ஆடவர் விடுதிகள், PG தங்கும் வசதி' : 'Gents & Ladies hostels, sharing rooms & PGs'}
+                </p>
+              </div>
+            </button>
+
+            {/* 4. Marriage Hall / Kalyana Mandapam */}
+            <button
+              type="button"
+              onClick={() => {
+                setCategory('MARRIAGE_HALL');
+                setPropertyType('SHOP');
+                setSelectedAmenities([]);
+              }}
+              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition text-left ${
+                category === 'MARRIAGE_HALL'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 shadow-xs'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+              }`}
+            >
+              <div className="p-3 bg-white text-[#9A7818] border border-[#E8DFC8] rounded-xl shrink-0">
+                <PartyPopper className="w-6 h-6 text-[#C5A059]" />
+              </div>
+              <div>
+                <h4 className="font-bold text-base text-gray-900">
+                  {listingLanguage === 'TA' ? 'கல்யாண மண்டபம் / பார்ட்டி ஹால்' : 'Marriage Hall / Kalyana Mandapam'}
+                </h4>
+                <p className="text-xs text-gray-500">
+                  {listingLanguage === 'TA' ? 'திருமணம் & விசேஷங்களுக்கான பிரம்மாண்ட மண்டபங்கள்' : 'Wedding venues, party halls & mandapams'}
                 </p>
               </div>
             </button>
@@ -423,7 +562,39 @@ export const AddPropertyPage: React.FC = () => {
                 />
               </div>
 
-              {propertyType === 'HOUSE' ? (
+              {category === 'HOSTEL' ? (
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    {listingLanguage === 'TA' ? 'படுக்கை வகை (Sharing)' : 'Room / Sharing Type'}
+                  </label>
+                  <select
+                    value={bedrooms}
+                    onChange={(e) => setBedrooms(e.target.value)}
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
+                  >
+                    <option value="1">{listingLanguage === 'TA' ? 'தனி அறை (Single Room)' : '1 - Single Room'}</option>
+                    <option value="2">{listingLanguage === 'TA' ? '2 பேர் படுக்கை (2-Sharing)' : '2 - Two Sharing'}</option>
+                    <option value="3">{listingLanguage === 'TA' ? '3 பேர் படுக்கை (3-Sharing)' : '3 - Three Sharing'}</option>
+                    <option value="4">{listingLanguage === 'TA' ? '4 பேர் படுக்கை (4-Sharing)' : '4 - Four Sharing'}</option>
+                    <option value="5">{listingLanguage === 'TA' ? 'டார்மிட்டரி (Dormitory 5+)' : '5+ - Dormitory'}</option>
+                  </select>
+                </div>
+              ) : category === 'MARRIAGE_HALL' ? (
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    {listingLanguage === 'TA' ? 'அரங்கங்களின் எண்ணிக்கை' : 'Halls / Partitions'}
+                  </label>
+                  <select
+                    value={rooms}
+                    onChange={(e) => setRooms(e.target.value)}
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
+                  >
+                    <option value="1">1 Main Hall (200-500 Pax)</option>
+                    <option value="2">2 Halls (Main + Dining 500-1000 Pax)</option>
+                    <option value="3">3+ Grand Halls (1000+ Pax)</option>
+                  </select>
+                </div>
+              ) : category === 'HOUSE' ? (
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                     Bedrooms (BHK)
@@ -431,7 +602,7 @@ export const AddPropertyPage: React.FC = () => {
                   <select
                     value={bedrooms}
                     onChange={(e) => setBedrooms(e.target.value)}
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
                   >
                     <option value="1">1 BHK</option>
                     <option value="2">2 BHK</option>
@@ -450,7 +621,7 @@ export const AddPropertyPage: React.FC = () => {
                     min={1}
                     value={rooms}
                     onChange={(e) => setRooms(e.target.value)}
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                   />
                 </div>
               )}
