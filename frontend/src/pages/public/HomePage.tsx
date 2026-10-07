@@ -159,13 +159,12 @@ export const HomePage: React.FC = () => {
                   setViewMode('search');
                   setSelectedCategory('HOUSE');
                 }}
-                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'search' && selectedCategory === 'HOUSE'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Building2 className="w-3.5 h-3.5" />
                 <span>{t('card.house')}</span>
               </button>
 
@@ -177,13 +176,12 @@ export const HomePage: React.FC = () => {
                   setViewMode('search');
                   setSelectedCategory('SHOP');
                 }}
-                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'search' && selectedCategory === 'SHOP'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Store className="w-3.5 h-3.5" />
                 <span>{t('card.shop')}</span>
               </button>
 
@@ -195,13 +193,12 @@ export const HomePage: React.FC = () => {
                   setViewMode('search');
                   setSelectedCategory('HOSTEL');
                 }}
-                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'search' && selectedCategory === 'HOSTEL'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Users className="w-3.5 h-3.5" />
                 <span>{t('card.hostel')}</span>
               </button>
 
@@ -213,13 +210,12 @@ export const HomePage: React.FC = () => {
                   setViewMode('search');
                   setSelectedCategory('MARRIAGE_HALL');
                 }}
-                className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'search' && selectedCategory === 'MARRIAGE_HALL'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <PartyPopper className="w-3.5 h-3.5" />
                 <span>{t('card.marriageHall')}</span>
               </button>
 
@@ -228,13 +224,12 @@ export const HomePage: React.FC = () => {
                 role="tab"
                 aria-selected={viewMode === 'swipe'}
                 onClick={() => setViewMode('swipe')}
-                className={`hidden md:flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`hidden md:flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   viewMode === 'swipe'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" />
                 <span>{t('home.cardDeck')}</span>
               </button>
             </div>
@@ -387,27 +382,24 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Browse By Category Section - 4 Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 sm:-mt-6 relative z-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {/* 1. Houses */}
           <Link
             to="/houses"
             className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-2.5">
-              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
-                <Building2 className="w-5 h-5 text-[#C5A059]" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+            <div className="space-y-1.5 sm:space-y-2.5">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
                 {t('nav.houses')}
               </h3>
-              <p className="text-xs text-gray-600 leading-relaxed">
+              <p className="text-xs text-gray-600 leading-relaxed hidden sm:block">
                 {lang === 'ta'
                   ? 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான தனி வீடுகள், பிளாட்டுகள் மற்றும் வில்லாக்கள்.'
                   : 'Independent houses, apartments, and villas for families & bachelors.'}
               </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-3 sm:pt-4">
               <span>{t('home.viewAll')}</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
             </div>
@@ -418,20 +410,17 @@ export const HomePage: React.FC = () => {
             to="/shops"
             className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-2.5">
-              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
-                <Store className="w-5 h-5 text-[#C5A059]" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+            <div className="space-y-1.5 sm:space-y-2.5">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
                 {t('nav.shops')}
               </h3>
-              <p className="text-xs text-gray-600 leading-relaxed">
+              <p className="text-xs text-gray-600 leading-relaxed hidden sm:block">
                 {lang === 'ta'
                   ? 'அதிக மக்கள் நடமாட்டம் உள்ள மெயின் ரோடு வணிக கடைகள் & அலுவலக இடங்கள்.'
                   : 'Retail showrooms, office spaces, and road-facing shops in prime commercial hubs.'}
               </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-3 sm:pt-4">
               <span>{t('home.viewAll')}</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
             </div>
@@ -442,44 +431,38 @@ export const HomePage: React.FC = () => {
             to="/hostels"
             className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-2.5">
-              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
-                <Users className="w-5 h-5 text-[#C5A059]" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+            <div className="space-y-1.5 sm:space-y-2.5">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
                 {t('nav.hostels')}
               </h3>
-              <p className="text-xs text-gray-600 leading-relaxed">
+              <p className="text-xs text-gray-600 leading-relaxed hidden sm:block">
                 {lang === 'ta'
                   ? 'மாணவர்கள் மற்றும் பணிபுரிபவர்களுக்கான பாதுகாப்பான மகளிர் & ஆடவர் விடுதிகள், மேன்ஷன்.'
                   : 'Safe, verified Gents & Ladies hostels, PG stays, and mansions in Chennai.'}
               </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-3 sm:pt-4">
               <span>{t('home.viewAll')}</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
             </div>
           </Link>
 
-          {/* 4. Marriage Halls / Kalyana Mandapam */}
+          {/* 4. Marriage Halls */}
           <Link
             to="/marriage-halls"
             className="group bg-white rounded-2xl p-3.5 sm:p-6 border border-[#EFE8D8] shadow-sm hover:shadow-xl hover:border-[#C5A059] transition-all flex flex-col justify-between"
           >
-            <div className="space-y-2.5">
-              <div className="w-11 h-11 rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold">
-                <PartyPopper className="w-5 h-5 text-[#C5A059]" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
+            <div className="space-y-1.5 sm:space-y-2.5">
+              <h3 className="text-sm sm:text-lg font-bold text-gray-900 group-hover:text-[#B08B40] transition">
                 {t('nav.marriageHalls')}
               </h3>
-              <p className="text-xs text-gray-600 leading-relaxed">
+              <p className="text-xs text-gray-600 leading-relaxed hidden sm:block">
                 {lang === 'ta'
                   ? 'திருமணம், வரவேற்பு மற்றும் விசேஷங்களுக்கான பிரம்மாண்ட மண்டபங்கள் & மினி ஹால்கள்.'
                   : 'Spacious wedding halls, mini-mandapams, and party halls across Chennai.'}
               </p>
             </div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-4">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-3 sm:pt-4">
               <span>{t('home.viewAll')}</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
             </div>
