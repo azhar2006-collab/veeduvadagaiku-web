@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
-  Layers,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
@@ -135,7 +134,6 @@ export const HomePage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Search className="w-4 h-4" />
                 <span>{lang === 'ta' ? 'அனைத்து வாடகை' : 'All Rentals'}</span>
               </button>
 
@@ -153,7 +151,6 @@ export const HomePage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Building2 className="w-4 h-4" />
                 <span>{t('card.house')}</span>
               </button>
 
@@ -171,7 +168,6 @@ export const HomePage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Store className="w-4 h-4" />
                 <span>{t('card.shop')}</span>
               </button>
 
@@ -186,7 +182,6 @@ export const HomePage: React.FC = () => {
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                <Layers className="w-4 h-4" />
                 <span>{t('home.cardDeck')}</span>
               </button>
             </div>
