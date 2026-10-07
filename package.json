@@ -5,10 +5,12 @@
   "description": "Veedu Vadagaiku - Chennai Rental Marketplace (Houses & Commercial Shops)",
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "postinstall": "cd frontend && npm install",
     "dev": "npm run dev --prefix frontend",
     "dev:backend": "npm run dev --prefix backend",
     "dev:frontend": "npm run dev --prefix frontend",
     "build:backend": "npm run build --prefix backend",
-    "build:frontend": "npm run build --prefix frontend"
+    "build:frontend": "npm run build --prefix frontend",
+    "build": "cd frontend && npm run build"
   }
 }
