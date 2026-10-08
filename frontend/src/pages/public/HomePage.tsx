@@ -305,7 +305,7 @@ export const HomePage: React.FC = () => {
                       onChange={(e) => setMaxRent(e.target.value)}
                       className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
                     >
-                      <option value="">{lang === 'ta' ? 'அனைத்து பட்ஜெட்' : 'Any Budget'}</option>
+                      <option value="">{t('hero.maxBudget')}</option>
                       <option value="10000">Up to ₹10,000</option>
                       <option value="15000">Up to ₹15,000</option>
                       <option value="25000">Up to ₹25,000</option>
