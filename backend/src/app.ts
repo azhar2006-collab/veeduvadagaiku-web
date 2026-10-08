@@ -26,6 +26,13 @@ app.use(
 // Serve static uploads
 app.use('/uploads', express.static(uploadsDir));
 
+// Serve property assets from frontend public directory if available
+const frontendPublicDir = path.resolve(__dirname, '../../frontend/public');
+if (fs.existsSync(frontendPublicDir)) {
+  app.use('/indian-properties', express.static(path.join(frontendPublicDir, 'indian-properties')));
+  app.use('/properties', express.static(path.join(frontendPublicDir, 'properties')));
+}
+
 // CORS — allow all client origins dynamically with credentials
 app.use(cors({
   origin: true,

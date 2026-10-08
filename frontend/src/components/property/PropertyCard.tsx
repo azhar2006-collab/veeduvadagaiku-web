@@ -39,7 +39,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const primaryImg =
     property.images?.find((img) => img.isPrimary)?.imageUrl ||
     property.images?.[0]?.imageUrl ||
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80';
+    '/properties/property-1.png';
 
   const furnishingLabel: Record<string, string> = {
     FURNISHED: t('card.furnished'),
@@ -58,8 +58,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           decoding="async"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80';
+            (e.target as HTMLImageElement).src = '/properties/property-1.png';
           }}
         />
 

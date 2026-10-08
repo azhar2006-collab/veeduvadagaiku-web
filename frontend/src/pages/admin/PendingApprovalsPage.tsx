@@ -97,7 +97,7 @@ export const PendingApprovalsPage: React.FC = () => {
           {properties.map((prop) => {
             const primaryImg =
               prop.images?.[0]?.imageUrl ||
-              'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80';
+              '/properties/property-1.png';
 
             return (
               <div

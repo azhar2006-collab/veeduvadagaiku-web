@@ -68,7 +68,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
   // Current property photos
   const currentImages = currentProperty?.images && currentProperty.images.length > 0
     ? currentProperty.images.map((img) => img.imageUrl)
-    : ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80'];
+    : ['/properties/property-1.png'];
 
   // Handle Swipe logic
   const handleSwipe = useCallback(
@@ -345,7 +345,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 <img
                   src={
                     thirdProperty.images?.[0]?.imageUrl ||
-                    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80'
+                    '/properties/property-1.png'
                   }
                   alt={thirdProperty.title}
                   className="w-full h-full object-cover blur-sm brightness-50"
@@ -371,7 +371,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 <img
                   src={
                     nextProperty.images?.[0]?.imageUrl ||
-                    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80'
+                    '/properties/property-1.png'
                   }
                   alt={nextProperty.title}
                   className="w-full h-full object-cover brightness-75"

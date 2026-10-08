@@ -82,7 +82,7 @@ export const MyPropertiesPage: React.FC = () => {
           {properties.map((prop) => {
             const primaryImg =
               prop.images?.[0]?.imageUrl ||
-              'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
+              '/properties/property-1.png';
 
             const canEdit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
 
@@ -101,8 +101,7 @@ export const MyPropertiesPage: React.FC = () => {
                       decoding="async"
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
+                        (e.target as HTMLImageElement).src = '/properties/property-1.png';
                       }}
                     />
                   </div>

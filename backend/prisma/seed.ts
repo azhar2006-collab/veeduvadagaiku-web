@@ -128,8 +128,8 @@ async function main() {
           displayOrder: 0,
         },
         {
-          imageUrl: '/indian-properties/house2.jpg',
-          publicId: 'demo/house1_exterior',
+          imageUrl: '/indian-properties/house3.jpg',
+          publicId: 'demo/house1_living',
           isPrimary: false,
           displayOrder: 1,
         },
@@ -155,14 +155,14 @@ async function main() {
       viewCount: 312,
       images: [
         {
-          imageUrl: '/indian-properties/house2.jpg',
-          publicId: 'demo/house2_building',
+          imageUrl: '/indian-properties/house3.jpg',
+          publicId: 'demo/house2_living',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: '/indian-properties/house3.jpg',
-          publicId: 'demo/house2_living',
+          imageUrl: '/indian-properties/house1.jpg',
+          publicId: 'demo/house2_building',
           isPrimary: false,
           displayOrder: 1,
         },
@@ -188,14 +188,14 @@ async function main() {
       viewCount: 220,
       images: [
         {
-          imageUrl: '/indian-properties/house3.jpg',
-          publicId: 'demo/house3_villa',
+          imageUrl: '/indian-properties/house4.jpg',
+          publicId: 'demo/house3_hall',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: '/indian-properties/house4.jpg',
-          publicId: 'demo/house3_hall',
+          imageUrl: '/indian-properties/house5.jpg',
+          publicId: 'demo/house3_villa',
           isPrimary: false,
           displayOrder: 1,
         },
@@ -221,13 +221,13 @@ async function main() {
       viewCount: 245,
       images: [
         {
-          imageUrl: '/indian-properties/house4.jpg',
+          imageUrl: '/indian-properties/house5.jpg',
           publicId: 'demo/house4_facade',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: '/indian-properties/house5.jpg',
+          imageUrl: '/indian-properties/house3.jpg',
           publicId: 'demo/house4_bedroom',
           isPrimary: false,
           displayOrder: 1,
@@ -254,13 +254,13 @@ async function main() {
       viewCount: 180,
       images: [
         {
-          imageUrl: '/indian-properties/house5.jpg',
+          imageUrl: '/indian-properties/house2.jpg',
           publicId: 'demo/house5_house',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: '/indian-properties/house1.jpg',
+          imageUrl: '/indian-properties/house4.jpg',
           publicId: 'demo/house5_entrance',
           isPrimary: false,
           displayOrder: 1,
@@ -287,13 +287,13 @@ async function main() {
       viewCount: 380,
       images: [
         {
-          imageUrl: '/indian-properties/house6.jpg',
+          imageUrl: '/indian-properties/house1.jpg',
           publicId: 'demo/house6_villa',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: '/indian-properties/house4.jpg',
+          imageUrl: '/indian-properties/house5.jpg',
           publicId: 'demo/house6_garden',
           isPrimary: false,
           displayOrder: 1,

@@ -39,7 +39,7 @@ export const UserEnquiriesPage: React.FC = () => {
             const prop = enq.property;
             const primaryImg =
               prop?.images?.[0]?.imageUrl ||
-              'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=400&q=80';
+              '/properties/property-1.png';
 
             const statusColors: Record<string, string> = {
               NEW: 'bg-blue-50 text-blue-700 border-blue-200',
