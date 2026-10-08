@@ -106,15 +106,15 @@ export const HomePage: React.FC = () => {
               <span className="text-center leading-snug">{t('hero.badge')}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-[3.25rem] font-black tracking-tight leading-[1.2] text-[#1E2329]">
+            <h1 className="text-xl sm:text-3xl lg:text-[2.25rem] font-bold sm:font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
               {t('hero.title1')}{' '}
               <span className="text-[#C5A059]">{t('hero.titleHouse')}</span>
             </h1>
 
-            <p className="max-w-xl mx-auto text-sm sm:text-base text-gray-700 font-semibold leading-relaxed">
+            <p className="max-w-xl mx-auto text-xs sm:text-sm text-gray-600 font-medium leading-relaxed">
               {t('hero.desc')}
             </p>
-            <p className="max-w-xl mx-auto text-xs sm:text-sm text-[#9A7818] font-medium leading-relaxed">
+            <p className="max-w-xl mx-auto text-[11px] sm:text-xs text-[#9A7818] font-medium leading-relaxed">
               {t('hero.descSub')}
             </p>
           </div>
