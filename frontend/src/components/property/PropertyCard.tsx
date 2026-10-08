@@ -64,9 +64,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
 
         {/* Badges container */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
-          {/* NoBroker style Zero Brokerage Tag */}
+          {/* Direct Owner Connect Tag */}
           <span className="px-2.5 py-1 bg-white/95 backdrop-blur-md text-[#9A7818] border border-[#E8DFC8] text-[11px] font-bold rounded-lg shadow-xs">
-            0% Brokerage
+            {lang === 'ta' ? 'நேரடி தொடர்பு' : 'Direct Owner'}
           </span>
 
           {(() => {

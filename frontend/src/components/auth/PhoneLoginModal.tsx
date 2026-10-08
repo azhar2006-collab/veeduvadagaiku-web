@@ -48,8 +48,8 @@ export const PhoneLoginModal: React.FC<PhoneLoginModalProps> = ({
           </h3>
           <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
             {lang === 'ta'
-              ? 'உரிமையாளரின் தொலைபேசி எண்ணைப் பார்க்க உங்கள் மொபைல் எண்ணை உள்ளிட்டு உள்நுழையவும் (இடைத்தரகர் இல்லாத நேரடி தொடர்பு).'
-              : 'Sign in with your mobile number to view the landlord’s phone number & connect directly with zero brokerage.'}
+              ? 'உரிமையாளரின் தொலைபேசி எண்ணைப் பார்க்க உங்கள் மொபைல் எண்ணை உள்ளிட்டு உள்நுழையவும் (நேரடி உரிமையாளர் தொடர்பு).'
+              : 'Sign in with your mobile number to view the landlord’s phone number & connect directly with verified owners.'}
           </p>
         </div>
 

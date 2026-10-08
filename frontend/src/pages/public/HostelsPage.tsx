@@ -52,7 +52,7 @@ export const HostelsPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
         title="Hostels & PG Accommodations in Chennai | Veedu Vadagaiku"
-        description="Find verified Gents and Ladies hostels, PG stays and mansions in Chennai. Connect directly with owners. Zero brokerage."
+        description="Find verified Gents and Ladies hostels, PG stays and mansions in Chennai. Connect directly with owners."
       />
 
       {/* Header (White & Lite Gold Theme) */}

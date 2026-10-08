@@ -88,8 +88,8 @@ export const HomePage: React.FC = () => {
   return (
     <div className="space-y-6 sm:space-y-16 pb-12">
       <SEOHead
-        title="Find Your Next Home or Shop in Chennai | Veedu Vadagaiku"
-        description="Chennai's premier rental marketplace. Verified houses, apartments and commercial shops direct from owners. Zero brokerage."
+        title="Chennai's Exclusive Rental Marketplace | Veedu Vadagaiku"
+        description="Chennai's exclusive rental marketplace. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
@@ -108,10 +108,7 @@ export const HomePage: React.FC = () => {
 
             <h1 className="text-2xl sm:text-4xl lg:text-[3.25rem] font-black tracking-tight leading-[1.2] text-[#1E2329]">
               {t('hero.title1')}{' '}
-              <span className="text-[#C5A059]">{t('hero.titleHouse')}</span>{' '}
-              {t('hero.titleOr')}{' '}
-              <span className="text-[#C5A059]">{t('hero.titleShop')}</span>{' '}
-              {t('hero.titleEnd')}
+              <span className="text-[#C5A059]">{t('hero.titleHouse')}</span>
             </h1>
 
             <p className="max-w-xl mx-auto text-sm sm:text-base text-gray-700 font-semibold leading-relaxed">

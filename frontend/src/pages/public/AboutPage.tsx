@@ -39,7 +39,7 @@ export const AboutPage: React.FC = () => {
           </div>
           <h3 className="text-lg font-bold text-gray-900">Direct Owner Contact</h3>
           <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-            Zero brokerage fees for tenants. Contact property landlords directly via phone call, WhatsApp, or instant in-app enquiry.
+            Direct connection for tenants. Contact property landlords directly via phone call, WhatsApp, or instant in-app enquiry.
           </p>
         </div>
 

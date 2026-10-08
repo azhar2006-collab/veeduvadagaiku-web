@@ -34,11 +34,11 @@ export const getWhatsAppShareUrl = (
   if (lang === 'ta') {
     message = `*${property.title}*\nஇடம்: ${property.locality}, சென்னை\nமாத வாடகை: ${formattedRent}${
       formattedDeposit ? ` | முன்பணம்: ${formattedDeposit}` : ''
-    }\n\nமுழு விவரங்கள் மற்றும் புகைப்படங்கள் காண இங்கே கிளிக் செய்யவும்:\n${url}\n\n(வீடு வாடகைக்கு - நேரடி உரிமையாளர் தொடர்பு | இடைத்தரகர் கட்டணம் இல்லை)`;
+    }\n\nமுழு விவரங்கள் மற்றும் புகைப்படங்கள் காண இங்கே கிளிக் செய்யவும்:\n${url}\n\n(வீடு வாடகைக்கு - நேரடி உரிமையாளர் தொடர்பு)`;
   } else {
     message = `*${property.title}*\nLocation: ${property.locality}, Chennai\nRent: ${formattedRent}/month${
       formattedDeposit ? ` | Deposit: ${formattedDeposit}` : ''
-    }\n\nView photos & full details on Veedu Vadagaiku:\n${url}\n\n(Direct Landlord Contact - Zero Brokerage)`;
+    }\n\nView photos & full details on Veedu Vadagaiku:\n${url}\n\n(Direct Landlord Contact - Verified Listings)`;
   }
 
   return `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
