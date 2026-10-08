@@ -5,6 +5,7 @@ import { PhoneOTPForm } from '../../components/auth/PhoneOTPForm';
 import { GoogleSignInButton } from '../../components/auth/GoogleSignInButton';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useAuth } from '../../hooks/useAuth';
+import { useAuthStore } from '../../store/authStore';
 
 export const LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -23,7 +24,10 @@ export const LoginPage: React.FC = () => {
   }, [isAuthenticated, isOwner, isAdmin, navigate]);
 
   const handleSuccess = () => {
-    if (role === 'OWNER') {
+    const currentUser = useAuthStore.getState().user;
+    if (currentUser?.role === 'ADMIN' || isAdmin) {
+      navigate('/admin/dashboard', { replace: true });
+    } else if (role === 'OWNER') {
       navigate('/owner/dashboard');
     } else {
       navigate('/user/dashboard');

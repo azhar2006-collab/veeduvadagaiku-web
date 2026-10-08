@@ -51,7 +51,7 @@ async function main() {
   }
   console.log('[Seed] Listing plans ready');
 
-  // 2. Create Demo Admin User
+  // 2. Create Platform Admin Users
   const adminUser = await prisma.user.upsert({
     where: { mobile: '+919999900001' },
     update: { role: 'ADMIN' },
@@ -63,7 +63,18 @@ async function main() {
       status: 'ACTIVE',
     },
   });
-  console.log('[Seed] Admin account ready:', adminUser.email);
+
+  const srinandhiniAdmin = await prisma.user.upsert({
+    where: { email: 'srinandhinihall@gmail.com' },
+    update: { role: 'ADMIN', status: 'ACTIVE' },
+    create: {
+      name: 'Srinandhini Hall Admin',
+      email: 'srinandhinihall@gmail.com',
+      role: 'ADMIN',
+      status: 'ACTIVE',
+    },
+  });
+  console.log('[Seed] Admin accounts ready:', adminUser.email, srinandhiniAdmin.email);
 
   // 3. Create Demo Landlord / Owner
   const demoOwnerUser = await prisma.user.upsert({
