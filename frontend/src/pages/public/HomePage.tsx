@@ -88,8 +88,8 @@ export const HomePage: React.FC = () => {
   return (
     <div className="space-y-6 sm:space-y-16 pb-12">
       <SEOHead
-        title="Chennai's Exclusive Rental Marketplace | Veedu Vadagaiku"
-        description="Chennai's exclusive rental marketplace. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
+        title="Chennai's Exclusive One-Stop Property Rental Webapp | Veedu Vadagaiku"
+        description="Chennai's exclusive one-stop property rental webapp. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}

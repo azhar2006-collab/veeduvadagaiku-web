@@ -34,7 +34,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Hero Section
     'hero.badge': "Chennai's Exclusive Rental Platform — Direct Owner Connect",
     'hero.title1': "Chennai's Exclusive",
-    'hero.titleHouse': 'Rental Marketplace',
+    'hero.titleHouse': 'One-Stop Property Rental Webapp',
     'hero.titleOr': '',
     'hero.titleShop': '',
     'hero.titleEnd': '',
@@ -224,7 +224,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Hero Section
     'hero.badge': 'சென்னையின் பிரத்யேக வாடகை தளம் — நேரடி உரிமையாளர் தொடர்பு',
     'hero.title1': 'சென்னையின் பிரத்யேக',
-    'hero.titleHouse': 'வாடகை தளம்',
+    'hero.titleHouse': 'ஒரே இட வாடகை இணையதளம்',
     'hero.titleOr': '',
     'hero.titleShop': '',
     'hero.titleEnd': '',
