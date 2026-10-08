@@ -243,10 +243,10 @@ export const AddPropertyPage: React.FC = () => {
       await propertyService.uploadImages(newPropertyId, files);
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
-      toast.success('Property submitted for admin review! We\'ll publish it once approved.');
+      toast.success('Property details saved! Please choose a plan to activate.');
 
-      // Redirect to my properties page (payment disabled)
-      navigate('/owner/properties');
+      // Redirect to payment plan page
+      navigate(`/owner/payment?propertyId=${newPropertyId}`);
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Failed to create property. Please try again.');

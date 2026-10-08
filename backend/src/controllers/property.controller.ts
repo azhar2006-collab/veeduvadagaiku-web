@@ -67,8 +67,16 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
 export async function getProperty(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params;
+    const user = (req as AuthRequest).user;
+
     const property = await prisma.property.findFirst({
-      where: { id, status: 'PUBLISHED' },
+      where: {
+        id,
+        OR: [
+          { status: 'PUBLISHED' },
+          ...(user ? [{ owner: { userId: user.id } }, ...(user.role === 'ADMIN' ? [{}] : [])] : []),
+        ],
+      },
       include: {
         images: { orderBy: { displayOrder: 'asc' } },
         owner: {

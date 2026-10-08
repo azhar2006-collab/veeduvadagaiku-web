@@ -27,11 +27,20 @@ export const PaymentPage: React.FC = () => {
   });
   const plans = plansRes?.data || [];
 
+  // Auto-select standard plan or first available plan when plans load
+  React.useEffect(() => {
+    if (plans.length > 0 && !selectedPlanId) {
+      const defaultPlan = plans.find((p) => p.id === 'plan_standard') || plans[0];
+      if (defaultPlan) setSelectedPlanId(defaultPlan.id);
+    }
+  }, [plans, selectedPlanId]);
+
   // Load property details
-  const { data: propRes, isLoading: loadingProp } = useQuery({
+  const { data: propRes } = useQuery({
     queryKey: ['property', propertyId],
     queryFn: () => propertyService.getPropertyById(propertyId),
     enabled: !!propertyId,
+    retry: 1,
   });
   const property = propRes?.data;
 
@@ -110,8 +119,8 @@ export const PaymentPage: React.FC = () => {
     }
   };
 
-  if (loadingPlans || loadingProp) {
-    return <Loader fullScreen text="Preparing payment..." />;
+  if (loadingPlans) {
+    return <Loader fullScreen text="Loading listing plans..." />;
   }
 
   return (
@@ -126,12 +135,16 @@ export const PaymentPage: React.FC = () => {
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
           Select Listing Plan for Your Property
         </h1>
-        {property && (
+        {property ? (
           <p className="text-sm text-gray-500 font-normal">
             Activating: <span className="font-bold text-gray-800">{property.title}</span> in{' '}
             <span className="font-bold text-gray-800">{property.locality}</span>
           </p>
-        )}
+        ) : propertyId ? (
+          <p className="text-sm text-gray-500 font-normal">
+            Activating Property: <span className="font-mono font-bold text-gray-700">{propertyId}</span>
+          </p>
+        ) : null}
       </div>
 
       {/* Plan Selection Grid */}

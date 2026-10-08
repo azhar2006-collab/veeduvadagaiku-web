@@ -15,6 +15,7 @@ import {
   AlertCircle,
   ExternalLink,
   PlusCircle,
+  CreditCard,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -135,6 +136,17 @@ export const MyPropertiesPage: React.FC = () => {
 
                   {/* Right: Actions */}
                   <div className="flex flex-row sm:flex-col items-center gap-2 sm:shrink-0 sm:pt-1 border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
+                    {/* Select Plan & Pay (if DRAFT or PAYMENT_PENDING) */}
+                    {(prop.status === 'DRAFT' || prop.status === 'PAYMENT_PENDING') && (
+                      <Link
+                        to={`/owner/payment?propertyId=${prop.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-xs transition hover:brightness-105 whitespace-nowrap"
+                      >
+                        <CreditCard className="w-3.5 h-3.5" />
+                        <span>Select Plan & Pay</span>
+                      </Link>
+                    )}
+
                     {/* View Live (if published) */}
                     {prop.status === 'PUBLISHED' && (
                       <Link
@@ -170,16 +182,32 @@ export const MyPropertiesPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Draft / Payment Required Banner */}
+                {(prop.status === 'DRAFT' || prop.status === 'PAYMENT_PENDING') && (
+                  <div className="mx-4 mb-4 p-3 bg-amber-50/70 rounded-xl border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-[#C5A059] shrink-0" />
+                      <span>Subscription listing plan required to activate and submit this property.</span>
+                    </div>
+                    <Link
+                      to={`/owner/payment?propertyId=${prop.id}`}
+                      className="px-3 py-1 bg-[#C5A059] hover:bg-[#9A7818] text-white font-bold rounded-lg transition"
+                    >
+                      Choose Plan →
+                    </Link>
+                  </div>
+                )}
+
                 {/* Pending Admin Approval Banner */}
-                {(prop.status === 'DRAFT' || prop.status === 'PENDING_APPROVAL') && (
-                  <div className="mx-4 mb-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-2.5 text-xs text-amber-800">
-                    <Eye className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
+                {prop.status === 'PENDING_APPROVAL' && (
+                  <div className="mx-4 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 flex items-start gap-2.5 text-xs text-blue-800">
+                    <Eye className="w-4 h-4 shrink-0 mt-0.5 text-blue-500" />
                     <div>
-                      <span className="font-bold block text-amber-900">
+                      <span className="font-bold block text-blue-900">
                         Pending Admin Approval
                       </span>
-                      <span className="text-amber-700 leading-relaxed">
-                        Your property has been submitted and is under review by our admin team. It will be published once approved. This typically takes 24–48 hours.
+                      <span className="text-blue-700 leading-relaxed">
+                        Payment verified! Your property has been submitted and is under review by our admin team. It will be published once approved.
                       </span>
                     </div>
                   </div>
