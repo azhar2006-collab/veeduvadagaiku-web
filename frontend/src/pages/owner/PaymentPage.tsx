@@ -5,7 +5,7 @@ import { planService } from '../../services/plan.service';
 import { paymentService } from '../../services/payment.service';
 import { propertyService } from '../../services/property.service';
 import { useAuth } from '../../hooks/useAuth';
-import { loadRazorpayScript } from '../../utils/razorpay';
+import { getCashfree } from '../../utils/cashfree';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
 import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2 } from 'lucide-react';
@@ -45,104 +45,63 @@ export const PaymentPage: React.FC = () => {
       return;
     }
 
-    const selectedPlan = plans.find((p) => p.id === selectedPlanId);
-
     try {
       setIsProcessing(true);
 
-      // 1. Load Razorpay Standard Checkout SDK
-      const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded) {
-        toast.error('Failed to load Razorpay payment gateway. Please check your internet connection.');
+      // 1. Create order on backend (returns payment_session_id, order_id, etc.)
+      const orderRes = await paymentService.createOrder(propertyId, selectedPlanId);
+      const paymentSessionId = orderRes?.payment_session_id;
+      const orderId = orderRes?.order_id;
+
+      if (!paymentSessionId || !orderId) {
+        throw new Error(orderRes?.message || 'Payment session could not be created');
+      }
+
+      // 2. Initialize Cashfree Web SDK
+      const cashfree = await getCashfree();
+
+      // 3. Open Cashfree Checkout Modal
+      const checkoutResult = await cashfree.checkout({
+        paymentSessionId,
+        redirectTarget: '_modal',
+      });
+
+      if (checkoutResult?.error) {
         setIsProcessing(false);
+        toast.error(checkoutResult.error.message || 'Payment was cancelled');
         return;
       }
 
-      // 2. Create order on backend (returns order_id, amount, currency, etc.)
-      const orderRes = await paymentService.createOrder(propertyId, selectedPlanId);
-      const { paymentId, order_id, id, amount, currency, key_id } = orderRes as any;
-      const razorpayOrderId = order_id || id;
-
-      if (!razorpayOrderId) {
-        throw new Error('Order ID was not received from payment gateway');
-      }
-
-      const razorpayKey =
-        (import.meta.env.VITE_RAZORPAY_KEY_ID as string) ||
-        key_id ||
-        'rzp_test_Tl5hQJ1DIU9ooD';
-
-      // 3. Configure Razorpay Standard Checkout options
-      const options = {
-        key: razorpayKey,
-        amount,
-        currency: currency || 'INR',
-        name: 'Veedu Vadagaiku',
-        description: selectedPlan ? `Listing Plan: ${selectedPlan.name}` : 'Rental Listing Activation',
-        image: '/logo-full.png',
-        order_id: razorpayOrderId,
-        handler: async function (response: any) {
-          // Success: receive razorpay_payment_id, razorpay_order_id, razorpay_signature
-          try {
-            const verifyRes = await paymentService.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              paymentId,
-              propertyId,
-            });
-
-            setIsProcessing(false);
-
-            if (verifyRes.success) {
-              navigate(
-                `/owner/payment/result?status=success&paymentId=${paymentId || response.razorpay_payment_id}&propTitle=${encodeURIComponent(
-                  property?.title || 'Your Property'
-                )}`
-              );
-            } else {
-              navigate(
-                `/owner/payment/result?status=failure&paymentId=${paymentId}&message=${encodeURIComponent(
-                  verifyRes.message || 'Payment signature verification failed'
-                )}`
-              );
-            }
-          } catch (err: any) {
-            setIsProcessing(false);
+      // If checkout finishes inline in modal or redirects
+      if (checkoutResult?.paymentDetails) {
+        // Verify payment status with backend
+        try {
+          const verifyRes = await paymentService.verifyPayment({ order_id: orderId });
+          setIsProcessing(false);
+          if (verifyRes.success || verifyRes.status === 'PAID') {
             navigate(
-              `/owner/payment/result?status=failure&paymentId=${paymentId}&message=${encodeURIComponent(
-                err.response?.data?.message || 'Payment verification failed'
+              `/owner/payment/result?status=success&orderId=${orderId}&propTitle=${encodeURIComponent(
+                property?.title || 'Your Property'
+              )}`
+            );
+          } else {
+            navigate(
+              `/owner/payment/result?status=failure&orderId=${orderId}&message=${encodeURIComponent(
+                verifyRes.message || 'Payment verification failed'
               )}`
             );
           }
-        },
-        prefill: {
-          name: user?.name || '',
-          email: user?.email || '',
-          contact: user?.mobile || '',
-        },
-        theme: {
-          color: '#C5A059', // Lite Gold theme
-        },
-        modal: {
-          ondismiss: function () {
-            setIsProcessing(false);
-            toast('Payment modal closed. You can retry anytime.');
-          },
-        },
-      };
-
-      const rzpInstance = new window.Razorpay(options);
-
-      // Handle payment.failed event
-      rzpInstance.on('payment.failed', function (failureResponse: any) {
+        } catch (verifyErr: any) {
+          setIsProcessing(false);
+          navigate(
+            `/owner/payment/result?status=failure&orderId=${orderId}&message=${encodeURIComponent(
+              verifyErr.response?.data?.message || 'Payment verification error'
+            )}`
+          );
+        }
+      } else {
         setIsProcessing(false);
-        const errMsg = failureResponse?.error?.description || 'Payment transaction failed';
-        toast.error(`Payment failed: ${errMsg}`);
-      });
-
-      // 4. Open Razorpay payment modal
-      rzpInstance.open();
+      }
     } catch (err: any) {
       setIsProcessing(false);
       const errMsg =
@@ -228,7 +187,7 @@ export const PaymentPage: React.FC = () => {
           <span className="text-gray-500 font-medium">Payment Gateway</span>
           <span className="font-bold text-gray-900 flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            Razorpay Secure Checkout
+            Cashfree Secure Checkout
           </span>
         </div>
 
@@ -254,12 +213,12 @@ export const PaymentPage: React.FC = () => {
           {isProcessing ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Opening Razorpay Gateway...</span>
+              <span>Opening Cashfree Gateway...</span>
             </>
           ) : (
             <>
               <CreditCard className="w-5 h-5" />
-              <span>Pay & Activate Listing with Razorpay</span>
+              <span>Pay & Activate Listing with Cashfree</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}
@@ -276,7 +235,7 @@ export const PaymentPage: React.FC = () => {
           </span>
           <span className="flex items-center gap-1">
             <Banknote className="w-4 h-4 text-[#C5A059]" />
-            Razorpay Trusted Gateway
+            Cashfree Trusted Gateway
           </span>
         </div>
       </div>

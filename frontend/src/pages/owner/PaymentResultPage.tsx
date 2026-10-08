@@ -8,7 +8,7 @@ export const PaymentResultPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const statusParam = searchParams.get('status');
   const paymentId = searchParams.get('paymentId') || undefined;
-  const orderId = searchParams.get('orderId') || undefined;
+  const orderId = searchParams.get('order_id') || searchParams.get('orderId') || undefined;
   const propTitle = searchParams.get('propTitle');
   const messageParam = searchParams.get('message');
 
@@ -20,16 +20,20 @@ export const PaymentResultPage: React.FC = () => {
     statusParam?.toLowerCase() === 'success' || statusParam?.toLowerCase() === 'completed';
 
   useEffect(() => {
-    // If Cashfree redirected back with orderId and status is SUCCESS, ensure verification is run
-    if (orderId && isSuccessParam && verifiedSuccess === null) {
+    // If Cashfree or Razorpay redirected back with orderId, verify order status with backend
+    if (orderId && verifiedSuccess === null) {
       setVerifying(true);
       paymentService
-        .verifyPayment({ orderId, paymentId })
-        .then(() => {
-          setVerifiedSuccess(true);
+        .verifyPayment({ order_id: orderId, orderId, paymentId })
+        .then((res) => {
+          if (res.success || res.status === 'PAID') {
+            setVerifiedSuccess(true);
+          } else {
+            setVerifiedSuccess(false);
+            setErrorMsg(res.message || 'Payment not completed.');
+          }
         })
         .catch((err) => {
-          // If already verified or other status
           if (err.response?.data?.message?.includes('already verified')) {
             setVerifiedSuccess(true);
           } else {
@@ -42,10 +46,10 @@ export const PaymentResultPage: React.FC = () => {
         });
     } else if (isSuccessParam && !orderId) {
       setVerifiedSuccess(true);
-    } else if (!isSuccessParam) {
+    } else if (statusParam && !isSuccessParam) {
       setVerifiedSuccess(false);
     }
-  }, [orderId, isSuccessParam, paymentId]);
+  }, [orderId, isSuccessParam, paymentId, statusParam, verifiedSuccess]);
 
   const isSuccess = verifiedSuccess ?? isSuccessParam;
 
@@ -58,7 +62,7 @@ export const PaymentResultPage: React.FC = () => {
           <div className="py-12 space-y-4">
             <Loader2 className="w-12 h-12 text-[#C5A059] animate-spin mx-auto" />
             <p className="text-sm font-semibold text-gray-700">
-              Confirming payment status with Razorpay...
+              Confirming payment status with Cashfree...
             </p>
           </div>
         ) : isSuccess ? (

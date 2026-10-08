@@ -8,14 +8,14 @@ import enquiryRoutes from './enquiry.routes';
 import favouriteRoutes from './favourite.routes';
 import planRoutes from './plan.routes';
 import adminRoutes from './admin.routes';
-import { createRazorpayOrder, verifyRazorpayPayment } from '../controllers/payment.controller';
+import { createOrder, verifyPayment } from '../controllers/payment.controller';
 import { optionalAuth } from '../middleware/auth';
 
 const router = Router();
 
-// Direct Razorpay Standard Checkout endpoints (POST /api/create-order, POST /api/verify-payment)
-router.post('/create-order', optionalAuth, createRazorpayOrder);
-router.post('/verify-payment', verifyRazorpayPayment);
+// Direct checkout endpoints (Cashfree primary, Razorpay fallback supported)
+router.post('/create-order', optionalAuth, createOrder);
+router.post('/verify-payment', verifyPayment);
 
 // Modular domain routes
 router.use('/auth', authRoutes);
