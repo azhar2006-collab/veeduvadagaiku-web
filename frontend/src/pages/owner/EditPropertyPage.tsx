@@ -193,14 +193,14 @@ export const EditPropertyPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-              Full Physical Address
+              Full Physical Address (Optional - Defaults to Locality, Chennai)
             </label>
             <textarea
               rows={2}
-              required
+              placeholder="Door No, Street, Landmark, Chennai (Optional)"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
             />
           </div>
 

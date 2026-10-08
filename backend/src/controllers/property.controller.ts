@@ -122,9 +122,11 @@ export async function createProperty(req: AuthRequest, res: Response, next: Next
     }
 
     const data = createPropertySchema.parse(req.body);
+    const finalAddress = data.address?.trim() || `${data.locality}, Chennai`;
     const property = await prisma.property.create({
       data: {
         ...data,
+        address: finalAddress,
         amenities: data.amenities || [],
         availability: new Date(data.availability),
         ownerId: owner.id,
@@ -152,10 +154,16 @@ export async function updateProperty(req: AuthRequest, res: Response, next: Next
     }
 
     const data = updatePropertySchema.parse(req.body);
+    const finalAddress =
+      data.address !== undefined
+        ? data.address.trim() || `${data.locality || property.locality}, Chennai`
+        : undefined;
+
     const updated = await prisma.property.update({
       where: { id },
       data: {
         ...data,
+        ...(finalAddress ? { address: finalAddress } : {}),
         availability: data.availability ? new Date(data.availability) : undefined,
         status: 'DRAFT',
       },

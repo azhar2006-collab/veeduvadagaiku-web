@@ -14,6 +14,19 @@ import {
   CheckCircle,
   ArrowRight,
   Info,
+  MapPin,
+  Navigation,
+  Crosshair,
+  Sparkles,
+  Bath,
+  Car,
+  Dog,
+  Dumbbell,
+  ShieldCheck,
+  Zap,
+  Droplets,
+  Wind,
+  Wifi,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -35,6 +48,11 @@ export const AddPropertyPage: React.FC = () => {
   const [deposit, setDeposit] = useState('');
   const [locality, setLocality] = useState('');
   const [address, setAddress] = useState('');
+  const [showFullAddress, setShowFullAddress] = useState(false);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+
   const [propertySize, setPropertySize] = useState('');
   const [bedrooms, setBedrooms] = useState('2');
   const [rooms, setRooms] = useState('1');
@@ -46,40 +64,133 @@ export const AddPropertyPage: React.FC = () => {
   const [contactWhatsapp, setContactWhatsapp] = useState(true);
   const [contactEnquiry, setContactEnquiry] = useState(true);
 
-  // Amenities
+  // NoBroker-style Property Specifics
+  const [bathrooms, setBathrooms] = useState('2');
+  const [balconies, setBalconies] = useState('1');
+  const [attachedBathroom, setAttachedBathroom] = useState(true);
+
+  // Parking
+  const [parkingBike, setParkingBike] = useState(true);
+  const [parkingCar, setParkingCar] = useState(false);
+  const [parkingCovered, setParkingCovered] = useState(false);
+
+  // Tenant Preferences (NoBroker)
+  const [petFriendly, setPetFriendly] = useState(false);
+  const [bachelorsAllowed, setBachelorsAllowed] = useState(false);
+  const [familyOnly, setFamilyOnly] = useState(true);
+  const [vegetarianOnly, setVegetarianOnly] = useState(false);
+  const [nonVegAllowed, setNonVegAllowed] = useState(true);
+
+  // Amenities checklist
+  const [gym, setGym] = useState(false);
+  const [lift, setLift] = useState(false);
+  const [powerBackup, setPowerBackup] = useState(false);
+  const [waterMetro, setWaterMetro] = useState(true);
+  const [waterBorewell, setWaterBorewell] = useState(false);
+  const [securityCCTV, setSecurityCCTV] = useState(false);
+  const [swimmingPool, setSwimmingPool] = useState(false);
+  const [gatedCommunity, setGatedCommunity] = useState(false);
+  const [ac, setAc] = useState(false);
+  const [modularKitchen, setModularKitchen] = useState(false);
+  const [geyser, setGeyser] = useState(false);
+  const [washingArea, setWashingArea] = useState(false);
+  const [wifi, setWifi] = useState(false);
+  const [pipedGas, setPipedGas] = useState(false);
+  const [clubhouse, setClubhouse] = useState(false);
+  const [privateTerrace, setPrivateTerrace] = useState(false);
+  const [nearMetro, setNearMetro] = useState(false);
+  const [nearBusStand, setNearBusStand] = useState(false);
+
+  // Category specific additional amenities
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
   // Images to upload
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const houseAmenitiesListEn = [
-    '24/7 Metro Water',
-    'Covered Car Parking',
-    'Two Wheeler Parking',
-    'Lift / Elevator',
-    'Gated Community Security',
-    'Power Backup',
-    'Air Conditioner',
-    'Modular Kitchen',
-    'Balcony',
-    'Near Metro Station',
-    'Near Bus Stand',
+  // Quick popular Chennai localities
+  const popularLocalities = [
+    'Kodambakkam',
+    'Vadapalani',
+    'T. Nagar',
+    'Anna Nagar',
+    'Velachery',
+    'Adyar',
+    'Porur',
+    'Besant Nagar',
+    'Mylapore',
+    'Nungambakkam',
+    'Tambaram',
+    'Ashok Nagar',
   ];
 
-  const houseAmenitiesListTa = [
-    '24/7 குடிநீர் வசதி (Metro Water)',
-    'கார் பார்க்கிங் (Car Parking)',
-    'இருசக்கர வாகன பார்க்கிங் (Bike Parking)',
-    'லிப்ட் வசதி (Lift / Elevator)',
-    'பாதுகாப்பு வசதி & CCTV (Security)',
-    'பவர் பேக்கப் (Power Backup)',
-    'ஏசி வசதி (Air Conditioner)',
-    'மாடுலர் சமையலறை (Modular Kitchen)',
-    'பால்கனி (Balcony)',
-    'மெட்ரோ நிலையம் அருகில் (Near Metro)',
-    'பேருந்து நிலையம் அருகில் (Near Bus Stand)',
-  ];
+  // Geolocation detector
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setLatitude(lat);
+        setLongitude(lng);
+
+        try {
+          // OpenStreetMap Nominatim reverse geocode
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=16`
+          );
+          const data = await response.json();
+          const addr = data.address || {};
+          const detectedCandidates = [
+            addr.suburb,
+            addr.neighbourhood,
+            addr.residential,
+            addr.city_district,
+            addr.county,
+            addr.town,
+          ].filter(Boolean) as string[];
+
+          // Match with Chennai localities
+          let foundLocality = '';
+          for (const cand of detectedCandidates) {
+            const match = localities.find(
+              (loc) =>
+                loc.toLowerCase().includes(cand.toLowerCase()) ||
+                cand.toLowerCase().includes(loc.toLowerCase())
+            );
+            if (match) {
+              foundLocality = match;
+              break;
+            }
+          }
+
+          if (foundLocality) {
+            setLocality(foundLocality);
+            toast.success(`📍 Mapped to Chennai locality: ${foundLocality}`);
+          } else if (detectedCandidates.length > 0) {
+            toast.success(`📍 Area detected: ${detectedCandidates[0]}. Select matching locality below.`);
+          } else {
+            toast.success('📍 Current location GPS coordinates mapped!');
+          }
+        } catch {
+          toast.success('📍 Current location GPS coordinates mapped!');
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (err) => {
+        setIsLocating(false);
+        console.warn('Geolocation error:', err);
+        toast.error('Could not detect location. Please select your locality below.');
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
 
   const shopAmenitiesListEn = [
     'Main Road Facing',
@@ -159,7 +270,7 @@ export const AddPropertyPage: React.FC = () => {
     'பிரதான சாலை & பஸ் ஸ்டாண்ட் அருகில்',
   ];
 
-  const currentAmenities =
+  const categorySpecificAmenities =
     category === 'HOSTEL'
       ? listingLanguage === 'TA'
         ? hostelAmenitiesListTa
@@ -168,15 +279,13 @@ export const AddPropertyPage: React.FC = () => {
       ? listingLanguage === 'TA'
         ? marriageHallAmenitiesListTa
         : marriageHallAmenitiesListEn
-      : category === 'HOUSE'
+      : category === 'SHOP'
       ? listingLanguage === 'TA'
-        ? houseAmenitiesListTa
-        : houseAmenitiesListEn
-      : listingLanguage === 'TA'
-      ? shopAmenitiesListTa
-      : shopAmenitiesListEn;
+        ? shopAmenitiesListTa
+        : shopAmenitiesListEn
+      : [];
 
-  const toggleAmenity = (name: string) => {
+  const toggleCategoryAmenity = (name: string) => {
     if (selectedAmenities.includes(name)) {
       setSelectedAmenities(selectedAmenities.filter((a) => a !== name));
     } else {
@@ -188,7 +297,7 @@ export const AddPropertyPage: React.FC = () => {
     e.preventDefault();
 
     if (!locality) {
-      toast.error('Please select a Chennai locality');
+      toast.error('Please select a Chennai locality or detect your current location');
       return;
     }
     if (files.length === 0) {
@@ -200,22 +309,64 @@ export const AddPropertyPage: React.FC = () => {
       setIsSubmitting(true);
 
       let finalDesc = description.trim();
-      const finalAmenities = [...selectedAmenities];
+      const compiledAmenities = new Set<string>();
+
       if (listingLanguage === 'TA') {
-        finalAmenities.unshift('[LANG:TA]');
+        compiledAmenities.add('[LANG:TA]');
       }
 
       if (category === 'HOSTEL') {
         if (!finalDesc.includes('[CATEGORY:HOSTEL]')) {
           finalDesc = `${finalDesc}\n\n[CATEGORY:HOSTEL]`;
         }
-        finalAmenities.push('[CATEGORY:HOSTEL]');
+        compiledAmenities.add('[CATEGORY:HOSTEL]');
       } else if (category === 'MARRIAGE_HALL') {
         if (!finalDesc.includes('[CATEGORY:MARRIAGE_HALL]')) {
           finalDesc = `${finalDesc}\n\n[CATEGORY:MARRIAGE_HALL]`;
         }
-        finalAmenities.push('[CATEGORY:MARRIAGE_HALL]');
+        compiledAmenities.add('[CATEGORY:MARRIAGE_HALL]');
       }
+
+      // Add NoBroker checkboxes to amenities list
+      if (category === 'HOUSE' || category === 'HOSTEL') {
+        compiledAmenities.add(`${bathrooms} ${parseInt(bathrooms) === 1 ? 'Bathroom' : 'Bathrooms'}`);
+        if (attachedBathroom) compiledAmenities.add('Attached Bathroom');
+        if (balconies !== '0') compiledAmenities.add(`${balconies} ${parseInt(balconies) === 1 ? 'Balcony' : 'Balconies'}`);
+      }
+
+      if (parkingBike) compiledAmenities.add('Two Wheeler / Bike Parking');
+      if (parkingCar) compiledAmenities.add('Car Parking');
+      if (parkingCovered) compiledAmenities.add('Covered Car Parking');
+
+      if (petFriendly) compiledAmenities.add('Pet Friendly (Pets Allowed)');
+      if (bachelorsAllowed) compiledAmenities.add('Bachelors Allowed');
+      if (familyOnly) compiledAmenities.add('Family Only Preferred');
+      if (vegetarianOnly) compiledAmenities.add('Vegetarians Only');
+      if (nonVegAllowed) compiledAmenities.add('Non-Veg Allowed');
+
+      if (gym) compiledAmenities.add('Gym / Fitness Centre');
+      if (lift) compiledAmenities.add('Lift / Elevator');
+      if (powerBackup) compiledAmenities.add('100% Power Backup');
+      if (waterMetro) compiledAmenities.add('24/7 Metro Water');
+      if (waterBorewell) compiledAmenities.add('Borewell Water Supply');
+      if (securityCCTV) compiledAmenities.add('24/7 Security & CCTV');
+      if (gatedCommunity) compiledAmenities.add('Gated Community');
+      if (swimmingPool) compiledAmenities.add('Swimming Pool');
+      if (ac) compiledAmenities.add('Air Conditioner (AC)');
+      if (modularKitchen) compiledAmenities.add('Modular Kitchen');
+      if (geyser) compiledAmenities.add('Geyser / Water Heater');
+      if (washingArea) compiledAmenities.add('Utility / Washing Area');
+      if (wifi) compiledAmenities.add('High-Speed WiFi Ready');
+      if (pipedGas) compiledAmenities.add('Piped Gas Connection');
+      if (clubhouse) compiledAmenities.add('Clubhouse / Community Hall');
+      if (privateTerrace) compiledAmenities.add('Private Terrace / Garden');
+      if (nearMetro) compiledAmenities.add('Near Metro Station');
+      if (nearBusStand) compiledAmenities.add('Near Bus Stand');
+
+      // Add any category specific amenities
+      selectedAmenities.forEach((a) => compiledAmenities.add(a));
+
+      const finalAmenities = Array.from(compiledAmenities);
 
       // Step 1: Create draft property
       const res = await propertyService.createProperty({
@@ -225,7 +376,9 @@ export const AddPropertyPage: React.FC = () => {
         rent: parseFloat(rent),
         deposit: parseFloat(deposit),
         locality,
-        address: address.trim(),
+        address: address.trim() || `${locality}, Chennai`,
+        latitude,
+        longitude,
         propertySize: parseFloat(propertySize),
         bedrooms: category === 'HOUSE' || category === 'HOSTEL' ? parseInt(bedrooms) : null,
         rooms: category === 'SHOP' || category === 'MARRIAGE_HALL' ? parseInt(rooms) : null,
@@ -239,7 +392,7 @@ export const AddPropertyPage: React.FC = () => {
 
       const newPropertyId = res.data.id;
 
-      // Step 2: Upload images to Cloudinary via backend
+      // Step 2: Upload images
       await propertyService.uploadImages(newPropertyId, files);
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
@@ -265,7 +418,7 @@ export const AddPropertyPage: React.FC = () => {
           List Your Chennai Property
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Provide complete details and photos. Once submitted, admin will review and publish your listing.
+          Provide your locality, property specs, and NoBroker-style amenities. Then choose a plan to activate.
         </p>
       </div>
 
@@ -276,14 +429,10 @@ export const AddPropertyPage: React.FC = () => {
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
               1. Listing Language / விளம்பர மொழி
             </label>
-            <span className="text-xs font-semibold text-orange-600">
+            <span className="text-xs font-semibold text-[#9A7818]">
               {listingLanguage === 'TA' ? 'தமிழில் விளம்பரம் தேர்வு செய்யப்பட்டுள்ளது' : 'English listing selected'}
             </span>
           </div>
-
-          <p className="text-xs text-gray-500">
-            Choose whether this property should be posted in English or தமிழ். If Tamil is selected, your listing will be presented in Tamil with specialized Tamil amenity tags!
-          </p>
 
           <div className="grid grid-cols-2 gap-4">
             <button
@@ -294,7 +443,7 @@ export const AddPropertyPage: React.FC = () => {
               }}
               className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition ${
                 listingLanguage === 'EN'
-                  ? 'border-orange-500 bg-orange-50/50 text-orange-950 font-bold shadow-sm'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 font-bold shadow-xs'
                   : 'border-gray-200 hover:border-gray-300 text-gray-600'
               }`}
             >
@@ -313,7 +462,7 @@ export const AddPropertyPage: React.FC = () => {
               }}
               className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition ${
                 listingLanguage === 'TA'
-                  ? 'border-[#C59B27] bg-amber-50/50 text-amber-950 font-bold shadow-sm'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 font-bold shadow-xs'
                   : 'border-gray-200 hover:border-gray-300 text-gray-600'
               }`}
             >
@@ -350,16 +499,16 @@ export const AddPropertyPage: React.FC = () => {
                 <Building2 className="w-6 h-6 text-[#C5A059]" />
               </div>
               <div>
-                <h4 className="font-bold text-base text-gray-900">
-                  {listingLanguage === 'TA' ? 'குடியிருப்பு வீடு / அபார்ட்மெண்ட்' : 'House / Flat / Villa'}
-                </h4>
-                <p className="text-xs text-gray-500">
-                  {listingLanguage === 'TA' ? 'குடும்பங்கள் மற்றும் பேச்சிலர்களுக்கான வீடுகள்' : 'Residential homes for families & bachelors'}
-                </p>
+                <div className="text-base font-bold">
+                  {listingLanguage === 'TA' ? 'வாடகை வீடு (House / Flat / Villa)' : 'Rental House / Flat / Villa'}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  1BHK, 2BHK, 3BHK, Independent House, Villa
+                </div>
               </div>
             </button>
 
-            {/* 2. Shop */}
+            {/* 2. Commercial Shop */}
             <button
               type="button"
               onClick={() => {
@@ -377,16 +526,16 @@ export const AddPropertyPage: React.FC = () => {
                 <Store className="w-6 h-6 text-[#C5A059]" />
               </div>
               <div>
-                <h4 className="font-bold text-base text-gray-900">
-                  {listingLanguage === 'TA' ? 'வணிக கடை / ஷோரூம்' : 'Commercial Shop / Office'}
-                </h4>
-                <p className="text-xs text-gray-500">
-                  {listingLanguage === 'TA' ? 'சில்லறை கடைகள், வணிக இடங்கள், அலுவலகங்கள்' : 'Retail shops, showrooms, office spaces'}
-                </p>
+                <div className="text-base font-bold">
+                  {listingLanguage === 'TA' ? 'வணிக கடை / ஷோரூம் (Commercial Shop)' : 'Commercial Shop / Retail'}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  Retail Store, Showroom, Office, Clinic, godown
+                </div>
               </div>
             </button>
 
-            {/* 3. Hostel / PG */}
+            {/* 3. Hostel */}
             <button
               type="button"
               onClick={() => {
@@ -404,16 +553,16 @@ export const AddPropertyPage: React.FC = () => {
                 <Users className="w-6 h-6 text-[#C5A059]" />
               </div>
               <div>
-                <h4 className="font-bold text-base text-gray-900">
-                  {listingLanguage === 'TA' ? 'விடுதி / மேன்ஷன் / PG' : 'Hostel & PG / Mansion'}
-                </h4>
-                <p className="text-xs text-gray-500">
-                  {listingLanguage === 'TA' ? 'மகளிர் & ஆடவர் விடுதிகள், PG தங்கும் வசதி' : 'Gents & Ladies hostels, sharing rooms & PGs'}
-                </p>
+                <div className="text-base font-bold">
+                  {listingLanguage === 'TA' ? 'விடுதி / பி.ஜி (Hostel / PG / Coliving)' : 'Hostel / PG / Co-Living'}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  Men's PG, Women's Hostel, Shared rooms
+                </div>
               </div>
             </button>
 
-            {/* 4. Marriage Hall / Kalyana Mandapam */}
+            {/* 4. Marriage Hall */}
             <button
               type="button"
               onClick={() => {
@@ -431,67 +580,159 @@ export const AddPropertyPage: React.FC = () => {
                 <PartyPopper className="w-6 h-6 text-[#C5A059]" />
               </div>
               <div>
-                <h4 className="font-bold text-base text-gray-900">
-                  {listingLanguage === 'TA' ? 'கல்யாண மண்டபம் / பார்ட்டி ஹால்' : 'Marriage Hall / Kalyana Mandapam'}
-                </h4>
-                <p className="text-xs text-gray-500">
-                  {listingLanguage === 'TA' ? 'திருமணம் & விசேஷங்களுக்கான பிரம்மாண்ட மண்டபங்கள்' : 'Wedding venues, party halls & mandapams'}
-                </p>
+                <div className="text-base font-bold">
+                  {listingLanguage === 'TA' ? 'திருமண மண்டபம் / மஹால் (Marriage Hall)' : 'Marriage Hall / Mandapam'}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  Kalyana Mandapam, Mini Hall, Party Hall
+                </div>
               </div>
             </button>
           </div>
         </div>
 
-        {/* Step 3: Basic Details */}
+        {/* Step 3: Location & Locality Mapping */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                3. Property Location & Locality / இருப்பிடம்
+              </label>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Map your property by Chennai locality (e.g. Kodambakkam, Vadapalani). Full street address is completely optional.
+              </p>
+            </div>
+
+            {/* GPS Geolocation Button */}
+            <button
+              type="button"
+              onClick={handleDetectLocation}
+              disabled={isLocating}
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#FAF4E6] hover:bg-[#F3E8CD] border border-[#E8DFC8] text-[#9A7818] font-bold text-xs rounded-xl shadow-2xs transition active:scale-95 disabled:opacity-50 shrink-0"
+            >
+              <Navigation className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin' : ''}`} />
+              <span>{isLocating ? 'Detecting Location...' : 'Use Current Location (GPS)'}</span>
+            </button>
+          </div>
+
+          {/* Quick Locality Pick Chips */}
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+              Popular Chennai Localities (1-Click Select):
+            </span>
+            <div className="flex flex-wrap gap-2 pt-1">
+              {popularLocalities.map((popLoc) => {
+                const isSelected = locality === popLoc;
+                return (
+                  <button
+                    key={popLoc}
+                    type="button"
+                    onClick={() => setLocality(popLoc)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-[#C5A059] text-white shadow-2xs'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                  >
+                    <MapPin className="w-3 h-3" />
+                    <span>{popLoc}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Locality Dropdown */}
+          <div className="space-y-1.5">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              All Chennai Localities
+            </label>
+            <select
+              required
+              value={locality}
+              onChange={(e) => setLocality(e.target.value)}
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
+            >
+              <option value="">Select Chennai Area</option>
+              {localities.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {latitude && longitude && (
+            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between text-xs text-emerald-800">
+              <span className="flex items-center gap-2 font-semibold">
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>GPS Coordinates Mapped: {latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+              </span>
+              <span className="text-[11px] text-emerald-700">Locality: {locality || 'Detected'}</span>
+            </div>
+          )}
+
+          {/* Full Physical Address (Optional Toggle) */}
+          <div className="pt-2 border-t border-gray-100 space-y-3">
+            <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-gray-700">
+              <input
+                type="checkbox"
+                checked={showFullAddress}
+                onChange={(e) => setShowFullAddress(e.target.checked)}
+                className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+              />
+              <span>Add full street address / door no (Optional)</span>
+            </label>
+            <p className="text-[11px] text-gray-500 leading-relaxed">
+              By default, only your Locality ({locality || 'e.g. Kodambakkam, Chennai'}) will be shown publicly to protect your privacy. Check the box above if you want to provide door number, street, or landmark details.
+            </p>
+
+            {showFullAddress && (
+              <div className="pt-1">
+                <textarea
+                  rows={2}
+                  placeholder={
+                    listingLanguage === 'TA'
+                      ? 'கதவு எண் 14, 2வது மெயின் ரோடு, சாந்தி தியேட்டர் அருகில், சென்னை'
+                      : 'Door No. 14, 2nd Main Road, Near Landmark, Chennai'
+                  }
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Step 4: Basic Property Details */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            3. Property Specifications / விவரங்கள்
+            4. Property Details & Pricing
           </label>
 
           <div className="space-y-4">
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                  {listingLanguage === 'TA' ? 'விளம்பர தலைப்பு (Title)' : 'Property Title'}
-                </label>
-                {listingLanguage === 'TA' && (
-                  <span className="text-[11px] text-gray-400 font-medium">விரைவு தலைப்பை தேர்வு செய்யலாம்:</span>
-                )}
-              </div>
-
-              {listingLanguage === 'TA' && (
-                <div className="flex flex-wrap gap-2 mb-2.5">
-                  {[
-                    '2 BHK தனி வீடு வாடகைக்கு',
-                    '3 BHK தனி வீடு வாடகைக்கு',
-                    'அபார்ட்மெண்ட் வீடு வாடகைக்கு',
-                    'வணிக கடை வாடகைக்கு',
-                    'அலுவலக இடம் வாடகைக்கு',
-                  ].map((chip) => (
-                    <button
-                      key={chip}
-                      type="button"
-                      onClick={() => setTitle(chip)}
-                      className="px-2.5 py-1 text-xs bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-lg border border-amber-200/80 transition font-medium"
-                    >
-                      + {chip}
-                    </button>
-                  ))}
-                </div>
-              )}
-
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                Listing Title
+              </label>
               <input
                 type="text"
                 required
                 minLength={5}
+                maxLength={100}
                 placeholder={
-                  listingLanguage === 'TA'
-                    ? 'எ.கா: அண்ணா நகரில் 2 BHK விசாலமான தனி வீடு வாடகைக்கு'
-                    : 'e.g. Spacious 2 BHK Independent House with Car Parking'
+                  category === 'HOUSE'
+                    ? 'Spacious 2 BHK Apartment near Kodambakkam Railway Station'
+                    : category === 'SHOP'
+                    ? 'Prime Ground Floor Commercial Retail Shop on Vadapalani Main Road'
+                    : category === 'HOSTEL'
+                    ? "Deluxe Men's PG & Hostel with Food & AC in Anna Nagar"
+                    : 'Grand Air Conditioned Marriage Hall with Dining in Adyar'
                 }
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
               />
             </div>
 
@@ -507,7 +748,7 @@ export const AddPropertyPage: React.FC = () => {
                   placeholder="22000"
                   value={rent}
                   onChange={(e) => setRent(e.target.value)}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                 />
               </div>
 
@@ -522,31 +763,12 @@ export const AddPropertyPage: React.FC = () => {
                   placeholder="100000"
                   value={deposit}
                   onChange={(e) => setDeposit(e.target.value)}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Chennai Locality
-                </label>
-                <select
-                  required
-                  value={locality}
-                  onChange={(e) => setLocality(e.target.value)}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                >
-                  <option value="">Select Chennai Area</option>
-                  {localities.map((loc) => (
-                    <option key={loc} value={loc}>
-                      {loc}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                   Super Built-up Area (Sq.Ft)
@@ -558,43 +780,11 @@ export const AddPropertyPage: React.FC = () => {
                   placeholder="1150"
                   value={propertySize}
                   onChange={(e) => setPropertySize(e.target.value)}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                 />
               </div>
 
-              {category === 'HOSTEL' ? (
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    {listingLanguage === 'TA' ? 'படுக்கை வகை (Sharing)' : 'Room / Sharing Type'}
-                  </label>
-                  <select
-                    value={bedrooms}
-                    onChange={(e) => setBedrooms(e.target.value)}
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
-                  >
-                    <option value="1">{listingLanguage === 'TA' ? 'தனி அறை (Single Room)' : '1 - Single Room'}</option>
-                    <option value="2">{listingLanguage === 'TA' ? '2 பேர் படுக்கை (2-Sharing)' : '2 - Two Sharing'}</option>
-                    <option value="3">{listingLanguage === 'TA' ? '3 பேர் படுக்கை (3-Sharing)' : '3 - Three Sharing'}</option>
-                    <option value="4">{listingLanguage === 'TA' ? '4 பேர் படுக்கை (4-Sharing)' : '4 - Four Sharing'}</option>
-                    <option value="5">{listingLanguage === 'TA' ? 'டார்மிட்டரி (Dormitory 5+)' : '5+ - Dormitory'}</option>
-                  </select>
-                </div>
-              ) : category === 'MARRIAGE_HALL' ? (
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    {listingLanguage === 'TA' ? 'அரங்கங்களின் எண்ணிக்கை' : 'Halls / Partitions'}
-                  </label>
-                  <select
-                    value={rooms}
-                    onChange={(e) => setRooms(e.target.value)}
-                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
-                  >
-                    <option value="1">1 Main Hall (200-500 Pax)</option>
-                    <option value="2">2 Halls (Main + Dining 500-1000 Pax)</option>
-                    <option value="3">3+ Grand Halls (1000+ Pax)</option>
-                  </select>
-                </div>
-              ) : category === 'HOUSE' ? (
+              {category === 'HOUSE' ? (
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                     Bedrooms (BHK)
@@ -627,25 +817,6 @@ export const AddPropertyPage: React.FC = () => {
               )}
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                {listingLanguage === 'TA' ? 'முழு முகவரி மற்றும் அடையாளம் (Address)' : 'Full Physical Address (Street, Landmark, Chennai PIN)'}
-              </label>
-              <textarea
-                rows={2}
-                required
-                minLength={10}
-                placeholder={
-                  listingLanguage === 'TA'
-                    ? 'கதவு எண் 14, 2வது மெயின் ரோடு, சாந்தி தியேட்டர் அருகில், அண்ணா நகர், சென்னை - 600040'
-                    : 'Door No. 14, 2nd Main Road, Near Shanti Theatre, Anna Nagar, Chennai - 600040'
-                }
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
@@ -654,17 +825,11 @@ export const AddPropertyPage: React.FC = () => {
                 <select
                   value={furnishing}
                   onChange={(e) => setFurnishing(e.target.value as any)}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                 >
-                  <option value="UNFURNISHED">
-                    {listingLanguage === 'TA' ? 'வசதிகள் இன்றி (Unfurnished)' : 'Unfurnished'}
-                  </option>
-                  <option value="SEMI_FURNISHED">
-                    {listingLanguage === 'TA' ? 'பகுதி வசதியுடன் (Semi-Furnished)' : 'Semi-Furnished'}
-                  </option>
-                  <option value="FURNISHED">
-                    {listingLanguage === 'TA' ? 'முழு வசதியுடன் (Fully Furnished)' : 'Fully Furnished'}
-                  </option>
+                  <option value="UNFURNISHED">Unfurnished</option>
+                  <option value="SEMI_FURNISHED">Semi-Furnished</option>
+                  <option value="FURNISHED">Fully Furnished</option>
                 </select>
               </div>
 
@@ -677,7 +842,7 @@ export const AddPropertyPage: React.FC = () => {
                   required
                   value={availability}
                   onChange={(e) => setAvailability(e.target.value)}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                 />
               </div>
             </div>
@@ -687,97 +852,370 @@ export const AddPropertyPage: React.FC = () => {
                 {listingLanguage === 'TA' ? 'முழு விவரங்கள் (Description)' : 'Detailed Property Description'}
               </label>
               <textarea
-                rows={4}
+                rows={3}
                 required
                 minLength={20}
                 placeholder={
                   listingLanguage === 'TA'
-                    ? 'வீட்டின் சிறப்பம்சங்கள், 24 மணி நேர மெட்ரோ குடிநீர் வசதி, கார் பார்க்கிங், அருகிலுள்ள பேருந்து/மெட்ரோ நிலையங்கள், வாடகை நிபந்தனைகள்...'
-                    : 'Highlight neighborhood advantages, water sources, natural ventilation, preferred tenants (family/professionals/retail businesses), etc.'
+                    ? 'வீட்டின் சிறப்பம்சங்கள், மெட்ரோ குடிநீர் வசதி, கார் பார்க்கிங், அருகிலுள்ள பேருந்து/மெட்ரோ நிலையங்கள், வாடகை நிபந்தனைகள்...'
+                    : 'Highlight ventilation, neighborhood advantages, water sources, natural light, preferred tenants, etc.'
                 }
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
               />
             </div>
           </div>
         </div>
 
-        {/* Step 3: Amenities Checklist */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
-          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            3. Amenities & Key Highlights
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {currentAmenities.map((amenity) => {
-              const isChecked = selectedAmenities.includes(amenity);
-              return (
-                <button
-                  key={amenity}
-                  type="button"
-                  onClick={() => toggleAmenity(amenity)}
-                  className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-bold text-left transition ${
-                    isChecked
-                      ? 'bg-orange-50 border-orange-500 text-orange-700 shadow-sm'
-                      : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+        {/* Step 5: NoBroker-Style Checkboxes (Bathrooms, Balcony, Parking, Pets, Gym) */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
+          <div className="border-b border-gray-100 pb-3">
+            <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-[#C5A059]" />
+              <span>5. Property Specifics & NoBroker Checklists</span>
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">
+              Select bathrooms, balconies, parking, tenant restrictions, and society amenities.
+            </p>
+          </div>
+
+          {/* Section A: Bathrooms & Balconies */}
+          {(category === 'HOUSE' || category === 'HOSTEL') && (
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Bathrooms & Balconies
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Bathrooms count */}
+                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
+                  <label className="block text-xs font-bold text-gray-800">
+                    Number of Bathrooms
+                  </label>
+                  <div className="flex gap-2">
+                    {['1', '2', '3', '4+'].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setBathrooms(num)}
+                        className={`flex-1 py-2 text-xs font-bold rounded-xl border transition ${
+                          bathrooms === num
+                            ? 'bg-[#C5A059] border-[#C5A059] text-white shadow-xs'
+                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {num}
+                      </button>
+                    ))}
+                  </div>
+
+                  <label className="flex items-center gap-2 pt-2 cursor-pointer text-xs font-semibold text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={attachedBathroom}
+                      onChange={(e) => setAttachedBathroom(e.target.checked)}
+                      className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                    />
+                    <span>Attached Bathroom in Bedroom(s)</span>
+                  </label>
+                </div>
+
+                {/* Balconies count */}
+                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
+                  <label className="block text-xs font-bold text-gray-800">
+                    Number of Balconies
+                  </label>
+                  <div className="flex gap-2">
+                    {['0', '1', '2', '3+'].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setBalconies(num)}
+                        className={`flex-1 py-2 text-xs font-bold rounded-xl border transition ${
+                          balconies === num
+                            ? 'bg-[#C5A059] border-[#C5A059] text-white shadow-xs'
+                            : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {num === '0' ? 'None' : `${num} Balcony`}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Section B: Vehicular Parking */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+              Parking Facilities
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition ${
+                  parkingBike
+                    ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900 shadow-2xs'
+                    : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={parkingBike}
+                  onChange={(e) => setParkingBike(e.target.checked)}
+                  className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                />
+                <span className="text-xs">🏍️ Bike Parking (Two Wheeler)</span>
+              </label>
+
+              <label
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition ${
+                  parkingCar
+                    ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900 shadow-2xs'
+                    : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={parkingCar}
+                  onChange={(e) => setParkingCar(e.target.checked)}
+                  className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                />
+                <span className="text-xs">🚗 Car Parking (Four Wheeler)</span>
+              </label>
+
+              <label
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition ${
+                  parkingCovered
+                    ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900 shadow-2xs'
+                    : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={parkingCovered}
+                  onChange={(e) => setParkingCovered(e.target.checked)}
+                  className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                />
+                <span className="text-xs">🛡️ Covered Parking</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Section C: Tenant Preferences & Rules (NoBroker) */}
+          {category === 'HOUSE' && (
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Tenant Preferences & Rules (NoBroker Style)
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <label
+                  className={`flex items-center gap-2.5 p-3 rounded-2xl border cursor-pointer transition ${
+                    petFriendly
+                      ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <div
-                    className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      isChecked ? 'bg-orange-600 border-orange-600 text-white' : 'border-gray-300'
-                    }`}
-                  >
-                    {isChecked && <CheckCircle className="w-3.5 h-3.5" />}
-                  </div>
-                  <span>{amenity}</span>
-                </button>
-              );
-            })}
+                  <input
+                    type="checkbox"
+                    checked={petFriendly}
+                    onChange={(e) => setPetFriendly(e.target.checked)}
+                    className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                  />
+                  <span className="text-xs">🐾 Pet Friendly (Pets Allowed)</span>
+                </label>
+
+                <label
+                  className={`flex items-center gap-2.5 p-3 rounded-2xl border cursor-pointer transition ${
+                    bachelorsAllowed
+                      ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={bachelorsAllowed}
+                    onChange={(e) => setBachelorsAllowed(e.target.checked)}
+                    className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                  />
+                  <span className="text-xs">👨‍💼 Bachelors Allowed</span>
+                </label>
+
+                <label
+                  className={`flex items-center gap-2.5 p-3 rounded-2xl border cursor-pointer transition ${
+                    familyOnly
+                      ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={familyOnly}
+                    onChange={(e) => setFamilyOnly(e.target.checked)}
+                    className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                  />
+                  <span className="text-xs">👨‍👩‍👧 Family Preferred</span>
+                </label>
+
+                <label
+                  className={`flex items-center gap-2.5 p-3 rounded-2xl border cursor-pointer transition ${
+                    vegetarianOnly
+                      ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={vegetarianOnly}
+                    onChange={(e) => setVegetarianOnly(e.target.checked)}
+                    className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                  />
+                  <span className="text-xs">🥗 Vegetarians Only</span>
+                </label>
+
+                <label
+                  className={`flex items-center gap-2.5 p-3 rounded-2xl border cursor-pointer transition ${
+                    nonVegAllowed
+                      ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={nonVegAllowed}
+                    onChange={(e) => setNonVegAllowed(e.target.checked)}
+                    className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                  />
+                  <span className="text-xs">🍗 Non-Veg Allowed</span>
+                </label>
+              </div>
+            </div>
+          )}
+
+          {/* Section D: Building & Society Amenities (Gym, Lift, Water, Power) */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+              Society & Building Amenities (NoBroker Checklist)
+            </h4>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {[
+                { label: '🏋️ Gym / Fitness Centre', checked: gym, setter: setGym },
+                { label: '🛗 Lift / Elevator', checked: lift, setter: setLift },
+                { label: '⚡ 100% Power Backup', checked: powerBackup, setter: setPowerBackup },
+                { label: '💧 24/7 Metro Water', checked: waterMetro, setter: setWaterMetro },
+                { label: '🚰 Borewell Water', checked: waterBorewell, setter: setWaterBorewell },
+                { label: '👮 Security Guard & CCTV', checked: securityCCTV, setter: setSecurityCCTV },
+                { label: '🚪 Gated Community', checked: gatedCommunity, setter: setGatedCommunity },
+                { label: '🏊 Swimming Pool', checked: swimmingPool, setter: setSwimmingPool },
+                { label: '❄️ Air Conditioner (AC)', checked: ac, setter: setAc },
+                { label: '🍽️ Modular Kitchen', checked: modularKitchen, setter: setModularKitchen },
+                { label: '☀️ Geyser / Water Heater', checked: geyser, setter: setGeyser },
+                { label: '🧺 Utility / Washing Area', checked: washingArea, setter: setWashingArea },
+                { label: '📶 High-Speed WiFi Ready', checked: wifi, setter: setWifi },
+                { label: '🔥 Piped Gas Connection', checked: pipedGas, setter: setPipedGas },
+                { label: '🧘 Clubhouse / Hall', checked: clubhouse, setter: setClubhouse },
+                { label: '🌿 Private Terrace / Garden', checked: privateTerrace, setter: setPrivateTerrace },
+                { label: '🚆 Near Metro Station', checked: nearMetro, setter: setNearMetro },
+                { label: '🚌 Near Bus Stand', checked: nearBusStand, setter: setNearBusStand },
+              ].map((item, idx) => (
+                <label
+                  key={idx}
+                  className={`flex items-center gap-2.5 p-3 rounded-2xl border cursor-pointer transition ${
+                    item.checked
+                      ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900 shadow-2xs'
+                      : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={item.checked}
+                    onChange={(e) => item.setter(e.target.checked)}
+                    className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
+                  />
+                  <span className="text-xs">{item.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
+
+          {/* Section E: Additional Category Specific Amenities (if Shop / Hostel / Hall) */}
+          {categorySpecificAmenities.length > 0 && (
+            <div className="space-y-3 pt-2 border-t border-gray-100">
+              <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Category Highlights ({category})
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {categorySpecificAmenities.map((amenity) => {
+                  const isChecked = selectedAmenities.includes(amenity);
+                  return (
+                    <button
+                      key={amenity}
+                      type="button"
+                      onClick={() => toggleCategoryAmenity(amenity)}
+                      className={`flex items-center gap-2.5 p-3 rounded-2xl border text-xs font-bold text-left transition ${
+                        isChecked
+                          ? 'bg-[#FCFAF5] border-[#C5A059] text-gray-900 shadow-2xs'
+                          : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div
+                        className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                          isChecked ? 'bg-[#C5A059] border-[#C5A059] text-white' : 'border-gray-300'
+                        }`}
+                      >
+                        {isChecked && <CheckCircle className="w-3.5 h-3.5" />}
+                      </div>
+                      <span>{amenity}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Step 4: Contact Preferences */}
+        {/* Step 6: Contact Preferences */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            4. Tenant Contact Preferences
+            6. Tenant Contact Preferences
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
+            <label className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl cursor-pointer">
               <input
                 type="checkbox"
                 checked={contactPhone}
                 onChange={(e) => setContactPhone(e.target.checked)}
-                className="w-4 h-4 text-orange-600 rounded"
+                className="w-4 h-4 text-[#C5A059] rounded"
               />
               <span className="text-xs font-semibold text-gray-800">Direct Phone Calling</span>
             </label>
 
-            <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
+            <label className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl cursor-pointer">
               <input
                 type="checkbox"
                 checked={contactWhatsapp}
                 onChange={(e) => setContactWhatsapp(e.target.checked)}
-                className="w-4 h-4 text-orange-600 rounded"
+                className="w-4 h-4 text-[#C5A059] rounded"
               />
               <span className="text-xs font-semibold text-gray-800">WhatsApp Redirection</span>
             </label>
 
-            <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer">
+            <label className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl cursor-pointer">
               <input
                 type="checkbox"
                 checked={contactEnquiry}
                 onChange={(e) => setContactEnquiry(e.target.checked)}
-                className="w-4 h-4 text-orange-600 rounded"
+                className="w-4 h-4 text-[#C5A059] rounded"
               />
               <span className="text-xs font-semibold text-gray-800">In-App Message Enquiry</span>
             </label>
           </div>
         </div>
 
-        {/* Step 5: Photos Upload */}
+        {/* Step 7: Photos Upload */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            5. Upload Property Photos
+            7. Upload Property Photos
           </label>
           <ImageUploader newFiles={files} onFilesChange={setFiles} maxFiles={10} />
         </div>
@@ -787,7 +1225,7 @@ export const AddPropertyPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <Info className="w-5 h-5 text-[#C5A059] shrink-0" />
             <p className="text-xs text-gray-700 leading-relaxed font-medium">
-              After clicking Save, you will be directed to select a Listing Subscription Plan (from ₹499) to verify and submit your property for admin approval.
+              After clicking Save, you will be directed to select a Listing Subscription Plan (from ₹478) to verify and submit your property for admin review.
             </p>
           </div>
 

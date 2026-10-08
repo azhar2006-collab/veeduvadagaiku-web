@@ -13,7 +13,7 @@ export const createPropertySchema = z.object({
   rent: z.number().positive(),
   deposit: z.number().min(0),
   locality: z.string().min(1),
-  address: z.string().min(10),
+  address: z.string().optional().default(''),
   propertySize: z.number().positive(),
   bedrooms: z.number().int().min(0).optional().nullable(),
   rooms: z.number().int().min(0).optional().nullable(),
