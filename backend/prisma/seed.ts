@@ -353,13 +353,13 @@ async function main() {
       viewCount: 205,
       images: [
         {
-          imageUrl: 'https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?auto=format&fit=crop&w=1200&q=80',
+          imageUrl: '/indian-properties/shop2.jpg',
           publicId: 'demo/shop2_storefront',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=80',
+          imageUrl: '/indian-properties/shop1.jpg',
           publicId: 'demo/shop2_retail',
           isPrimary: false,
           displayOrder: 1,
@@ -386,13 +386,13 @@ async function main() {
       viewCount: 290,
       images: [
         {
-          imageUrl: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=1200&q=80',
+          imageUrl: '/indian-properties/shop3.jpg',
           publicId: 'demo/shop3_store',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=1200&q=80',
+          imageUrl: '/indian-properties/shop4.jpg',
           publicId: 'demo/shop3_display',
           isPrimary: false,
           displayOrder: 1,
@@ -419,13 +419,13 @@ async function main() {
       viewCount: 235,
       images: [
         {
-          imageUrl: 'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?auto=format&fit=crop&w=1200&q=80',
+          imageUrl: '/indian-properties/shop4.jpg',
           publicId: 'demo/shop4_boutique',
           isPrimary: true,
           displayOrder: 0,
         },
         {
-          imageUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
+          imageUrl: '/indian-properties/shop3.jpg',
           publicId: 'demo/shop4_shopfront',
           isPrimary: false,
           displayOrder: 1,

@@ -31,6 +31,18 @@ async function main() {
       primary: '/indian-properties/house1.jpg', // Modern villa
       secondary: '/indian-properties/house5.jpg', // Bungalow
     },
+    prop_demo_shop_2: {
+      primary: '/indian-properties/shop2.jpg', // Adyar Emporium Corner Shop
+      secondary: '/indian-properties/shop1.jpg',
+    },
+    prop_demo_shop_3: {
+      primary: '/indian-properties/shop3.jpg', // Anna Nagar 2nd Avenue Retail Store
+      secondary: '/indian-properties/shop4.jpg',
+    },
+    prop_demo_shop_4: {
+      primary: '/indian-properties/shop4.jpg', // Alwarpet TTK Road REVE Boutique Store
+      secondary: '/indian-properties/shop3.jpg',
+    },
   };
 
   for (const [propId, imgs] of Object.entries(demoMappings)) {
