@@ -27,15 +27,7 @@ export const PaymentPage: React.FC = () => {
   });
   const plans = plansRes?.data || [];
 
-  // Auto-select standard plan or first available plan when plans load
-  React.useEffect(() => {
-    if (plans.length > 0 && !selectedPlanId) {
-      const defaultPlan = plans.find((p) => p.id === 'plan_standard') || plans[0];
-      if (defaultPlan) setSelectedPlanId(defaultPlan.id);
-    }
-  }, [plans, selectedPlanId]);
-
-  // Load property details
+  // Load property details (load early so we can auto-select correct plan)
   const { data: propRes } = useQuery({
     queryKey: ['property', propertyId],
     queryFn: () => propertyService.getPropertyById(propertyId),
@@ -43,6 +35,18 @@ export const PaymentPage: React.FC = () => {
     retry: 1,
   });
   const property = propRes?.data;
+
+  // Auto-select plan based on property type (SHOP → commercial_single, HOUSE → residential_single)
+  React.useEffect(() => {
+    if (plans.length > 0 && !selectedPlanId && property) {
+      const isCommercial = property.propertyType === 'SHOP';
+      const defaultPlanId = isCommercial ? 'plan_commercial_single' : 'plan_residential_single';
+      const defaultPlan = plans.find((p) => p.id === defaultPlanId) || plans[0];
+      if (defaultPlan) setSelectedPlanId(defaultPlan.id);
+    } else if (plans.length > 0 && !selectedPlanId && !propertyId) {
+      setSelectedPlanId(plans[0].id);
+    }
+  }, [plans, selectedPlanId, property, propertyId]);
 
   const handlePay = async () => {
     if (!propertyId) {
@@ -149,10 +153,15 @@ export const PaymentPage: React.FC = () => {
 
       {/* Plan Selection Grid */}
       <div className="space-y-4">
-        <h2 className="text-base font-bold text-gray-900">Choose a Plan</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-gray-900">Choose a Plan</h2>
+          <span className="text-xs text-gray-500 font-medium">30-day listing per property</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {plans.map((plan) => {
             const isSelected = selectedPlanId === plan.id;
+            const isPack = plan.id.includes('_pack_');
+            const perAdPrice = plan.id === 'plan_residential_pack_5' ? 199 : plan.id === 'plan_commercial_pack_5' ? 444 : null;
             return (
               <button
                 key={plan.id}
@@ -164,6 +173,11 @@ export const PaymentPage: React.FC = () => {
                     : 'border-[#EFE8D8] bg-white hover:border-[#C5A059]'
                 }`}
               >
+                {isPack && (
+                  <span className="absolute -top-3 left-4 px-2.5 py-0.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs">
+                    Best Value
+                  </span>
+                )}
                 {isSelected && (
                   <span className="absolute -top-3 right-4 px-2.5 py-0.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs">
                     Selected
@@ -171,7 +185,7 @@ export const PaymentPage: React.FC = () => {
                 )}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-base text-gray-900">{plan.name}</h3>
+                    <h3 className="font-bold text-sm text-gray-900">{plan.name}</h3>
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                         isSelected ? 'border-[#C5A059]' : 'border-gray-300'
@@ -183,7 +197,10 @@ export const PaymentPage: React.FC = () => {
                   <p className="text-2xl font-black text-gray-900">
                     ₹{plan.price.toLocaleString('en-IN')}
                   </p>
-                  <p className="text-xs text-[#9A7818] font-bold">{plan.durationDays} Days Active</p>
+                  {perAdPrice && (
+                    <p className="text-xs font-bold text-emerald-600">₹{perAdPrice}/ad — save with pack!</p>
+                  )}
+                  <p className="text-xs text-[#9A7818] font-bold">{plan.durationDays} Days Active per Listing</p>
                   <p className="text-[11px] text-gray-500 pt-2 border-t border-gray-100">
                     {plan.description}
                   </p>

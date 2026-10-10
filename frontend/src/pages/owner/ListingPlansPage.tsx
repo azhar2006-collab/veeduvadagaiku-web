@@ -20,43 +20,60 @@ export const ListingPlansPage: React.FC = () => {
       <SEOHead title="Listing Plans & Pricing | Veedu Vadagaiku" />
 
       <div className="text-center space-y-3 max-w-xl mx-auto">
-        <span className="text-xs font-black uppercase tracking-widest text-orange-600">
+        <span className="text-xs font-black uppercase tracking-widest text-[#9A7818]">
           Transparent Pricing
         </span>
-        <h1 className="text-2xl sm:text-4xl font-black text-gray-900 tracking-tight">
-          Choose a Chennai Listing Plan
+        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+          Simple Plans, No Hidden Fees
         </h1>
         <p className="text-xs sm:text-sm text-gray-500">
-          List your house or commercial shop with guaranteed tenant reach across Chennai. Zero commissions.
+          List your property for 30 days. Save more with pack deals. No commissions, no brokerage.
         </p>
+        {/* Quick price summary pills */}
+        <div className="flex flex-wrap justify-center gap-2 pt-2">
+          {[
+            { label: 'Residential', price: '₹222/ad' },
+            { label: 'Commercial', price: '₹555/ad' },
+            { label: 'Residential Pack', price: '₹199/ad ×5' },
+            { label: 'Commercial Pack', price: '₹444/ad ×5' },
+          ].map(({ label, price }) => (
+            <span
+              key={label}
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF4E6] border border-[#E8DFC8] rounded-full text-[11px] font-bold text-[#9A7818]"
+            >
+              {label}: <span className="text-gray-900">{price}</span>
+            </span>
+          ))}
+        </div>
       </div>
 
       {isLoading ? (
         <Loader text="Loading listing plans..." />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          {plans.map((plan, i) => {
-            const isPopular = plan.name.toLowerCase() === 'standard';
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
+          {plans.map((plan) => {
+            const isPack = plan.id.includes('_pack_');
+            const perAdPrice = plan.id === 'plan_residential_pack_5' ? 199 : plan.id === 'plan_commercial_pack_5' ? 444 : null;
 
             return (
               <div
                 key={plan.id}
                 className={`relative bg-white rounded-3xl p-6 sm:p-8 border flex flex-col justify-between transition-all ${
-                  isPopular
-                    ? 'border-orange-500 shadow-xl shadow-orange-500/10 scale-105 z-10'
-                    : 'border-gray-200 shadow-sm hover:border-orange-300'
+                  isPack
+                    ? 'border-emerald-400 shadow-xl shadow-emerald-500/10'
+                    : 'border-[#E8DFC8] shadow-sm hover:border-[#C5A059]'
                 }`}
               >
-                {isPopular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] font-extrabold rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                {isPack && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-[10px] font-extrabold rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
                     <Sparkles className="w-3 h-3" />
-                    <span>Most Popular</span>
+                    <span>Best Value</span>
                   </div>
                 )}
 
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-xl font-black text-gray-900">{plan.name}</h3>
+                    <h3 className="text-lg font-black text-gray-900">{plan.name}</h3>
                     <p className="text-xs text-gray-500 mt-1">{plan.description}</p>
                   </div>
 
@@ -66,8 +83,13 @@ export const ListingPlansPage: React.FC = () => {
                         ₹{plan.price.toLocaleString('en-IN')}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold text-orange-600 block mt-1">
-                      Active for {plan.durationDays} Days
+                    {perAdPrice && (
+                      <span className="text-xs font-bold text-emerald-600 block mt-0.5">
+                        ₹{perAdPrice}/ad — save with 5-pack!
+                      </span>
+                    )}
+                    <span className="text-xs font-semibold text-[#9A7818] block mt-1">
+                      {plan.durationDays} Days Active per Listing
                     </span>
                   </div>
 
@@ -82,16 +104,16 @@ export const ListingPlansPage: React.FC = () => {
                   </ul>
                 </div>
 
-                <div className="pt-8">
+                <div className="pt-6">
                   <Link
-                    to={`/owner/properties`}
+                    to="/owner/properties/add"
                     className={`w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition active:scale-95 ${
-                      isPopular
-                        ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-600/30'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                      isPack
+                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/30'
+                        : 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white shadow-md shadow-[#D4AF37]/25'
                     }`}
                   >
-                    <span>Choose {plan.name}</span>
+                    <span>List & Choose {plan.name}</span>
                   </Link>
                 </div>
               </div>
