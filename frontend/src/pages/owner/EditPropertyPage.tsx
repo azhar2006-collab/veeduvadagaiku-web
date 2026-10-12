@@ -132,15 +132,20 @@ export const EditPropertyPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Monthly Rent (₹)
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Monthly Rent (₹)
+                </label>
+                <span className="text-[10px] text-gray-400 font-medium">No limit (₹1 to Infinity)</span>
+              </div>
               <input
                 type="number"
                 required
+                min={1}
+                placeholder="e.g. 50000+"
                 value={rent}
                 onChange={(e) => setRent(e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
               />
             </div>
 

@@ -7,6 +7,7 @@ import { ImageUploader } from '../../components/property/ImageUploader';
 import { SEOHead } from '../../components/common/SEOHead';
 import {
   Building2,
+  Building,
   Store,
   Users,
   PartyPopper,
@@ -40,7 +41,7 @@ export const AddPropertyPage: React.FC = () => {
   const [listingLanguage, setListingLanguage] = useState<'EN' | 'TA'>('EN');
 
   // Form states
-  const [category, setCategory] = useState<'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL'>('HOUSE');
+  const [category, setCategory] = useState<'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL'>('HOUSE');
   const [propertyType, setPropertyType] = useState<'HOUSE' | 'SHOP'>('HOUSE');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -325,10 +326,15 @@ export const AddPropertyPage: React.FC = () => {
           finalDesc = `${finalDesc}\n\n[CATEGORY:MARRIAGE_HALL]`;
         }
         compiledAmenities.add('[CATEGORY:MARRIAGE_HALL]');
+      } else if (category === 'APARTMENT') {
+        if (!finalDesc.includes('[CATEGORY:APARTMENT]')) {
+          finalDesc = `${finalDesc}\n\n[CATEGORY:APARTMENT]`;
+        }
+        compiledAmenities.add('[CATEGORY:APARTMENT]');
       }
 
       // Add NoBroker checkboxes to amenities list
-      if (category === 'HOUSE' || category === 'HOSTEL') {
+      if (category === 'HOUSE' || category === 'APARTMENT' || category === 'HOSTEL') {
         compiledAmenities.add(`${bathrooms} ${parseInt(bathrooms) === 1 ? 'Bathroom' : 'Bathrooms'}`);
         if (attachedBathroom) compiledAmenities.add('Attached Bathroom');
         if (balconies !== '0') compiledAmenities.add(`${balconies} ${parseInt(balconies) === 1 ? 'Balcony' : 'Balconies'}`);
@@ -380,7 +386,7 @@ export const AddPropertyPage: React.FC = () => {
         latitude,
         longitude,
         propertySize: parseFloat(propertySize),
-        bedrooms: category === 'HOUSE' || category === 'HOSTEL' ? parseInt(bedrooms) : null,
+        bedrooms: category === 'HOUSE' || category === 'APARTMENT' || category === 'HOSTEL' ? parseInt(bedrooms) : null,
         rooms: category === 'SHOP' || category === 'MARRIAGE_HALL' ? parseInt(rooms) : null,
         furnishing,
         amenities: finalAmenities,
@@ -500,10 +506,37 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'வாடகை வீடு (House / Flat / Villa)' : 'Rental House / Flat / Villa'}
+                  {listingLanguage === 'TA' ? 'தனி வீடு / வில்லா (House / Villa)' : 'Independent House / Villa'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
                   1BHK, 2BHK, 3BHK, Independent House, Villa
+                </div>
+              </div>
+            </button>
+
+            {/* 2. Apartment / Flat */}
+            <button
+              type="button"
+              onClick={() => {
+                setCategory('APARTMENT');
+                setPropertyType('HOUSE');
+                setSelectedAmenities([]);
+              }}
+              className={`p-5 rounded-2xl border-2 flex items-center gap-4 transition text-left ${
+                category === 'APARTMENT'
+                  ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 shadow-xs'
+                  : 'border-gray-200 hover:border-gray-300 text-gray-700'
+              }`}
+            >
+              <div className="p-3 bg-white text-[#9A7818] border border-[#E8DFC8] rounded-xl shrink-0">
+                <Building className="w-6 h-6 text-[#C5A059]" />
+              </div>
+              <div>
+                <div className="text-base font-bold">
+                  {listingLanguage === 'TA' ? 'அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : 'Apartment / Flat / Community'}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  Gated Community, High-rise Flat, Multi-storey
                 </div>
               </div>
             </button>
@@ -738,14 +771,17 @@ export const AddPropertyPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Monthly Rent (₹)
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    Monthly Rent (₹)
+                  </label>
+                  <span className="text-[10px] text-gray-400 font-medium">No maximum limit (₹1 to Infinity)</span>
+                </div>
                 <input
                   type="number"
                   required
                   min={1}
-                  placeholder="22000"
+                  placeholder="25000 (e.g. 50,000+)"
                   value={rent}
                   onChange={(e) => setRent(e.target.value)}
                   className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"

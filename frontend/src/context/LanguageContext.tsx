@@ -75,6 +75,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Property Card
     'card.house': 'House',
+    'card.apartment': 'Apartment / Flat',
     'card.shop': 'Shop',
     'card.hostel': 'Hostel / PG',
     'card.marriageHall': 'Kalyana Mandapam',
@@ -265,6 +266,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Property Card
     'card.house': 'வீடு',
+    'card.apartment': 'அபார்ட்மெண்ட் / Flat',
     'card.shop': 'வணிக கடை',
     'card.hostel': 'விடுதி / PG',
     'card.marriageHall': 'கல்யாண மண்டபம்',

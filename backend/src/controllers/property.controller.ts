@@ -17,13 +17,50 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
     const {
       propertyType, locality, minRent, maxRent,
       bedrooms, furnishing, minSize, maxSize,
-      sortBy = 'newest', availability,
+      sortBy = 'newest', availability, category,
     } = req.query;
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
 
     const where: Record<string, unknown> = { status: 'PUBLISHED' };
     if (propertyType) where.propertyType = propertyType;
+    if (category) {
+      const cat = String(category).toUpperCase();
+      if (cat === 'APARTMENT') {
+        where.propertyType = 'HOUSE';
+        where.OR = [
+          { title: { contains: 'apartment', mode: 'insensitive' } },
+          { title: { contains: 'flat', mode: 'insensitive' } },
+          { description: { contains: 'apartment', mode: 'insensitive' } },
+          { description: { contains: 'flat', mode: 'insensitive' } },
+          { description: { contains: '[category:apartment]', mode: 'insensitive' } },
+          { description: { contains: 'பிளாட்', mode: 'insensitive' } },
+          { description: { contains: 'அபார்ட்மெண்ட்', mode: 'insensitive' } },
+        ];
+      } else if (cat === 'HOUSE') {
+        where.propertyType = 'HOUSE';
+      } else if (cat === 'SHOP') {
+        where.propertyType = 'SHOP';
+      } else if (cat === 'HOSTEL') {
+        where.OR = [
+          { title: { contains: 'hostel', mode: 'insensitive' } },
+          { title: { contains: 'pg', mode: 'insensitive' } },
+          { title: { contains: 'mansion', mode: 'insensitive' } },
+          { description: { contains: 'hostel', mode: 'insensitive' } },
+          { description: { contains: 'mansion', mode: 'insensitive' } },
+          { description: { contains: '[category:hostel]', mode: 'insensitive' } },
+        ];
+      } else if (cat === 'MARRIAGE_HALL') {
+        where.OR = [
+          { title: { contains: 'marriage', mode: 'insensitive' } },
+          { title: { contains: 'mandapam', mode: 'insensitive' } },
+          { title: { contains: 'hall', mode: 'insensitive' } },
+          { description: { contains: 'marriage hall', mode: 'insensitive' } },
+          { description: { contains: 'mandapam', mode: 'insensitive' } },
+          { description: { contains: '[category:marriage_hall]', mode: 'insensitive' } },
+        ];
+      }
+    }
     if (locality) where.locality = { contains: locality as string, mode: 'insensitive' };
     if (minRent || maxRent) {
       where.rent = {};

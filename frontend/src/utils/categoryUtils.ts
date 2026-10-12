@@ -1,14 +1,14 @@
 import React from 'react';
-import { Building2, Store, Users, Sparkles } from 'lucide-react';
+import { Building2, Building, Store, Users, Sparkles } from 'lucide-react';
 import { Property } from '../types';
 
-export type ExtendedCategory = 'ALL' | 'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL';
+export type ExtendedCategory = 'ALL' | 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL';
 
 /**
- * Determines whether a property is a House, Shop, Hostel/PG, or Marriage Hall/Mandapam.
+ * Determines whether a property is a House, Apartment/Flat, Shop, Hostel/PG, or Marriage Hall/Mandapam.
  * Seamlessly backwards-compatible with backend HOUSE/SHOP enums without database schema changes.
  */
-export function getPropertyCategory(property: Partial<Property>): 'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' {
+export function getPropertyCategory(property: Partial<Property>): 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' {
   const desc = (property.description || '').toLowerCase();
   const title = (property.title || '').toLowerCase();
   const amenities = (property.amenities || []).join(' ').toLowerCase();
@@ -41,8 +41,27 @@ export function getPropertyCategory(property: Partial<Property>): 'HOUSE' | 'SHO
     return 'MARRIAGE_HALL';
   }
 
-  // Fallback to basic type
-  return property.propertyType === 'SHOP' ? 'SHOP' : 'HOUSE';
+  // Check for Commercial Shop
+  if (property.propertyType === 'SHOP' || combined.includes('[category:shop]')) {
+    return 'SHOP';
+  }
+
+  // Check for Apartment / Flat
+  if (
+    combined.includes('[category:apartment]') ||
+    combined.includes('apartment') ||
+    combined.includes('flat') ||
+    combined.includes('flats') ||
+    combined.includes('gated community') ||
+    combined.includes('அபார்ட்மெண்ட்') ||
+    combined.includes('பிளாட்') ||
+    combined.includes('குடியிருப்பு')
+  ) {
+    return 'APARTMENT';
+  }
+
+  // Fallback to basic House
+  return 'HOUSE';
 }
 
 /**
@@ -59,8 +78,16 @@ export function filterByExtendedCategory(
 /**
  * Category metadata for badges and UI cards.
  */
-export function getCategoryBadgeInfo(category: 'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL', lang: 'en' | 'ta' = 'en') {
+export function getCategoryBadgeInfo(category: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL', lang: 'en' | 'ta' = 'en') {
   switch (category) {
+    case 'APARTMENT':
+      return {
+        label: lang === 'ta' ? 'அபார்ட்மெண்ட்' : 'Apartment / Flat',
+        Icon: Building,
+        badgeBg: 'bg-gray-900/80',
+        badgeText: 'text-white',
+        badgeBorder: 'border-transparent',
+      };
     case 'HOSTEL':
       return {
         label: lang === 'ta' ? 'விடுதி / PG' : 'Hostel & PG',

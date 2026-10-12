@@ -17,7 +17,7 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
   const [viewMode, setViewMode] = useState<'search' | 'swipe'>('search');
-  const [selectedCategory, setSelectedCategory] = useState<'HOUSE' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' | ''>('');
+  const [selectedCategory, setSelectedCategory] = useState<'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' | ''>('');
   const [deckType, setDeckType] = useState<'HOUSE' | 'SHOP' | ''>('');
 
   const [locality, setLocality] = useState('');
@@ -286,6 +286,7 @@ export const HomePage: React.FC = () => {
                     >
                       <option value="">{t('hero.allTypes')}</option>
                       <option value="HOUSE">{t('card.house')}</option>
+                      <option value="APARTMENT">{t('card.apartment', 'Apartment / Flat')}</option>
                       <option value="SHOP">{t('card.shop')}</option>
                       <option value="HOSTEL">{t('card.hostel')}</option>
                       <option value="MARRIAGE_HALL">{t('card.marriageHall')}</option>
@@ -293,25 +294,35 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Max Rent */}
+                {/* Max Budget - Enter value directly or pick preset */}
                 <div className="relative text-left">
-                  <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider mb-1 ml-1">
-                    {t('hero.maxBudget')}
-                  </label>
+                  <div className="flex items-center justify-between mb-1 ml-1">
+                    <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider">
+                      {t('hero.maxBudget')}
+                    </label>
+                    <span className="text-[10px] text-gray-400 font-medium">₹0 – Any</span>
+                  </div>
                   <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
                     <span className="text-sm font-bold text-[#C5A059] pl-1">₹</span>
-                    <select
+                    <input
+                      type="number"
+                      min="0"
+                      step="5000"
+                      list="budget-presets"
+                      placeholder={lang === 'ta' ? 'அதிகபட்ச பட்ஜெட் ₹ (எ.கா. 50000+)' : 'Enter budget ₹ (e.g. 50,000+)'}
                       value={maxRent}
                       onChange={(e) => setMaxRent(e.target.value)}
-                      className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
-                    >
-                      <option value="">{t('hero.maxBudget')}</option>
-                      <option value="10000">Up to ₹10,000</option>
+                      className="w-full bg-transparent text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none"
+                    />
+                    <datalist id="budget-presets">
                       <option value="15000">Up to ₹15,000</option>
                       <option value="25000">Up to ₹25,000</option>
                       <option value="50000">Up to ₹50,000</option>
+                      <option value="75000">Up to ₹75,000</option>
                       <option value="100000">Up to ₹1,00,000</option>
-                    </select>
+                      <option value="200000">Up to ₹2,00,000</option>
+                      <option value="500000">Up to ₹5,00,000+</option>
+                    </datalist>
                   </div>
                 </div>
 
