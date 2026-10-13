@@ -1011,7 +1011,7 @@ export const HomePage: React.FC = () => {
               to="/home-services/list"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] shadow-xs hover:brightness-105 transition"
             >
-              <span>+ {lang === 'ta' ? 'சேவை சேர்க்க' : 'List Your Service (Free)'}</span>
+              <span>+ {lang === 'ta' ? 'சேவை சேர்க்க' : 'List Your Service'}</span>
             </Link>
             <Link
               to="/home-services"

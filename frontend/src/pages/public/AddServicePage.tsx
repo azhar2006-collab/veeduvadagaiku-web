@@ -357,8 +357,7 @@ export const AddServicePage: React.FC = () => {
             <span>{lang === 'ta' ? 'உரிமையாளர் சேவை பட்டியல்' : 'Owner & Provider Listing Portal'}</span>
           </div>
           <h1 className="text-xl sm:text-3xl font-extrabold text-[#1E2329]">
-            {lang === 'ta' ? 'உங்கள் சேவையை பட்டியலிடுங்கள்' : 'List Your Home Service'}{' '}
-            <span className="text-[#C5A059]">{lang === 'ta' ? '(இலவசம்)' : '(FREE)'}</span>
+            {lang === 'ta' ? 'உங்கள் சேவையை பட்டியலிடுங்கள்' : 'List Your Home Service'}
           </h1>
           <p className="text-gray-600 text-xs sm:text-sm">
             {lang === 'ta'
