@@ -7,7 +7,7 @@ import { PropertyFilters as FilterType } from '../../types';
 import { SEOHead } from '../../components/common/SEOHead';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { filterByExtendedCategory } from '../../utils/categoryUtils';
+import { filterByExtendedCategory, filterByCommercialType, filterByBedrooms } from '../../utils/categoryUtils';
 
 export const PropertiesPage: React.FC = () => {
   const { t } = useLanguage();
@@ -20,7 +20,8 @@ export const PropertiesPage: React.FC = () => {
     locality: searchParams.get('locality') || '',
     minRent: searchParams.get('minRent') ? Number(searchParams.get('minRent')) : '',
     maxRent: searchParams.get('maxRent') ? Number(searchParams.get('maxRent')) : '',
-    bedrooms: searchParams.get('bedrooms') ? Number(searchParams.get('bedrooms')) : '',
+    bedrooms: searchParams.get('bedrooms') || '',
+    commercialType: searchParams.get('commercialType') || '',
     furnishing: (searchParams.get('furnishing') as any) || '',
     sortBy: (searchParams.get('sortBy') as any) || 'newest',
     page: searchParams.get('page') ? Number(searchParams.get('page')) : 1,
@@ -42,11 +43,18 @@ export const PropertiesPage: React.FC = () => {
 
   const rawProperties = data?.data || [];
   const displayProperties = React.useMemo(() => {
+    let list = rawProperties;
     if (filters.category) {
-      return filterByExtendedCategory(rawProperties, filters.category);
+      list = filterByExtendedCategory(list, filters.category);
     }
-    return rawProperties;
-  }, [rawProperties, filters.category]);
+    if (filters.commercialType) {
+      list = filterByCommercialType(list, filters.commercialType);
+    }
+    if (filters.bedrooms) {
+      list = filterByBedrooms(list, filters.bedrooms);
+    }
+    return list;
+  }, [rawProperties, filters.category, filters.commercialType, filters.bedrooms]);
 
   const handleFilterChange = (newFilters: FilterType) => {
     setFilters(newFilters);
@@ -60,6 +68,7 @@ export const PropertiesPage: React.FC = () => {
       minRent: '',
       maxRent: '',
       bedrooms: '',
+      commercialType: '',
       furnishing: '',
       sortBy: 'newest',
       page: 1,

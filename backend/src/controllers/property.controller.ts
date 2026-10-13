@@ -17,7 +17,7 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
     const {
       propertyType, locality, minRent, maxRent,
       bedrooms, furnishing, minSize, maxSize,
-      sortBy = 'newest', availability, category,
+      sortBy = 'newest', availability, category, commercialType,
     } = req.query;
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
@@ -61,13 +61,82 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
         ];
       }
     }
+    if (commercialType) {
+      where.propertyType = 'SHOP';
+      const cTypes = String(commercialType).split(',').map((t) => t.trim().toLowerCase()).filter(Boolean);
+      const orConditions: Array<Record<string, unknown>> = [];
+
+      cTypes.forEach((t) => {
+        if (t.includes('office')) {
+          orConditions.push(
+            { title: { contains: 'office', mode: 'insensitive' } },
+            { description: { contains: 'office', mode: 'insensitive' } },
+            { description: { contains: '[commercial:office]', mode: 'insensitive' } }
+          );
+        } else if (t.includes('co-working') || t.includes('coworking')) {
+          orConditions.push(
+            { title: { contains: 'coworking', mode: 'insensitive' } },
+            { title: { contains: 'co-working', mode: 'insensitive' } },
+            { description: { contains: 'coworking', mode: 'insensitive' } }
+          );
+        } else if (t.includes('showroom')) {
+          orConditions.push(
+            { title: { contains: 'showroom', mode: 'insensitive' } },
+            { description: { contains: 'showroom', mode: 'insensitive' } }
+          );
+        } else if (t.includes('godown') || t.includes('warehouse')) {
+          orConditions.push(
+            { title: { contains: 'godown', mode: 'insensitive' } },
+            { title: { contains: 'warehouse', mode: 'insensitive' } },
+            { description: { contains: 'godown', mode: 'insensitive' } },
+            { description: { contains: 'warehouse', mode: 'insensitive' } }
+          );
+        } else if (t.includes('industrial')) {
+          orConditions.push(
+            { title: { contains: 'industrial', mode: 'insensitive' } },
+            { description: { contains: 'industrial', mode: 'insensitive' } },
+            { description: { contains: 'shed', mode: 'insensitive' } }
+          );
+        } else if (t.includes('shop')) {
+          orConditions.push(
+            { title: { contains: 'shop', mode: 'insensitive' } },
+            { description: { contains: 'shop', mode: 'insensitive' } },
+            { description: { contains: 'retail', mode: 'insensitive' } }
+          );
+        } else {
+          orConditions.push(
+            { title: { contains: t, mode: 'insensitive' } },
+            { description: { contains: t, mode: 'insensitive' } }
+          );
+        }
+      });
+
+      if (orConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: orConditions },
+        ];
+      }
+    }
     if (locality) where.locality = { contains: locality as string, mode: 'insensitive' };
     if (minRent || maxRent) {
       where.rent = {};
       if (minRent) (where.rent as Record<string, unknown>).gte = parseFloat(minRent as string);
       if (maxRent) (where.rent as Record<string, unknown>).lte = parseFloat(maxRent as string);
     }
-    if (bedrooms) where.bedrooms = parseInt(bedrooms as string);
+    if (bedrooms) {
+      const bStr = String(bedrooms);
+      if (bStr.includes(',')) {
+        const bList = bStr.split(',').map((b) => parseInt(b.trim())).filter((b) => !isNaN(b));
+        where.bedrooms = { in: bList };
+      } else if (bStr.endsWith('+')) {
+        const num = parseInt(bStr);
+        where.bedrooms = { gte: num };
+      } else {
+        const num = parseInt(bStr);
+        if (!isNaN(num)) where.bedrooms = num;
+      }
+    }
     if (furnishing) where.furnishing = furnishing;
     if (minSize || maxSize) {
       where.propertySize = {};

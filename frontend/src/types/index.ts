@@ -176,7 +176,8 @@ export interface PropertyFilters {
   locality?: string;
   minRent?: number | '';
   maxRent?: number | '';
-  bedrooms?: number | '';
+  bedrooms?: number | string | '';
+  commercialType?: string | '';
   furnishing?: FurnishingStatus | '';
   minSize?: number | '';
   maxSize?: number | '';

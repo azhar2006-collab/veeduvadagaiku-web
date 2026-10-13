@@ -30,6 +30,7 @@ import {
   Wifi,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { COMMERCIAL_SUBTYPES } from '../../utils/categoryUtils';
 
 export const AddPropertyPage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ export const AddPropertyPage: React.FC = () => {
 
   // Form states
   const [category, setCategory] = useState<'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL'>('HOUSE');
+  const [commercialSubtype, setCommercialSubtype] = useState<string>('Shop');
   const [propertyType, setPropertyType] = useState<'HOUSE' | 'SHOP'>('HOUSE');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -331,6 +333,13 @@ export const AddPropertyPage: React.FC = () => {
           finalDesc = `${finalDesc}\n\n[CATEGORY:APARTMENT]`;
         }
         compiledAmenities.add('[CATEGORY:APARTMENT]');
+      } else if (category === 'SHOP') {
+        const tag = `[COMMERCIAL:${commercialSubtype.toUpperCase().replace(/\s+/g, '_')}]`;
+        if (!finalDesc.includes(tag)) {
+          finalDesc = `${finalDesc}\n\n${tag}`;
+        }
+        compiledAmenities.add(commercialSubtype);
+        compiledAmenities.add(tag);
       }
 
       // Add NoBroker checkboxes to amenities list
@@ -622,6 +631,41 @@ export const AddPropertyPage: React.FC = () => {
               </div>
             </button>
           </div>
+
+          {/* Commercial Subtype Selector (Image 2) */}
+          {category === 'SHOP' && (
+            <div className="pt-4 border-t border-gray-100 space-y-3 animate-fade-in">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {listingLanguage === 'TA' ? 'வணிக சொத்து வகை (Commercial Type)' : 'Commercial Subtype'}
+                </label>
+                <span className="text-[11px] font-semibold text-[#9A7818]">
+                  {commercialSubtype}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500">
+                {listingLanguage === 'TA'
+                  ? 'சரியான வணிக வகையைத் தேர்வு செய்யவும் (எ.கா: கடை, ஷோரூம், அலுவலகம், கிடங்கு)'
+                  : 'Select the exact commercial subtype for targeted tenant inquiries (e.g. Shop, Office, Showroom, Warehouse)'}
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                {COMMERCIAL_SUBTYPES.map((sub) => (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => setCommercialSubtype(sub.label)}
+                    className={`p-3 rounded-xl text-xs font-bold border text-center transition ${
+                      commercialSubtype === sub.label
+                        ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {listingLanguage === 'TA' ? sub.labelTa : sub.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Step 3: Location & Locality Mapping */}

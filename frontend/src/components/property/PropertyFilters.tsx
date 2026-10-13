@@ -3,6 +3,7 @@ import { Filter, RotateCcw, Building2, Building, Store, Users, PartyPopper, Chec
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
 import { useLanguage } from '../../context/LanguageContext';
+import { COMMERCIAL_SUBTYPES } from '../../utils/categoryUtils';
 
 interface PropertyFiltersProps {
   filters: FilterType;
@@ -271,42 +272,114 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         </div>
 
-        {/* Bedrooms (if House) */}
-        {filters.propertyType !== 'SHOP' && (
+        {/* Bedrooms (if House or Apartment) */}
+        {filters.propertyType !== 'SHOP' && filters.category !== 'SHOP' && (
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-              {t('filter.bedrooms')}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {[1, 2, 3, 4].map((num) => (
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                {t('filter.bedrooms')} (BHK)
+              </label>
+              {filters.bedrooms && (
                 <button
-                  key={num}
                   type="button"
-                  onClick={() =>
-                    handleFieldChange('bedrooms', filters.bedrooms === num ? '' : num)
-                  }
-                  className={`w-10 h-10 rounded-xl text-xs font-bold border transition ${
-                    filters.bedrooms === num
-                      ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
-                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
+                  onClick={() => handleFieldChange('bedrooms', '')}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
                 >
-                  {num}
+                  Clear
                 </button>
-              ))}
-              <button
-                type="button"
-                onClick={() =>
-                  handleFieldChange('bedrooms', filters.bedrooms === 5 ? '' : 5)
-                }
-                className={`px-3 h-10 rounded-xl text-xs font-bold border transition ${
-                  filters.bedrooms === 5
-                    ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
-                    : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                5+
-              </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { val: '1', label: '1 BHK' },
+                { val: '2', label: '2 BHK' },
+                { val: '3', label: '3 BHK' },
+                { val: '4', label: '4 BHK' },
+                { val: '4+', label: '4+ BHK' },
+              ].map((bhk) => {
+                const curStr = String(filters.bedrooms || '');
+                const curList = curStr ? curStr.split(',').map((s) => s.trim()) : [];
+                const isSelected = curList.includes(bhk.val);
+
+                return (
+                  <button
+                    key={bhk.val}
+                    type="button"
+                    onClick={() => {
+                      let nextList: string[];
+                      if (isSelected) {
+                        nextList = curList.filter((s) => s !== bhk.val);
+                      } else {
+                        nextList = [...curList, bhk.val];
+                      }
+                      handleFieldChange('bedrooms', nextList.join(','));
+                    }}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                      isSelected
+                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {bhk.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Commercial Property Types (Matching Image 2 - NoBroker & OLX checklist) */}
+        {(filters.propertyType === 'SHOP' || filters.category === 'SHOP') && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Commercial Type
+              </label>
+              {filters.commercialType && (
+                <button
+                  type="button"
+                  onClick={() => handleFieldChange('commercialType', '')}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              {COMMERCIAL_SUBTYPES.map((sub) => {
+                const currentTypes = (filters.commercialType || '')
+                  .split(',')
+                  .map((t) => t.trim())
+                  .filter(Boolean);
+                const isChecked = currentTypes.includes(sub.label);
+
+                return (
+                  <label
+                    key={sub.id}
+                    className={`flex items-center gap-2.5 p-2 rounded-xl text-xs font-semibold border cursor-pointer transition ${
+                      isChecked
+                        ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818]'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        let nextTypes: string[];
+                        if (e.target.checked) {
+                          nextTypes = [...currentTypes, sub.label];
+                        } else {
+                          nextTypes = currentTypes.filter((t) => t !== sub.label);
+                        }
+                        handleFieldChange('commercialType', nextTypes.join(','));
+                      }}
+                      className="rounded text-[#C5A059] focus:ring-[#C5A059] w-4 h-4 border-gray-300"
+                    />
+                    <span>{sub.label}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
         )}
