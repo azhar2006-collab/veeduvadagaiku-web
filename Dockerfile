@@ -16,6 +16,11 @@ RUN npm install
 COPY backend/tsconfig.json ./
 COPY backend/src ./src
 
+# Set build-time dummy database URLs so `npx prisma generate` validates schema without errors
+# Runtime environment variables from Railway will override these when the server starts
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+ENV DIRECT_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+
 # Generate Prisma client and compile TypeScript
 RUN npx prisma generate
 RUN npm run build
