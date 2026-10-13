@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
 import { useLocalities } from '../../hooks/useProperties';
+import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 import { ImageUploader } from '../../components/property/ImageUploader';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
@@ -13,8 +14,8 @@ export const EditPropertyPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: localitiesRes } = useLocalities();
-  const localities = localitiesRes?.data || [];
+  const { data: localitiesData } = useLocalities();
+  const localities = (Array.isArray(localitiesData) && localitiesData.length > 0) ? localitiesData : CHENNAI_LOCALITIES;
 
   const { data: propRes, isLoading } = useQuery({
     queryKey: ['property', id],

@@ -31,12 +31,13 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { COMMERCIAL_SUBTYPES } from '../../utils/categoryUtils';
+import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 
 export const AddPropertyPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: localitiesRes } = useLocalities();
-  const localities = localitiesRes?.data || [];
+  const { data: localitiesData } = useLocalities();
+  const localities = (Array.isArray(localitiesData) && localitiesData.length > 0) ? localitiesData : CHENNAI_LOCALITIES;
 
   // Listing Language state (English or Tamil)
   const [listingLanguage, setListingLanguage] = useState<'EN' | 'TA'>('EN');

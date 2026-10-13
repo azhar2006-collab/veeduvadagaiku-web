@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Search,
@@ -24,6 +24,7 @@ import { PropertySwipeDeck } from '../../components/property/PropertySwipeDeck';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
+import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +62,11 @@ export const HomePage: React.FC = () => {
   }, [isRentalsOpen]);
 
   const { data: localitiesRes } = useLocalities();
-  const localities = localitiesRes?.data || [];
+  const localities = useMemo((): string[] => {
+    if (Array.isArray(localitiesRes) && localitiesRes.length > 0) return localitiesRes;
+    if (Array.isArray((localitiesRes as any)?.data)) return (localitiesRes as any).data;
+    return CHENNAI_LOCALITIES;
+  }, [localitiesRes]);
 
   // Fetch properties for the Swipe Deck
   const { data: deckRes, isLoading: loadingDeck } = useProperties({

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Filter, RotateCcw, Building2, Building, Store, Users, PartyPopper, Check } from 'lucide-react';
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
 import { useLanguage } from '../../context/LanguageContext';
 import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, FURNISHING_OPTIONS, MARRIAGE_HALL_CAPACITIES } from '../../utils/categoryUtils';
+import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 
 interface PropertyFiltersProps {
   filters: FilterType;
@@ -18,7 +19,11 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
 }) => {
   const { t } = useLanguage();
   const { data: localitiesRes } = useLocalities();
-  const localities = localitiesRes?.data || [];
+  const localities = useMemo((): string[] => {
+    if (Array.isArray(localitiesRes) && localitiesRes.length > 0) return localitiesRes;
+    if (Array.isArray((localitiesRes as any)?.data)) return (localitiesRes as any).data;
+    return CHENNAI_LOCALITIES;
+  }, [localitiesRes]);
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
   const handleFieldChange = (key: keyof FilterType, val: any) => {
