@@ -70,17 +70,33 @@ export async function firebaseLogin(req: AuthRequest, res: Response, next: NextF
     } else {
       // User exists. Update email/phone and promote to ADMIN if email is in administrator list
       const shouldBeAdmin = isTargetAdmin || (user.email && isAdminEmail(user.email));
-      const targetRole = shouldBeAdmin ? 'ADMIN' : user.role;
+
+      // If client requests OWNER or user was already OWNER (and not ADMIN), assign OWNER
+      let targetRole = shouldBeAdmin ? 'ADMIN' : user.role;
+      if (!shouldBeAdmin && (role === 'OWNER' || user.role === 'OWNER')) {
+        targetRole = 'OWNER';
+      }
 
       user = await prisma.user.update({
         where: { id: user.id },
         data: {
+          name: (user.name === 'New User' || user.name.startsWith('User ')) && (name || fbName)
+            ? (name || fbName)
+            : user.name,
           email: normalizedEmail || user.email,
           mobile: phone_number || user.mobile,
           role: targetRole,
           profileImage: picture || user.profileImage,
         },
       });
+
+      // Ensure Owner record exists if role is OWNER
+      if (targetRole === 'OWNER') {
+        const existingOwner = await prisma.owner.findUnique({ where: { userId: user.id } });
+        if (!existingOwner) {
+          await prisma.owner.create({ data: { userId: user.id } });
+        }
+      }
     }
 
     if (user.status !== 'ACTIVE') {

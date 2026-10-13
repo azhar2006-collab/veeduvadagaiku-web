@@ -17,20 +17,30 @@ export const LoginPage: React.FC = () => {
   // If already authenticated, redirect to appropriate portal
   React.useEffect(() => {
     if (isAuthenticated) {
-      if (isAdmin) navigate('/admin/dashboard', { replace: true });
-      else if (isOwner) navigate('/owner/dashboard', { replace: true });
-      else navigate('/user/dashboard', { replace: true });
+      if (isAdmin) {
+        navigate('/admin/dashboard', { replace: true });
+      } else if (isOwner) {
+        navigate('/owner/dashboard', { replace: true });
+      } else {
+        // If user came specifically to log in as OWNER, allow them to upgrade without bouncing to user dashboard
+        if (defaultRole === 'OWNER' || role === 'OWNER') {
+          return;
+        }
+        navigate('/user/dashboard', { replace: true });
+      }
     }
-  }, [isAuthenticated, isOwner, isAdmin, navigate]);
+  }, [isAuthenticated, isOwner, isAdmin, navigate, defaultRole, role]);
 
   const handleSuccess = () => {
     const currentUser = useAuthStore.getState().user;
+    const redirectUrl = searchParams.get('redirect');
+
     if (currentUser?.role === 'ADMIN' || isAdmin) {
-      navigate('/admin/dashboard', { replace: true });
-    } else if (role === 'OWNER') {
-      navigate('/owner/dashboard');
+      navigate(redirectUrl || '/admin/dashboard', { replace: true });
+    } else if (currentUser?.role === 'OWNER' || role === 'OWNER') {
+      navigate(redirectUrl || '/owner/dashboard', { replace: true });
     } else {
-      navigate('/user/dashboard');
+      navigate(redirectUrl || '/user/dashboard', { replace: true });
     }
   };
 

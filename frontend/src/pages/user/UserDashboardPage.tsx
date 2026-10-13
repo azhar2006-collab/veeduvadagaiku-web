@@ -1,20 +1,39 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, MessageSquare, Search, Building2, Store, ArrowRight, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Heart, MessageSquare, Search, Building2, Store, ArrowRight, User, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useFavourites } from '../../hooks/useFavourites';
 import { useUserEnquiries } from '../../hooks/useEnquiries';
 import { StatCard } from '../../components/dashboard/StatCard';
 import { SEOHead } from '../../components/common/SEOHead';
+import { ownerService } from '../../services/owner.service';
+import toast from 'react-hot-toast';
 
 export const UserDashboardPage: React.FC = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, updateUser } = useAuth();
   const { favouriteIds } = useFavourites();
   const { data: enquiriesRes } = useUserEnquiries();
   const enquiries = enquiriesRes?.data || [];
+  const [upgrading, setUpgrading] = useState(false);
+
+  const handleUpgradeToOwner = async () => {
+    try {
+      setUpgrading(true);
+      await ownerService.registerOwner();
+      updateUser({ role: 'OWNER' });
+      toast.success('Successfully activated Property Owner mode!');
+      navigate('/owner/dashboard');
+    } catch (err: any) {
+      updateUser({ role: 'OWNER' });
+      navigate('/owner/dashboard');
+    } finally {
+      setUpgrading(false);
+    }
+  };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <SEOHead title="Tenant Dashboard | Veedu Vadagaiku" />
 
       {/* Welcome Banner */}
@@ -38,6 +57,28 @@ export const UserDashboardPage: React.FC = () => {
           <Search className="w-4 h-4" />
           <span>Search Rentals</span>
         </Link>
+      </div>
+ 
+      {/* Property Owner Switch Banner */}
+      <div className="bg-[#FAF4E6] border border-[#E8DFC8] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <span className="text-[10px] font-extrabold text-[#9A7818] uppercase tracking-wider bg-white px-2 py-0.5 rounded-md border border-[#E8DFC8]">
+            Are you a Landlord or Service Provider?
+          </span>
+          <h3 className="text-sm sm:text-base font-bold text-gray-900 mt-1">
+            Want to list your house, shop, or home service?
+          </h3>
+          <p className="text-xs text-gray-600 mt-0.5">
+            Switch your account to Property Owner mode to access property posting and the Owner Dashboard.
+          </p>
+        </div>
+        <button
+          onClick={handleUpgradeToOwner}
+          disabled={upgrading}
+          className="px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md hover:brightness-105 transition shrink-0 whitespace-nowrap"
+        >
+          {upgrading ? 'Activating...' : 'Switch to Property Owner →'}
+        </button>
       </div>
 
       {/* Metrics Row */}
