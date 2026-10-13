@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown } from 'lucide-react';
+import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown, Wrench } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -74,6 +74,13 @@ export const Navbar: React.FC = () => {
             >
               <Sparkles className="w-4 h-4 text-[#C5A059]" />
               {t('nav.marriageHalls')}
+            </Link>
+            <Link
+              to="/home-services"
+              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
+            >
+              <Wrench className="w-4 h-4 text-[#C5A059]" />
+              {t('nav.homeServices')}
             </Link>
             <Link
               to="/about"
@@ -296,6 +303,14 @@ export const Navbar: React.FC = () => {
           >
             <Sparkles className="w-4 h-4 text-[#C5A059]" />
             {t('nav.marriageHalls')}
+          </Link>
+          <Link
+            to="/home-services"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+          >
+            <Wrench className="w-4 h-4 text-[#C5A059]" />
+            {t('nav.homeServices')}
           </Link>
           <Link
             to="/about"

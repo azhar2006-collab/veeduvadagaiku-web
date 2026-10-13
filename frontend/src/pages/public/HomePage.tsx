@@ -12,6 +12,11 @@ import {
   Users,
   PartyPopper,
   ChevronDown,
+  Truck,
+  Wrench,
+  Wind,
+  FileText,
+  Shield,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
@@ -976,6 +981,118 @@ export const HomePage: React.FC = () => {
               <PropertyCard key={prop.id} property={prop} />
             ))
           )}
+        </div>
+      </section>
+
+      {/* Home Services Showcase Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#9A7818] bg-[#FAF4E6] border border-[#E8DFC8] px-3 py-1 rounded-full mb-1">
+              <Shield className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span>{lang === 'ta' ? 'சரிபார்க்கப்பட்ட சேவைகள்' : 'Verified Professionals'}</span>
+            </div>
+            <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-900">
+              {lang === 'ta' ? 'சென்னை வீட்டு சேவைகள்' : 'Chennai Home Services'}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">
+              {lang === 'ta'
+                ? 'மூவர்ஸ், புதுப்பித்தல், ஏசி பழுது, துப்புரவு மற்றும் சட்ட ஆவண சேவைகள் — நேரடி வல்லுநர்கள்'
+                : 'Movers & Packers, Renovation, AC Care, Cleaning & Pest Control, Legal Documentation'}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/home-services/list"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] shadow-xs hover:brightness-105 transition"
+            >
+              <span>+ {lang === 'ta' ? 'சேவை சேர்க்க' : 'List Your Service (Free)'}</span>
+            </Link>
+            <Link
+              to="/home-services"
+              className="inline-flex items-center gap-1 text-sm font-bold text-[#C5A059] hover:text-[#9A7818] transition"
+            >
+              <span>{t('home.viewAll')}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          <Link
+            to="/home-services?category=MOVERS"
+            className="group bg-white rounded-2xl p-4 border border-[#EFE8D8] shadow-xs hover:border-blue-400 hover:shadow-md transition text-center flex flex-col items-center justify-between"
+          >
+            <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+              <Truck className="w-6 h-6" />
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-blue-700 transition leading-tight mb-1">
+              {lang === 'ta' ? 'மூவர்ஸ் & பேக்கர்ஸ்' : 'Movers & Packers'}
+            </h4>
+            <p className="text-[11px] text-gray-500">
+              {lang === 'ta' ? 'உள்ளூர் & வெளியூர் இடமாற்றம்' : 'Local & Intercity Shifting'}
+            </p>
+          </Link>
+
+          <Link
+            to="/home-services?category=RENOVATION"
+            className="group bg-white rounded-2xl p-4 border border-[#EFE8D8] shadow-xs hover:border-orange-400 hover:shadow-md transition text-center flex flex-col items-center justify-between"
+          >
+            <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+              <Wrench className="w-6 h-6" />
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-orange-700 transition leading-tight mb-1">
+              {lang === 'ta' ? 'புதுப்பித்தல் & பழுது' : 'Renovation & Repairs'}
+            </h4>
+            <p className="text-[11px] text-gray-500">
+              {lang === 'ta' ? 'மின்சாரம், பிளம்பிங், பெயிண்டிங்' : 'Painting, Plumbing, Electric'}
+            </p>
+          </Link>
+
+          <Link
+            to="/home-services?category=CLEANING"
+            className="group bg-white rounded-2xl p-4 border border-[#EFE8D8] shadow-xs hover:border-green-400 hover:shadow-md transition text-center flex flex-col items-center justify-between"
+          >
+            <div className="w-12 h-12 rounded-xl bg-green-50 text-green-600 border border-green-100 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-green-700 transition leading-tight mb-1">
+              {lang === 'ta' ? 'துப்புரவு & பூச்சி கட்டுப்பாடு' : 'Cleaning & Pest Control'}
+            </h4>
+            <p className="text-[11px] text-gray-500">
+              {lang === 'ta' ? 'ஆழ்ந்த சுத்தம், கரப்பான், கறையான்' : 'Deep Clean & Pest Treatment'}
+            </p>
+          </Link>
+
+          <Link
+            to="/home-services?category=AC_SERVICE"
+            className="group bg-white rounded-2xl p-4 border border-[#EFE8D8] shadow-xs hover:border-cyan-400 hover:shadow-md transition text-center flex flex-col items-center justify-between"
+          >
+            <div className="w-12 h-12 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+              <Wind className="w-6 h-6" />
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-cyan-700 transition leading-tight mb-1">
+              {lang === 'ta' ? 'AC சேவை & துப்புரவு' : 'AC Service & Cleaning'}
+            </h4>
+            <p className="text-[11px] text-gray-500">
+              {lang === 'ta' ? 'கேஸ் நிரப்புதல், நிறுவுதல்' : 'Gas Refill, Service, Install'}
+            </p>
+          </Link>
+
+          <Link
+            to="/home-services?category=LEGAL"
+            className="group bg-white rounded-2xl p-4 border border-[#EFE8D8] shadow-xs hover:border-purple-400 hover:shadow-md transition text-center flex flex-col items-center justify-between col-span-2 sm:col-span-1"
+          >
+            <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center mb-2.5 group-hover:scale-110 transition">
+              <FileText className="w-6 h-6" />
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-purple-700 transition leading-tight mb-1">
+              {lang === 'ta' ? 'சட்ட ஆவணங்கள்' : 'Legal Documentation'}
+            </h4>
+            <p className="text-[11px] text-gray-500">
+              {lang === 'ta' ? 'வாடகை ஒப்பந்தம், பத்திரம்' : 'Rental Agreements & Deeds'}
+            </p>
+          </Link>
         </div>
       </section>
 

@@ -204,3 +204,44 @@ model Favourite {
 
   @@unique([userId, propertyId])
 }
+
+enum HomeServiceCategory {
+  MOVERS
+  RENOVATION
+  CLEANING
+  AC_SERVICE
+  LEGAL
+}
+
+enum HomeServiceStatus {
+  PENDING
+  PUBLISHED
+  REJECTED
+}
+
+model HomeService {
+  id           String              @id @default(cuid())
+  category     HomeServiceCategory
+  subcategory  String?
+  title        String
+  description  String              @db.Text
+  providerName String
+  phone        String
+  whatsapp     String?
+  email        String?
+  locality     String
+  serviceAreas String[]            @default([])
+  pricing      String
+  priceFrom    Float?
+  features     String[]            @default([])
+  imageUrl     String?
+  experience   String?
+  licenseNo    String?
+  gstin        String?
+  workingHours String?
+  status       HomeServiceStatus   @default(PENDING)
+  viewCount    Int                 @default(0)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+

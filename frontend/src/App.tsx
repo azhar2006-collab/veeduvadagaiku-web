@@ -21,6 +21,8 @@ import { LoginPage } from './pages/public/LoginPage';
 import { RegisterPage } from './pages/public/RegisterPage';
 import { TermsPage } from './pages/public/TermsPage';
 import { PrivacyPage } from './pages/public/PrivacyPage';
+import { HomeServicesPage } from './pages/public/HomeServicesPage';
+import { AddServicePage } from './pages/public/AddServicePage';
 
 // Tenant / User Pages
 import { UserDashboardPage } from './pages/user/UserDashboardPage';
@@ -81,6 +83,8 @@ export const App: React.FC = () => {
         <Route path="/shops" element={<ShopsPage />} />
         <Route path="/hostels" element={<HostelsPage />} />
         <Route path="/marriage-halls" element={<MarriageHallsPage />} />
+        <Route path="/home-services" element={<HomeServicesPage />} />
+        <Route path="/home-services/list" element={<AddServicePage />} />
         <Route path="/property/:id" element={<PropertyDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />

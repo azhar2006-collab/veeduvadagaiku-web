@@ -8,6 +8,7 @@ import enquiryRoutes from './enquiry.routes';
 import favouriteRoutes from './favourite.routes';
 import planRoutes from './plan.routes';
 import adminRoutes from './admin.routes';
+import homeServiceRoutes from './homeService.routes';
 import { createOrder, verifyPayment } from '../controllers/payment.controller';
 import { optionalAuth } from '../middleware/auth';
 
@@ -27,5 +28,6 @@ router.use('/enquiries', enquiryRoutes);
 router.use('/favourites', favouriteRoutes);
 router.use('/plans', planRoutes);
 router.use('/admin', adminRoutes);
+router.use('/home-services', homeServiceRoutes);
 
 export default router;
