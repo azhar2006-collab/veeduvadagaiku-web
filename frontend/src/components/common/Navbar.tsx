@@ -41,13 +41,6 @@ export const Navbar: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-7">
             <Link
-              to="/properties"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Search className="w-4 h-4 text-[#C5A059]" />
-              {t('nav.allRentals')}
-            </Link>
-            <Link
               to="/houses"
               className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
             >
@@ -271,14 +264,6 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer Menu */}
       {isOpen && (
         <div className="md:hidden border-t border-[#EFE8D8] bg-white px-4 pt-3 pb-6 space-y-0.5 animate-fade-in shadow-xl">
-          <Link
-            to="/properties"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
-          >
-            <Search className="w-4 h-4 text-[#C5A059]" />
-            {t('nav.allRentals')}
-          </Link>
           <Link
             to="/houses"
             onClick={() => setIsOpen(false)}
