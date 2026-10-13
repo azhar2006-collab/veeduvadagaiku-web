@@ -18,8 +18,8 @@ import {
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../hooks/useAuth';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { homeServiceApi } from '../../services/homeService.service';
+import toast from 'react-hot-toast';
 
 type Category = 'MOVERS' | 'RENOVATION' | 'CLEANING' | 'AC_SERVICE' | 'LEGAL';
 
@@ -171,44 +171,38 @@ export const AddServicePage: React.FC = () => {
     setSubmitting(true);
     setError('');
     try {
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
-      const res = await fetch(`${API}/home-services`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          category: form.category,
-          subcategory: form.subcategory || undefined,
-          title: form.title,
-          description: form.description,
-          providerName: form.providerName,
-          phone: form.phone,
-          whatsapp: form.whatsapp || undefined,
-          email: form.email || undefined,
-          locality: form.locality,
-          serviceAreas: form.serviceAreas,
-          pricing: form.pricing,
-          priceFrom: form.priceFrom ? parseFloat(form.priceFrom) : undefined,
-          features: form.features,
-          imageUrl: form.imageUrl || undefined,
-          experience: form.experience || undefined,
-          licenseNo: form.licenseNo || undefined,
-          gstin: form.gstin || undefined,
-          workingHours: form.workingHours || undefined,
-        }),
+      await homeServiceApi.createService({
+        category: form.category as any,
+        subcategory: form.subcategory || undefined,
+        title: form.title,
+        description: form.description,
+        providerName: form.providerName,
+        phone: form.phone,
+        whatsapp: form.whatsapp || undefined,
+        email: form.email || undefined,
+        locality: form.locality,
+        serviceAreas: form.serviceAreas,
+        pricing: form.pricing,
+        priceFrom: form.priceFrom ? parseFloat(form.priceFrom) : undefined,
+        features: form.features,
+        imageUrl: form.imageUrl || undefined,
+        experience: form.experience || undefined,
+        licenseNo: form.licenseNo || undefined,
+        gstin: form.gstin || undefined,
+        workingHours: form.workingHours || undefined,
       });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || errorData.message || 'Submission failed');
-      }
-
       setSubmitted(true);
+      toast.success('🎉 Service submitted for admin review!');
     } catch (e: any) {
-      setError(e.message || 'Something went wrong. Please try again.');
+      console.error('Home service submission error:', e);
+      const msg =
+        e?.response?.data?.error ||
+        e?.response?.data?.message ||
+        e?.message ||
+        'Submission failed. Please check your connection and try again.';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }

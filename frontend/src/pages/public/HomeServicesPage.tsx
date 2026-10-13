@@ -23,8 +23,7 @@ import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../hooks/useAuth';
 import { useLocalities } from '../../hooks/useProperties';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+import { homeServiceApi } from '../../services/homeService.service';
 
 type ServiceCategory = 'ALL' | 'MOVERS' | 'RENOVATION' | 'CLEANING' | 'AC_SERVICE' | 'LEGAL';
 
@@ -213,17 +212,19 @@ export const HomeServicesPage: React.FC = () => {
 
   const fetchServices = () => {
     setLoading(true);
-    const params = new URLSearchParams();
-    if (activeCategory !== 'ALL') params.append('category', activeCategory);
-    if (selectedSubcategory) params.append('subcategory', selectedSubcategory);
-    if (selectedLocality) params.append('locality', selectedLocality);
-    if (selectedBudget) params.append('maxPrice', selectedBudget);
-    params.append('limit', '50');
-
-    fetch(`${API}/home-services?${params.toString()}`)
-      .then((r) => r.json())
-      .then((d) => setServices(d.services || []))
-      .catch(() => setServices([]))
+    homeServiceApi
+      .getServices({
+        category: activeCategory !== 'ALL' ? activeCategory : undefined,
+        subcategory: selectedSubcategory || undefined,
+        locality: selectedLocality || undefined,
+        maxPrice: selectedBudget || undefined,
+        limit: 50,
+      })
+      .then((data) => setServices(data.services || []))
+      .catch((err) => {
+        console.error('Fetch home services error:', err);
+        setServices([]);
+      })
       .finally(() => setLoading(false));
   };
 
