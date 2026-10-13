@@ -178,6 +178,8 @@ export interface PropertyFilters {
   maxRent?: number | '';
   bedrooms?: number | string | '';
   commercialType?: string | '';
+  hostelGender?: 'MALE' | 'FEMALE' | 'COLIVING' | '';
+  hallCapacity?: 'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | '';
   furnishing?: FurnishingStatus | '';
   minSize?: number | '';
   maxSize?: number | '';

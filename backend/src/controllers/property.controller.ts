@@ -18,6 +18,7 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
       propertyType, locality, minRent, maxRent,
       bedrooms, furnishing, minSize, maxSize,
       sortBy = 'newest', availability, category, commercialType,
+      hostelGender, hallCapacity,
     } = req.query;
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
@@ -144,8 +145,87 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
     }
     if (minRent || maxRent) {
       where.rent = {};
-      if (minRent) (where.rent as Record<string, unknown>).gte = parseFloat(minRent as string);
-      if (maxRent) (where.rent as Record<string, unknown>).lte = parseFloat(maxRent as string);
+      const maxStr = String(maxRent || '');
+      if (maxStr.includes('+')) {
+        const minVal = parseFloat(maxStr.replace('+', '')) || 50000;
+        (where.rent as Record<string, unknown>).gte = minVal;
+      } else {
+        if (minRent) (where.rent as Record<string, unknown>).gte = parseFloat(minRent as string);
+        if (maxRent) (where.rent as Record<string, unknown>).lte = parseFloat(maxRent as string);
+      }
+    }
+    if (hostelGender) {
+      const g = String(hostelGender).toUpperCase();
+      const gConditions: Array<Record<string, unknown>> = [];
+      if (g === 'MALE') {
+        gConditions.push(
+          { title: { contains: "men's", mode: 'insensitive' } },
+          { title: { contains: 'mens', mode: 'insensitive' } },
+          { title: { contains: 'gents', mode: 'insensitive' } },
+          { title: { contains: 'boys', mode: 'insensitive' } },
+          { description: { contains: "men's", mode: 'insensitive' } },
+          { description: { contains: 'gents', mode: 'insensitive' } },
+          { description: { contains: '[hostel:male]', mode: 'insensitive' } }
+        );
+      } else if (g === 'FEMALE') {
+        gConditions.push(
+          { title: { contains: "women's", mode: 'insensitive' } },
+          { title: { contains: 'womens', mode: 'insensitive' } },
+          { title: { contains: 'ladies', mode: 'insensitive' } },
+          { title: { contains: 'girls', mode: 'insensitive' } },
+          { description: { contains: "women's", mode: 'insensitive' } },
+          { description: { contains: 'ladies', mode: 'insensitive' } },
+          { description: { contains: '[hostel:female]', mode: 'insensitive' } }
+        );
+      } else if (g === 'COLIVING') {
+        gConditions.push(
+          { title: { contains: 'coliving', mode: 'insensitive' } },
+          { title: { contains: 'co-living', mode: 'insensitive' } },
+          { description: { contains: 'coliving', mode: 'insensitive' } },
+          { description: { contains: '[hostel:coliving]', mode: 'insensitive' } }
+        );
+      }
+      if (gConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: gConditions },
+        ];
+      }
+    }
+    if (hallCapacity) {
+      const cap = String(hallCapacity).toUpperCase();
+      const capConditions: Array<Record<string, unknown>> = [];
+      if (cap === 'UP_TO_250') {
+        capConditions.push(
+          { title: { contains: 'mini hall', mode: 'insensitive' } },
+          { title: { contains: 'party hall', mode: 'insensitive' } },
+          { description: { contains: '[capacity:up_to_250]', mode: 'insensitive' } },
+          { description: { contains: 'mini hall', mode: 'insensitive' } },
+          { description: { contains: '250', mode: 'insensitive' } }
+        );
+      } else if (cap === '250_TO_500') {
+        capConditions.push(
+          { description: { contains: '[capacity:250_to_500]', mode: 'insensitive' } },
+          { description: { contains: '500', mode: 'insensitive' } }
+        );
+      } else if (cap === '500_TO_1000') {
+        capConditions.push(
+          { description: { contains: '[capacity:500_to_1000]', mode: 'insensitive' } },
+          { description: { contains: '1000', mode: 'insensitive' } }
+        );
+      } else if (cap === '1000_PLUS') {
+        capConditions.push(
+          { description: { contains: '[capacity:1000_plus]', mode: 'insensitive' } },
+          { description: { contains: 'convention', mode: 'insensitive' } },
+          { description: { contains: 'mega', mode: 'insensitive' } }
+        );
+      }
+      if (capConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: capConditions },
+        ];
+      }
     }
     if (bedrooms) {
       const bStr = String(bedrooms);

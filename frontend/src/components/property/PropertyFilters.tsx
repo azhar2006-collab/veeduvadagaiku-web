@@ -3,7 +3,7 @@ import { Filter, RotateCcw, Building2, Building, Store, Users, PartyPopper, Chec
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
 import { useLanguage } from '../../context/LanguageContext';
-import { COMMERCIAL_SUBTYPES } from '../../utils/categoryUtils';
+import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, FURNISHING_OPTIONS, MARRIAGE_HALL_CAPACITIES } from '../../utils/categoryUtils';
 
 interface PropertyFiltersProps {
   filters: FilterType;
@@ -251,12 +251,12 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           {/* Quick budget chip shortcuts */}
           <div className="flex flex-wrap gap-1.5 pt-2">
             {[
-              { label: '≤ ₹15k', max: 15000 },
-              { label: '≤ ₹30k', max: 30000 },
-              { label: '≤ ₹50k', max: 50000 },
-              { label: '≤ ₹1L', max: 100000 },
-              { label: '₹50k - 5L+', min: 50000, max: '' },
-              { label: 'Any (All)', min: '', max: '' },
+              { label: '≤ ₹10k', max: 10000, min: '' },
+              { label: '≤ ₹20k', max: 20000, min: '' },
+              { label: '≤ ₹30k', max: 30000, min: '' },
+              { label: '≤ ₹50k', max: 50000, min: '' },
+              { label: '₹50k+', max: '', min: 50000 },
+              { label: 'Any', max: '', min: '' },
             ].map((chip) => (
               <button
                 key={chip.label}
@@ -264,13 +264,13 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
                 onClick={() => {
                   onChange({
                     ...filters,
-                    minRent: chip.min !== undefined ? (chip.min as any) : filters.minRent,
-                    maxRent: chip.max !== undefined ? (chip.max as any) : filters.maxRent,
+                    minRent: chip.min as any,
+                    maxRent: chip.max as any,
                     page: 1,
                   });
                 }}
                 className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition ${
-                  filters.maxRent === chip.max && (chip.min === undefined || filters.minRent === chip.min)
+                  String(filters.maxRent) === String(chip.max) && String(filters.minRent || '') === String(chip.min || '')
                     ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818]'
                     : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
                 }`}
@@ -393,31 +393,120 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         )}
 
+        {/* Hostel Gender Filter — shown only when category is HOSTEL */}
+        {filters.category === 'HOSTEL' && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Hostel For
+              </label>
+              {filters.hostelGender && (
+                <button
+                  type="button"
+                  onClick={() => handleFieldChange('hostelGender', '')}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {HOSTEL_GENDERS.map((g) => {
+                const isSelected = filters.hostelGender === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    onClick={() => handleFieldChange('hostelGender', isSelected ? '' : g.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                      isSelected
+                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>{g.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Marriage Hall Capacity — shown only when category is MARRIAGE_HALL */}
+        {filters.category === 'MARRIAGE_HALL' && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                Guest Capacity
+              </label>
+              {filters.hallCapacity && (
+                <button
+                  type="button"
+                  onClick={() => handleFieldChange('hallCapacity', '')}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              {MARRIAGE_HALL_CAPACITIES.map((cap) => {
+                const isSelected = filters.hallCapacity === cap.id;
+                return (
+                  <button
+                    key={cap.id}
+                    type="button"
+                    onClick={() => handleFieldChange('hallCapacity', isSelected ? '' : cap.id)}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold border text-left transition ${
+                      isSelected
+                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div>
+                      <div className="font-bold">{cap.label}</div>
+                      <div className="text-[10px] text-gray-500 font-normal">{cap.labelSub}</div>
+                    </div>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Furnishing */}
         <div>
-          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            {t('filter.furnishing')}
-          </label>
-          <div className="space-y-1.5">
-            {[
-              { val: 'FURNISHED', label: t('card.furnished') },
-              { val: 'SEMI_FURNISHED', label: t('card.semiFurnished') },
-              { val: 'UNFURNISHED', label: t('card.unfurnished') },
-            ].map(({ val, label }) => {
-              const isSelected = filters.furnishing === val;
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              {t('filter.furnishing')}
+            </label>
+            {filters.furnishing && (
+              <button
+                type="button"
+                onClick={() => handleFieldChange('furnishing', '')}
+                className="text-[10px] font-bold text-[#9A7818] hover:underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {FURNISHING_OPTIONS.map(({ id, label }) => {
+              const isSelected = filters.furnishing === id;
               return (
                 <button
-                  key={val}
+                  key={id}
                   type="button"
-                  onClick={() => handleFieldChange('furnishing', isSelected ? '' : val)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium border text-left transition ${
+                  onClick={() => handleFieldChange('furnishing', isSelected ? '' : id)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
                     isSelected
-                      ? 'bg-orange-50 border-orange-400 text-orange-700'
-                      : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                      ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
+                  {isSelected && <Check className="w-3 h-3" />}
                   <span>{label}</span>
-                  {isSelected && <Check className="w-4 h-4 text-orange-600" />}
                 </button>
               );
             })}

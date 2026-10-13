@@ -208,3 +208,155 @@ export function filterByBedrooms(properties: Property[], bedroomsVal: number | s
   if (isNaN(num)) return properties;
   return properties.filter((p) => p.bedrooms === num);
 }
+
+/**
+ * Hostel Gender Types
+ */
+export const HOSTEL_GENDERS = [
+  { id: 'MALE', label: "Men's / Gents", labelTa: 'ஆண்கள் விடுதி (Gents)' },
+  { id: 'FEMALE', label: "Women's / Ladies", labelTa: 'பெண்கள் விடுதி (Ladies)' },
+  { id: 'COLIVING', label: 'Co-Living / Any', labelTa: 'இருபாலர் / Co-Living' },
+] as const;
+
+/**
+ * Hostel Sharing Options
+ */
+export const HOSTEL_SHARING_TYPES = [
+  { id: '1', label: 'Single Room', labelTa: 'தனி அறை (Single)' },
+  { id: '2', label: '2 Sharing', labelTa: '2 பேர் பகிர்வு' },
+  { id: '3', label: '3 Sharing', labelTa: '3 பேர் பகிர்வு' },
+  { id: '4+', label: '4+ Sharing', labelTa: '4+ பேர் பகிர்வு' },
+] as const;
+
+/**
+ * Furnishing Options
+ */
+export const FURNISHING_OPTIONS = [
+  { id: 'FURNISHED', label: 'Fully Furnished', labelTa: 'முழு மரச்சாமான்களுடன்' },
+  { id: 'SEMI_FURNISHED', label: 'Semi-Furnished', labelTa: 'பாதி மரச்சாமான்கள்' },
+  { id: 'UNFURNISHED', label: 'Unfurnished', labelTa: 'மரச்சாமான்கள் இன்றி' },
+] as const;
+
+/**
+ * Marriage Hall Guest Capacity Ranges
+ */
+export const MARRIAGE_HALL_CAPACITIES = [
+  { id: 'UP_TO_250', label: 'Up to 250 Guests', labelSub: 'Mini Party / Birthday Hall', labelTa: '250 பேர் வரை (மினி ஹால்)' },
+  { id: '250_TO_500', label: '250 – 500 Guests', labelSub: 'Medium Mandapam', labelTa: '250 – 500 பேர் (மண்டபம்)' },
+  { id: '500_TO_1000', label: '500 – 1000 Guests', labelSub: 'Grand Marriage Hall', labelTa: '500 – 1000 பேர் (திருமண மண்டபம்)' },
+  { id: '1000_PLUS', label: '1000+ Guests', labelSub: 'Mega Convention Centre', labelTa: '1000+ பேர் (பிரம்மாண்ட மஹால்)' },
+] as const;
+
+/**
+ * Filter properties by Hostel Gender
+ */
+export function filterByHostelGender(properties: Property[], gender: string): Property[] {
+  if (!gender) return properties;
+  const g = gender.toUpperCase();
+
+  return properties.filter((p) => {
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (g === 'MALE') {
+      return (
+        text.includes('[hostel:male]') ||
+        text.includes("men's") ||
+        text.includes('mens') ||
+        text.includes('gents') ||
+        text.includes('male') ||
+        text.includes('boys') ||
+        text.includes('ஆண்கள்')
+      );
+    }
+    if (g === 'FEMALE') {
+      return (
+        text.includes('[hostel:female]') ||
+        text.includes("women's") ||
+        text.includes('womens') ||
+        text.includes('ladies') ||
+        text.includes('female') ||
+        text.includes('girls') ||
+        text.includes('பெண்கள்')
+      );
+    }
+    if (g === 'COLIVING') {
+      return (
+        text.includes('[hostel:coliving]') ||
+        text.includes('coliving') ||
+        text.includes('co-living') ||
+        text.includes('unisex') ||
+        text.includes('இருபாலர்')
+      );
+    }
+    return true;
+  });
+}
+
+/**
+ * Filter properties by Marriage Hall Capacity
+ */
+export function filterByHallCapacity(properties: Property[], capacity: string): Property[] {
+  if (!capacity) return properties;
+
+  return properties.filter((p) => {
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (capacity === 'UP_TO_250') {
+      return (
+        text.includes('[capacity:up_to_250]') ||
+        text.includes('mini hall') ||
+        text.includes('party hall') ||
+        text.includes('100') ||
+        text.includes('150') ||
+        text.includes('200') ||
+        text.includes('250')
+      );
+    }
+    if (capacity === '250_TO_500') {
+      return (
+        text.includes('[capacity:250_to_500]') ||
+        text.includes('300') ||
+        text.includes('400') ||
+        text.includes('500')
+      );
+    }
+    if (capacity === '500_TO_1000') {
+      return (
+        text.includes('[capacity:500_to_1000]') ||
+        text.includes('600') ||
+        text.includes('700') ||
+        text.includes('800') ||
+        text.includes('1000') ||
+        text.includes('grand')
+      );
+    }
+    if (capacity === '1000_PLUS') {
+      return (
+        text.includes('[capacity:1000_plus]') ||
+        text.includes('1000+') ||
+        text.includes('1500') ||
+        text.includes('2000') ||
+        text.includes('convention') ||
+        text.includes('mega')
+      );
+    }
+    return true;
+  });
+}
+
+/**
+ * Filter properties by Furnishing
+ */
+export function filterByFurnishing(properties: Property[], furnishing: string): Property[] {
+  if (!furnishing) return properties;
+  const f = furnishing.toUpperCase();
+  return properties.filter((p) => {
+    if (p.furnishing && p.furnishing.toUpperCase() === f) return true;
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+    if (f === 'FURNISHED') return text.includes('fully furnished') || text.includes('furnished');
+    if (f === 'SEMI_FURNISHED') return text.includes('semi furnished') || text.includes('semi-furnished');
+    if (f === 'UNFURNISHED') return text.includes('unfurnished');
+    return false;
+  });
+}
+

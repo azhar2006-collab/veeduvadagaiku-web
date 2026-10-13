@@ -18,7 +18,7 @@ import { PropertyCard } from '../../components/property/PropertyCard';
 import { PropertySwipeDeck } from '../../components/property/PropertySwipeDeck';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
-import { COMMERCIAL_SUBTYPES } from '../../utils/categoryUtils';
+import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -37,6 +37,8 @@ export const HomePage: React.FC = () => {
   const [selectedBhks, setSelectedBhks] = useState<string[]>([]);
   const [residentialType, setResidentialType] = useState<'ALL' | 'HOUSE' | 'APARTMENT'>('ALL');
   const [selectedCommercialTypes, setSelectedCommercialTypes] = useState<string[]>([]);
+  const [hostelGender, setHostelGender] = useState<'MALE' | 'FEMALE' | 'COLIVING' | ''>('');
+  const [hallCapacity, setHallCapacity] = useState<'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | ''>('');
 
   // Close popover on click outside
   React.useEffect(() => {
@@ -139,8 +141,10 @@ export const HomePage: React.FC = () => {
       }
     } else if (rentalTab === 'HOSTEL') {
       params.append('category', 'HOSTEL');
+      if (hostelGender) params.append('hostelGender', hostelGender);
     } else if (rentalTab === 'MARRIAGE_HALL') {
       params.append('category', 'MARRIAGE_HALL');
+      if (hallCapacity) params.append('hallCapacity', hallCapacity);
     }
 
     if (maxRent) params.append('maxRent', maxRent);
@@ -573,17 +577,61 @@ export const HomePage: React.FC = () => {
 
                       {/* TAB 3: HOSTEL */}
                       {rentalTab === 'HOSTEL' && (
-                        <div className="py-3 text-center text-xs text-gray-600 bg-gray-50 rounded-xl p-3">
-                          <p className="font-bold text-gray-900 mb-1">{lang === 'ta' ? 'விடுதிகள் & PG தங்குமிடங்கள்' : 'Hostels & PG Stays'}</p>
-                          <p className="text-[11px] text-gray-500">{lang === 'ta' ? 'மகளிர் மற்றும் ஆடவர் விடுதிகள்' : 'Verified Men & Women Hostels, Co-living PG in Chennai'}</p>
+                        <div className="space-y-3">
+                          <p className="text-xs font-bold text-gray-800">{lang === 'ta' ? 'விடுதி வகை தேர்வு' : 'Hostel Type'}</p>
+                          <div className="grid grid-cols-1 gap-1.5">
+                            {HOSTEL_GENDERS.map((g) => {
+                              const isSelected = hostelGender === g.id;
+                              return (
+                                <button
+                                  key={g.id}
+                                  type="button"
+                                  onClick={() => setHostelGender(isSelected ? '' : g.id as typeof hostelGender)}
+                                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition text-left ${
+                                    isSelected
+                                      ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  <span className="text-base">{g.id === 'MALE' ? '👨' : g.id === 'FEMALE' ? '👩' : '🤝'}</span>
+                                  <span>{lang === 'ta' ? g.labelTa : g.label}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <p className="text-[10px] text-gray-400 leading-relaxed">
+                            {lang === 'ta' ? 'மகளிர் மற்றும் ஆடவர் விடுதிகள், Co-living PG' : 'Verified Men & Women Hostels, Co-living PG in Chennai'}
+                          </p>
                         </div>
                       )}
 
                       {/* TAB 4: MARRIAGE HALL */}
                       {rentalTab === 'MARRIAGE_HALL' && (
-                        <div className="py-3 text-center text-xs text-gray-600 bg-gray-50 rounded-xl p-3">
-                          <p className="font-bold text-gray-900 mb-1">{lang === 'ta' ? 'கல்யாண மண்டபம் & பார்ட்டி ஹால்' : 'Marriage Halls & Mandapams'}</p>
-                          <p className="text-[11px] text-gray-500">{lang === 'ta' ? 'திருமணம் மற்றும் விசேஷங்களுக்கான மண்டபங்கள்' : 'Spacious Wedding Mandapams & Mini Party Halls'}</p>
+                        <div className="space-y-3">
+                          <p className="text-xs font-bold text-gray-800">{lang === 'ta' ? 'திட்டமிட்ட விருந்தினர் எண்ணிக்கை' : 'Expected Guest Capacity'}</p>
+                          <div className="space-y-1.5">
+                            {MARRIAGE_HALL_CAPACITIES.map((cap) => {
+                              const isSelected = hallCapacity === cap.id;
+                              return (
+                                <button
+                                  key={cap.id}
+                                  type="button"
+                                  onClick={() => setHallCapacity(isSelected ? '' : cap.id as typeof hallCapacity)}
+                                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition text-left ${
+                                    isSelected
+                                      ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  <div>
+                                    <div className="font-bold">{lang === 'ta' ? cap.labelTa : cap.label}</div>
+                                    <div className="text-[10px] text-gray-500 font-normal">{cap.labelSub}</div>
+                                  </div>
+                                  {isSelected && <span className="text-[#C5A059] font-bold text-sm">✓</span>}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
 
@@ -595,6 +643,8 @@ export const HomePage: React.FC = () => {
                             setSelectedBhks([]);
                             setResidentialType('ALL');
                             setSelectedCommercialTypes([]);
+                            setHostelGender('');
+                            setHallCapacity('');
                           }}
                           className="text-xs font-bold text-gray-400 hover:text-gray-600"
                         >
@@ -633,13 +683,15 @@ export const HomePage: React.FC = () => {
                       className="w-full bg-transparent text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none"
                     />
                     <datalist id="budget-presets">
+                      <option value="8000">Up to ₹8,000</option>
+                      <option value="10000">Up to ₹10,000</option>
                       <option value="15000">Up to ₹15,000</option>
+                      <option value="20000">Up to ₹20,000</option>
                       <option value="25000">Up to ₹25,000</option>
+                      <option value="30000">Up to ₹30,000</option>
+                      <option value="40000">Up to ₹40,000</option>
                       <option value="50000">Up to ₹50,000</option>
-                      <option value="75000">Up to ₹75,000</option>
-                      <option value="100000">Up to ₹1,00,000</option>
-                      <option value="200000">Up to ₹2,00,000</option>
-                      <option value="500000">Up to ₹5,00,000+</option>
+                      <option value="50000+">₹50,000+ (Premium / Commercial)</option>
                     </datalist>
                   </div>
                 </div>
