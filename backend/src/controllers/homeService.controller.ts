@@ -6,13 +6,20 @@ const prisma = new PrismaClient();
 // ── GET /api/home-services  ─────────────────────────────────────────────────
 export const getHomeServices = async (req: Request, res: Response) => {
   try {
-    const { category, locality, status = 'PUBLISHED', limit = '20', page = '1' } = req.query as Record<string, string>;
+    const { category, subcategory, locality, maxPrice, status = 'PUBLISHED', limit = '50', page = '1' } = req.query as Record<string, string>;
 
-    const take = Math.min(parseInt(limit, 10) || 20, 100);
+    const take = Math.min(parseInt(limit, 10) || 50, 100);
     const skip = (parseInt(page, 10) - 1) * take;
 
     const where: any = { status };
-    if (category) where.category = category.toUpperCase();
+    if (category && category !== 'ALL') where.category = category.toUpperCase();
+    if (subcategory) where.subcategory = { contains: subcategory, mode: 'insensitive' };
+    if (maxPrice) {
+      const num = parseFloat(maxPrice);
+      if (!isNaN(num)) {
+        where.priceFrom = { lte: num };
+      }
+    }
     if (locality) {
       where.OR = [
         { locality: { contains: locality, mode: 'insensitive' } },

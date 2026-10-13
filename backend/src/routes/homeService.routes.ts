@@ -7,13 +7,15 @@ import {
   deleteHomeService,
 } from '../controllers/homeService.controller';
 import { authenticate } from '../middleware/auth';
+import { requireOwner } from '../middleware/ownerAuth';
+import { requireAdmin } from '../middleware/adminAuth';
 
 const router = Router();
 
 router.get('/', getHomeServices);
 router.get('/:id', getHomeServiceById);
-router.post('/', createHomeService);                            // public submit
-router.put('/:id/status', authenticate, updateHomeServiceStatus); // admin
-router.delete('/:id', authenticate, deleteHomeService);         // admin
+router.post('/', authenticate, requireOwner, createHomeService);      // Only Owners & Admin can upload
+router.put('/:id/status', authenticate, requireAdmin, updateHomeServiceStatus); // admin only
+router.delete('/:id', authenticate, requireAdmin, deleteHomeService);   // admin only
 
 export default router;

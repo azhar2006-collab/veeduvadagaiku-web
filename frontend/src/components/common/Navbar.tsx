@@ -154,6 +154,13 @@ export const Navbar: React.FC = () => {
                           Enquiries
                         </Link>
                         <Link
+                          to="/home-services/list"
+                          onClick={() => setUserDropdown(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
+                        >
+                          List Home Service
+                        </Link>
+                        <Link
                           to="/owner/profile"
                           onClick={() => setUserDropdown(false)}
                           className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
@@ -359,6 +366,13 @@ export const Navbar: React.FC = () => {
                       className="block px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-[#FAF7F0] rounded-xl"
                     >
                       {t('nav.myProperties')}
+                    </Link>
+                    <Link
+                      to="/home-services/list"
+                      onClick={() => setIsOpen(false)}
+                      className="block px-3 py-2 text-sm font-semibold text-[#9A7818] hover:bg-[#FAF7F0] rounded-xl"
+                    >
+                      + List Home Service
                     </Link>
                     <Link
                       to="/owner/properties/add"
