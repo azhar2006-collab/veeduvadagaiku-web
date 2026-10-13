@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
 } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { authService } from '../../services/auth.service';
@@ -24,88 +23,85 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   const navigate = useNavigate();
 
   const handleGoogleSignIn = async () => {
+    // IMPORTANT: DO NOT call setLoading(true) or any setState before signInWithPopup!
+    // Calling setState causes React to immediately re-render the button with disabled=true,
+    // which revokes the browser's User Activation on Android Chrome / iOS Safari, causing
+    // the browser to treat the popup as unsolicited and blocking it with auth/popup-blocked!
+    const provider = new GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectUrl = searchParams.get('redirect');
+
+    // Launch popup synchronously within the user gesture window
+    let popupPromise;
     try {
-      setLoading(true);
+      popupPromise = signInWithPopup(auth, provider);
+    } catch (launchErr: any) {
+      console.error('[GoogleSignIn] Synchronous launch error:', launchErr);
+      toast.error('Unable to open Google sign-in window. Please try again.');
+      return;
+    }
 
-      const provider = new GoogleAuthProvider();
-      provider.addScope('email');
-      provider.addScope('profile');
-      provider.setCustomParameters({ prompt: 'select_account' });
+    // Now that popup is launched, it's safe to update React UI state
+    setLoading(true);
 
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirectUrl = searchParams.get('redirect');
+    try {
+      const credential = await popupPromise;
+      if (!credential || !credential.user) return;
 
-      // ── TRY POPUP FIRST on all devices ────────────────────────────────
-      // On desktop: opens a small popup window
-      // On mobile:  opens a new browser tab (NOT blocked by popup blockers)
-      // This is more reliable than signInWithRedirect because:
-      //   - signInWithRedirect goes through firebaseapp.com which is blocked
-      //     by iOS Safari ITP and Android Chrome's cross-site storage rules
-      //   - signInWithPopup returns the credential directly, no redirect dance
-      try {
-        const credential = await signInWithPopup(auth, provider);
-        const idToken = await credential.user.getIdToken(true);
+      const idToken = await credential.user.getIdToken(true);
 
-        const response = await authService.firebaseLogin(
-          idToken,
-          role,
-          credential.user.displayName || undefined
+      const response = await authService.firebaseLogin(
+        idToken,
+        role,
+        credential.user.displayName || undefined
+      );
+
+      if (response.success && response.data) {
+        const { user, token } = response.data;
+        setUser(user, token);
+        toast.success(`Welcome, ${user.name || 'back'}! 🎉`);
+
+        if (onSuccess) {
+          onSuccess();
+        } else if (user.role === 'ADMIN') {
+          navigate(redirectUrl || '/admin/dashboard', { replace: true });
+        } else if (user.role === 'OWNER') {
+          navigate(redirectUrl || '/owner/dashboard', { replace: true });
+        } else {
+          navigate(redirectUrl || '/user/dashboard', { replace: true });
+        }
+      }
+    } catch (popupErr: any) {
+      console.error('[GoogleSignIn] Auth error:', popupErr);
+
+      // User closed the popup window deliberately
+      if (
+        popupErr.code === 'auth/popup-closed-by-user' ||
+        popupErr.code === 'auth/cancelled-popup-request'
+      ) {
+        return;
+      }
+
+      // Popup blocked by browser policy (e.g. strict Chrome setting)
+      if (
+        popupErr.code === 'auth/popup-blocked' ||
+        popupErr.code === 'auth/operation-not-supported-in-this-environment'
+      ) {
+        toast.error(
+          'Pop-up was blocked by your browser. Please tap the pop-up icon in your address bar to allow, or use Mobile Number login.',
+          { duration: 6000 }
         );
-
-        if (response.success && response.data) {
-          const { user, token } = response.data;
-          setUser(user, token);
-          toast.success(`Welcome, ${user.name || 'back'}! 🎉`);
-
-          if (onSuccess) {
-            onSuccess();
-          } else if (user.role === 'ADMIN') {
-            navigate(redirectUrl || '/admin/dashboard', { replace: true });
-          } else if (user.role === 'OWNER') {
-            navigate(redirectUrl || '/owner/dashboard', { replace: true });
-          } else {
-            navigate(redirectUrl || '/user/dashboard', { replace: true });
-          }
-        }
-        return; // done — popup succeeded
-      } catch (popupErr: any) {
-        // User deliberately closed the popup — not an error, just stop
-        if (popupErr.code === 'auth/popup-closed-by-user') {
-          return;
-        }
-
-        // Popup was explicitly blocked by the browser (rare on mobile, but handle it)
-        // Fall through to redirect flow below
-        if (
-          popupErr.code !== 'auth/popup-blocked' &&
-          popupErr.code !== 'auth/cancelled-popup-request' &&
-          popupErr.code !== 'auth/operation-not-supported-in-this-environment'
-        ) {
-          // Unexpected error — surface it and stop
-          throw popupErr;
-        }
-
-        // Popup was blocked → fall back to redirect
-        console.warn('[GoogleSignIn] Popup blocked, falling back to redirect:', popupErr.code);
+        return;
       }
 
-      // ── REDIRECT FALLBACK (only if popup was explicitly blocked) ───────
-      // Save role to localStorage (sessionStorage gets wiped on cross-origin redirects)
-      localStorage.setItem('vv_auth_role', role);
-      if (redirectUrl) {
-        localStorage.setItem('vv_auth_redirect', redirectUrl);
-      } else {
-        localStorage.removeItem('vv_auth_redirect');
-      }
-      // Result is handled by the root-level getRedirectResult in App.tsx
-      await signInWithRedirect(auth, provider);
-      // Browser navigates away — nothing below runs
-    } catch (error: any) {
-      console.error('[GoogleSignIn] Error:', error);
       toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'Google sign-in could not be completed. Please try again.'
+        popupErr?.response?.data?.message ||
+          popupErr?.message ||
+          'Google sign-in could not be completed. Please try again or use Mobile OTP.'
       );
     } finally {
       setLoading(false);
@@ -116,8 +112,9 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
     <button
       type="button"
       onClick={handleGoogleSignIn}
-      disabled={loading}
-      className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-700 font-semibold text-sm transition shadow-sm active:scale-[0.99] disabled:opacity-50"
+      className={`w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-700 font-semibold text-sm transition shadow-sm active:scale-[0.99] ${
+        loading ? 'opacity-70 cursor-wait' : ''
+      }`}
     >
       <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
         <path

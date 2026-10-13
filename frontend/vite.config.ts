@@ -23,6 +23,10 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
+      '/__/auth': {
+        target: 'https://veeduvadagaiku-66d6a.firebaseapp.com',
+        changeOrigin: true,
+      },
     },
   },
   build: {
