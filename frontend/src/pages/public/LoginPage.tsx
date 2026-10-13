@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { Home, ShieldCheck } from 'lucide-react';
 import { PhoneOTPForm } from '../../components/auth/PhoneOTPForm';
 import { GoogleSignInButton } from '../../components/auth/GoogleSignInButton';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useAuth } from '../../hooks/useAuth';
-import { useAuthStore } from '../../store/authStore';
 
 export const LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -14,30 +13,20 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, isOwner, isAdmin } = useAuth();
 
-  // If already authenticated, redirect to appropriate portal
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      if (isAdmin) {
-        navigate('/admin/dashboard', { replace: true });
-      } else if (isOwner) {
-        navigate('/owner/dashboard', { replace: true });
-      } else {
-        // If user came specifically to log in as OWNER, allow them to upgrade without bouncing to user dashboard
-        if (defaultRole === 'OWNER' || role === 'OWNER') {
-          return;
-        }
-        navigate('/user/dashboard', { replace: true });
-      }
-    }
-  }, [isAuthenticated, isOwner, isAdmin, navigate, defaultRole, role]);
+  // If already authenticated, redirect immediately using <Navigate> (no useEffect, no race)
+  if (isAuthenticated) {
+    const redirectUrl = searchParams.get('redirect');
+    const target = redirectUrl
+      || (isAdmin ? '/admin/dashboard' : isOwner ? '/owner/dashboard' : '/user/dashboard');
+    return <Navigate to={target} replace />;
+  }
 
   const handleSuccess = () => {
-    const currentUser = useAuthStore.getState().user;
     const redirectUrl = searchParams.get('redirect');
 
-    if (currentUser?.role === 'ADMIN' || isAdmin) {
+    if (isAdmin) {
       navigate(redirectUrl || '/admin/dashboard', { replace: true });
-    } else if (currentUser?.role === 'OWNER' || role === 'OWNER') {
+    } else if (isOwner || role === 'OWNER') {
       navigate(redirectUrl || '/owner/dashboard', { replace: true });
     } else {
       navigate(redirectUrl || '/user/dashboard', { replace: true });

@@ -23,6 +23,7 @@ import { TermsPage } from './pages/public/TermsPage';
 import { PrivacyPage } from './pages/public/PrivacyPage';
 import { HomeServicesPage } from './pages/public/HomeServicesPage';
 import { AddServicePage } from './pages/public/AddServicePage';
+import { AuthCallbackPage } from './pages/public/AuthCallbackPage';
 
 // Tenant / User Pages
 import { UserDashboardPage } from './pages/user/UserDashboardPage';
@@ -93,6 +94,10 @@ export const App: React.FC = () => {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
       </Route>
+
+      {/* ─── Auth Callback (Firebase redirect result handler) ─── */}
+      {/* This route is intentionally OUTSIDE PublicLayout so no Navbar/Footer shows during processing */}
+      <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
       {/* ─── Tenant / User Portal ─── */}
       <Route path="/user" element={<UserLayout />}>
