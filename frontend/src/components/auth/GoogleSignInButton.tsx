@@ -8,6 +8,8 @@ import {
 import { auth } from '../../config/firebase';
 import { authService } from '../../services/auth.service';
 import { useAuth } from '../../hooks/useAuth';
+import { useAuthStore } from '../../store/authStore';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 interface GoogleSignInButtonProps {
@@ -25,10 +27,12 @@ function isMobileDevice(): boolean {
 export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ role = 'USER', onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   // Handle redirect result (for mobile browsers / Safari redirect flows)
   useEffect(() => {
     let isMounted = true;
+
     getRedirectResult(auth)
       .then(async (credential) => {
         if (!isMounted || !credential || !credential.user) return;
@@ -36,57 +40,81 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ role = '
         setLoading(true);
         const savedRole =
           (sessionStorage.getItem('vv_auth_role') as 'USER' | 'OWNER') || role || 'USER';
+        const savedRedirect = sessionStorage.getItem('vv_auth_redirect') || null;
         sessionStorage.removeItem('vv_auth_role');
+        sessionStorage.removeItem('vv_auth_redirect');
 
-        const idToken = await credential.user.getIdToken();
-        const response = await authService.firebaseLogin(
-          idToken,
-          savedRole,
-          credential.user.displayName || undefined
-        );
+        try {
+          const idToken = await credential.user.getIdToken(/* forceRefresh */ true);
+          const response = await authService.firebaseLogin(
+            idToken,
+            savedRole,
+            credential.user.displayName || undefined
+          );
 
-        if (response.success && response.data) {
-          setUser(response.data.user, response.data.token);
-          toast.success(`Welcome, ${response.data.user.name}!`);
-          onSuccess?.();
+          if (response.success && response.data) {
+            setUser(response.data.user, response.data.token);
+            toast.success(`Welcome, ${response.data.user.name}!`);
+
+            // Navigate based on role (onSuccess may not be in scope after redirect)
+            if (onSuccess) {
+              onSuccess();
+            } else {
+              const u = response.data.user;
+              if (u.role === 'ADMIN') {
+                navigate(savedRedirect || '/admin/dashboard', { replace: true });
+              } else if (u.role === 'OWNER') {
+                navigate(savedRedirect || '/owner/dashboard', { replace: true });
+              } else {
+                navigate(savedRedirect || '/user/dashboard', { replace: true });
+              }
+            }
+          }
+        } catch (err: any) {
+          console.error('Redirect result processing error:', err);
+          toast.error(err?.response?.data?.message || err?.message || 'Google sign-in failed. Please try again.');
+        } finally {
+          if (isMounted) setLoading(false);
         }
       })
       .catch((err: any) => {
         if (!isMounted) return;
+        if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') return;
         console.error('Redirect sign-in error:', err);
-        if (err.code !== 'auth/popup-closed-by-user') {
-          toast.error(err.message || 'Google Sign-in failed. Please try again.');
-        }
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
+        toast.error(err?.message || 'Google Sign-in failed. Please try again.');
+        setLoading(false);
       });
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
       const provider = new GoogleAuthProvider();
       // Force Gmail account picker on all devices
+      provider.addScope('email');
+      provider.addScope('profile');
       provider.setCustomParameters({ prompt: 'select_account' });
 
-      // Save requested role for both popup and redirect workflows
+      // Save requested role and redirect for both popup and redirect workflows
       sessionStorage.setItem('vv_auth_role', role);
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectUrl = searchParams.get('redirect');
+      if (redirectUrl) sessionStorage.setItem('vv_auth_redirect', redirectUrl);
 
       // On mobile devices, use redirect for 100% reliable login without popup blockers
       if (isMobileDevice()) {
         await signInWithRedirect(auth, provider);
-        return; // Page will redirect to Google
+        return; // Page will redirect to Google — setLoading stays true intentionally
       }
 
       // On desktop, try popup first
       try {
         const userCredential = await signInWithPopup(auth, provider);
-        const idToken = await userCredential.user.getIdToken();
+        const idToken = await userCredential.user.getIdToken(/* forceRefresh */ true);
 
         const response = await authService.firebaseLogin(
           idToken,
@@ -96,12 +124,28 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ role = '
 
         if (response.success && response.data) {
           sessionStorage.removeItem('vv_auth_role');
+          sessionStorage.removeItem('vv_auth_redirect');
           setUser(response.data.user, response.data.token);
           toast.success(`Welcome, ${response.data.user.name}!`);
-          onSuccess?.();
+
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            // Store user immediately and navigate
+            const u = response.data.user;
+            const currentStore = useAuthStore.getState();
+            const redir = currentStore ? null : null; // just read store
+            if (u.role === 'ADMIN') {
+              navigate(redirectUrl || '/admin/dashboard', { replace: true });
+            } else if (u.role === 'OWNER') {
+              navigate(redirectUrl || '/owner/dashboard', { replace: true });
+            } else {
+              navigate(redirectUrl || '/user/dashboard', { replace: true });
+            }
+          }
         }
       } catch (popupErr: any) {
-        // If popup was blocked or failed on desktop, gracefully fallback to redirect
+        // If popup was blocked or failed on desktop, fallback to redirect
         if (
           popupErr.code === 'auth/popup-blocked' ||
           popupErr.code === 'auth/cancelled-popup-request' ||
@@ -113,7 +157,8 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ role = '
         }
 
         if (popupErr.code === 'auth/popup-closed-by-user') {
-          // User deliberately closed the popup window
+          // User deliberately closed the popup window — not an error
+          setLoading(false);
           return;
         }
 
@@ -156,7 +201,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ role = '
           d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
         />
       </svg>
-      <span>{loading ? 'Connecting Google...' : 'Continue with Google / Gmail'}</span>
+      <span>{loading ? 'Connecting to Google...' : 'Continue with Google / Gmail'}</span>
     </button>
   );
 };

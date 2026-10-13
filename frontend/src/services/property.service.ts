@@ -71,4 +71,10 @@ export const propertyService = {
     });
     return res.data;
   },
+
+  submitForReview: async (propertyId: string) => {
+    const res = await api.post<ApiResponse<null>>(`/api/properties/${propertyId}/submit-for-review`);
+    return res.data;
+  },
 };
+

@@ -358,8 +358,8 @@ export async function updateProperty(req: AuthRequest, res: Response, next: Next
     if (!property) throw new ApiError(404, 'Property not found or not authorized');
 
     // Can only edit DRAFT or REJECTED properties
-    if (!['DRAFT', 'REJECTED'].includes(property.status)) {
-      throw new ApiError(400, 'Only draft or rejected properties can be edited');
+    if (!['DRAFT', 'REJECTED', 'PENDING_APPROVAL'].includes(property.status)) {
+      throw new ApiError(400, 'Only draft, rejected, or pending-review properties can be edited');
     }
 
     const data = updatePropertySchema.parse(req.body);
@@ -567,3 +567,35 @@ export async function reorderImages(req: AuthRequest, res: Response, next: NextF
     next(error);
   }
 }
+
+// Submit a DRAFT or REJECTED property for admin review (free — no payment needed)
+export async function submitForReview(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const owner = await prisma.owner.findUnique({ where: { userId: req.user!.id } });
+    if (!owner) throw new ApiError(403, 'Owner profile not found');
+
+    const property = await prisma.property.findFirst({ where: { id, ownerId: owner.id } });
+    if (!property) throw new ApiError(404, 'Property not found or not authorized');
+
+    if (!['DRAFT', 'REJECTED'].includes(property.status)) {
+      throw new ApiError(400, `Property is already ${property.status.toLowerCase()}.`);
+    }
+
+    // Must have at least one image
+    const imageCount = await prisma.propertyImage.count({ where: { propertyId: id } });
+    if (imageCount === 0) {
+      throw new ApiError(400, 'Please upload at least one photo before submitting for review.');
+    }
+
+    await prisma.property.update({
+      where: { id },
+      data: { status: 'PENDING_APPROVAL', rejectionReason: null },
+    });
+
+    res.json(successResponse(null, 'Property submitted for admin review. It will be published once approved.'));
+  } catch (error) {
+    next(error);
+  }
+}
+

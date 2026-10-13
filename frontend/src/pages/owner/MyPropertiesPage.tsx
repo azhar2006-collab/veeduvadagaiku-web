@@ -15,7 +15,9 @@ import {
   AlertCircle,
   ExternalLink,
   PlusCircle,
-  CreditCard,
+  SendHorizonal,
+  Clock,
+  CheckCircle2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -44,6 +46,18 @@ export const MyPropertiesPage: React.FC = () => {
     },
   });
 
+  const submitMutation = useMutation({
+    mutationFn: (id: string) => propertyService.submitForReview(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['ownerDashboard'] });
+      toast.success('🎉 Property submitted for admin review! It will be published once approved.');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to submit. Please ensure at least one photo is uploaded.');
+    },
+  });
+
   return (
     <div className="space-y-6">
       <SEOHead title="My Properties | Veedu Vadagaiku" />
@@ -55,17 +69,35 @@ export const MyPropertiesPage: React.FC = () => {
             My Chennai Properties ({properties.length})
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            Manage your houses, commercial shops, photos, and listing subscriptions
+            Manage your houses, commercial shops, photos, and listing status
           </p>
         </div>
 
         <Link
           to="/owner/properties/add"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition whitespace-nowrap"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition hover:brightness-105 whitespace-nowrap"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>+ Add Another Property</span>
+          <span>+ Add New Property</span>
         </Link>
+      </div>
+
+      {/* How it works */}
+      <div className="bg-[#FAF7F0] border border-[#E8DFC8] rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 text-xs">
+        <div className="flex items-center gap-2.5 text-[#9A7818]">
+          <div className="w-6 h-6 rounded-full bg-[#D4AF37] text-white flex items-center justify-center font-bold text-[10px] shrink-0">1</div>
+          <span className="font-semibold">Add Property + Photos</span>
+        </div>
+        <div className="hidden sm:block text-[#C5A059]">→</div>
+        <div className="flex items-center gap-2.5 text-[#9A7818]">
+          <div className="w-6 h-6 rounded-full bg-[#D4AF37] text-white flex items-center justify-center font-bold text-[10px] shrink-0">2</div>
+          <span className="font-semibold">Submit for Review</span>
+        </div>
+        <div className="hidden sm:block text-[#C5A059]">→</div>
+        <div className="flex items-center gap-2.5 text-[#9A7818]">
+          <div className="w-6 h-6 rounded-full bg-[#D4AF37] text-white flex items-center justify-center font-bold text-[10px] shrink-0">3</div>
+          <span className="font-semibold">Admin Approves → Live for All Users</span>
+        </div>
       </div>
 
       {isLoading ? (
@@ -85,12 +117,13 @@ export const MyPropertiesPage: React.FC = () => {
               prop.images?.[0]?.imageUrl ||
               '/properties/property-1.png';
 
-            const canEdit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
+            const canEdit = ['DRAFT', 'REJECTED', 'PENDING_APPROVAL'].includes(prop.status);
+            const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
 
             return (
               <div
                 key={prop.id}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-gray-200 transition overflow-hidden"
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-[#E8DFC8] transition overflow-hidden"
               >
                 <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4">
                   {/* Left: Thumbnail */}
@@ -112,7 +145,7 @@ export const MyPropertiesPage: React.FC = () => {
                     <div className="flex items-center gap-2 flex-wrap">
                       <PropertyStatusBadge status={prop.status} />
                       <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded-full">
-                        {prop.propertyType === 'HOUSE' ? 'House' : 'Commercial Shop'}
+                        {prop.propertyType === 'HOUSE' ? 'House' : 'Commercial'}
                       </span>
                     </div>
 
@@ -136,15 +169,18 @@ export const MyPropertiesPage: React.FC = () => {
 
                   {/* Right: Actions */}
                   <div className="flex flex-row sm:flex-col items-center gap-2 sm:shrink-0 sm:pt-1 border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
-                    {/* Select Plan & Pay (if DRAFT or PAYMENT_PENDING) */}
-                    {(prop.status === 'DRAFT' || prop.status === 'PAYMENT_PENDING') && (
-                      <Link
-                        to={`/owner/payment?propertyId=${prop.id}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-xs transition hover:brightness-105 whitespace-nowrap"
+
+                    {/* Submit for Review button (DRAFT / REJECTED) */}
+                    {canSubmit && (
+                      <button
+                        type="button"
+                        disabled={submitMutation.isPending}
+                        onClick={() => submitMutation.mutate(prop.id)}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-xs transition hover:brightness-105 whitespace-nowrap disabled:opacity-60"
                       >
-                        <CreditCard className="w-3.5 h-3.5" />
-                        <span>Select Plan & Pay</span>
-                      </Link>
+                        <SendHorizonal className="w-3.5 h-3.5" />
+                        <span>Submit for Review</span>
+                      </button>
                     )}
 
                     {/* View Live (if published) */}
@@ -152,10 +188,10 @@ export const MyPropertiesPage: React.FC = () => {
                       <Link
                         to={`/property/${prop.id}`}
                         target="_blank"
-                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 font-bold text-xs rounded-xl transition"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
-                        <span>Live Page</span>
+                        <span>View Live</span>
                       </Link>
                     )}
 
@@ -182,34 +218,44 @@ export const MyPropertiesPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Draft / Payment Required Banner */}
-                {(prop.status === 'DRAFT' || prop.status === 'PAYMENT_PENDING') && (
-                  <div className="mx-4 mb-4 p-3 bg-amber-50/70 rounded-xl border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900 flex-wrap">
+                {/* DRAFT Banner — needs to be submitted */}
+                {prop.status === 'DRAFT' && (
+                  <div className="mx-4 mb-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900 flex-wrap">
                     <div className="flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-[#C5A059] shrink-0" />
-                      <span>Subscription listing plan required to activate and submit this property.</span>
+                      <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                      <span>Property saved as draft. Add at least one photo then click <strong>Submit for Review</strong>.</span>
                     </div>
-                    <Link
-                      to={`/owner/payment?propertyId=${prop.id}`}
-                      className="px-3 py-1 bg-[#C5A059] hover:bg-[#9A7818] text-white font-bold rounded-lg transition"
+                    <button
+                      type="button"
+                      disabled={submitMutation.isPending}
+                      onClick={() => submitMutation.mutate(prop.id)}
+                      className="px-3 py-1.5 bg-[#C5A059] hover:bg-[#9A7818] text-white font-bold rounded-lg transition text-[11px] disabled:opacity-60"
                     >
-                      Choose Plan →
-                    </Link>
+                      Submit for Review →
+                    </button>
                   </div>
                 )}
 
-                {/* Pending Admin Approval Banner */}
+                {/* PENDING_APPROVAL Banner */}
                 {prop.status === 'PENDING_APPROVAL' && (
                   <div className="mx-4 mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200 flex items-start gap-2.5 text-xs text-blue-800">
-                    <Eye className="w-4 h-4 shrink-0 mt-0.5 text-blue-500" />
+                    <Clock className="w-4 h-4 shrink-0 mt-0.5 text-blue-500" />
                     <div>
-                      <span className="font-bold block text-blue-900">
-                        Pending Admin Approval
-                      </span>
+                      <span className="font-bold block text-blue-900">Under Admin Review</span>
                       <span className="text-blue-700 leading-relaxed">
-                        Payment verified! Your property has been submitted and is under review by our admin team. It will be published once approved.
+                        Your property has been submitted and is being reviewed by our team. Once approved, it will be live for all users — even non-registered visitors.
                       </span>
                     </div>
+                  </div>
+                )}
+
+                {/* PUBLISHED Banner */}
+                {prop.status === 'PUBLISHED' && (
+                  <div className="mx-4 mb-4 p-3 bg-green-50 rounded-xl border border-green-200 flex items-start gap-2.5 text-xs text-green-800">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
+                    <span className="font-semibold">
+                      Live & Visible to all users including non-registered visitors across Chennai.
+                    </span>
                   </div>
                 )}
 
@@ -218,10 +264,10 @@ export const MyPropertiesPage: React.FC = () => {
                   <div className="mx-4 mb-4 p-3 bg-red-50 rounded-xl border border-red-200 flex items-start gap-2 text-xs text-red-700">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold">Admin Rejection Feedback: </span>
+                      <span className="font-bold">Admin Feedback: </span>
                       <span>{prop.rejectionReason}</span>
                       <p className="mt-1 font-semibold text-red-800">
-                        Please click 'Edit' to correct the details and resubmit for approval.
+                        Click 'Edit' to fix the issues, then click 'Submit for Review' again.
                       </p>
                     </div>
                   </div>
