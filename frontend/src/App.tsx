@@ -1,5 +1,10 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { getRedirectResult } from 'firebase/auth';
+import { auth } from './config/firebase';
+import { authService } from './services/auth.service';
+import { useAuth } from './hooks/useAuth';
+import toast from 'react-hot-toast';
 
 // Layouts
 import { PublicLayout } from './layouts/PublicLayout';
@@ -55,6 +60,80 @@ import { ManagePlansPage } from './pages/admin/ManagePlansPage';
 import { ManageEnquiriesPage } from './pages/admin/ManageEnquiriesPage';
 
 export const App: React.FC = () => {
+  const navigate = useNavigate();
+  const { setUser } = useAuth();
+
+  // ─── ROOT-LEVEL Firebase redirect result handler ───────────────────────────
+  // This runs on EVERY page load. It doesn't matter which URL Firebase
+  // redirects back to after Google OAuth — we always catch it here.
+  // Using localStorage (not sessionStorage) because mobile browsers wipe
+  // sessionStorage during cross-origin redirects.
+  React.useEffect(() => {
+    let cancelled = false;
+
+    getRedirectResult(auth)
+      .then(async (credential) => {
+        if (cancelled || !credential?.user) return; // no redirect result
+
+        const savedRole =
+          (localStorage.getItem('vv_auth_role') as 'USER' | 'OWNER') || 'USER';
+        const savedRedirect = localStorage.getItem('vv_auth_redirect') || null;
+
+        try {
+          // Force-refresh token — mobile cached tokens sometimes get rejected
+          const idToken = await credential.user.getIdToken(true);
+          const response = await authService.firebaseLogin(
+            idToken,
+            savedRole,
+            credential.user.displayName || undefined
+          );
+
+          // Clean up before navigating
+          localStorage.removeItem('vv_auth_role');
+          localStorage.removeItem('vv_auth_redirect');
+
+          if (response.success && response.data) {
+            const { user, token } = response.data;
+            setUser(user, token);
+            toast.success(`Welcome, ${user.name || 'back'}! 🎉`);
+
+            const dest =
+              savedRedirect ||
+              (user.role === 'ADMIN'
+                ? '/admin/dashboard'
+                : user.role === 'OWNER'
+                ? '/owner/dashboard'
+                : '/user/dashboard');
+
+            if (!cancelled) navigate(dest, { replace: true });
+          }
+        } catch (err: any) {
+          if (cancelled) return;
+          localStorage.removeItem('vv_auth_role');
+          localStorage.removeItem('vv_auth_redirect');
+          console.error('[App] getRedirectResult error:', err);
+          toast.error(
+            err?.response?.data?.message ||
+              err?.message ||
+              'Google sign-in failed. Please try again.'
+          );
+        }
+      })
+      .catch((err: any) => {
+        // Swallow popup-closed / cancelled — those are not errors
+        if (
+          err?.code === 'auth/popup-closed-by-user' ||
+          err?.code === 'auth/cancelled-popup-request'
+        )
+          return;
+        console.error('[App] getRedirectResult catch:', err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // ──────────────────────────────────────────────────────────────────────────
   React.useEffect(() => {
     const mountTime = Date.now();
     const MIN_DISPLAY = 3000; // hold for at least 3 seconds

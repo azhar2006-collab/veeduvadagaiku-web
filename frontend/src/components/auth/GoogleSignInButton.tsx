@@ -18,9 +18,9 @@ interface GoogleSignInButtonProps {
 function isMobileOrSafari(): boolean {
   if (typeof window === 'undefined') return false;
   const ua = navigator.userAgent || '';
-  // Detect mobile devices
+  // Mobile devices
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) return true;
-  // Detect Safari on desktop (Safari blocks cross-origin popups)
+  // Safari on desktop also blocks cross-origin popups
   const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
   return isSafari;
 }
@@ -47,8 +47,10 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
 
       if (isMobileOrSafari()) {
         // ── REDIRECT FLOW (mobile / Safari) ──────────────────────────────
-        // Save role + intended destination to localStorage — sessionStorage
-        // is wiped by Safari during OAuth redirects.
+        // Save role + intended destination to localStorage.
+        // sessionStorage is wiped by Safari/mobile during cross-origin redirects.
+        // The result is caught by the root-level getRedirectResult in App.tsx,
+        // which runs on every page load regardless of which URL Firebase returns to.
         localStorage.setItem('vv_auth_role', role);
         if (redirectUrl) {
           localStorage.setItem('vv_auth_redirect', redirectUrl);
@@ -56,17 +58,9 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
           localStorage.removeItem('vv_auth_redirect');
         }
 
-        // Navigate to the callback page FIRST so that Firebase redirects back
-        // to /auth/callback (the page that was active when signInWithRedirect fired).
-        // This avoids the redirect landing on /login where competing useEffects
-        // fight over navigation.
-        navigate('/auth/callback', { replace: true });
-
-        // Small tick to let React flush the navigation before we leave
-        await new Promise((r) => setTimeout(r, 50));
-
+        // Just call signInWithRedirect — App.tsx handles the result on return
         await signInWithRedirect(auth, provider);
-        // Browser navigates away — nothing below runs.
+        // Browser navigates away — nothing below this runs
         return;
       }
 
@@ -99,7 +93,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
           }
         }
       } catch (popupErr: any) {
-        // Popup was blocked or not supported → fall back to redirect
+        // Popup blocked or not supported → fall back to redirect
         if (
           popupErr.code === 'auth/popup-blocked' ||
           popupErr.code === 'auth/cancelled-popup-request' ||
@@ -112,13 +106,11 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
           } else {
             localStorage.removeItem('vv_auth_redirect');
           }
-          navigate('/auth/callback', { replace: true });
-          await new Promise((r) => setTimeout(r, 50));
           await signInWithRedirect(auth, provider);
           return;
         }
 
-        // User closed the popup — not an error
+        // User deliberately closed the popup — not an error
         if (popupErr.code === 'auth/popup-closed-by-user') {
           setLoading(false);
           return;
