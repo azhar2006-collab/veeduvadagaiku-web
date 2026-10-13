@@ -312,38 +312,7 @@ export const HomeServicesPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ─── Category Tab Switcher (Exact HomePage Rounded Pill Design) ─── */}
-          <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar py-1 px-4 sm:px-0">
-            <div
-              className="inline-flex items-center p-1 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap shrink-0 sm:mx-auto gap-1"
-              role="tablist"
-              aria-label="Service categories"
-            >
-              {CATEGORIES.map((cat) => {
-                const isActive = activeCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    onClick={() => {
-                      setActiveCategory(cat.id);
-                      setSelectedSubcategory('');
-                    }}
-                    className={`flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    <span>{cat.icon}</span>
-                    <span>{lang === 'ta' ? cat.labelTa : cat.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+
 
           {/* ─── Classic Search / Filter Box (Matching HomePage Search Card) ─── */}
           <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
@@ -487,26 +456,86 @@ export const HomeServicesPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── Service Results Section ─── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
-              {lang === 'ta' ? 'கிடைக்கும் சேவைகள்' : 'Available Services'}
-            </h2>
-            <p className="text-xs text-gray-500 mt-0.5">
-              {services.length} {lang === 'ta' ? 'வல்லுநர்கள் பட்டியலில் உள்ளனர்' : 'professionals available across Chennai'}
-            </p>
-          </div>
-          {hasActiveFilters && (
-            <button
-              onClick={handleResetFilters}
-              className="text-xs font-bold text-[#9A7818] hover:underline"
-            >
-              {lang === 'ta' ? 'அனைத்து வடிகட்டிகளையும் நீக்குக' : 'Clear Filters'}
-            </button>
-          )}
-        </div>
+      {/* ─── Sidebar + Service Results Section ─── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row gap-6">
+
+          {/* ── Left Sidebar: Category Nav ── */}
+          <aside className="w-full lg:w-60 xl:w-64 shrink-0">
+            {/* Mobile: horizontal scrollable strip */}
+            <div className="flex lg:hidden overflow-x-auto gap-2 pb-2 -mx-4 px-4">
+              {CATEGORIES.map((cat) => {
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => { setActiveCategory(cat.id); setSelectedSubcategory(''); }}
+                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition shrink-0 ${
+                      isActive
+                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-sm'
+                        : 'bg-white border-[#E8DFC8] text-gray-600 hover:bg-[#FAF7F0]'
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    <span>{lang === 'ta' ? cat.labelTa : cat.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Desktop: vertical sticky sidebar */}
+            <div className="hidden lg:block sticky top-24">
+              <div className="bg-white border border-[#E8DFC8] rounded-2xl shadow-sm overflow-hidden">
+                <div className="px-4 py-3 border-b border-[#F0E8D5] bg-[#FAF7F0]">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-[#9A7818]">
+                    {lang === 'ta' ? 'சேவை வகைகள்' : 'Service Categories'}
+                  </p>
+                </div>
+                <nav className="p-2 space-y-0.5">
+                  {CATEGORIES.map((cat) => {
+                    const isActive = activeCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => { setActiveCategory(cat.id); setSelectedSubcategory(''); }}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-left transition ${
+                          isActive
+                            ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-sm'
+                            : 'text-gray-700 hover:bg-[#FAF7F0] hover:text-[#9A7818]'
+                        }`}
+                      >
+                        <span className={isActive ? 'text-white' : 'text-[#C5A059]'}>{cat.icon}</span>
+                        <span className="leading-tight">{lang === 'ta' ? cat.labelTa : cat.label}</span>
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            </div>
+          </aside>
+
+          {/* ── Right: Results ── */}
+          <div className="flex-1 min-w-0 space-y-5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
+                  {lang === 'ta' ? 'கிடைக்கும் சேவைகள்' : 'Available Services'}
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {services.length} {lang === 'ta' ? 'வல்லுநர்கள் பட்டியலில் உள்ளனர்' : 'professionals available across Chennai'}
+                </p>
+              </div>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="text-xs font-bold text-[#9A7818] hover:underline"
+                >
+                  {lang === 'ta' ? 'அனைத்து வடிகட்டிகளையும் நீக்குக' : 'Clear Filters'}
+                </button>
+              )}
+            </div>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -561,7 +590,7 @@ export const HomeServicesPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
             {services.map((service) => {
               const catMeta =
                 CATEGORIES.find((c) => c.id === service.category) || CATEGORIES[0];
@@ -685,8 +714,11 @@ export const HomeServicesPage: React.FC = () => {
           </div>
         )}
 
+          </div>{/* end flex-1 right column */}
+        </div>{/* end flex-col lg:flex-row */}
+
         {/* ─── Bottom CTA Banner (Matching White & Lite Gold Theme) ─── */}
-        <section className="bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border border-[#E8DFC8] rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-sm">
+        <section className="mt-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border border-[#E8DFC8] rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-sm">
           <div
             className="absolute inset-0 pointer-events-none opacity-40"
             style={{
