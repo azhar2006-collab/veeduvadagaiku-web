@@ -118,7 +118,30 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
         ];
       }
     }
-    if (locality) where.locality = { contains: locality as string, mode: 'insensitive' };
+    if (locality) {
+      const locStr = String(locality).trim();
+      // Extract clean area name (before any dash/hyphen) and any 6-digit pincode
+      const cleanArea = locStr.replace(/\s*[-–—]\s*\d{6}.*$/, '').trim();
+      const pincodeMatch = locStr.match(/\b\d{6}\b/);
+      const pincode = pincodeMatch ? pincodeMatch[0] : null;
+
+      const locConditions: Array<Record<string, unknown>> = [
+        { locality: { contains: locStr, mode: 'insensitive' } },
+        { locality: { contains: cleanArea, mode: 'insensitive' } },
+        { address: { contains: cleanArea, mode: 'insensitive' } },
+      ];
+      if (pincode) {
+        locConditions.push(
+          { locality: { contains: pincode, mode: 'insensitive' } },
+          { address: { contains: pincode, mode: 'insensitive' } }
+        );
+      }
+
+      where.AND = [
+        ...(where.AND as Array<Record<string, unknown>> || []),
+        { OR: locConditions },
+      ];
+    }
     if (minRent || maxRent) {
       where.rent = {};
       if (minRent) (where.rent as Record<string, unknown>).gte = parseFloat(minRent as string);

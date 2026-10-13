@@ -336,11 +336,20 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
                     <MapPin className="w-4 h-4 text-[#C5A059] shrink-0" />
                     <select
-                      value={locality}
+                      value={
+                        !locality
+                          ? ''
+                          : localities.includes(locality)
+                          ? locality
+                          : (localities.find((l) => l.toLowerCase().startsWith(locality.toLowerCase())) || locality)
+                      }
                       onChange={(e) => setLocality(e.target.value)}
                       className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
                     >
                       <option value="">{t('hero.selectLocality')}</option>
+                      {locality && !localities.includes(locality) && !localities.some((l) => l.toLowerCase().startsWith(locality.toLowerCase())) && (
+                        <option value={locality}>{locality}</option>
+                      )}
                       {localities.map((loc) => (
                         <option key={loc} value={loc}>
                           {loc}

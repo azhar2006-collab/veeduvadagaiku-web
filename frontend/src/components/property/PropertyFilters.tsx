@@ -192,11 +192,20 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             {t('filter.locality')}
           </label>
           <select
-            value={filters.locality || ''}
+            value={
+              !filters.locality
+                ? ''
+                : localities.includes(filters.locality)
+                ? filters.locality
+                : (localities.find((l) => l.toLowerCase().startsWith(filters.locality!.toLowerCase())) || filters.locality)
+            }
             onChange={(e) => handleFieldChange('locality', e.target.value)}
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition"
           >
             <option value="">{t('filter.allAreas')}</option>
+            {filters.locality && !localities.includes(filters.locality) && !localities.some((l) => l.toLowerCase().startsWith(filters.locality!.toLowerCase())) && (
+              <option value={filters.locality}>{filters.locality}</option>
+            )}
             {localities.map((loc) => (
               <option key={loc} value={loc}>
                 {loc}

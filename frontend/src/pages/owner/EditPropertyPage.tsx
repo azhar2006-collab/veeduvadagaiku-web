@@ -170,10 +170,18 @@ export const EditPropertyPage: React.FC = () => {
               </label>
               <select
                 required
-                value={locality}
+                value={
+                  localities.includes(locality)
+                    ? locality
+                    : (localities.find((l) => l.toLowerCase().startsWith(locality.toLowerCase())) || locality)
+                }
                 onChange={(e) => setLocality(e.target.value)}
-                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
               >
+                <option value="">Select Chennai Area</option>
+                {locality && !localities.includes(locality) && !localities.some((l) => l.toLowerCase().startsWith(locality.toLowerCase())) && (
+                  <option value={locality}>{locality}</option>
+                )}
                 {localities.map((loc) => (
                   <option key={loc} value={loc}>
                     {loc}

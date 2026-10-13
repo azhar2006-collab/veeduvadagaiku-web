@@ -699,12 +699,13 @@ export const AddPropertyPage: React.FC = () => {
             </span>
             <div className="flex flex-wrap gap-2 pt-1">
               {popularLocalities.map((popLoc) => {
-                const isSelected = locality === popLoc;
+                const fullLoc = localities.find((l) => l.toLowerCase().startsWith(popLoc.toLowerCase())) || popLoc;
+                const isSelected = locality === popLoc || locality === fullLoc || locality.toLowerCase().startsWith(popLoc.toLowerCase());
                 return (
                   <button
                     key={popLoc}
                     type="button"
-                    onClick={() => setLocality(popLoc)}
+                    onClick={() => setLocality(fullLoc)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
                       isSelected
                         ? 'bg-[#C5A059] text-white shadow-2xs'
