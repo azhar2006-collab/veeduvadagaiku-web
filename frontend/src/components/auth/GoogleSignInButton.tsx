@@ -15,16 +15,6 @@ interface GoogleSignInButtonProps {
   onSuccess?: () => void;
 }
 
-function isMobileOrSafari(): boolean {
-  if (typeof window === 'undefined') return false;
-  const ua = navigator.userAgent || '';
-  // Mobile devices
-  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) return true;
-  // Safari on desktop also blocks cross-origin popups
-  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-  return isSafari;
-}
-
 export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   role = 'USER',
   onSuccess,
@@ -45,26 +35,13 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       const searchParams = new URLSearchParams(window.location.search);
       const redirectUrl = searchParams.get('redirect');
 
-      if (isMobileOrSafari()) {
-        // ── REDIRECT FLOW (mobile / Safari) ──────────────────────────────
-        // Save role + intended destination to localStorage.
-        // sessionStorage is wiped by Safari/mobile during cross-origin redirects.
-        // The result is caught by the root-level getRedirectResult in App.tsx,
-        // which runs on every page load regardless of which URL Firebase returns to.
-        localStorage.setItem('vv_auth_role', role);
-        if (redirectUrl) {
-          localStorage.setItem('vv_auth_redirect', redirectUrl);
-        } else {
-          localStorage.removeItem('vv_auth_redirect');
-        }
-
-        // Just call signInWithRedirect — App.tsx handles the result on return
-        await signInWithRedirect(auth, provider);
-        // Browser navigates away — nothing below this runs
-        return;
-      }
-
-      // ── POPUP FLOW (desktop Chrome / Firefox) ──────────────────────────
+      // ── TRY POPUP FIRST on all devices ────────────────────────────────
+      // On desktop: opens a small popup window
+      // On mobile:  opens a new browser tab (NOT blocked by popup blockers)
+      // This is more reliable than signInWithRedirect because:
+      //   - signInWithRedirect goes through firebaseapp.com which is blocked
+      //     by iOS Safari ITP and Android Chrome's cross-site storage rules
+      //   - signInWithPopup returns the credential directly, no redirect dance
       try {
         const credential = await signInWithPopup(auth, provider);
         const idToken = await credential.user.getIdToken(true);
@@ -82,42 +59,47 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
 
           if (onSuccess) {
             onSuccess();
+          } else if (user.role === 'ADMIN') {
+            navigate(redirectUrl || '/admin/dashboard', { replace: true });
+          } else if (user.role === 'OWNER') {
+            navigate(redirectUrl || '/owner/dashboard', { replace: true });
           } else {
-            if (user.role === 'ADMIN') {
-              navigate(redirectUrl || '/admin/dashboard', { replace: true });
-            } else if (user.role === 'OWNER') {
-              navigate(redirectUrl || '/owner/dashboard', { replace: true });
-            } else {
-              navigate(redirectUrl || '/user/dashboard', { replace: true });
-            }
+            navigate(redirectUrl || '/user/dashboard', { replace: true });
           }
         }
+        return; // done — popup succeeded
       } catch (popupErr: any) {
-        // Popup blocked or not supported → fall back to redirect
-        if (
-          popupErr.code === 'auth/popup-blocked' ||
-          popupErr.code === 'auth/cancelled-popup-request' ||
-          popupErr.code === 'auth/operation-not-supported-in-this-environment'
-        ) {
-          toast.loading('Redirecting to Google…', { duration: 2000 });
-          localStorage.setItem('vv_auth_role', role);
-          if (redirectUrl) {
-            localStorage.setItem('vv_auth_redirect', redirectUrl);
-          } else {
-            localStorage.removeItem('vv_auth_redirect');
-          }
-          await signInWithRedirect(auth, provider);
-          return;
-        }
-
-        // User deliberately closed the popup — not an error
+        // User deliberately closed the popup — not an error, just stop
         if (popupErr.code === 'auth/popup-closed-by-user') {
-          setLoading(false);
           return;
         }
 
-        throw popupErr;
+        // Popup was explicitly blocked by the browser (rare on mobile, but handle it)
+        // Fall through to redirect flow below
+        if (
+          popupErr.code !== 'auth/popup-blocked' &&
+          popupErr.code !== 'auth/cancelled-popup-request' &&
+          popupErr.code !== 'auth/operation-not-supported-in-this-environment'
+        ) {
+          // Unexpected error — surface it and stop
+          throw popupErr;
+        }
+
+        // Popup was blocked → fall back to redirect
+        console.warn('[GoogleSignIn] Popup blocked, falling back to redirect:', popupErr.code);
       }
+
+      // ── REDIRECT FALLBACK (only if popup was explicitly blocked) ───────
+      // Save role to localStorage (sessionStorage gets wiped on cross-origin redirects)
+      localStorage.setItem('vv_auth_role', role);
+      if (redirectUrl) {
+        localStorage.setItem('vv_auth_redirect', redirectUrl);
+      } else {
+        localStorage.removeItem('vv_auth_redirect');
+      }
+      // Result is handled by the root-level getRedirectResult in App.tsx
+      await signInWithRedirect(auth, provider);
+      // Browser navigates away — nothing below runs
     } catch (error: any) {
       console.error('[GoogleSignIn] Error:', error);
       toast.error(
