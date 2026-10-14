@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",
-    "postinstall": "node ./scripts/generate-client.js",
+    "postinstall": "node -e \"try { if (require('fs').existsSync('./scripts/generate-client.js')) require('./scripts/generate-client.js'); } catch (e) { console.warn('Prisma generate postponed to build step:', e.message); }\"",
     "build": "node ./scripts/generate-client.js && tsc",
     "start": "node dist/server.js",
     "prisma:generate": "node ./scripts/generate-client.js",

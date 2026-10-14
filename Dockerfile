@@ -5,25 +5,24 @@ WORKDIR /app
 # Install OpenSSL required by Prisma engine on Alpine
 RUN apk add --no-cache openssl
 
-# Copy backend package files and Prisma schema
+# Copy backend package files, Prisma schema, and scripts
 COPY backend/package*.json ./
 COPY backend/prisma ./prisma/
+COPY backend/scripts ./scripts
+
+# Set build-time dummy database URLs so Prisma client generation succeeds
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+ENV DIRECT_URL="postgresql://postgres:postgres@localhost:5432/postgres"
 
 # Install dependencies inside the container
 RUN npm install
 
 # Copy configuration and source files
 COPY backend/tsconfig.json ./
-COPY backend/scripts ./scripts
 COPY backend/src ./src
 
-# Set build-time dummy database URLs so `npx prisma generate` validates schema without errors
-# Runtime environment variables from Railway will override these when the server starts
-ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
-ENV DIRECT_URL="postgresql://postgres:postgres@localhost:5432/postgres"
-
 # Generate Prisma client and compile TypeScript
-RUN npx prisma generate
+RUN node ./scripts/generate-client.js
 RUN npm run build
 
 # Default environment

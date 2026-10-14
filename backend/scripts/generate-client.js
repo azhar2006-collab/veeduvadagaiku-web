@@ -13,7 +13,11 @@ if (!process.env.DIRECT_URL) {
 
 try {
   console.log('[generate-client] Generating Prisma Client inside backend...');
-  execSync('npx prisma generate', {
+  const fs = require('fs');
+  const prismaBin = path.join(backendDir, 'node_modules', '.bin', process.platform === 'win32' ? 'prisma.cmd' : 'prisma');
+  const cmd = fs.existsSync(prismaBin) ? `"${prismaBin}" generate` : 'npx prisma generate';
+  
+  execSync(cmd, {
     cwd: backendDir,
     stdio: 'inherit',
     env: process.env,

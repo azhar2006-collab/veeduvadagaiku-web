@@ -73,8 +73,21 @@ export const propertyService = {
   },
 
   submitForReview: async (propertyId: string) => {
-    const res = await api.post<ApiResponse<null>>(`/api/properties/${propertyId}/submit-for-review`);
-    return res.data;
+    try {
+      const res = await api.post<ApiResponse<null>>(`/api/properties/${propertyId}/submit-for-review`);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        try {
+          const res = await api.post<ApiResponse<null>>(`/api/properties/${propertyId}/for-review`);
+          return res.data;
+        } catch {
+          const res = await api.post<ApiResponse<null>>(`/api/properties/${propertyId}/review`);
+          return res.data;
+        }
+      }
+      throw err;
+    }
   },
 };
 

@@ -412,12 +412,17 @@ export const AddPropertyPage: React.FC = () => {
       await propertyService.uploadImages(newPropertyId, files);
 
       // Step 3: Auto-submit for admin review
-      await propertyService.submitForReview(newPropertyId);
+      try {
+        await propertyService.submitForReview(newPropertyId);
+        toast.success('🎉 Property submitted for admin review! It will be published once approved.');
+      } catch (submitErr) {
+        console.warn('Auto submit-for-review notice:', submitErr);
+        toast.success('🎉 Property details and photos saved! You can submit for review in My Properties.');
+      }
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
-      toast.success('🎉 Property submitted for admin review! It will be published once approved.');
 
-      // Navigate to My Properties so owner can see pending status
+      // Navigate to My Properties so owner can see listing status
       navigate('/owner/properties');
     } catch (err: any) {
       console.error(err);
