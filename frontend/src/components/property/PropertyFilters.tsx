@@ -150,6 +150,27 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             <button
               type="button"
               onClick={() => {
+                const isSelected = filters.category === 'COMMERCIAL_BUILDING';
+                onChange({
+                  ...filters,
+                  propertyType: isSelected ? undefined : 'SHOP',
+                  category: isSelected ? undefined : 'COMMERCIAL_BUILDING',
+                  page: 1,
+                });
+              }}
+              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
+                filters.category === 'COMMERCIAL_BUILDING'
+                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span className="truncate">{t('card.commercialBuilding', 'Commercial Building')}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
                 const isSelected = filters.category === 'HOSTEL';
                 onChange({
                   ...filters,
@@ -341,6 +362,91 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             </div>
           </div>
         )}
+
+        {/* Floor Filter */}
+        {filters.propertyType !== 'SHOP' && filters.category !== 'SHOP' && filters.category !== 'MARRIAGE_HALL' && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                {t('filter.floor', 'Floor')}
+              </label>
+              {filters.floor && (
+                <button
+                  type="button"
+                  onClick={() => handleFieldChange('floor', '')}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { val: '', label: t('filter.allFloors', 'All Floors') },
+                { val: 'ground', label: t('filter.groundFloor', 'Ground Floor') },
+                { val: '1-3', label: t('filter.floor1to3', '1st – 3rd Floor') },
+                { val: '4+', label: t('filter.floor4plus', '4th+ Floor') },
+              ].map((fl) => {
+                const isSelected = String(filters.floor || '') === fl.val;
+                return (
+                  <button
+                    key={fl.val || 'all'}
+                    type="button"
+                    onClick={() => handleFieldChange('floor', fl.val)}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                      isSelected
+                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {fl.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Car Parking Filter */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              {t('filter.carParking', 'Car Parking')}
+            </label>
+            {filters.carParking && (
+              <button
+                type="button"
+                onClick={() => handleFieldChange('carParking', '')}
+                className="text-[10px] font-bold text-[#9A7818] hover:underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { val: '', label: t('filter.allParking', 'All Parking') },
+              { val: 'car', label: '🚗 ' + t('filter.carParking', 'Car Parking') },
+              { val: 'covered', label: '🛡️ ' + t('filter.coveredParking', 'Covered Parking') },
+            ].map((pk) => {
+              const isSelected = String(filters.carParking || '') === pk.val;
+              return (
+                <button
+                  key={pk.val || 'all'}
+                  type="button"
+                  onClick={() => handleFieldChange('carParking', pk.val)}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                    isSelected
+                      ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {pk.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Commercial Property Types (Matching Image 2 - NoBroker & OLX checklist) */}
         {(filters.propertyType === 'SHOP' || filters.category === 'SHOP') && (

@@ -18,7 +18,7 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
       propertyType, locality, minRent, maxRent,
       bedrooms, furnishing, minSize, maxSize,
       sortBy = 'newest', availability, category, commercialType,
-      hostelGender, hallCapacity,
+      hostelGender, hallCapacity, floor, carParking,
     } = req.query;
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
@@ -42,6 +42,16 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
         where.propertyType = 'HOUSE';
       } else if (cat === 'SHOP') {
         where.propertyType = 'SHOP';
+      } else if (cat === 'COMMERCIAL_BUILDING') {
+        where.propertyType = 'SHOP';
+        where.OR = [
+          { title: { contains: 'building', mode: 'insensitive' } },
+          { title: { contains: 'complex', mode: 'insensitive' } },
+          { description: { contains: 'commercial building', mode: 'insensitive' } },
+          { description: { contains: 'industrial building', mode: 'insensitive' } },
+          { description: { contains: 'office building', mode: 'insensitive' } },
+          { description: { contains: '[category:commercial_building]', mode: 'insensitive' } },
+        ];
       } else if (cat === 'HOSTEL') {
         where.OR = [
           { title: { contains: 'hostel', mode: 'insensitive' } },
@@ -238,6 +248,65 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
       } else {
         const num = parseInt(bStr);
         if (!isNaN(num)) where.bedrooms = num;
+      }
+    }
+    if (floor && floor !== 'all') {
+      const f = String(floor).toLowerCase().trim();
+      const floorConditions: Array<Record<string, unknown>> = [];
+      if (f === 'ground' || f === '0') {
+        floorConditions.push(
+          { title: { contains: 'ground', mode: 'insensitive' } },
+          { description: { contains: 'ground', mode: 'insensitive' } },
+          { description: { contains: 'gf', mode: 'insensitive' } }
+        );
+      } else if (f === '1-3') {
+        floorConditions.push(
+          { title: { contains: '1st', mode: 'insensitive' } },
+          { title: { contains: '2nd', mode: 'insensitive' } },
+          { title: { contains: '3rd', mode: 'insensitive' } },
+          { description: { contains: '1st', mode: 'insensitive' } },
+          { description: { contains: '2nd', mode: 'insensitive' } },
+          { description: { contains: '3rd', mode: 'insensitive' } },
+          { description: { contains: 'first floor', mode: 'insensitive' } },
+          { description: { contains: 'second floor', mode: 'insensitive' } },
+          { description: { contains: 'third floor', mode: 'insensitive' } }
+        );
+      } else if (f === '4+' || f === '4') {
+        floorConditions.push(
+          { title: { contains: '4th', mode: 'insensitive' } },
+          { title: { contains: '5th', mode: 'insensitive' } },
+          { description: { contains: '4th', mode: 'insensitive' } },
+          { description: { contains: '5th', mode: 'insensitive' } },
+          { description: { contains: 'fourth floor', mode: 'insensitive' } }
+        );
+      }
+      if (floorConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: floorConditions },
+        ];
+      }
+    }
+    if (carParking && carParking !== 'all') {
+      const p = String(carParking).toLowerCase().trim();
+      const parkingConditions: Array<Record<string, unknown>> = [];
+      if (p === 'covered') {
+        parkingConditions.push(
+          { amenities: { hasSome: ['🛡️ Covered Parking', 'Covered Parking'] } },
+          { description: { contains: 'covered parking', mode: 'insensitive' } }
+        );
+      } else {
+        parkingConditions.push(
+          { amenities: { hasSome: ['🚗 Car Parking (Four Wheeler)', 'Car Parking', '🛡️ Covered Parking', 'Covered Parking'] } },
+          { description: { contains: 'car parking', mode: 'insensitive' } },
+          { description: { contains: 'parking', mode: 'insensitive' } }
+        );
+      }
+      if (parkingConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: parkingConditions },
+        ];
       }
     }
     if (furnishing) where.furnishing = furnishing;

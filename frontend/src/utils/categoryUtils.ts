@@ -2,13 +2,13 @@ import React from 'react';
 import { Building2, Building, Store, Users, Sparkles } from 'lucide-react';
 import { Property } from '../types';
 
-export type ExtendedCategory = 'ALL' | 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL';
+export type ExtendedCategory = 'ALL' | 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL';
 
 /**
- * Determines whether a property is a House, Apartment/Flat, Shop, Hostel/PG, or Marriage Hall/Mandapam.
+ * Determines whether a property is a House, Apartment/Flat, Shop, Commercial Building, Hostel/PG, or Marriage Hall/Mandapam.
  * Seamlessly backwards-compatible with backend HOUSE/SHOP enums without database schema changes.
  */
-export function getPropertyCategory(property: Partial<Property>): 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' {
+export function getPropertyCategory(property: Partial<Property>): 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL' {
   const desc = (property.description || '').toLowerCase();
   const title = (property.title || '').toLowerCase();
   const amenities = (property.amenities || []).join(' ').toLowerCase();
@@ -39,6 +39,20 @@ export function getPropertyCategory(property: Partial<Property>): 'HOUSE' | 'APA
     combined.includes('திருமண மண்டபம்')
   ) {
     return 'MARRIAGE_HALL';
+  }
+
+  // Check for Commercial Building
+  if (
+    combined.includes('[category:commercial_building]') ||
+    combined.includes('commercial building') ||
+    combined.includes('industrial building') ||
+    combined.includes('office building') ||
+    combined.includes('standalone commercial') ||
+    combined.includes('full building') ||
+    combined.includes('commercial complex') ||
+    combined.includes('வணிக கட்டிடம்')
+  ) {
+    return 'COMMERCIAL_BUILDING';
   }
 
   // Check for Commercial Shop
@@ -78,7 +92,7 @@ export function filterByExtendedCategory(
 /**
  * Category metadata for badges and UI cards.
  */
-export function getCategoryBadgeInfo(category: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL', lang: 'en' | 'ta' = 'en') {
+export function getCategoryBadgeInfo(category: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL', lang: 'en' | 'ta' = 'en') {
   switch (category) {
     case 'APARTMENT':
       return {
@@ -111,6 +125,14 @@ export function getCategoryBadgeInfo(category: 'HOUSE' | 'APARTMENT' | 'SHOP' | 
         badgeBg: 'bg-gray-900/80',
         badgeText: 'text-white',
         badgeBorder: 'border-transparent',
+      };
+    case 'COMMERCIAL_BUILDING':
+      return {
+        label: lang === 'ta' ? 'வணிக கட்டிடம்' : 'Commercial Building',
+        Icon: Building2,
+        badgeBg: 'bg-[#FCFAF5]',
+        badgeText: 'text-[#9A7818]',
+        badgeBorder: 'border-[#E8DFC8]',
       };
     case 'HOUSE':
     default:
@@ -359,4 +381,88 @@ export function filterByFurnishing(properties: Property[], furnishing: string): 
     return false;
   });
 }
+
+/**
+ * Filter properties by Floor (Ground, 1st - 3rd, 4th+)
+ */
+export function filterByFloor(properties: Property[], floor: string): Property[] {
+  if (!floor || floor === 'all' || floor === '') return properties;
+  const f = floor.toLowerCase().trim();
+
+  return properties.filter((p) => {
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (f === 'ground' || f === '0') {
+      return (
+        text.includes('ground floor') ||
+        text.includes('ground') ||
+        text.includes('gf') ||
+        text.includes('g floor') ||
+        text.includes('தரை தளம்')
+      );
+    }
+    if (f === '1-3') {
+      return (
+        text.includes('1st floor') ||
+        text.includes('2nd floor') ||
+        text.includes('3rd floor') ||
+        text.includes('first floor') ||
+        text.includes('second floor') ||
+        text.includes('third floor') ||
+        text.includes('1st') ||
+        text.includes('2nd') ||
+        text.includes('3rd') ||
+        text.includes('1 வது தளம்') ||
+        text.includes('2 வது தளம்') ||
+        text.includes('3 வது தளம்')
+      );
+    }
+    if (f === '4+' || f === '4') {
+      return (
+        text.includes('4th floor') ||
+        text.includes('5th floor') ||
+        text.includes('6th floor') ||
+        text.includes('fourth floor') ||
+        text.includes('fifth floor') ||
+        text.includes('4th') ||
+        text.includes('5th') ||
+        text.includes('4+ floor')
+      );
+    }
+    return text.includes(f);
+  });
+}
+
+/**
+ * Filter properties by Parking (Car, Covered Parking)
+ */
+export function filterByParking(properties: Property[], parking: string | boolean): Property[] {
+  if (!parking || parking === 'all' || parking === '') return properties;
+  const pStr = String(parking).toLowerCase().trim();
+
+  return properties.filter((p) => {
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (pStr === 'covered') {
+      return (
+        text.includes('covered parking') ||
+        text.includes('covered car parking') ||
+        text.includes('covered') ||
+        text.includes('🛡️')
+      );
+    }
+    if (pStr === 'car' || pStr === 'true' || pStr === 'yes') {
+      return (
+        text.includes('car parking') ||
+        text.includes('car park') ||
+        text.includes('four wheeler') ||
+        text.includes('covered parking') ||
+        text.includes('parking') ||
+        text.includes('🚗')
+      );
+    }
+    return text.includes('parking');
+  });
+}
+
 

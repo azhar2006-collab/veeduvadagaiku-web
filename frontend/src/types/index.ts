@@ -172,11 +172,13 @@ export interface PaginatedResponse<T> {
 
 export interface PropertyFilters {
   propertyType?: PropertyType | '';
-  category?: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL' | '';
+  category?: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL' | '';
   locality?: string;
   minRent?: number | '';
   maxRent?: number | '';
   bedrooms?: number | string | '';
+  floor?: string | '';
+  carParking?: string | boolean | '';
   commercialType?: string | '';
   hostelGender?: 'MALE' | 'FEMALE' | 'COLIVING' | '';
   hallCapacity?: 'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | '';
