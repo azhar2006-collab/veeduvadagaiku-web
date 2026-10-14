@@ -181,6 +181,8 @@ export interface PropertyFilters {
   carParking?: string | boolean | '';
   commercialType?: string | '';
   hostelGender?: 'MALE' | 'FEMALE' | 'COLIVING' | '';
+  hostelSharing?: string | '';
+  hostelTotalMembers?: string | '';
   hallCapacity?: 'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | '';
   furnishing?: FurnishingStatus | '';
   minSize?: number | '';

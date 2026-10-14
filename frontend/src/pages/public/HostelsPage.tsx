@@ -6,17 +6,29 @@ import { PropertyFilters as FilterType } from '../../types';
 import { SEOHead } from '../../components/common/SEOHead';
 import { Users, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { filterByExtendedCategory } from '../../utils/categoryUtils';
+import {
+  filterByExtendedCategory,
+  filterByHostelGender,
+  filterByHostelSharing,
+  filterByHostelTotalMembers,
+  filterBySize,
+} from '../../utils/categoryUtils';
 
 export const HostelsPage: React.FC = () => {
   const { lang, t } = useLanguage();
   const [filters, setFilters] = useState<FilterType>({
+    category: 'HOSTEL',
     propertyType: 'HOUSE',
     locality: '',
     minRent: '',
     maxRent: '',
     bedrooms: '',
     furnishing: '',
+    minSize: '',
+    maxSize: '',
+    hostelGender: '',
+    hostelSharing: '',
+    hostelTotalMembers: '',
     sortBy: 'newest',
     page: 1,
     limit: 12,
@@ -26,12 +38,18 @@ export const HostelsPage: React.FC = () => {
 
   const handleReset = () => {
     setFilters({
+      category: 'HOSTEL',
       propertyType: 'HOUSE',
       locality: '',
       minRent: '',
       maxRent: '',
       bedrooms: '',
       furnishing: '',
+      minSize: '',
+      maxSize: '',
+      hostelGender: '',
+      hostelSharing: '',
+      hostelTotalMembers: '',
       sortBy: 'newest',
       page: 1,
       limit: 12,
@@ -41,10 +59,23 @@ export const HostelsPage: React.FC = () => {
   // Filter for Hostels / PG
   const allProperties = data?.data || [];
   const hostelProperties = useMemo(() => {
-    const filtered = filterByExtendedCategory(allProperties, 'HOSTEL');
-    // If specifically tagged hostels exist, show them; otherwise show residential options suitable for bachelors/PG
-    return filtered.length > 0 ? filtered : allProperties;
-  }, [allProperties]);
+    let filtered = filterByExtendedCategory(allProperties, 'HOSTEL');
+    if (filtered.length === 0) filtered = allProperties;
+
+    if (filters.hostelGender) {
+      filtered = filterByHostelGender(filtered, filters.hostelGender);
+    }
+    if (filters.hostelSharing) {
+      filtered = filterByHostelSharing(filtered, filters.hostelSharing);
+    }
+    if (filters.hostelTotalMembers) {
+      filtered = filterByHostelTotalMembers(filtered, filters.hostelTotalMembers);
+    }
+    if (filters.minSize || filters.maxSize) {
+      filtered = filterBySize(filtered, filters.minSize, filters.maxSize);
+    }
+    return filtered;
+  }, [allProperties, filters.hostelGender, filters.hostelSharing, filters.hostelTotalMembers, filters.minSize, filters.maxSize]);
 
   const pagination = data?.pagination;
 

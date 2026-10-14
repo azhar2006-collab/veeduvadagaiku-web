@@ -3,7 +3,7 @@ import { Filter, RotateCcw, Building2, Building, Store, Users, PartyPopper, Chec
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
 import { useLanguage } from '../../context/LanguageContext';
-import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, FURNISHING_OPTIONS, MARRIAGE_HALL_CAPACITIES } from '../../utils/categoryUtils';
+import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, HOSTEL_SHARING_TYPES, HOSTEL_TOTAL_MEMBERS, FURNISHING_OPTIONS, MARRIAGE_HALL_CAPACITIES } from '../../utils/categoryUtils';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 
 interface PropertyFiltersProps {
@@ -17,7 +17,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
   onChange,
   onReset,
 }) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const { data: localitiesRes } = useLocalities();
   const localities = useMemo((): string[] => {
     if (Array.isArray(localitiesRes) && localitiesRes.length > 0) return localitiesRes;
@@ -409,7 +409,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         )}
 
         {/* Built-up Area / Sq Ft Filter */}
-        {filters.category !== 'MARRIAGE_HALL' && filters.category !== 'HOSTEL' && (
+        {filters.category !== 'MARRIAGE_HALL' && (
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
@@ -576,41 +576,118 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         )}
 
-        {/* Hostel Gender Filter — shown only when category is HOSTEL */}
+        {/* Hostel Filters — shown only when category is HOSTEL */}
         {filters.category === 'HOSTEL' && (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Hostel For
-              </label>
-              {filters.hostelGender && (
-                <button
-                  type="button"
-                  onClick={() => handleFieldChange('hostelGender', '')}
-                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {HOSTEL_GENDERS.map((g) => {
-                const isSelected = filters.hostelGender === g.id;
-                return (
+          <div className="space-y-4">
+            {/* 1. Hostel Gender */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {lang === 'ta' ? 'விடுதி வகை (பாலினம்)' : 'Hostel For (Gender)'}
+                </label>
+                {filters.hostelGender && (
                   <button
-                    key={g.id}
                     type="button"
-                    onClick={() => handleFieldChange('hostelGender', isSelected ? '' : g.id)}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
-                      isSelected
-                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
-                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                    }`}
+                    onClick={() => handleFieldChange('hostelGender', '')}
+                    className="text-[10px] font-bold text-[#9A7818] hover:underline"
                   >
-                    <span>{g.label}</span>
+                    Clear
                   </button>
-                );
-              })}
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {HOSTEL_GENDERS.map((g) => {
+                  const isSelected = filters.hostelGender === g.id;
+                  return (
+                    <button
+                      key={g.id}
+                      type="button"
+                      onClick={() => handleFieldChange('hostelGender', isSelected ? '' : g.id)}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                        isSelected
+                          ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{lang === 'ta' ? g.labelTa : g.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 2. Room Sharing / Members */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {lang === 'ta' ? 'அறை பகிர்வு (Members)' : 'Room Sharing (Members)'}
+                </label>
+                {filters.hostelSharing && (
+                  <button
+                    type="button"
+                    onClick={() => handleFieldChange('hostelSharing', '')}
+                    className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {HOSTEL_SHARING_TYPES.map((st) => {
+                  const isSelected = filters.hostelSharing === st.id;
+                  return (
+                    <button
+                      key={st.id}
+                      type="button"
+                      onClick={() => handleFieldChange('hostelSharing', isSelected ? '' : st.id)}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                        isSelected
+                          ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{lang === 'ta' ? st.labelTa : st.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. Total Members / Capacity */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {lang === 'ta' ? 'மொத்த உறுப்பினர்கள் (Capacity)' : 'Total Members (Capacity)'}
+                </label>
+                {filters.hostelTotalMembers && (
+                  <button
+                    type="button"
+                    onClick={() => handleFieldChange('hostelTotalMembers', '')}
+                    className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {HOSTEL_TOTAL_MEMBERS.map((tm) => {
+                  const isSelected = filters.hostelTotalMembers === tm.id;
+                  return (
+                    <button
+                      key={tm.id}
+                      type="button"
+                      onClick={() => handleFieldChange('hostelTotalMembers', isSelected ? '' : tm.id)}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
+                        isSelected
+                          ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{lang === 'ta' ? tm.labelTa : tm.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}

@@ -12,6 +12,8 @@ import {
   filterByCommercialType,
   filterByBedrooms,
   filterByHostelGender,
+  filterByHostelSharing,
+  filterByHostelTotalMembers,
   filterByHallCapacity,
   filterByFurnishing,
   filterByFloor,
@@ -37,6 +39,8 @@ export const PropertiesPage: React.FC = () => {
     maxSize: searchParams.get('maxSize') ? Number(searchParams.get('maxSize')) : '',
     commercialType: searchParams.get('commercialType') || '',
     hostelGender: (searchParams.get('hostelGender') as any) || '',
+    hostelSharing: (searchParams.get('hostelSharing') as any) || '',
+    hostelTotalMembers: (searchParams.get('hostelTotalMembers') as any) || '',
     hallCapacity: (searchParams.get('hallCapacity') as any) || '',
     furnishing: (searchParams.get('furnishing') as any) || '',
     sortBy: (searchParams.get('sortBy') as any) || 'newest',
@@ -81,6 +85,12 @@ export const PropertiesPage: React.FC = () => {
     if (filters.hostelGender) {
       list = filterByHostelGender(list, filters.hostelGender);
     }
+    if (filters.hostelSharing) {
+      list = filterByHostelSharing(list, filters.hostelSharing);
+    }
+    if (filters.hostelTotalMembers) {
+      list = filterByHostelTotalMembers(list, filters.hostelTotalMembers);
+    }
     if (filters.hallCapacity) {
       list = filterByHallCapacity(list, filters.hallCapacity);
     }
@@ -98,6 +108,8 @@ export const PropertiesPage: React.FC = () => {
     filters.minSize,
     filters.maxSize,
     filters.hostelGender,
+    filters.hostelSharing,
+    filters.hostelTotalMembers,
     filters.hallCapacity,
     filters.furnishing,
   ]);
@@ -120,6 +132,8 @@ export const PropertiesPage: React.FC = () => {
       maxSize: '',
       commercialType: '',
       hostelGender: '',
+      hostelSharing: '',
+      hostelTotalMembers: '',
       hallCapacity: '',
       furnishing: '',
       sortBy: 'newest',

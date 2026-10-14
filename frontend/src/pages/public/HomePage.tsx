@@ -51,6 +51,8 @@ export const HomePage: React.FC = () => {
   const [residentialType, setResidentialType] = useState<'ALL' | 'HOUSE' | 'APARTMENT'>('ALL');
   const [selectedCommercialTypes, setSelectedCommercialTypes] = useState<string[]>([]);
   const [hostelGender, setHostelGender] = useState<'MALE' | 'FEMALE' | 'COLIVING' | ''>('');
+  const [hostelSharing, setHostelSharing] = useState<string>('');
+  const [hostelTotalMembers, setHostelTotalMembers] = useState<string>('');
   const [hallCapacity, setHallCapacity] = useState<'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | ''>('');
 
   // Close budget picker on click outside
@@ -142,6 +144,10 @@ export const HomePage: React.FC = () => {
     } else if (selectedCategory === 'HOSTEL' || rentalTab === 'HOSTEL') {
       params.append('category', 'HOSTEL');
       if (hostelGender) params.append('hostelGender', hostelGender);
+      if (hostelSharing) params.append('hostelSharing', hostelSharing);
+      if (hostelTotalMembers) params.append('hostelTotalMembers', hostelTotalMembers);
+      if (minSize) params.append('minSize', minSize);
+      if (maxSize) params.append('maxSize', maxSize);
     } else if (selectedCategory === 'MARRIAGE_HALL' || rentalTab === 'MARRIAGE_HALL') {
       params.append('category', 'MARRIAGE_HALL');
       if (hallCapacity) params.append('hallCapacity', hallCapacity);
@@ -305,6 +311,9 @@ export const HomePage: React.FC = () => {
                 onClick={() => {
                   setSelectedCategory('HOSTEL');
                   setRentalTab('HOSTEL');
+                  setHostelGender('');
+                  setHostelSharing('');
+                  setHostelTotalMembers('');
                   setSelectedFloor('');
                   setSelectedParking('');
                   setSelectedSizeRange('');
@@ -781,6 +790,162 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Hostel / PG Sub-filters: Gender (Men/Women), Room Sharing (Members), Total Members (Capacity), Sq Ft */}
+          {selectedCategory === 'HOSTEL' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
+                {/* 1. Gender Filter: Men or Women */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Users className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'விடுதி வகை' : 'Hostel For'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All (Any Gender)' },
+                      { id: 'MALE', label: lang === 'ta' ? '👨 ஆண்கள் விடுதி' : "👨 Men's / Boys" },
+                      { id: 'FEMALE', label: lang === 'ta' ? '👩 பெண்கள் விடுதி' : "👩 Women's / Girls" },
+                      { id: 'COLIVING', label: lang === 'ta' ? '👫 இருபாலர் / Co-Living' : '👫 Co-Living / Any' },
+                    ].map((item) => {
+                      const isSelected = hostelGender === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHostelGender(item.id as any)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Room Sharing (Members per room) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Home className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'அறை பகிர்வு' : 'Room Sharing'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து பகிர்வும் (All)' : 'All Sharing' },
+                      { id: '1', label: lang === 'ta' ? '👤 தனி நபர் (Single)' : '👤 Single Room (1 Member)' },
+                      { id: '2', label: lang === 'ta' ? '👥 2 பேர் பகிர்வு' : '👥 2 Sharing (2 Members)' },
+                      { id: '3', label: lang === 'ta' ? '👥 3 பேர் பகிர்வு' : '👥 3 Sharing (3 Members)' },
+                      { id: '4+', label: lang === 'ta' ? '👥 4+ பேர் பகிர்வு' : '👥 4+ Sharing (Dorm)' },
+                    ].map((item) => {
+                      const isSelected = hostelSharing === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHostelSharing(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Total Members / Capacity */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Users className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'மொத்த கொள்ளளவு' : 'Total Members'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து கொள்ளளவு (All)' : 'All Capacities' },
+                      { id: '1-10', label: lang === 'ta' ? '1 – 10 உறுப்பினர்கள்' : 'Up to 10 Members' },
+                      { id: '11-25', label: lang === 'ta' ? '11 – 25 உறுப்பினர்கள்' : '11 – 25 Members' },
+                      { id: '26-50', label: lang === 'ta' ? '26 – 50 உறுப்பினர்கள்' : '26 – 50 Members' },
+                      { id: '50+', label: lang === 'ta' ? '50+ உறுப்பினர்கள்' : '50+ Members (Large PG)' },
+                    ].map((item) => {
+                      const isSelected = hostelTotalMembers === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHostelTotalMembers(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Sq Ft (Area / Room Size) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பரப்பளவு' : 'Area (Sq Ft)'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sq Ft', min: '', max: '' },
+                      { id: '<150', label: lang === 'ta' ? '< 150 ச.அடி' : '< 150 sq ft', min: '', max: '150' },
+                      { id: '150-300', label: lang === 'ta' ? '150 – 300 ச.அடி' : '150 – 300 sq ft', min: '150', max: '300' },
+                      { id: '300-500', label: lang === 'ta' ? '300 – 500 ச.அடி' : '300 – 500 sq ft', min: '300', max: '500' },
+                      { id: '500+', label: lang === 'ta' ? '500+ ச.அடி' : '500+ sq ft', min: '500', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'

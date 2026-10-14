@@ -250,10 +250,20 @@ export const HOSTEL_GENDERS = [
  * Hostel Sharing Options
  */
 export const HOSTEL_SHARING_TYPES = [
-  { id: '1', label: 'Single Room', labelTa: 'தனி அறை (Single)' },
-  { id: '2', label: '2 Sharing', labelTa: '2 பேர் பகிர்வு' },
-  { id: '3', label: '3 Sharing', labelTa: '3 பேர் பகிர்வு' },
-  { id: '4+', label: '4+ Sharing', labelTa: '4+ பேர் பகிர்வு' },
+  { id: '1', label: 'Single (1 Member)', labelTa: 'தனி நபர் (Single Room)' },
+  { id: '2', label: '2 Sharing (2 Members)', labelTa: '2 பேர் பகிர்வு (2 Sharing)' },
+  { id: '3', label: '3 Sharing (3 Members)', labelTa: '3 பேர் பகிர்வு (3 Sharing)' },
+  { id: '4+', label: '4+ Sharing (4+ Members)', labelTa: '4+ பேர் பகிர்வு (Dormitory)' },
+] as const;
+
+/**
+ * Hostel Total Capacity / Members Options
+ */
+export const HOSTEL_TOTAL_MEMBERS = [
+  { id: '1-10', label: 'Up to 10 Members', labelTa: '10 பேர் வரை (சிறிய PG)' },
+  { id: '11-25', label: '11 – 25 Members', labelTa: '11 – 25 பேர்' },
+  { id: '26-50', label: '26 – 50 Members', labelTa: '26 – 50 பேர்' },
+  { id: '50+', label: '50+ Members', labelTa: '50+ பேர் (பெரிய விடுதி)' },
 ] as const;
 
 /**
@@ -317,6 +327,125 @@ export function filterByHostelGender(properties: Property[], gender: string): Pr
       );
     }
     return true;
+  });
+}
+
+/**
+ * Filter properties by Hostel Room Sharing / Members
+ */
+export function filterByHostelSharing(properties: Property[], sharing: string): Property[] {
+  if (!sharing) return properties;
+  const s = String(sharing).trim();
+
+  return properties.filter((p) => {
+    const text = `${p.title || ''} ${p.description || ''} ${(p.amenities || []).join(' ')}`.toLowerCase();
+    const b = p.bedrooms ?? (p.rooms ?? 0);
+
+    if (s === '1') {
+      return (
+        text.includes('single room') ||
+        text.includes('single sharing') ||
+        text.includes('1 sharing') ||
+        text.includes('private room') ||
+        text.includes('1 bed') ||
+        text.includes('தனி அறை') ||
+        b === 1
+      );
+    }
+    if (s === '2') {
+      return (
+        text.includes('2 sharing') ||
+        text.includes('two sharing') ||
+        text.includes('double sharing') ||
+        text.includes('twin sharing') ||
+        text.includes('2 bed') ||
+        text.includes('2 பேர்') ||
+        b === 2
+      );
+    }
+    if (s === '3') {
+      return (
+        text.includes('3 sharing') ||
+        text.includes('three sharing') ||
+        text.includes('triple sharing') ||
+        text.includes('3 bed') ||
+        text.includes('3 பேர்') ||
+        b === 3
+      );
+    }
+    if (s === '4+' || s === '4') {
+      return (
+        text.includes('4 sharing') ||
+        text.includes('four sharing') ||
+        text.includes('4+ sharing') ||
+        text.includes('dormitory') ||
+        text.includes('dorm') ||
+        text.includes('4 bed') ||
+        text.includes('5 sharing') ||
+        text.includes('6 sharing') ||
+        text.includes('4+ பேர்') ||
+        b >= 4
+      );
+    }
+    return text.includes(s);
+  });
+}
+
+/**
+ * Filter properties by Hostel Total Members / Capacity
+ */
+export function filterByHostelTotalMembers(properties: Property[], totalMembers: string): Property[] {
+  if (!totalMembers) return properties;
+  const tm = String(totalMembers).trim();
+
+  return properties.filter((p) => {
+    const text = `${p.title || ''} ${p.description || ''} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (tm === '1-10') {
+      return (
+        text.includes('10 member') ||
+        text.includes('10 bed') ||
+        text.includes('small pg') ||
+        text.includes('home pg') ||
+        text.includes('5 bed') ||
+        text.includes('6 bed') ||
+        text.includes('8 bed') ||
+        text.includes('[capacity:1-10]')
+      );
+    }
+    if (tm === '11-25') {
+      return (
+        text.includes('15 member') ||
+        text.includes('20 member') ||
+        text.includes('25 member') ||
+        text.includes('15 bed') ||
+        text.includes('20 bed') ||
+        text.includes('25 bed') ||
+        text.includes('[capacity:11-25]')
+      );
+    }
+    if (tm === '26-50') {
+      return (
+        text.includes('30 member') ||
+        text.includes('40 member') ||
+        text.includes('50 member') ||
+        text.includes('30 bed') ||
+        text.includes('40 bed') ||
+        text.includes('50 bed') ||
+        text.includes('[capacity:26-50]')
+      );
+    }
+    if (tm === '50+') {
+      return (
+        text.includes('50+') ||
+        text.includes('60 member') ||
+        text.includes('100 member') ||
+        text.includes('large hostel') ||
+        text.includes('mansion') ||
+        text.includes('[capacity:50+]')
+      );
+    }
+    return text.includes(tm);
   });
 }
 

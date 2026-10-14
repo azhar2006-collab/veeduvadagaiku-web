@@ -18,7 +18,7 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
       propertyType, locality, minRent, maxRent,
       bedrooms, furnishing, minSize, maxSize,
       sortBy = 'newest', availability, category, commercialType,
-      hostelGender, hallCapacity, floor, carParking,
+      hostelGender, hostelSharing, hostelTotalMembers, hallCapacity, floor, carParking,
     } = req.query;
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
@@ -199,6 +199,83 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
         where.AND = [
           ...(where.AND as Array<Record<string, unknown>> || []),
           { OR: gConditions },
+        ];
+      }
+    }
+    if (hostelSharing) {
+      const s = String(hostelSharing).trim();
+      const sConditions: Array<Record<string, unknown>> = [];
+      if (s === '1') {
+        sConditions.push(
+          { title: { contains: 'single', mode: 'insensitive' } },
+          { description: { contains: 'single room', mode: 'insensitive' } },
+          { description: { contains: '1 sharing', mode: 'insensitive' } },
+          { bedrooms: 1 }
+        );
+      } else if (s === '2') {
+        sConditions.push(
+          { title: { contains: '2 sharing', mode: 'insensitive' } },
+          { description: { contains: '2 sharing', mode: 'insensitive' } },
+          { description: { contains: 'twin', mode: 'insensitive' } },
+          { description: { contains: 'double', mode: 'insensitive' } },
+          { bedrooms: 2 }
+        );
+      } else if (s === '3') {
+        sConditions.push(
+          { title: { contains: '3 sharing', mode: 'insensitive' } },
+          { description: { contains: '3 sharing', mode: 'insensitive' } },
+          { description: { contains: 'triple', mode: 'insensitive' } },
+          { bedrooms: 3 }
+        );
+      } else if (s === '4+' || s === '4') {
+        sConditions.push(
+          { title: { contains: '4 sharing', mode: 'insensitive' } },
+          { description: { contains: '4 sharing', mode: 'insensitive' } },
+          { description: { contains: 'dormitory', mode: 'insensitive' } },
+          { description: { contains: 'dorm', mode: 'insensitive' } },
+          { bedrooms: { gte: 4 } }
+        );
+      }
+      if (sConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: sConditions },
+        ];
+      }
+    }
+    if (hostelTotalMembers) {
+      const tm = String(hostelTotalMembers).trim();
+      const tmConditions: Array<Record<string, unknown>> = [];
+      if (tm === '1-10') {
+        tmConditions.push(
+          { description: { contains: '10 member', mode: 'insensitive' } },
+          { description: { contains: 'small pg', mode: 'insensitive' } },
+          { description: { contains: '[capacity:1-10]', mode: 'insensitive' } }
+        );
+      } else if (tm === '11-25') {
+        tmConditions.push(
+          { description: { contains: '20 member', mode: 'insensitive' } },
+          { description: { contains: '25 member', mode: 'insensitive' } },
+          { description: { contains: '[capacity:11-25]', mode: 'insensitive' } }
+        );
+      } else if (tm === '26-50') {
+        tmConditions.push(
+          { description: { contains: '30 member', mode: 'insensitive' } },
+          { description: { contains: '50 member', mode: 'insensitive' } },
+          { description: { contains: '[capacity:26-50]', mode: 'insensitive' } }
+        );
+      } else if (tm === '50+') {
+        tmConditions.push(
+          { description: { contains: '50+', mode: 'insensitive' } },
+          { description: { contains: '100 member', mode: 'insensitive' } },
+          { description: { contains: 'mansion', mode: 'insensitive' } },
+          { description: { contains: '[capacity:50+]', mode: 'insensitive' } }
+        );
+      }
+      if (tmConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: tmConditions },
         ];
       }
     }
