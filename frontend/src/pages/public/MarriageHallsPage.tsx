@@ -6,15 +6,29 @@ import { PropertyFilters as FilterType } from '../../types';
 import { SEOHead } from '../../components/common/SEOHead';
 import { Sparkles, ChevronLeft, ChevronRight, PartyPopper } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { filterByExtendedCategory } from '../../utils/categoryUtils';
+import {
+  filterByExtendedCategory,
+  filterByHallCapacity,
+  filterByHallDining,
+  filterByHallAc,
+  filterBySize,
+  filterByParking,
+} from '../../utils/categoryUtils';
 
 export const MarriageHallsPage: React.FC = () => {
   const { lang, t } = useLanguage();
   const [filters, setFilters] = useState<FilterType>({
+    category: 'MARRIAGE_HALL',
     propertyType: 'SHOP',
     locality: '',
     minRent: '',
     maxRent: '',
+    hallCapacity: '',
+    hallDining: '',
+    hallAc: '',
+    minSize: '',
+    maxSize: '',
+    carParking: '',
     furnishing: '',
     sortBy: 'newest',
     page: 1,
@@ -25,10 +39,17 @@ export const MarriageHallsPage: React.FC = () => {
 
   const handleReset = () => {
     setFilters({
+      category: 'MARRIAGE_HALL',
       propertyType: 'SHOP',
       locality: '',
       minRent: '',
       maxRent: '',
+      hallCapacity: '',
+      hallDining: '',
+      hallAc: '',
+      minSize: '',
+      maxSize: '',
+      carParking: '',
       furnishing: '',
       sortBy: 'newest',
       page: 1,
@@ -38,9 +59,34 @@ export const MarriageHallsPage: React.FC = () => {
 
   const allProperties = data?.data || [];
   const marriageHalls = useMemo(() => {
-    const filtered = filterByExtendedCategory(allProperties, 'MARRIAGE_HALL');
-    return filtered.length > 0 ? filtered : allProperties;
-  }, [allProperties]);
+    let filtered = filterByExtendedCategory(allProperties, 'MARRIAGE_HALL');
+    if (filtered.length === 0) filtered = allProperties;
+
+    if (filters.hallCapacity) {
+      filtered = filterByHallCapacity(filtered, filters.hallCapacity);
+    }
+    if (filters.hallDining) {
+      filtered = filterByHallDining(filtered, filters.hallDining);
+    }
+    if (filters.hallAc) {
+      filtered = filterByHallAc(filtered, filters.hallAc);
+    }
+    if (filters.minSize || filters.maxSize) {
+      filtered = filterBySize(filtered, filters.minSize, filters.maxSize);
+    }
+    if (filters.carParking) {
+      filtered = filterByParking(filtered, filters.carParking);
+    }
+    return filtered;
+  }, [
+    allProperties,
+    filters.hallCapacity,
+    filters.hallDining,
+    filters.hallAc,
+    filters.minSize,
+    filters.maxSize,
+    filters.carParking,
+  ]);
 
   const pagination = data?.pagination;
 
@@ -71,7 +117,7 @@ export const MarriageHallsPage: React.FC = () => {
         <div className="lg:col-span-1 sticky top-24">
           <FilterComponent
             filters={filters}
-            onChange={(f) => setFilters({ ...f, propertyType: 'SHOP' })}
+            onChange={(f) => setFilters({ ...f, propertyType: 'SHOP', category: 'MARRIAGE_HALL' })}
             onReset={handleReset}
           />
         </div>

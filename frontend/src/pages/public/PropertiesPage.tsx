@@ -15,6 +15,8 @@ import {
   filterByHostelSharing,
   filterByHostelTotalMembers,
   filterByHallCapacity,
+  filterByHallDining,
+  filterByHallAc,
   filterByFurnishing,
   filterByFloor,
   filterByParking,
@@ -42,6 +44,8 @@ export const PropertiesPage: React.FC = () => {
     hostelSharing: (searchParams.get('hostelSharing') as any) || '',
     hostelTotalMembers: (searchParams.get('hostelTotalMembers') as any) || '',
     hallCapacity: (searchParams.get('hallCapacity') as any) || '',
+    hallDining: (searchParams.get('hallDining') as any) || '',
+    hallAc: (searchParams.get('hallAc') as any) || '',
     furnishing: (searchParams.get('furnishing') as any) || '',
     sortBy: (searchParams.get('sortBy') as any) || 'newest',
     page: searchParams.get('page') ? Number(searchParams.get('page')) : 1,
@@ -94,6 +98,12 @@ export const PropertiesPage: React.FC = () => {
     if (filters.hallCapacity) {
       list = filterByHallCapacity(list, filters.hallCapacity);
     }
+    if (filters.hallDining) {
+      list = filterByHallDining(list, filters.hallDining);
+    }
+    if (filters.hallAc) {
+      list = filterByHallAc(list, filters.hallAc);
+    }
     if (filters.furnishing) {
       list = filterByFurnishing(list, filters.furnishing);
     }
@@ -111,6 +121,8 @@ export const PropertiesPage: React.FC = () => {
     filters.hostelSharing,
     filters.hostelTotalMembers,
     filters.hallCapacity,
+    filters.hallDining,
+    filters.hallAc,
     filters.furnishing,
   ]);
 
@@ -135,6 +147,8 @@ export const PropertiesPage: React.FC = () => {
       hostelSharing: '',
       hostelTotalMembers: '',
       hallCapacity: '',
+      hallDining: '',
+      hallAc: '',
       furnishing: '',
       sortBy: 'newest',
       page: 1,

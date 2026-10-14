@@ -184,6 +184,8 @@ export interface PropertyFilters {
   hostelSharing?: string | '';
   hostelTotalMembers?: string | '';
   hallCapacity?: 'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | '';
+  hallDining?: string | '';
+  hallAc?: 'AC' | 'NON_AC' | '';
   furnishing?: FurnishingStatus | '';
   minSize?: number | '';
   maxSize?: number | '';

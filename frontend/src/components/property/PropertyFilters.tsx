@@ -3,7 +3,7 @@ import { Filter, RotateCcw, Building2, Building, Store, Users, PartyPopper, Chec
 import { PropertyFilters as FilterType } from '../../types';
 import { useLocalities } from '../../hooks/useProperties';
 import { useLanguage } from '../../context/LanguageContext';
-import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, HOSTEL_SHARING_TYPES, HOSTEL_TOTAL_MEMBERS, FURNISHING_OPTIONS, MARRIAGE_HALL_CAPACITIES } from '../../utils/categoryUtils';
+import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, HOSTEL_SHARING_TYPES, HOSTEL_TOTAL_MEMBERS, FURNISHING_OPTIONS, MARRIAGE_HALL_CAPACITIES, MARRIAGE_HALL_DINING, MARRIAGE_HALL_AC_TYPES } from '../../utils/categoryUtils';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 
 interface PropertyFiltersProps {
@@ -409,75 +409,73 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         )}
 
         {/* Built-up Area / Sq Ft Filter */}
-        {filters.category !== 'MARRIAGE_HALL' && (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                {t('filter.sqft', 'Built-up Area (Sq Ft)')}
-              </label>
-              {(filters.minSize || filters.maxSize) && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              {t('filter.sqft', 'Built-up Area (Sq Ft)')}
+            </label>
+            {(filters.minSize || filters.maxSize) && (
+              <button
+                type="button"
+                onClick={() => {
+                  handleFieldChange('minSize', '');
+                  handleFieldChange('maxSize', '');
+                }}
+                className="text-[10px] font-bold text-[#9A7818] hover:underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-2.5">
+            {[
+              { min: '', max: '', label: t('filter.allSizes', 'All Sizes') },
+              { min: '', max: '500', label: '< 500 sqft' },
+              { min: '500', max: '1000', label: '500 – 1k sqft' },
+              { min: '1000', max: '2000', label: '1k – 2k sqft' },
+              { min: '2000', max: '5000', label: '2k – 5k sqft' },
+              { min: '5000', max: '', label: '5k+ sqft' },
+            ].map((sz, idx) => {
+              const isSelected =
+                String(filters.minSize || '') === sz.min && String(filters.maxSize || '') === sz.max;
+              return (
                 <button
+                  key={idx}
                   type="button"
                   onClick={() => {
-                    handleFieldChange('minSize', '');
-                    handleFieldChange('maxSize', '');
+                    handleFieldChange('minSize', sz.min ? Number(sz.min) : '');
+                    handleFieldChange('maxSize', sz.max ? Number(sz.max) : '');
                   }}
-                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                    isSelected
+                      ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                  }`}
                 >
-                  Clear
+                  {sz.label}
                 </button>
-              )}
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-2.5">
-              {[
-                { min: '', max: '', label: t('filter.allSizes', 'All Sizes') },
-                { min: '', max: '500', label: '< 500 sqft' },
-                { min: '500', max: '1000', label: '500 – 1k sqft' },
-                { min: '1000', max: '2000', label: '1k – 2k sqft' },
-                { min: '2000', max: '5000', label: '2k – 5k sqft' },
-                { min: '5000', max: '', label: '5k+ sqft' },
-              ].map((sz, idx) => {
-                const isSelected =
-                  String(filters.minSize || '') === sz.min && String(filters.maxSize || '') === sz.max;
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => {
-                      handleFieldChange('minSize', sz.min ? Number(sz.min) : '');
-                      handleFieldChange('maxSize', sz.max ? Number(sz.max) : '');
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
-                      isSelected
-                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
-                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                    }`}
-                  >
-                    {sz.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                type="number"
-                placeholder="Min Sq Ft"
-                value={filters.minSize || ''}
-                onChange={(e) => handleFieldChange('minSize', e.target.value ? Number(e.target.value) : '')}
-                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
-              />
-              <input
-                type="number"
-                placeholder="Max Sq Ft"
-                value={filters.maxSize || ''}
-                onChange={(e) => handleFieldChange('maxSize', e.target.value ? Number(e.target.value) : '')}
-                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
-              />
-            </div>
+              );
+            })}
           </div>
-        )}
+
+          <div className="grid grid-cols-2 gap-2">
+            <input
+              type="number"
+              placeholder="Min Sq Ft"
+              value={filters.minSize || ''}
+              onChange={(e) => handleFieldChange('minSize', e.target.value ? Number(e.target.value) : '')}
+              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
+            />
+            <input
+              type="number"
+              placeholder="Max Sq Ft"
+              value={filters.maxSize || ''}
+              onChange={(e) => handleFieldChange('maxSize', e.target.value ? Number(e.target.value) : '')}
+              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
+            />
+          </div>
+        </div>
 
         {/* Car Parking Filter */}
         <div>
@@ -692,45 +690,127 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         )}
 
-        {/* Marriage Hall Capacity — shown only when category is MARRIAGE_HALL */}
+        {/* Marriage Hall Filters — shown only when category is MARRIAGE_HALL */}
         {filters.category === 'MARRIAGE_HALL' && (
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Guest Capacity
-              </label>
-              {filters.hallCapacity && (
-                <button
-                  type="button"
-                  onClick={() => handleFieldChange('hallCapacity', '')}
-                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-            <div className="space-y-1.5">
-              {MARRIAGE_HALL_CAPACITIES.map((cap) => {
-                const isSelected = filters.hallCapacity === cap.id;
-                return (
+          <div className="space-y-4">
+            {/* 1. Guest Capacity */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {lang === 'ta' ? 'விருந்தினர் கொள்ளளவு' : 'Guest Capacity'}
+                </label>
+                {filters.hallCapacity && (
                   <button
-                    key={cap.id}
                     type="button"
-                    onClick={() => handleFieldChange('hallCapacity', isSelected ? '' : cap.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold border text-left transition ${
-                      isSelected
-                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
-                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                    }`}
+                    onClick={() => handleFieldChange('hallCapacity', '')}
+                    className="text-[10px] font-bold text-[#9A7818] hover:underline"
                   >
-                    <div>
-                      <div className="font-bold">{cap.label}</div>
-                      <div className="text-[10px] text-gray-500 font-normal">{cap.labelSub}</div>
-                    </div>
-                    {isSelected && <Check className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />}
+                    Clear
                   </button>
-                );
-              })}
+                )}
+              </div>
+              <div className="space-y-1.5">
+                {MARRIAGE_HALL_CAPACITIES.map((cap) => {
+                  const isSelected = filters.hallCapacity === cap.id;
+                  return (
+                    <button
+                      key={cap.id}
+                      type="button"
+                      onClick={() => handleFieldChange('hallCapacity', isSelected ? '' : cap.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold border text-left transition ${
+                        isSelected
+                          ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-bold">{lang === 'ta' ? cap.labelTa : cap.label}</div>
+                        <div className="text-[10px] text-gray-500 font-normal">{cap.labelSub}</div>
+                      </div>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 2. Dining Seating Capacity */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {lang === 'ta' ? 'உணவுக்கூடம் / பந்தி கொள்ளளவு' : 'Dining Seating Capacity'}
+                </label>
+                {filters.hallDining && (
+                  <button
+                    type="button"
+                    onClick={() => handleFieldChange('hallDining', '')}
+                    className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                {MARRIAGE_HALL_DINING.map((din) => {
+                  const isSelected = filters.hallDining === din.id;
+                  return (
+                    <button
+                      key={din.id}
+                      type="button"
+                      onClick={() => handleFieldChange('hallDining', isSelected ? '' : din.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold border text-left transition ${
+                        isSelected
+                          ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-bold">{lang === 'ta' ? din.labelTa : din.label}</div>
+                        <div className="text-[10px] text-gray-500 font-normal">{din.labelSub}</div>
+                      </div>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. AC Type */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  {lang === 'ta' ? 'ஏசி வசதி (AC Type)' : 'AC Facility / Type'}
+                </label>
+                {filters.hallAc && (
+                  <button
+                    type="button"
+                    onClick={() => handleFieldChange('hallAc', '')}
+                    className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {MARRIAGE_HALL_AC_TYPES.map((ac) => {
+                  const isSelected = filters.hallAc === ac.id;
+                  return (
+                    <button
+                      key={ac.id}
+                      type="button"
+                      onClick={() => handleFieldChange('hallAc', isSelected ? '' : ac.id)}
+                      className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold border transition ${
+                        isSelected
+                          ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                          : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{lang === 'ta' ? ac.labelTa : ac.label}</span>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}

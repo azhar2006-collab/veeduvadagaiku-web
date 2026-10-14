@@ -286,6 +286,24 @@ export const MARRIAGE_HALL_CAPACITIES = [
 ] as const;
 
 /**
+ * Marriage Hall Dining Seating Capacity Ranges
+ */
+export const MARRIAGE_HALL_DINING = [
+  { id: 'UP_TO_150', label: 'Up to 150 Seater', labelSub: 'Mini Dining Hall', labelTa: '150 இலைகள் வரை (மினி பந்தி)' },
+  { id: '150_TO_350', label: '150 – 350 Seater', labelSub: 'Standard Dining Hall', labelTa: '150 – 350 இலைகள்' },
+  { id: '350_TO_600', label: '350 – 600 Seater', labelSub: 'Large Dining Hall', labelTa: '350 – 600 இலைகள்' },
+  { id: '600_PLUS', label: '600+ Seater', labelSub: 'Grand Dining / Mega Feast', labelTa: '600+ இலைகள் (பிரம்மாண்ட பந்தி)' },
+] as const;
+
+/**
+ * Marriage Hall Air Conditioning Types
+ */
+export const MARRIAGE_HALL_AC_TYPES = [
+  { id: 'AC', label: '❄️ Centralized AC Hall', labelTa: '❄️ முழு ஏசி அரங்கம் (AC Hall)' },
+  { id: 'NON_AC', label: '🍃 Non-AC Hall', labelTa: '🍃 ஏசி அல்லாதது (Non-AC)' },
+] as const;
+
+/**
  * Filter properties by Hostel Gender
  */
 export function filterByHostelGender(properties: Property[], gender: string): Property[] {
@@ -495,6 +513,90 @@ export function filterByHallCapacity(properties: Property[], capacity: string): 
         text.includes('2000') ||
         text.includes('convention') ||
         text.includes('mega')
+      );
+    }
+    return true;
+  });
+}
+
+/**
+ * Filter properties by Marriage Hall Dining Seating Capacity
+ */
+export function filterByHallDining(properties: Property[], dining: string): Property[] {
+  if (!dining) return properties;
+
+  return properties.filter((p) => {
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (dining === 'UP_TO_150') {
+      return (
+        text.includes('100') ||
+        text.includes('150') ||
+        text.includes('mini dining') ||
+        text.includes('small dining') ||
+        text.includes('[dining:up_to_150]')
+      );
+    }
+    if (dining === '150_TO_350') {
+      return (
+        text.includes('200') ||
+        text.includes('250') ||
+        text.includes('300') ||
+        text.includes('350') ||
+        text.includes('[dining:150_to_350]')
+      );
+    }
+    if (dining === '350_TO_600') {
+      return (
+        text.includes('400') ||
+        text.includes('500') ||
+        text.includes('600') ||
+        text.includes('[dining:350_to_600]')
+      );
+    }
+    if (dining === '600_PLUS') {
+      return (
+        text.includes('600+') ||
+        text.includes('700') ||
+        text.includes('800') ||
+        text.includes('1000') ||
+        text.includes('grand dining') ||
+        text.includes('mega dining') ||
+        text.includes('[dining:600_plus]')
+      );
+    }
+    return true;
+  });
+}
+
+/**
+ * Filter properties by Marriage Hall Air Conditioning (AC)
+ */
+export function filterByHallAc(properties: Property[], acType: string): Property[] {
+  if (!acType) return properties;
+
+  return properties.filter((p) => {
+    const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+
+    if (acType === 'AC') {
+      return (
+        text.includes('centralized ac') ||
+        text.includes('central ac') ||
+        text.includes('air conditioned') ||
+        text.includes('air-conditioned') ||
+        text.includes('ac hall') ||
+        text.includes('a/c') ||
+        text.includes('ஏசி') ||
+        text.includes('[amenity:ac]')
+      );
+    }
+    if (acType === 'NON_AC') {
+      return (
+        text.includes('non-ac') ||
+        text.includes('non ac') ||
+        text.includes('natural ventilation') ||
+        text.includes('open hall') ||
+        (!text.includes('centralized ac') && !text.includes('air conditioned') && !text.includes('a/c hall'))
       );
     }
     return true;

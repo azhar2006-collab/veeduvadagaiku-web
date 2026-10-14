@@ -18,7 +18,7 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
       propertyType, locality, minRent, maxRent,
       bedrooms, furnishing, minSize, maxSize,
       sortBy = 'newest', availability, category, commercialType,
-      hostelGender, hostelSharing, hostelTotalMembers, hallCapacity, floor, carParking,
+      hostelGender, hostelSharing, hostelTotalMembers, hallCapacity, hallDining, hallAc, floor, carParking,
     } = req.query;
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
@@ -311,6 +311,76 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
         where.AND = [
           ...(where.AND as Array<Record<string, unknown>> || []),
           { OR: capConditions },
+        ];
+      }
+    }
+    if (hallDining) {
+      const dining = String(hallDining).toUpperCase();
+      const diningConditions: Array<Record<string, unknown>> = [];
+      if (dining === 'UP_TO_150') {
+        diningConditions.push(
+          { description: { contains: '[dining:up_to_150]', mode: 'insensitive' } },
+          { description: { contains: '150', mode: 'insensitive' } },
+          { description: { contains: 'mini dining', mode: 'insensitive' } },
+          { title: { contains: 'mini dining', mode: 'insensitive' } }
+        );
+      } else if (dining === '150_TO_350') {
+        diningConditions.push(
+          { description: { contains: '[dining:150_to_350]', mode: 'insensitive' } },
+          { description: { contains: '350', mode: 'insensitive' } },
+          { description: { contains: '300', mode: 'insensitive' } },
+          { description: { contains: '250', mode: 'insensitive' } }
+        );
+      } else if (dining === '350_TO_600') {
+        diningConditions.push(
+          { description: { contains: '[dining:350_to_600]', mode: 'insensitive' } },
+          { description: { contains: '500', mode: 'insensitive' } },
+          { description: { contains: '600', mode: 'insensitive' } },
+          { description: { contains: '400', mode: 'insensitive' } }
+        );
+      } else if (dining === '600_PLUS') {
+        diningConditions.push(
+          { description: { contains: '[dining:600_plus]', mode: 'insensitive' } },
+          { description: { contains: 'grand dining', mode: 'insensitive' } },
+          { description: { contains: 'mega dining', mode: 'insensitive' } },
+          { description: { contains: '700', mode: 'insensitive' } },
+          { description: { contains: '800', mode: 'insensitive' } },
+          { description: { contains: '1000', mode: 'insensitive' } }
+        );
+      }
+      if (diningConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: diningConditions },
+        ];
+      }
+    }
+    if (hallAc) {
+      const ac = String(hallAc).toUpperCase();
+      const acConditions: Array<Record<string, unknown>> = [];
+      if (ac === 'AC') {
+        acConditions.push(
+          { title: { contains: 'centralized ac', mode: 'insensitive' } },
+          { description: { contains: 'centralized ac', mode: 'insensitive' } },
+          { description: { contains: 'central ac', mode: 'insensitive' } },
+          { description: { contains: 'air conditioned', mode: 'insensitive' } },
+          { description: { contains: 'air-conditioned', mode: 'insensitive' } },
+          { description: { contains: 'ac hall', mode: 'insensitive' } },
+          { description: { contains: '[amenity:ac]', mode: 'insensitive' } },
+          { amenities: { has: 'Air Conditioning' } }
+        );
+      } else if (ac === 'NON_AC') {
+        acConditions.push(
+          { title: { contains: 'non-ac', mode: 'insensitive' } },
+          { description: { contains: 'non-ac', mode: 'insensitive' } },
+          { description: { contains: 'non ac', mode: 'insensitive' } },
+          { description: { contains: 'natural ventilation', mode: 'insensitive' } }
+        );
+      }
+      if (acConditions.length > 0) {
+        where.AND = [
+          ...(where.AND as Array<Record<string, unknown>> || []),
+          { OR: acConditions },
         ];
       }
     }

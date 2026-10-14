@@ -22,12 +22,13 @@ import {
   Home,
   Maximize2,
   Briefcase,
+  Utensils,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
-import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
+import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, MARRIAGE_HALL_DINING, MARRIAGE_HALL_AC_TYPES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 
 export const HomePage: React.FC = () => {
@@ -54,6 +55,8 @@ export const HomePage: React.FC = () => {
   const [hostelSharing, setHostelSharing] = useState<string>('');
   const [hostelTotalMembers, setHostelTotalMembers] = useState<string>('');
   const [hallCapacity, setHallCapacity] = useState<'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | ''>('');
+  const [hallDining, setHallDining] = useState<string>('');
+  const [hallAc, setHallAc] = useState<'AC' | 'NON_AC' | ''>('');
 
   // Close budget picker on click outside
   React.useEffect(() => {
@@ -150,7 +153,13 @@ export const HomePage: React.FC = () => {
       if (maxSize) params.append('maxSize', maxSize);
     } else if (selectedCategory === 'MARRIAGE_HALL' || rentalTab === 'MARRIAGE_HALL') {
       params.append('category', 'MARRIAGE_HALL');
+      params.append('propertyType', 'SHOP');
       if (hallCapacity) params.append('hallCapacity', hallCapacity);
+      if (hallDining) params.append('hallDining', hallDining);
+      if (hallAc) params.append('hallAc', hallAc);
+      if (minSize) params.append('minSize', minSize);
+      if (maxSize) params.append('maxSize', maxSize);
+      if (selectedParking) params.append('carParking', selectedParking);
     }
 
     if (maxRent) params.append('maxRent', maxRent);
@@ -225,6 +234,9 @@ export const HomePage: React.FC = () => {
                   setSelectedSizeRange('');
                   setMinSize('');
                   setMaxSize('');
+                  setHallCapacity('');
+                  setHallDining('');
+                  setHallAc('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === ''
@@ -247,6 +259,9 @@ export const HomePage: React.FC = () => {
                   setSelectedSizeRange('');
                   setMinSize('');
                   setMaxSize('');
+                  setHallCapacity('');
+                  setHallDining('');
+                  setHallAc('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'HOUSE'
@@ -270,6 +285,9 @@ export const HomePage: React.FC = () => {
                   setSelectedSizeRange('');
                   setMinSize('');
                   setMaxSize('');
+                  setHallCapacity('');
+                  setHallDining('');
+                  setHallAc('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'SHOP'
@@ -294,6 +312,9 @@ export const HomePage: React.FC = () => {
                   setSelectedSizeRange('');
                   setMinSize('');
                   setMaxSize('');
+                  setHallCapacity('');
+                  setHallDining('');
+                  setHallAc('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'COMMERCIAL_BUILDING'
@@ -319,6 +340,9 @@ export const HomePage: React.FC = () => {
                   setSelectedSizeRange('');
                   setMinSize('');
                   setMaxSize('');
+                  setHallCapacity('');
+                  setHallDining('');
+                  setHallAc('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'HOSTEL'
@@ -336,6 +360,9 @@ export const HomePage: React.FC = () => {
                 onClick={() => {
                   setSelectedCategory('MARRIAGE_HALL');
                   setRentalTab('MARRIAGE_HALL');
+                  setHallCapacity('');
+                  setHallDining('');
+                  setHallAc('');
                   setSelectedFloor('');
                   setSelectedParking('');
                   setSelectedSizeRange('');
@@ -946,6 +973,194 @@ export const HomePage: React.FC = () => {
                               setMaxSize(item.max);
                             }
                           }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Kalyana Mandapam / Marriage Hall Sub-filters: Guest Capacity, Dining Seating Capacity, AC Type, Sq Ft, Parking */}
+          {selectedCategory === 'MARRIAGE_HALL' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
+                {/* 1. Guest Capacity (விருந்தினர் கொள்ளளவு) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <PartyPopper className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'விருந்தினர் அளவு' : 'Guest Capacity'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து கொள்ளளவு (All)' : 'All Capacities' },
+                      { id: 'UP_TO_250', label: lang === 'ta' ? '🎉 250 பேர் வரை (மினி ஹால்)' : '🎉 Up to 250 Guests (Mini Hall)' },
+                      { id: '250_TO_500', label: lang === 'ta' ? '🏛️ 250 – 500 பேர் (மண்டபம்)' : '🏛️ 250 – 500 Guests' },
+                      { id: '500_TO_1000', label: lang === 'ta' ? '👑 500 – 1000 பேர் (திருமண மஹால்)' : '👑 500 – 1000 Guests' },
+                      { id: '1000_PLUS', label: lang === 'ta' ? '✨ 1000+ பேர் (பிரம்மாண்ட மஹால்)' : '✨ 1000+ Guests (Convention)' },
+                    ].map((item) => {
+                      const isSelected = hallCapacity === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHallCapacity(item.id as any)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Dining Seating Capacity (உணவுக்கூடம் / பந்தி கொள்ளளவு) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Utensils className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பந்தி கொள்ளளவு' : 'Dining Capacity'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து பந்தி (All)' : 'All Dining' },
+                      { id: 'UP_TO_150', label: lang === 'ta' ? '🍽️ 150 இலைகள் வரை' : '🍽️ Up to 150 Seater' },
+                      { id: '150_TO_350', label: lang === 'ta' ? '🍽️ 150 – 350 இலைகள்' : '🍽️ 150 – 350 Seater' },
+                      { id: '350_TO_600', label: lang === 'ta' ? '🍽️ 350 – 600 இலைகள்' : '🍽️ 350 – 600 Seater' },
+                      { id: '600_PLUS', label: lang === 'ta' ? '🍽️ 600+ இலைகள் (பிரம்மாண்ட பந்தி)' : '🍽️ 600+ Seater (Grand)' },
+                    ].map((item) => {
+                      const isSelected = hallDining === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHallDining(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Air Conditioning Type (AC வசதி) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Wind className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'ஏசி வசதி' : 'Hall AC Type'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அரங்கம் (All)' : 'All Hall Types' },
+                      { id: 'AC', label: lang === 'ta' ? '❄️ முழு ஏசி அரங்கம் (AC Hall)' : '❄️ Centralized AC Hall' },
+                      { id: 'NON_AC', label: lang === 'ta' ? '🍃 ஏசி அல்லாதது (Non-AC)' : '🍃 Non-AC Hall' },
+                    ].map((item) => {
+                      const isSelected = hallAc === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHallAc(item.id as any)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Hall Area / Built-up Size (Sq Ft) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'அரங்க பரப்பளவு' : 'Hall Area (Sq Ft)'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sizes', min: '', max: '' },
+                      { id: '<3000', label: lang === 'ta' ? '< 3,000 ச.அடி' : '< 3,000 sq ft', min: '', max: '3000' },
+                      { id: '3000-7000', label: lang === 'ta' ? '3,000 – 7,000 ச.அடி' : '3k – 7k sq ft', min: '3000', max: '7000' },
+                      { id: '7000-15000', label: lang === 'ta' ? '7,000 – 15,000 ச.அடி' : '7k – 15k sq ft', min: '7000', max: '15000' },
+                      { id: '15000+', label: lang === 'ta' ? '15,000+ ச.அடி' : '15,000+ sq ft', min: '15000', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 5. Car Parking */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பார்க்கிங்' : 'Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
+                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
+                      { id: 'covered', label: lang === 'ta' ? '🛡️ பிரத்யேக / கவர்டு பார்க்கிங்' : '🛡️ Dedicated / Covered Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
