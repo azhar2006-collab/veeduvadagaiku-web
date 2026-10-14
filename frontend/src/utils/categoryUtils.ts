@@ -211,24 +211,26 @@ export function filterByBedrooms(properties: Property[], bedroomsVal: number | s
   if (!bedroomsVal && bedroomsVal !== 0) return properties;
   const str = String(bedroomsVal);
 
-  if (str.includes(',')) {
-    const list = str.split(',').map((b) => parseInt(b.trim())).filter((b) => !isNaN(b));
-    return properties.filter((p) => {
-      if (p.propertyType === 'SHOP') return false;
-      const b = p.bedrooms || 0;
-      if (list.includes(4) && b >= 4) return true;
-      return list.includes(b);
-    });
-  }
+  const tokens = str.split(',').map((s) => s.trim().toUpperCase());
+  const has1RK = tokens.includes('1RK');
+  const has4Plus = tokens.some((t) => t.endsWith('+') || t === '4+');
+  const numericList = tokens.map((t) => parseInt(t, 10)).filter((n) => !isNaN(n));
 
-  if (str.endsWith('+')) {
-    const num = parseInt(str);
-    return properties.filter((p) => (p.bedrooms || 0) >= num);
-  }
+  return properties.filter((p) => {
+    if (p.propertyType === 'SHOP') return false;
+    const b = p.bedrooms ?? (p.rooms ?? 0);
+    const text = `${p.title || ''} ${p.description || ''}`.toUpperCase();
 
-  const num = parseInt(str);
-  if (isNaN(num)) return properties;
-  return properties.filter((p) => p.bedrooms === num);
+    if (has1RK) {
+      const isExplicit1RK = text.includes('1RK') || text.includes('1 RK');
+      if (isExplicit1RK || b === 1 || (p.rooms === 1 && !p.bedrooms)) {
+        if (tokens.length === 1) return true;
+      }
+    }
+
+    if (has4Plus && b >= 4) return true;
+    return numericList.includes(b);
+  });
 }
 
 /**

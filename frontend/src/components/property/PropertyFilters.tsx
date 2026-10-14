@@ -326,6 +326,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             </div>
             <div className="flex flex-wrap gap-2">
               {[
+                { val: '1RK', label: '1 RK' },
                 { val: '1', label: '1 BHK' },
                 { val: '2', label: '2 BHK' },
                 { val: '3', label: '3 BHK' },
