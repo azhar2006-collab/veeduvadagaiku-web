@@ -355,7 +355,7 @@ export const HomePage: React.FC = () => {
 
           {/* House Sub-filters: All BHKs, Floor, Car Parking, All */}
           {selectedCategory === 'HOUSE' && (
-            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-fade-in">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
               <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
                 {/* 1. BHK Filter */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -473,7 +473,7 @@ export const HomePage: React.FC = () => {
 
           {/* Shop Sub-filters: Area (Sq Ft), Floor, Shop Type, Parking */}
           {selectedCategory === 'SHOP' && (
-            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-fade-in">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
               <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
                 {/* 1. Size / Area Filter */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -635,7 +635,7 @@ export const HomePage: React.FC = () => {
 
           {/* Commercial Building Sub-filters: Area (Sq Ft), Building Type, Floor, Parking */}
           {selectedCategory === 'COMMERCIAL_BUILDING' && (
-            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-fade-in">
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0">
               <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
                 {/* 1. Size / Area Filter */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -798,7 +798,7 @@ export const HomePage: React.FC = () => {
           )}
 
           {/* Classic Search Box */}
-          <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
+          <div className="pt-1 max-w-4xl mx-auto">
               <form
                 onSubmit={handleSearch}
                 className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xl shadow-[#D4AF37]/10 border border-[#E8DFC8] grid grid-cols-1 md:grid-cols-12 gap-3 items-center"
