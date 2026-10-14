@@ -223,16 +223,24 @@ export const MyPropertiesPage: React.FC = () => {
                   <div className="mx-4 mb-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900 flex-wrap">
                     <div className="flex items-center gap-2">
                       <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span>Property saved as draft. Add at least one photo then click <strong>Submit for Review</strong>.</span>
+                      <span>Property saved as draft. Choose a plan to activate or submit for review.</span>
                     </div>
-                    <button
-                      type="button"
-                      disabled={submitMutation.isPending}
-                      onClick={() => submitMutation.mutate(prop.id)}
-                      className="px-3 py-1.5 bg-[#C5A059] hover:bg-[#9A7818] text-white font-bold rounded-lg transition text-[11px] disabled:opacity-60"
-                    >
-                      Submit for Review →
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        to={`/owner/payment?propertyId=${prop.id}`}
+                        className="px-3 py-1.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white font-bold rounded-lg transition text-[11px] shadow-xs"
+                      >
+                        Choose Plan & Pay →
+                      </Link>
+                      <button
+                        type="button"
+                        disabled={submitMutation.isPending}
+                        onClick={() => submitMutation.mutate(prop.id)}
+                        className="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 font-bold border border-gray-200 rounded-lg transition text-[11px] disabled:opacity-60"
+                      >
+                        Submit Review
+                      </button>
+                    </div>
                   </div>
                 )}
 
