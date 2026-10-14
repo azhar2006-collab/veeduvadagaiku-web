@@ -43,9 +43,9 @@ export const HomePage: React.FC = () => {
   const [minSize, setMinSize] = useState<string>('');
   const [maxSize, setMaxSize] = useState<string>('');
 
-  // NoBroker / OLX style Rentals popover state
-  const [isRentalsOpen, setIsRentalsOpen] = useState(false);
-  const rentalsRef = React.useRef<HTMLDivElement>(null);
+  // Budget interactive picker popover state
+  const [isBudgetOpen, setIsBudgetOpen] = useState(false);
+  const budgetRef = React.useRef<HTMLDivElement>(null);
   const [rentalTab, setRentalTab] = useState<'RESIDENTIAL' | 'COMMERCIAL' | 'HOSTEL' | 'MARRIAGE_HALL'>('RESIDENTIAL');
   const [selectedBhks, setSelectedBhks] = useState<string[]>([]);
   const [residentialType, setResidentialType] = useState<'ALL' | 'HOUSE' | 'APARTMENT'>('ALL');
@@ -53,20 +53,20 @@ export const HomePage: React.FC = () => {
   const [hostelGender, setHostelGender] = useState<'MALE' | 'FEMALE' | 'COLIVING' | ''>('');
   const [hallCapacity, setHallCapacity] = useState<'UP_TO_250' | '250_TO_500' | '500_TO_1000' | '1000_PLUS' | ''>('');
 
-  // Close popover on click outside
+  // Close budget picker on click outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (rentalsRef.current && !rentalsRef.current.contains(event.target as Node)) {
-        setIsRentalsOpen(false);
+      if (budgetRef.current && !budgetRef.current.contains(event.target as Node)) {
+        setIsBudgetOpen(false);
       }
     };
-    if (isRentalsOpen) {
+    if (isBudgetOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isRentalsOpen]);
+  }, [isBudgetOpen]);
 
   const { data: localitiesRes } = useLocalities();
   const localities = useMemo((): string[] => {
@@ -93,38 +93,6 @@ export const HomePage: React.FC = () => {
     limit: 3,
   });
   const shopProperties = Array.isArray(shopsData?.data) ? shopsData.data : [];
-
-  const getRentalsSummary = () => {
-    if (rentalTab === 'RESIDENTIAL') {
-      const typeLabel =
-        residentialType === 'APARTMENT'
-          ? (lang === 'ta' ? 'அபார்ட்மெண்ட்' : 'Apartment')
-          : residentialType === 'HOUSE'
-          ? (lang === 'ta' ? 'தனி வீடு' : 'House')
-          : (lang === 'ta' ? 'வீடு / பிளாட்' : 'House / Flat');
-
-      if (selectedBhks.length > 0) {
-        return `${typeLabel} (${selectedBhks.join(', ')} BHK)`;
-      }
-      if (residentialType !== 'ALL') return typeLabel;
-      return lang === 'ta' ? 'வீடு / பிளாட்' : 'House / Flat';
-    }
-    if (rentalTab === 'COMMERCIAL') {
-      if (selectedCommercialTypes.length > 0) {
-        return `${lang === 'ta' ? 'வணிகம்' : 'Commercial'}: ${selectedCommercialTypes.slice(0, 2).join(', ')}${
-          selectedCommercialTypes.length > 2 ? ' +' + (selectedCommercialTypes.length - 2) : ''
-        }`;
-      }
-      return lang === 'ta' ? 'வணிக சொத்து (Commercial)' : 'Commercial (All)';
-    }
-    if (rentalTab === 'HOSTEL') {
-      return lang === 'ta' ? 'விடுதி / PG' : 'Hostel / PG';
-    }
-    if (rentalTab === 'MARRIAGE_HALL') {
-      return lang === 'ta' ? 'கல்யாண மண்டபம்' : 'Kalyana Mandapam';
-    }
-    return t('filter.propertyCategory');
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -833,10 +801,10 @@ export const HomePage: React.FC = () => {
           <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
               <form
                 onSubmit={handleSearch}
-                className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl shadow-[#D4AF37]/10 border border-[#E8DFC8] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-center"
+                className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-xl shadow-[#D4AF37]/10 border border-[#E8DFC8] grid grid-cols-1 md:grid-cols-12 gap-3 items-center"
               >
-                {/* Locality Dropdown */}
-                <div className="relative text-left">
+                {/* Locality Dropdown: 5 cols */}
+                <div className="md:col-span-5 relative text-left">
                   <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider mb-1 ml-1">
                     {t('filter.locality')}
                   </label>
@@ -866,344 +834,143 @@ export const HomePage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* RENTALS - NoBroker / OLX Style Interactive Popover Dropdown */}
-                <div className="relative text-left" ref={rentalsRef}>
+                {/* BUDGET PICKER - Interactive Range Slider ("String") & Quick Preset Pills */}
+                <div className="md:col-span-4 relative text-left" ref={budgetRef}>
                   <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider mb-1 ml-1">
-                    {t('filter.propertyCategory')}
+                    {t('hero.maxBudget')}
                   </label>
                   <button
                     type="button"
-                    onClick={() => setIsRentalsOpen(!isRentalsOpen)}
+                    onClick={() => setIsBudgetOpen(!isBudgetOpen)}
                     className="w-full flex items-center justify-between gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition text-left cursor-pointer"
                   >
                     <div className="flex items-center gap-2 min-w-0">
-                      {rentalTab === 'COMMERCIAL' ? (
-                        <Store className="w-4 h-4 text-[#C5A059] shrink-0" />
-                      ) : rentalTab === 'HOSTEL' ? (
-                        <Users className="w-4 h-4 text-[#C5A059] shrink-0" />
-                      ) : rentalTab === 'MARRIAGE_HALL' ? (
-                        <PartyPopper className="w-4 h-4 text-[#C5A059] shrink-0" />
-                      ) : residentialType === 'APARTMENT' ? (
-                        <Building className="w-4 h-4 text-[#C5A059] shrink-0" />
-                      ) : (
-                        <Building2 className="w-4 h-4 text-[#C5A059] shrink-0" />
-                      )}
+                      <span className="w-5 h-5 rounded-lg bg-[#FAF4E6] text-[#9A7818] font-bold text-xs flex items-center justify-center shrink-0 border border-[#E8DFC8]">
+                        ₹
+                      </span>
                       <span className="text-sm font-semibold text-gray-900 truncate">
-                        {getRentalsSummary()}
+                        {maxRent
+                          ? `${lang === 'ta' ? 'அதிகபட்சம்' : 'Up to'} ₹${Number(maxRent).toLocaleString('en-IN')}`
+                          : lang === 'ta'
+                          ? 'பட்ஜெட் தேர்வு (அனைத்தும்)'
+                          : 'Select Budget (Any)'}
                       </span>
                     </div>
                     <ChevronDown
                       className={`w-4 h-4 text-gray-500 shrink-0 transition-transform ${
-                        isRentalsOpen ? 'rotate-180' : ''
+                        isBudgetOpen ? 'rotate-180' : ''
                       }`}
                     />
                   </button>
 
                   {/* Popover Dropdown Modal */}
-                  {isRentalsOpen && (
-                    <div className="absolute top-full left-0 right-0 sm:left-auto sm:-translate-x-12 sm:w-[380px] mt-2 bg-white rounded-2xl shadow-2xl border border-[#E8DFC8] p-4 z-50 animate-scale-in">
-                      {/* Segmented Category Switcher */}
-                      <div className="grid grid-cols-2 gap-1.5 p-1 bg-[#FAF4E6] rounded-xl mb-3 text-xs font-bold">
-                        <button
-                          type="button"
-                          onClick={() => setRentalTab('RESIDENTIAL')}
-                          className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition ${
-                            rentalTab === 'RESIDENTIAL'
-                              ? 'bg-white text-[#9A7818] shadow-xs'
-                              : 'text-gray-600 hover:text-gray-900'
-                          }`}
-                        >
-                          <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
-                          <span>{lang === 'ta' ? 'வீடு / பிளாட்' : 'House'}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setRentalTab('COMMERCIAL')}
-                          className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition ${
-                            rentalTab === 'COMMERCIAL'
-                              ? 'bg-white text-[#9A7818] shadow-xs'
-                              : 'text-gray-600 hover:text-gray-900'
-                          }`}
-                        >
-                          <Store className="w-3.5 h-3.5 text-[#C5A059]" />
-                          <span>{lang === 'ta' ? 'வணிகம்' : 'Commercial'}</span>
-                        </button>
-                      </div>
-
-                      <div className="flex gap-1.5 mb-3">
-                        <button
-                          type="button"
-                          onClick={() => setRentalTab('HOSTEL')}
-                          className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold border transition ${
-                            rentalTab === 'HOSTEL'
-                              ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818]'
-                              : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                          }`}
-                        >
-                          {lang === 'ta' ? 'விடுதி / PG' : 'Hostel / PG'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setRentalTab('MARRIAGE_HALL')}
-                          className={`flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold border transition ${
-                            rentalTab === 'MARRIAGE_HALL'
-                              ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818]'
-                              : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                          }`}
-                        >
-                          {lang === 'ta' ? 'கல்யாண மண்டபம்' : 'Marriage Hall'}
-                        </button>
-                      </div>
-
-                      {/* TAB 1: RESIDENTIAL */}
-                      {rentalTab === 'RESIDENTIAL' && (
-                        <div className="space-y-3.5">
-                          {/* BHK Filter */}
-                          <div>
-                            <div className="flex items-center justify-between mb-2">
-                              <label className="block text-[11px] font-bold uppercase text-gray-500 tracking-wider">
-                                {lang === 'ta' ? 'அறை எண்ணிக்கை (BHK Type)' : 'Apartment Type / BHK'}
-                              </label>
-                              {selectedBhks.length > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedBhks([])}
-                                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
-                                >
-                                  Clear
-                                </button>
-                              )}
-                            </div>
-                            <div className="grid grid-cols-4 gap-1.5">
-                              {['1', '2', '3', '4+'].map((bhk) => {
-                                const isSelected = selectedBhks.includes(bhk);
-                                return (
-                                  <button
-                                    key={bhk}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedBhks((prev) =>
-                                        prev.includes(bhk) ? prev.filter((b) => b !== bhk) : [...prev, bhk]
-                                      );
-                                    }}
-                                    className={`py-2 px-1 text-center rounded-xl text-xs font-bold border transition ${
-                                      isSelected
-                                        ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                                    }`}
-                                  >
-                                    {bhk} BHK
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          {/* Property Subtype */}
-                          <div>
-                            <label className="block text-[11px] font-bold uppercase text-gray-500 tracking-wider mb-2">
-                              {lang === 'ta' ? 'சொத்து வகை' : 'Property Type'}
-                            </label>
-                            <div className="grid grid-cols-3 gap-1.5">
-                              {[
-                                { id: 'ALL', label: 'All' },
-                                { id: 'HOUSE', label: 'House / Villa' },
-                                { id: 'APARTMENT', label: 'Apartment' },
-                              ].map((type) => (
-                                <button
-                                  key={type.id}
-                                  type="button"
-                                  onClick={() => setResidentialType(type.id as any)}
-                                  className={`p-2 text-center rounded-xl text-xs font-semibold border transition ${
-                                    residentialType === type.id
-                                      ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] font-bold'
-                                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  {type.label}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* TAB 2: COMMERCIAL - MATCHING IMAGE 2 EXACT CHECKLIST */}
-                      {rentalTab === 'COMMERCIAL' && (
+                  {isBudgetOpen && (
+                    <div className="absolute top-full left-0 right-0 sm:left-auto sm:right-0 sm:w-[360px] mt-2 bg-white rounded-2xl shadow-2xl border border-[#E8DFC8] p-4 z-50 animate-scale-in">
+                      {/* Header */}
+                      <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-100">
                         <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <label className="block text-[11px] font-bold uppercase text-gray-500 tracking-wider">
-                              {lang === 'ta' ? 'வணிக சொத்து வகை' : 'Property Type'}
-                            </label>
-                            {selectedCommercialTypes.length > 0 && (
+                          <span className="text-xs text-gray-500 font-medium">
+                            {lang === 'ta' ? 'தேர்ந்தெடுக்கப்பட்ட பட்ஜெட்' : 'Selected Budget'}
+                          </span>
+                          <div className="text-base font-extrabold text-[#9A7818]">
+                            {maxRent
+                              ? `₹${Number(maxRent).toLocaleString('en-IN')}`
+                              : lang === 'ta'
+                              ? 'அனைத்து பட்ஜெட் (எல்லை இல்லை)'
+                              : 'Any Budget (No limit)'}
+                          </div>
+                        </div>
+                        {maxRent && (
+                          <button
+                            type="button"
+                            onClick={() => setMaxRent('')}
+                            className="text-xs font-semibold text-red-500 hover:text-red-700 hover:underline cursor-pointer"
+                          >
+                            {lang === 'ta' ? 'அழி' : 'Reset'}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Range Slider "String" */}
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 mb-1.5">
+                          <span>₹5,000</span>
+                          <span>₹1,00,000+</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="5000"
+                          max="100000"
+                          step="2500"
+                          value={maxRent ? Math.min(100000, Number(maxRent)) : 30000}
+                          onChange={(e) => setMaxRent(e.target.value)}
+                          className="w-full h-2 bg-gradient-to-r from-[#FAF4E6] via-[#D4AF37] to-[#9A7818] rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
+                        />
+                        <p className="text-[10px] text-gray-400 mt-1 text-center">
+                          {lang === 'ta'
+                            ? 'பட்ஜெட்டை தேர்வு செய்ய ஸ்லைடரை இழுக்கவும்'
+                            : 'Drag slider to adjust maximum budget'}
+                        </p>
+                      </div>
+
+                      {/* Quick Click Preset Pills */}
+                      <div className="mb-4">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">
+                          {lang === 'ta' ? 'விரைவு தேர்வுகள்' : 'Quick Presets'}
+                        </label>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {[
+                            { label: lang === 'ta' ? 'அனைத்தும்' : 'Any', value: '' },
+                            { label: '₹10,000', value: '10000' },
+                            { label: '₹15,000', value: '15000' },
+                            { label: '₹20,000', value: '20000' },
+                            { label: '₹25,000', value: '25000' },
+                            { label: '₹35,000', value: '35000' },
+                            { label: '₹50,000', value: '50000' },
+                            { label: '₹75,000', value: '75000' },
+                            { label: '₹1,00,000', value: '100000' },
+                          ].map((preset) => {
+                            const active = maxRent === preset.value;
+                            return (
                               <button
+                                key={preset.label}
                                 type="button"
-                                onClick={() => setSelectedCommercialTypes([])}
-                                className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                                onClick={() => setMaxRent(preset.value)}
+                                className={`py-1.5 px-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                                  active
+                                    ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
+                                    : 'border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                                }`}
                               >
-                                Clear all
+                                {preset.label}
                               </button>
-                            )}
-                          </div>
-
-                          <div className="space-y-1 max-h-52 overflow-y-auto pr-1 border border-gray-100 rounded-xl p-1.5 bg-gray-50/50">
-                            {COMMERCIAL_SUBTYPES.map((sub) => {
-                              const isChecked = selectedCommercialTypes.includes(sub.label);
-                              return (
-                                <label
-                                  key={sub.id}
-                                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold cursor-pointer transition ${
-                                    isChecked
-                                      ? 'bg-white text-[#9A7818] shadow-xs'
-                                      : 'text-gray-700 hover:bg-white/60'
-                                  }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={(e) => {
-                                      if (e.target.checked) {
-                                        setSelectedCommercialTypes((prev) => [...prev, sub.label]);
-                                      } else {
-                                        setSelectedCommercialTypes((prev) => prev.filter((t) => t !== sub.label));
-                                      }
-                                    }}
-                                    className="rounded text-[#C5A059] focus:ring-[#C5A059] w-4 h-4 border-gray-300"
-                                  />
-                                  <span>{lang === 'ta' ? sub.labelTa : sub.label}</span>
-                                </label>
-                              );
-                            })}
-                          </div>
+                            );
+                          })}
                         </div>
-                      )}
+                      </div>
 
-                      {/* TAB 3: HOSTEL */}
-                      {rentalTab === 'HOSTEL' && (
-                        <div className="space-y-3">
-                          <p className="text-xs font-bold text-gray-800">{lang === 'ta' ? 'விடுதி வகை தேர்வு' : 'Hostel Type'}</p>
-                          <div className="grid grid-cols-1 gap-1.5">
-                            {HOSTEL_GENDERS.map((g) => {
-                              const isSelected = hostelGender === g.id;
-                              return (
-                                <button
-                                  key={g.id}
-                                  type="button"
-                                  onClick={() => setHostelGender(isSelected ? '' : g.id as typeof hostelGender)}
-                                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition text-left ${
-                                    isSelected
-                                      ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  <span className="text-base">{g.id === 'MALE' ? '👨' : g.id === 'FEMALE' ? '👩' : '🤝'}</span>
-                                  <span>{lang === 'ta' ? g.labelTa : g.label}</span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                          <p className="text-[10px] text-gray-400 leading-relaxed">
-                            {lang === 'ta' ? 'மகளிர் மற்றும் ஆடவர் விடுதிகள், Co-living PG' : 'Verified Men & Women Hostels, Co-living PG in Chennai'}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* TAB 4: MARRIAGE HALL */}
-                      {rentalTab === 'MARRIAGE_HALL' && (
-                        <div className="space-y-3">
-                          <p className="text-xs font-bold text-gray-800">{lang === 'ta' ? 'திட்டமிட்ட விருந்தினர் எண்ணிக்கை' : 'Expected Guest Capacity'}</p>
-                          <div className="space-y-1.5">
-                            {MARRIAGE_HALL_CAPACITIES.map((cap) => {
-                              const isSelected = hallCapacity === cap.id;
-                              return (
-                                <button
-                                  key={cap.id}
-                                  type="button"
-                                  onClick={() => setHallCapacity(isSelected ? '' : cap.id as typeof hallCapacity)}
-                                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition text-left ${
-                                    isSelected
-                                      ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  <div>
-                                    <div className="font-bold">{lang === 'ta' ? cap.labelTa : cap.label}</div>
-                                    <div className="text-[10px] text-gray-500 font-normal">{cap.labelSub}</div>
-                                  </div>
-                                  {isSelected && <span className="text-[#C5A059] font-bold text-sm">✓</span>}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Footer Actions */}
-                      <div className="flex items-center justify-between pt-3 mt-3 border-t border-gray-100">
+                      {/* Done / Apply Button */}
+                      <div className="pt-2 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-[11px] text-gray-400 font-medium">
+                          {maxRent ? `≤ ₹${Number(maxRent).toLocaleString('en-IN')}` : 'Any'}
+                        </span>
                         <button
                           type="button"
-                          onClick={() => {
-                            setSelectedBhks([]);
-                            setResidentialType('ALL');
-                            setSelectedCommercialTypes([]);
-                            setHostelGender('');
-                            setHallCapacity('');
-                          }}
-                          className="text-xs font-bold text-gray-400 hover:text-gray-600"
+                          onClick={() => setIsBudgetOpen(false)}
+                          className="px-4 py-1.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white text-xs font-bold rounded-xl shadow-xs transition cursor-pointer"
                         >
-                          {lang === 'ta' ? 'நீக்குக' : 'Reset'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setIsRentalsOpen(false)}
-                          className="px-4 py-1.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white text-xs font-bold rounded-xl shadow-xs"
-                        >
-                          {lang === 'ta' ? 'சரி (Apply)' : 'Apply'}
+                          {lang === 'ta' ? 'சரி (Done)' : 'Done'}
                         </button>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Max Budget - Enter value directly or pick preset */}
-                <div className="relative text-left">
-                  <div className="flex items-center justify-between mb-1 ml-1">
-                    <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider">
-                      {t('hero.maxBudget')}
-                    </label>
-                    <span className="text-[10px] text-gray-400 font-medium">₹0 – Any</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
-                    <span className="text-sm font-bold text-[#C5A059] pl-1">₹</span>
-                    <input
-                      type="number"
-                      min="0"
-                      step="5000"
-                      list="budget-presets"
-                      placeholder={lang === 'ta' ? 'அதிகபட்ச பட்ஜெட் ₹ (எ.கா. 50000+)' : 'Enter budget ₹ (e.g. 50,000+)'}
-                      value={maxRent}
-                      onChange={(e) => setMaxRent(e.target.value)}
-                      className="w-full bg-transparent text-sm font-medium text-gray-800 placeholder-gray-400 focus:outline-none"
-                    />
-                    <datalist id="budget-presets">
-                      <option value="8000">Up to ₹8,000</option>
-                      <option value="10000">Up to ₹10,000</option>
-                      <option value="15000">Up to ₹15,000</option>
-                      <option value="20000">Up to ₹20,000</option>
-                      <option value="25000">Up to ₹25,000</option>
-                      <option value="30000">Up to ₹30,000</option>
-                      <option value="40000">Up to ₹40,000</option>
-                      <option value="50000">Up to ₹50,000</option>
-                      <option value="50000+">₹50,000+ (Premium / Commercial)</option>
-                    </datalist>
-                  </div>
-                </div>
-
                 {/* Submit Button */}
-                <div className="sm:col-span-2 lg:col-span-1 pt-1 sm:pt-0">
+                <div className="md:col-span-3 pt-1 md:pt-0">
                   <button
                     type="submit"
-                    className="w-full h-[48px] flex items-center justify-center gap-2 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-md shadow-[#D4AF37]/25 transition active:scale-[0.98]"
+                    className="w-full h-[46px] flex items-center justify-center gap-2 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-md shadow-[#D4AF37]/25 transition active:scale-[0.98] cursor-pointer"
                   >
                     <Search className="w-4 h-4 text-white" />
                     <span>{t('hero.searchBtn')}</span>
