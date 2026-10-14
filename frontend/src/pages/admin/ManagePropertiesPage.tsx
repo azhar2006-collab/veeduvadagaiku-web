@@ -86,7 +86,7 @@ export const ManagePropertiesPage: React.FC = () => {
         >
           <option value="">All Categories</option>
           <option value="HOUSE">House / Flat</option>
-          <option value="SHOP">Commercial Shop</option>
+          <option value="SHOP">Shops / Commercial Buildings</option>
         </select>
       </div>
 

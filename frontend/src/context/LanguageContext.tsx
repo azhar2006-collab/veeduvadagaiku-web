@@ -45,7 +45,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.selectLocality': 'Locality',
     'hero.allTypes': 'Rentals',
     'hero.house': 'Residential House',
-    'hero.shop': 'Commercial Shop',
+    'hero.shop': 'Shops / Commercial Buildings',
     'hero.hostel': 'Hostels & PG',
     'hero.marriageHall': 'Marriage Halls & Mandapams',
     'hero.maxBudget': 'Budget',
@@ -158,7 +158,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Post Property
     'post.category': 'Property Category',
     'post.categoryHouse': 'Residential House / Flat',
-    'post.categoryShop': 'Commercial Shop / Office',
+    'post.categoryShop': 'Shops / Commercial Buildings',
     'post.categoryHostel': 'Hostel / PG / Mansion',
     'post.categoryMarriageHall': 'Marriage Hall / Kalyana Mandapam',
     'post.listingLang': 'Listing Language / பட்டியல் மொழி',
@@ -365,7 +365,7 @@ export const translations: Record<Language, Record<string, string>> = {
     // Post Property
     'post.category': 'சொத்து பிரிவு (Category)',
     'post.categoryHouse': 'வாடகை வீடு / பிளாட்',
-    'post.categoryShop': 'வணிகக் கடை / அலுவலகம்',
+    'post.categoryShop': 'கடை / வணிக கட்டிடம் (Shops / Commercial Buildings)',
     'post.categoryHostel': 'விடுதி / மேன்ஷன் / PG',
     'post.categoryMarriageHall': 'கல்யாண மண்டபம் / பார்ட்டி ஹால்',
     'post.listingLang': 'பட்டியல் மொழி / Listing Language',

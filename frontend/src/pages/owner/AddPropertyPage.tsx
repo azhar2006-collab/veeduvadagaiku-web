@@ -573,10 +573,10 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'வணிக கடை / ஷோரூம் (Commercial Shop)' : 'Commercial Shop / Retail'}
+                  {listingLanguage === 'TA' ? 'கடை / வணிக கட்டிடம் (Shops / Commercial Buildings)' : 'Shops / Commercial Buildings'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Retail Store, Showroom, Office, Clinic, godown
+                  Retail Store, Showroom, Office, Clinic, Godown, Building
                 </div>
               </div>
             </button>

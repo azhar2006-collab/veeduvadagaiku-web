@@ -153,6 +153,7 @@ export const COMMERCIAL_SUBTYPES = [
   { id: 'Office Space', label: 'Office Space', labelTa: 'அலுவலக இடம் (Office Space)' },
   { id: 'Co-Working', label: 'Co-Working', labelTa: 'பகிர்வு அலுவலகம் (Co-Working)' },
   { id: 'Shop', label: 'Shop', labelTa: 'கடை (Shop)' },
+  { id: 'Commercial Building', label: 'Commercial Building', labelTa: 'வணிக கட்டிடம் (Commercial Building)' },
   { id: 'Showroom', label: 'Showroom', labelTa: 'ஷோரூம் (Showroom)' },
   { id: 'Industrial Building', label: 'Industrial Building', labelTa: 'தொழிற்சாலை கட்டிடம்' },
   { id: 'Industrial Shed', label: 'Industrial Shed', labelTa: 'தொழிலக ஷெட் (Industrial Shed)' },
@@ -189,6 +190,9 @@ export function filterByCommercialType(properties: Property[], commercialType: s
       }
       if (type.includes('godown') || type.includes('warehouse')) {
         return text.includes('godown') || text.includes('warehouse') || text.includes('storage') || text.includes('[commercial:godown]') || text.includes('[commercial:warehouse]');
+      }
+      if (type.includes('commercial building') || type.includes('complex')) {
+        return text.includes('commercial building') || text.includes('commercial complex') || text.includes('office building') || text.includes('complex') || text.includes('[commercial:commercial_building]') || text.includes('[category:commercial_building]');
       }
       if (type.includes('industrial building')) {
         return text.includes('industrial building') || text.includes('factory') || text.includes('[commercial:industrial_bldg]');
