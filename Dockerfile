@@ -14,6 +14,7 @@ RUN npm install
 
 # Copy configuration and source files
 COPY backend/tsconfig.json ./
+COPY backend/scripts ./scripts
 COPY backend/src ./src
 
 # Set build-time dummy database URLs so `npx prisma generate` validates schema without errors
