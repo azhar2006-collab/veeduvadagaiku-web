@@ -467,4 +467,25 @@ export function filterByParking(properties: Property[], parking: string | boolea
   });
 }
 
+/**
+ * Filter properties by built-up size (Square Feet)
+ */
+export function filterBySize(
+  properties: Property[],
+  minSize?: number | string | '',
+  maxSize?: number | string | ''
+): Property[] {
+  const hasMin = minSize !== '' && minSize !== undefined && minSize !== null && !isNaN(Number(minSize));
+  const hasMax = maxSize !== '' && maxSize !== undefined && maxSize !== null && !isNaN(Number(maxSize));
+
+  if (!hasMin && !hasMax) return properties;
+
+  const min = hasMin ? Number(minSize) : 0;
+  const max = hasMax ? Number(maxSize) : Infinity;
+
+  return properties.filter((p) => {
+    const size = p.propertySize || 0;
+    return size >= min && size <= max;
+  });
+}
 

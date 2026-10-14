@@ -20,10 +20,11 @@ import {
   Layers,
   Car,
   Home,
+  Maximize2,
+  Briefcase,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
-import { PropertySwipeDeck } from '../../components/property/PropertySwipeDeck';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
@@ -32,14 +33,15 @@ import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
-  const [viewMode, setViewMode] = useState<'search' | 'swipe'>('search');
-  const [deckType, setDeckType] = useState<'HOUSE' | 'SHOP' | ''>('');
   const [selectedCategory, setSelectedCategory] = useState<'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL' | ''>('');
 
   const [locality, setLocality] = useState('');
   const [maxRent, setMaxRent] = useState('');
   const [selectedFloor, setSelectedFloor] = useState<string>('');
   const [selectedParking, setSelectedParking] = useState<string>('');
+  const [selectedSizeRange, setSelectedSizeRange] = useState<string>('');
+  const [minSize, setMinSize] = useState<string>('');
+  const [maxSize, setMaxSize] = useState<string>('');
 
   // NoBroker / OLX style Rentals popover state
   const [isRentalsOpen, setIsRentalsOpen] = useState(false);
@@ -72,14 +74,6 @@ export const HomePage: React.FC = () => {
     if (Array.isArray((localitiesRes as any)?.data)) return (localitiesRes as any).data;
     return CHENNAI_LOCALITIES;
   }, [localitiesRes]);
-
-  // Fetch properties for the Swipe Deck
-  const { data: deckRes, isLoading: loadingDeck } = useProperties({
-    propertyType: deckType || undefined,
-    limit: 25,
-    sortBy: 'newest',
-  });
-  const deckProperties = deckRes?.data || [];
 
   // Fetch featured and latest properties for below sections
   const { data: featuredData, isLoading: loadingFeatured } = useProperties({
@@ -163,12 +157,20 @@ export const HomePage: React.FC = () => {
       } else {
         params.append('commercialType', 'Industrial Building,Office Space,Commercial Building');
       }
+      if (minSize) params.append('minSize', minSize);
+      if (maxSize) params.append('maxSize', maxSize);
+      if (selectedFloor) params.append('floor', selectedFloor);
+      if (selectedParking) params.append('carParking', selectedParking);
     } else if (selectedCategory === 'SHOP' || rentalTab === 'COMMERCIAL') {
       params.append('propertyType', 'SHOP');
       params.append('category', 'SHOP');
       if (selectedCommercialTypes.length > 0) {
         params.append('commercialType', selectedCommercialTypes.join(','));
       }
+      if (minSize) params.append('minSize', minSize);
+      if (maxSize) params.append('maxSize', maxSize);
+      if (selectedFloor) params.append('floor', selectedFloor);
+      if (selectedParking) params.append('carParking', selectedParking);
     } else if (selectedCategory === 'HOSTEL' || rentalTab === 'HOSTEL') {
       params.append('category', 'HOSTEL');
       if (hostelGender) params.append('hostelGender', hostelGender);
@@ -240,14 +242,18 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && selectedCategory === ''}
+                aria-selected={selectedCategory === ''}
                 onClick={() => {
-                  setViewMode('search');
                   setSelectedCategory('');
                   setRentalTab('RESIDENTIAL');
+                  setSelectedFloor('');
+                  setSelectedParking('');
+                  setSelectedSizeRange('');
+                  setMinSize('');
+                  setMaxSize('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'search' && selectedCategory === ''
+                  selectedCategory === ''
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -258,14 +264,18 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && selectedCategory === 'HOUSE'}
+                aria-selected={selectedCategory === 'HOUSE'}
                 onClick={() => {
-                  setViewMode('search');
                   setSelectedCategory('HOUSE');
                   setRentalTab('RESIDENTIAL');
+                  setSelectedFloor('');
+                  setSelectedParking('');
+                  setSelectedSizeRange('');
+                  setMinSize('');
+                  setMaxSize('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'search' && selectedCategory === 'HOUSE'
+                  selectedCategory === 'HOUSE'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -276,15 +286,19 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && selectedCategory === 'SHOP'}
+                aria-selected={selectedCategory === 'SHOP'}
                 onClick={() => {
-                  setViewMode('search');
                   setSelectedCategory('SHOP');
                   setRentalTab('COMMERCIAL');
-                  setSelectedCommercialTypes(['Shop']);
+                  setSelectedCommercialTypes([]);
+                  setSelectedFloor('');
+                  setSelectedParking('');
+                  setSelectedSizeRange('');
+                  setMinSize('');
+                  setMaxSize('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'search' && selectedCategory === 'SHOP'
+                  selectedCategory === 'SHOP'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -296,15 +310,19 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && selectedCategory === 'COMMERCIAL_BUILDING'}
+                aria-selected={selectedCategory === 'COMMERCIAL_BUILDING'}
                 onClick={() => {
-                  setViewMode('search');
                   setSelectedCategory('COMMERCIAL_BUILDING');
                   setRentalTab('COMMERCIAL');
-                  setSelectedCommercialTypes(['Industrial Building', 'Office Space', 'Commercial Building']);
+                  setSelectedCommercialTypes([]);
+                  setSelectedFloor('');
+                  setSelectedParking('');
+                  setSelectedSizeRange('');
+                  setMinSize('');
+                  setMaxSize('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'search' && selectedCategory === 'COMMERCIAL_BUILDING'
+                  selectedCategory === 'COMMERCIAL_BUILDING'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -315,14 +333,18 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && selectedCategory === 'HOSTEL'}
+                aria-selected={selectedCategory === 'HOSTEL'}
                 onClick={() => {
-                  setViewMode('search');
                   setSelectedCategory('HOSTEL');
                   setRentalTab('HOSTEL');
+                  setSelectedFloor('');
+                  setSelectedParking('');
+                  setSelectedSizeRange('');
+                  setMinSize('');
+                  setMaxSize('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'search' && selectedCategory === 'HOSTEL'
+                  selectedCategory === 'HOSTEL'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -333,14 +355,18 @@ export const HomePage: React.FC = () => {
               <button
                 type="button"
                 role="tab"
-                aria-selected={viewMode === 'search' && selectedCategory === 'MARRIAGE_HALL'}
+                aria-selected={selectedCategory === 'MARRIAGE_HALL'}
                 onClick={() => {
-                  setViewMode('search');
                   setSelectedCategory('MARRIAGE_HALL');
                   setRentalTab('MARRIAGE_HALL');
+                  setSelectedFloor('');
+                  setSelectedParking('');
+                  setSelectedSizeRange('');
+                  setMinSize('');
+                  setMaxSize('');
                 }}
                 className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'search' && selectedCategory === 'MARRIAGE_HALL'
+                  selectedCategory === 'MARRIAGE_HALL'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
@@ -356,25 +382,11 @@ export const HomePage: React.FC = () => {
                 <Wrench className="w-3.5 h-3.5 text-[#C5A059]" />
                 <span>{lang === 'ta' ? 'வீட்டு சேவைகள்' : 'Home Services'}</span>
               </Link>
-
-              <button
-                type="button"
-                role="tab"
-                aria-selected={viewMode === 'swipe'}
-                onClick={() => setViewMode('swipe')}
-                className={`hidden md:flex items-center px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  viewMode === 'swipe'
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span>{t('home.cardDeck')}</span>
-              </button>
             </div>
           </div>
 
           {/* House Sub-filters: All BHKs, Floor, Car Parking, All */}
-          {viewMode === 'search' && selectedCategory === 'HOUSE' && (
+          {selectedCategory === 'HOUSE' && (
             <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-fade-in">
               <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
                 {/* 1. BHK Filter */}
@@ -491,26 +503,334 @@ export const HomePage: React.FC = () => {
             </div>
           )}
 
-          {/* MAIN INTERACTIVE AREA */}
-          {viewMode === 'swipe' ? (
-            /* Swipe Discovery Mode */
-            <div className="w-full flex flex-col items-center pt-1 animate-fade-in">
-              {loadingDeck ? (
-                <div className="w-full max-w-sm sm:max-w-md mx-auto aspect-[3/4.15] min-h-[380px] sm:min-h-[510px] bg-white border border-[#E8DFC8] rounded-3xl animate-pulse flex flex-col items-center justify-center gap-3">
-                  <Sparkles className="w-10 h-10 text-[#C5A059]" />
-                  <p className="text-xs text-gray-500 font-normal">Loading listings…</p>
+          {/* Shop Sub-filters: Area (Sq Ft), Floor, Shop Type, Parking */}
+          {selectedCategory === 'SHOP' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-fade-in">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
+                {/* 1. Size / Area Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பரப்பளவு' : 'Area (Sq Ft)'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sq Ft', min: '', max: '' },
+                      { id: '<300', label: lang === 'ta' ? '< 300 ச.அடி' : '< 300 sq ft', min: '', max: '300' },
+                      { id: '300-600', label: lang === 'ta' ? '300 – 600 ச.அடி' : '300 – 600 sq ft', min: '300', max: '600' },
+                      { id: '600-1200', label: lang === 'ta' ? '600 – 1,200 ச.அடி' : '600 – 1,200 sq ft', min: '600', max: '1200' },
+                      { id: '1200+', label: lang === 'ta' ? '1,200+ ச.அடி' : '1,200+ sq ft', min: '1200', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              ) : (
-                <PropertySwipeDeck
-                  properties={deckProperties}
-                  selectedType={deckType}
-                  onFilterChange={setDeckType}
-                />
-              )}
+
+                {/* 2. Floor Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'தளம் (Floor)' : 'Floor'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து தளம் (All)' : 'All Floors' },
+                      { id: 'ground', label: lang === 'ta' ? 'தரை தளம் (Ground)' : 'Ground Floor' },
+                      { id: '1-3', label: lang === 'ta' ? '1 – 2 வது தளம்' : '1st – 2nd Floor' },
+                      { id: '4+', label: lang === 'ta' ? 'மேல் தளம் / பிற' : 'Upper / Other' },
+                    ].map((item) => {
+                      const isSelected = selectedFloor === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedFloor(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Shop Type */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Store className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'கடை வகை' : 'Shop Type'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து வகை (All)' : 'All Shop Types' },
+                      { id: 'Shop', label: lang === 'ta' ? 'சில்லறை கடை (Retail)' : 'Retail Shop' },
+                      { id: 'Showroom', label: lang === 'ta' ? 'காட்சியகம் (Showroom)' : 'Showroom' },
+                      { id: 'Godown/Warehouse', label: lang === 'ta' ? 'கிடங்கு (Godown)' : 'Godown / Storage' },
+                      { id: 'Office Space', label: lang === 'ta' ? 'வணிக இடம்' : 'Commercial Space' },
+                    ].map((item) => {
+                      const isSelected = item.id === '' ? selectedCommercialTypes.length === 0 : selectedCommercialTypes.includes(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (item.id === '') {
+                              setSelectedCommercialTypes([]);
+                            } else {
+                              setSelectedCommercialTypes((prev) =>
+                                prev.includes(item.id) ? prev.filter((x) => x !== item.id) : [...prev, item.id]
+                              );
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Parking Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பார்க்கிங்' : 'Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
+                      { id: 'car', label: lang === 'ta' ? '🚗 வாடிக்கையாளர் பார்க்கிங்' : '🚗 Car / Customer Parking' },
+                      { id: 'covered', label: lang === 'ta' ? '🛡️ கவர்டு பார்க்கிங்' : '🛡️ Covered Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
-          ) : (
-            /* NoBroker-style Classic Search Box */
-            <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
+          )}
+
+          {/* Commercial Building Sub-filters: Area (Sq Ft), Building Type, Floor, Parking */}
+          {selectedCategory === 'COMMERCIAL_BUILDING' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-fade-in">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-md shadow-[#D4AF37]/5 space-y-3">
+                {/* 1. Size / Area Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பரப்பளவு' : 'Building Area'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sq Ft', min: '', max: '' },
+                      { id: '<1000', label: lang === 'ta' ? '< 1,000 ச.அடி' : '< 1,000 sq ft', min: '', max: '1000' },
+                      { id: '1000-3000', label: lang === 'ta' ? '1,000 – 3,000 ச.அடி' : '1,000 – 3,000 sq ft', min: '1000', max: '3000' },
+                      { id: '3000-5000', label: lang === 'ta' ? '3,000 – 5,000 ச.அடி' : '3,000 – 5,000 sq ft', min: '3000', max: '5000' },
+                      { id: '5000-10000', label: lang === 'ta' ? '5,000 – 10,000 ச.அடி' : '5,000 – 10,000 sq ft', min: '5000', max: '10000' },
+                      { id: '10000+', label: lang === 'ta' ? '10,000+ ச.அடி' : '10,000+ sq ft', min: '10000', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Building Usage / Commercial Type */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'கட்டிட வகை' : 'Building Type'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து வணிக கட்டிடங்கள்' : 'All Commercial' },
+                      { id: 'Office Space', label: lang === 'ta' ? 'அலுவலக கட்டிடம் (Office)' : 'Office Building / Space' },
+                      { id: 'Commercial Building', label: lang === 'ta' ? 'முழு வணிக கட்டிடம்' : 'Full Commercial Building' },
+                      { id: 'Industrial Building', label: lang === 'ta' ? 'தொழிற்சாலை (Industrial)' : 'Industrial / Factory' },
+                      { id: 'Godown/Warehouse', label: lang === 'ta' ? 'பெரிய கிடங்கு (Warehouse)' : 'Large Warehouse' },
+                      { id: 'Showroom', label: lang === 'ta' ? 'வணிக வளாகம் (Complex)' : 'Commercial Complex' },
+                    ].map((item) => {
+                      const isSelected = item.id === '' ? selectedCommercialTypes.length === 0 : selectedCommercialTypes.includes(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (item.id === '') {
+                              setSelectedCommercialTypes([]);
+                            } else {
+                              setSelectedCommercialTypes((prev) =>
+                                prev.includes(item.id) ? prev.filter((x) => x !== item.id) : [...prev, item.id]
+                              );
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Floor Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'தளம் (Floor)' : 'Floor'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து தளம் (All)' : 'All Floors' },
+                      { id: 'ground', label: lang === 'ta' ? 'தரை தளம் (Ground)' : 'Ground Floor' },
+                      { id: '1-3', label: lang === 'ta' ? '1 – 3 வது தளம்' : '1st – 3rd Floor' },
+                      { id: '4+', label: lang === 'ta' ? '4+ வது தளம்' : '4th+ Floor' },
+                    ].map((item) => {
+                      const isSelected = selectedFloor === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedFloor(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Parking Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பார்க்கிங்' : 'Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
+                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
+                      { id: 'covered', label: lang === 'ta' ? '🛡️ பிரத்யேக / கவர்டு பார்க்கிங்' : '🛡️ Dedicated / Covered Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
+                              : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Classic Search Box */}
+          <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
               <form
                 onSubmit={handleSearch}
                 className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl shadow-[#D4AF37]/10 border border-[#E8DFC8] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-center"
@@ -891,7 +1211,6 @@ export const HomePage: React.FC = () => {
                 </div>
               </form>
             </div>
-          )}
 
           {/* NoBroker-style Trust Guarantee Badges */}
           <div className="pt-1 sm:pt-3 grid grid-cols-3 gap-1.5 sm:gap-3 max-w-3xl mx-auto">

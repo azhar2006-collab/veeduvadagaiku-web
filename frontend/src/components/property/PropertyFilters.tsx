@@ -365,7 +365,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         )}
 
         {/* Floor Filter */}
-        {filters.propertyType !== 'SHOP' && filters.category !== 'SHOP' && filters.category !== 'MARRIAGE_HALL' && (
+        {filters.category !== 'MARRIAGE_HALL' && (
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
@@ -404,6 +404,77 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
                   </button>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* Built-up Area / Sq Ft Filter */}
+        {filters.category !== 'MARRIAGE_HALL' && filters.category !== 'HOSTEL' && (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                {t('filter.sqft', 'Built-up Area (Sq Ft)')}
+              </label>
+              {(filters.minSize || filters.maxSize) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleFieldChange('minSize', '');
+                    handleFieldChange('maxSize', '');
+                  }}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-2.5">
+              {[
+                { min: '', max: '', label: t('filter.allSizes', 'All Sizes') },
+                { min: '', max: '500', label: '< 500 sqft' },
+                { min: '500', max: '1000', label: '500 – 1k sqft' },
+                { min: '1000', max: '2000', label: '1k – 2k sqft' },
+                { min: '2000', max: '5000', label: '2k – 5k sqft' },
+                { min: '5000', max: '', label: '5k+ sqft' },
+              ].map((sz, idx) => {
+                const isSelected =
+                  String(filters.minSize || '') === sz.min && String(filters.maxSize || '') === sz.max;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      handleFieldChange('minSize', sz.min ? Number(sz.min) : '');
+                      handleFieldChange('maxSize', sz.max ? Number(sz.max) : '');
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                      isSelected
+                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
+                        : 'border-gray-200 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {sz.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="number"
+                placeholder="Min Sq Ft"
+                value={filters.minSize || ''}
+                onChange={(e) => handleFieldChange('minSize', e.target.value ? Number(e.target.value) : '')}
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
+              />
+              <input
+                type="number"
+                placeholder="Max Sq Ft"
+                value={filters.maxSize || ''}
+                onChange={(e) => handleFieldChange('maxSize', e.target.value ? Number(e.target.value) : '')}
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
+              />
             </div>
           </div>
         )}
@@ -450,7 +521,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
         </div>
 
         {/* Commercial Property Types (Matching Image 2 - NoBroker & OLX checklist) */}
-        {(filters.propertyType === 'SHOP' || filters.category === 'SHOP') && (
+        {(filters.propertyType === 'SHOP' || filters.category === 'SHOP' || filters.category === 'COMMERCIAL_BUILDING') && (
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">

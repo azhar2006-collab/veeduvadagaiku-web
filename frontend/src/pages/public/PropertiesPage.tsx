@@ -16,6 +16,7 @@ import {
   filterByFurnishing,
   filterByFloor,
   filterByParking,
+  filterBySize,
 } from '../../utils/categoryUtils';
 
 export const PropertiesPage: React.FC = () => {
@@ -32,6 +33,8 @@ export const PropertiesPage: React.FC = () => {
     bedrooms: searchParams.get('bedrooms') || '',
     floor: searchParams.get('floor') || '',
     carParking: searchParams.get('carParking') || '',
+    minSize: searchParams.get('minSize') ? Number(searchParams.get('minSize')) : '',
+    maxSize: searchParams.get('maxSize') ? Number(searchParams.get('maxSize')) : '',
     commercialType: searchParams.get('commercialType') || '',
     hostelGender: (searchParams.get('hostelGender') as any) || '',
     hallCapacity: (searchParams.get('hallCapacity') as any) || '',
@@ -72,6 +75,9 @@ export const PropertiesPage: React.FC = () => {
     if (filters.carParking) {
       list = filterByParking(list, filters.carParking);
     }
+    if (filters.minSize || filters.maxSize) {
+      list = filterBySize(list, filters.minSize, filters.maxSize);
+    }
     if (filters.hostelGender) {
       list = filterByHostelGender(list, filters.hostelGender);
     }
@@ -89,6 +95,8 @@ export const PropertiesPage: React.FC = () => {
     filters.bedrooms,
     filters.floor,
     filters.carParking,
+    filters.minSize,
+    filters.maxSize,
     filters.hostelGender,
     filters.hallCapacity,
     filters.furnishing,
@@ -108,6 +116,8 @@ export const PropertiesPage: React.FC = () => {
       bedrooms: '',
       floor: '',
       carParking: '',
+      minSize: '',
+      maxSize: '',
       commercialType: '',
       hostelGender: '',
       hallCapacity: '',
