@@ -6,6 +6,7 @@ export const authLimiter = rateLimit({
   message: { success: false, message: 'Too many authentication attempts. Please try again after 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
 });
 
 export const generalLimiter = rateLimit({
@@ -14,6 +15,7 @@ export const generalLimiter = rateLimit({
   message: { success: false, message: 'Too many requests. Please slow down.' },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
 });
 
 export const uploadLimiter = rateLimit({
@@ -22,4 +24,5 @@ export const uploadLimiter = rateLimit({
   message: { success: false, message: 'Too many uploads. Please try again in an hour.' },
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
 });

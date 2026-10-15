@@ -11,6 +11,9 @@ import routes from './routes';
 
 const app = express();
 
+// Trust Railway and reverse proxies for accurate client IP rate-limiting
+app.set('trust proxy', 1);
+
 // Ensure uploads folder exists
 const uploadsDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
