@@ -12,6 +12,7 @@ import {
   Layers,
   MessageSquare,
   Home,
+  Wrench,
 } from 'lucide-react';
 
 export const AdminLayout: React.FC = () => {
@@ -28,6 +29,7 @@ export const AdminLayout: React.FC = () => {
   const items: SidebarItem[] = [
     { label: 'Admin Overview', href: '/admin/dashboard', icon: LayoutDashboard },
     { label: 'Pending Approvals', href: '/admin/pending', icon: Clock },
+    { label: 'Home Services', href: '/admin/pending?tab=services', icon: Wrench },
     { label: 'Manage Properties', href: '/admin/properties', icon: Building2 },
     { label: 'Manage Owners', href: '/admin/owners', icon: ShieldCheck },
     { label: 'Manage Users', href: '/admin/users', icon: Users },

@@ -30,6 +30,7 @@ export interface HomeServiceFilters {
   subcategory?: string;
   locality?: string;
   maxPrice?: string | number;
+  status?: 'PENDING' | 'PUBLISHED' | 'REJECTED' | string;
   page?: number;
   limit?: number;
 }
