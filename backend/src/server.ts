@@ -27,9 +27,9 @@ async function startServer() {
       console.warn('[Firebase] Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY in backend/.env for authentication.');
     }
 
-    app.listen(PORT, () => {
-      console.log(`[Server] Veedu Vadagaiku API running on http://localhost:${PORT}`);
-      console.log(`[Server] Health check available at http://localhost:${PORT}/health`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`[Server] Veedu Vadagaiku API running on http://0.0.0.0:${PORT}`);
+      console.log(`[Server] Health check available at http://0.0.0.0:${PORT}/health`);
       console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (error) {
