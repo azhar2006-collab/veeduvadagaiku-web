@@ -2,8 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install OpenSSL required by Prisma engine on Alpine
-RUN apk add --no-cache openssl
+# Install OpenSSL and libc6-compat required by Prisma engine on Alpine
+RUN apk add --no-cache openssl libc6-compat
 
 # Copy backend package files, Prisma schema, and scripts
 COPY package*.json ./
