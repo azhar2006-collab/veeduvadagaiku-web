@@ -24,6 +24,11 @@ try {
   });
   console.log('[generate-client] Prisma Client generated successfully.');
 } catch (error) {
-  console.error('[generate-client] Error running prisma generate:', error);
-  process.exit(1);
+  console.error('[generate-client] Error running prisma generate:', error.message || error);
+  if (process.env.npm_lifecycle_event === 'postinstall') {
+    console.warn('[generate-client] Skipping fatal exit during postinstall phase. Prisma generate will run during build.');
+  } else {
+    process.exit(1);
+  }
 }
+

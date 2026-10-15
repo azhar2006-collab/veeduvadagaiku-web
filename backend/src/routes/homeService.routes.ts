@@ -13,8 +13,11 @@ import { requireAdmin } from '../middleware/adminAuth';
 const router = Router();
 
 router.get('/', getHomeServices);
+router.get('', getHomeServices);
 router.get('/:id', getHomeServiceById);
 router.post('/', authenticate, requireOwner, createHomeService);      // Only Owners & Admin can upload
+router.post('', authenticate, requireOwner, createHomeService);
+router.post('/create', authenticate, requireOwner, createHomeService);
 router.put('/:id/status', authenticate, requireAdmin, updateHomeServiceStatus); // admin only
 router.delete('/:id', authenticate, requireAdmin, deleteHomeService);   // admin only
 

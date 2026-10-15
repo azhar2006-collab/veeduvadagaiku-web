@@ -42,23 +42,60 @@ export const homeServiceApi = {
         params.append(key, String(val));
       }
     });
-    const res = await api.get<{ services: HomeServiceItem[]; total: number; page: number; totalPages: number }>(
-      `/api/home-services?${params.toString()}`
-    );
-    return res.data;
+    try {
+      const res = await api.get<{ services: HomeServiceItem[]; total: number; page: number; totalPages: number }>(
+        `/api/home-services?${params.toString()}`
+      );
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        const res = await api.get<{ services: HomeServiceItem[]; total: number; page: number; totalPages: number }>(
+          `/api/homeservices?${params.toString()}`
+        );
+        return res.data;
+      }
+      throw err;
+    }
   },
 
   getServiceById: async (id: string) => {
-    const res = await api.get<HomeServiceItem>(`/api/home-services/${id}`);
-    return res.data;
+    try {
+      const res = await api.get<HomeServiceItem>(`/api/home-services/${id}`);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        const res = await api.get<HomeServiceItem>(`/api/homeservices/${id}`);
+        return res.data;
+      }
+      throw err;
+    }
   },
 
   createService: async (data: Partial<HomeServiceItem>) => {
-    const res = await api.post<{ message: string; service: HomeServiceItem }>(
-      '/api/home-services',
-      data
-    );
-    return res.data;
+    try {
+      const res = await api.post<{ message: string; service: HomeServiceItem }>(
+        '/api/home-services',
+        data
+      );
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        try {
+          const res = await api.post<{ message: string; service: HomeServiceItem }>(
+            '/api/home-services/create',
+            data
+          );
+          return res.data;
+        } catch {
+          const res = await api.post<{ message: string; service: HomeServiceItem }>(
+            '/api/homeservices',
+            data
+          );
+          return res.data;
+        }
+      }
+      throw err;
+    }
   },
 
   updateStatus: async (id: string, status: 'PENDING' | 'PUBLISHED' | 'REJECTED') => {

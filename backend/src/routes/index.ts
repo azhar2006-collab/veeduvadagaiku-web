@@ -29,5 +29,6 @@ router.use('/favourites', favouriteRoutes);
 router.use('/plans', planRoutes);
 router.use('/admin', adminRoutes);
 router.use('/home-services', homeServiceRoutes);
+router.use('/homeservices', homeServiceRoutes);
 
 export default router;
