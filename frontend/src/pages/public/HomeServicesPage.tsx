@@ -24,6 +24,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../hooks/useAuth';
 import { useLocalities } from '../../hooks/useProperties';
 import { homeServiceApi } from '../../services/homeService.service';
+import { HomeServicesDisclaimerModal } from '../../components/common/HomeServicesDisclaimerModal';
 
 type ServiceCategory = 'ALL' | 'MOVERS' | 'RENOVATION' | 'CLEANING' | 'AC_SERVICE' | 'LEGAL';
 
@@ -204,6 +205,9 @@ export const HomeServicesPage: React.FC = () => {
   // Owner Gate Modal State
   const [showOwnerModal, setShowOwnerModal] = useState<boolean>(false);
 
+  // Home Services Disclaimer Modal State (shown when user opens Home Services page)
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState<boolean>(true);
+
   // Available subcategories for currently active category
   const activeCategoryMeta = useMemo(
     () => CATEGORIES.find((c) => c.id === activeCategory) || CATEGORIES[0],
@@ -274,13 +278,24 @@ export const HomeServicesPage: React.FC = () => {
         <div className="relative max-w-5xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
           <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
-              <span>
-                {lang === 'ta'
-                  ? 'சென்னையின் நம்பகமான வீட்டு சேவைகள் — நேரடி தொடர்பு'
-                  : "Chennai's Exclusive Home Services — Direct Provider Connect"}
-              </span>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
+                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
+                <span>
+                  {lang === 'ta'
+                    ? 'சென்னையின் நம்பகமான வீட்டு சேவைகள் — நேரடி தொடர்பு'
+                    : "Chennai's Exclusive Home Services — Direct Provider Connect"}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowDisclaimerModal(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold hover:bg-[#FAF7F0] transition cursor-pointer shadow-2xs"
+                title="View platform disclaimer"
+              >
+                <Shield className="w-3 h-3 text-[#C5A059]" />
+                <span>{lang === 'ta' ? 'தள அறிவிப்பு' : 'Platform Notice'}</span>
+              </button>
             </div>
 
             <h1 className="text-xl sm:text-3xl lg:text-[2.25rem] font-bold sm:font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
@@ -821,6 +836,12 @@ export const HomeServicesPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ─── Home Services Platform Disclaimer Modal ─── */}
+      <HomeServicesDisclaimerModal
+        isOpen={showDisclaimerModal}
+        onClose={() => setShowDisclaimerModal(false)}
+      />
     </div>
   );
 };
