@@ -1,4 +1,4 @@
-﻿import 'dotenv/config';
+import 'dotenv/config';
 import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
@@ -37,9 +37,23 @@ if (fs.existsSync(frontendPublicDir)) {
   app.use('/properties', express.static(path.join(frontendPublicDir, 'properties')));
 }
 
-// CORS — allow all client origins dynamically with credentials
+// CORS — allow production domain + localhost for development
+const ALLOWED_ORIGINS = [
+  'https://veeduvadagaikkuchennai.com',
+  'https://www.veeduvadagaikkuchennai.com',
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+];
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    // In development, allow any localhost port
+    if (process.env.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+$/.test(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
