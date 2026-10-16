@@ -89,9 +89,13 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
           },
         });
 
+        const durationDays = plan.durationDays || 30;
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + durationDays);
+
         await prisma.property.update({
           where: { id: property.id },
-          data: { status: 'PENDING_APPROVAL', planId: plan.id },
+          data: { status: 'PUBLISHED', planId: plan.id, expiresAt },
         });
 
         return res.status(201).json({
@@ -103,7 +107,7 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
           amount: 0,
           currency: currency || 'INR',
           paymentId: paymentRecord.id,
-          message: 'Property submitted for admin review under Navaratri Free Posting Plan!',
+          message: 'Your property is now LIVE! Posted successfully under Navaratri Free Posting Plan.',
         });
       }
 
@@ -425,9 +429,13 @@ export async function createRazorpayOrder(req: AuthRequest, res: Response, next:
           },
         });
 
+        const durationDays = plan.durationDays || 30;
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + durationDays);
+
         await prisma.property.update({
           where: { id: property.id },
-          data: { status: 'PENDING_APPROVAL', planId: plan.id },
+          data: { status: 'PUBLISHED', planId: plan.id, expiresAt },
         });
 
         return res.status(201).json({
@@ -439,7 +447,7 @@ export async function createRazorpayOrder(req: AuthRequest, res: Response, next:
           amount: 0,
           currency: currency || 'INR',
           paymentId: paymentRecord.id,
-          message: 'Property submitted for admin review under Navaratri Free Posting Plan!',
+          message: 'Your property is now LIVE! Posted successfully under Navaratri Free Posting Plan.',
         });
       }
 

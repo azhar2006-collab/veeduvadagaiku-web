@@ -65,7 +65,7 @@ export const PaymentResultPage: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto py-12 px-4 space-y-8">
-      <SEOHead title={isSuccess ? (isFreeOffer ? 'Navaratri Free Listing Submitted' : 'Payment Successful') : 'Payment Failed'} />
+      <SEOHead title={isSuccess ? (isFreeOffer ? '🏠 Property Posted LIVE!' : 'Payment Successful') : 'Payment Failed'} />
 
       <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-100 shadow-xl text-center space-y-6">
         {verifying ? (
@@ -92,13 +92,12 @@ export const PaymentResultPage: React.FC = () => {
                 {isFreeOffer ? '🎉 Navaratri Special Offer Applied' : 'Payment Confirmed'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                {isFreeOffer ? 'Free Listing Submitted for Review!' : 'Listing Submitted for Review!'}
+                {isFreeOffer ? '🏠 Your Property is Now LIVE!' : 'Listing Submitted for Review!'}
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
                 {isFreeOffer ? (
                   <>
-                    Thank you! Your property listing was submitted <strong className="text-emerald-700">100% FREE</strong> under the <strong>Navaratri Special Offer</strong> with <strong>₹0 posting fee</strong>. It is now under{' '}
-                    <strong className="text-gray-800">Pending Admin Approval</strong>.
+                    🎊 Congratulations! Your property has been <strong className="text-green-700">posted 100% FREE</strong> under the <strong>Navaratri Special Offer</strong> with <strong>₹0 posting fee</strong>. It is now <strong className="text-green-700">LIVE and visible</strong> to all renters on the platform!
                   </>
                 ) : (
                   <>
@@ -110,7 +109,11 @@ export const PaymentResultPage: React.FC = () => {
             </div>
 
             {propTitle && (
-              <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-950 font-bold truncate">
+              <div className={`p-3.5 rounded-xl border text-xs font-bold truncate ${
+                isFreeOffer
+                  ? 'bg-amber-50 border-amber-200 text-amber-900'
+                  : 'bg-emerald-50 border-emerald-100 text-emerald-950'
+              }`}>
                 {propTitle}
               </div>
             )}
@@ -118,9 +121,13 @@ export const PaymentResultPage: React.FC = () => {
             <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 to="/owner/properties"
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2"
+                className={`px-6 py-3 font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 ${
+                  isFreeOffer
+                    ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/30'
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                }`}
               >
-                <span>View Property Status</span>
+                <span>{isFreeOffer ? 'View My Live Property' : 'View Property Status'}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
