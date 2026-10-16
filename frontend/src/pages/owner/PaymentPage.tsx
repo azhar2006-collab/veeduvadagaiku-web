@@ -8,7 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getCashfree } from '../../utils/cashfree';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
-import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2 } from 'lucide-react';
+import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2, Sparkles, Gift, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const PaymentPage: React.FC = () => {
@@ -36,17 +36,25 @@ export const PaymentPage: React.FC = () => {
   });
   const property = propRes?.data;
 
-  // Auto-select plan based on property type (SHOP → commercial_single, HOUSE → residential_single)
+  // Auto-select plan: prioritize Navaratri Free plan if available, else property type default
   React.useEffect(() => {
-    if (plans.length > 0 && !selectedPlanId && property) {
-      const isCommercial = property.propertyType === 'SHOP';
-      const defaultPlanId = isCommercial ? 'plan_commercial_single' : 'plan_residential_single';
-      const defaultPlan = plans.find((p) => p.id === defaultPlanId) || plans[0];
-      if (defaultPlan) setSelectedPlanId(defaultPlan.id);
-    } else if (plans.length > 0 && !selectedPlanId && !propertyId) {
-      setSelectedPlanId(plans[0].id);
+    if (plans.length > 0 && !selectedPlanId) {
+      const freePlan = plans.find((p) => p.price === 0 || p.id === 'plan_navaratri_free');
+      if (freePlan) {
+        setSelectedPlanId(freePlan.id);
+      } else if (property) {
+        const isCommercial = property.propertyType === 'SHOP';
+        const defaultPlanId = isCommercial ? 'plan_commercial_single' : 'plan_residential_single';
+        const defaultPlan = plans.find((p) => p.id === defaultPlanId) || plans[0];
+        if (defaultPlan) setSelectedPlanId(defaultPlan.id);
+      } else {
+        setSelectedPlanId(plans[0].id);
+      }
     }
-  }, [plans, selectedPlanId, property, propertyId]);
+  }, [plans, selectedPlanId, property]);
+
+  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
+  const isSelectedPlanFree = selectedPlan?.price === 0 || selectedPlan?.id === 'plan_navaratri_free';
 
   const handlePay = async () => {
     if (!propertyId) {
@@ -61,8 +69,21 @@ export const PaymentPage: React.FC = () => {
     try {
       setIsProcessing(true);
 
-      // 1. Create order on backend (returns payment_session_id, order_id, etc.)
+      // 1. Create order on backend (handles both free promo and paid plans)
       const orderRes = await paymentService.createOrder(propertyId, selectedPlanId);
+
+      // If this is a free promotional plan, bypass payment gateway completely!
+      if (orderRes?.isFree || orderRes?.amount === 0 || isSelectedPlanFree) {
+        setIsProcessing(false);
+        toast.success('🎉 Property submitted for free with Navaratri Special Offer!');
+        navigate(
+          `/owner/payment/result?status=success&orderId=${orderRes?.order_id || 'free_order'}&propTitle=${encodeURIComponent(
+            property?.title || 'Your Property'
+          )}&freeOffer=true`
+        );
+        return;
+      }
+
       const paymentSessionId = orderRes?.payment_session_id;
       const orderId = orderRes?.order_id;
 
@@ -160,6 +181,7 @@ export const PaymentPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {plans.map((plan) => {
             const isSelected = selectedPlanId === plan.id;
+            const isFree = plan.price === 0 || plan.id === 'plan_navaratri_free';
             const isPack = plan.id.includes('_pack_');
             const perAdPrice = plan.id === 'plan_residential_pack_5' ? 199 : plan.id === 'plan_commercial_pack_5' ? 444 : null;
             return (
@@ -168,16 +190,25 @@ export const PaymentPage: React.FC = () => {
                 type="button"
                 onClick={() => setSelectedPlanId(plan.id)}
                 className={`relative rounded-2xl p-5 border text-left transition-all flex flex-col justify-between ${
-                  isSelected
+                  isFree && isSelected
+                    ? 'border-amber-400 bg-[#FFFDF9] ring-2 ring-amber-400/80 shadow-lg shadow-amber-500/15 sm:col-span-2'
+                    : isFree
+                    ? 'border-amber-300 bg-amber-50/40 hover:border-amber-400 sm:col-span-2'
+                    : isSelected
                     ? 'border-[#C5A059] bg-[#FCFAF5] ring-2 ring-[#C5A059] shadow-md shadow-[#D4AF37]/15'
                     : 'border-[#EFE8D8] bg-white hover:border-[#C5A059]'
                 }`}
               >
-                {isPack && (
+                {isFree ? (
+                  <span className="absolute -top-3 left-4 px-3 py-0.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    <span>🎉 Navaratri Special Offer • 100% Free</span>
+                  </span>
+                ) : isPack ? (
                   <span className="absolute -top-3 left-4 px-2.5 py-0.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs">
                     Best Value
                   </span>
-                )}
+                ) : null}
                 {isSelected && (
                   <span className="absolute -top-3 right-4 px-2.5 py-0.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs">
                     Selected
@@ -185,7 +216,14 @@ export const PaymentPage: React.FC = () => {
                 )}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-sm text-gray-900">{plan.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-sm text-gray-900">{plan.name}</h3>
+                      {isFree && (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                          ₹0 Posting Fee
+                        </span>
+                      )}
+                    </div>
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                         isSelected ? 'border-[#C5A059]' : 'border-gray-300'
@@ -194,9 +232,19 @@ export const PaymentPage: React.FC = () => {
                       {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#C5A059]" />}
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-gray-900">
-                    ₹{plan.price.toLocaleString('en-IN')}
-                  </p>
+                  <div className="flex items-baseline gap-2">
+                    {isFree && (
+                      <span className="text-base text-gray-400 line-through font-bold">
+                        ₹222
+                      </span>
+                    )}
+                    <p className={`text-2xl font-black ${isFree ? 'text-emerald-600' : 'text-gray-900'}`}>
+                      ₹{plan.price.toLocaleString('en-IN')}
+                    </p>
+                  </div>
+                  {isFree && (
+                    <p className="text-xs font-bold text-amber-700">🎉 Save ₹222 during Navaratri festive promotion!</p>
+                  )}
                   {perAdPrice && (
                     <p className="text-xs font-bold text-emerald-600">₹{perAdPrice}/ad — save with pack!</p>
                   )}
@@ -215,35 +263,61 @@ export const PaymentPage: React.FC = () => {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EFE8D8] shadow-sm space-y-6">
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500 font-medium">Payment Gateway</span>
-          <span className="font-bold text-gray-900 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            Cashfree Secure Checkout
-          </span>
+          {isSelectedPlanFree ? (
+            <span className="font-bold text-emerald-700 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              Festive Offer: Gateway Bypassed (₹0)
+            </span>
+          ) : (
+            <span className="font-bold text-gray-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              Cashfree Secure Checkout
+            </span>
+          )}
         </div>
 
-        {/* Accepted Payment Methods */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Accepted:</span>
-          {['UPI (GPay / PhonePe / Paytm)', 'Credit Card', 'Debit Card', 'Net Banking', 'Wallets'].map((method) => (
-            <span
-              key={method}
-              className="text-[11px] bg-[#FCFAF5] border border-[#E8DFC8] text-[#9A7818] font-semibold px-2.5 py-1 rounded-lg"
-            >
-              {method}
+        {/* Accepted Payment Methods / Offer notice */}
+        {isSelectedPlanFree ? (
+          <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200/80 text-xs text-amber-900 font-medium flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              <strong>Navaratri Promotion Active:</strong> No payment required. Submit your property listing 100% free with one click!
             </span>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Accepted:</span>
+            {['UPI (GPay / PhonePe / Paytm)', 'Credit Card', 'Debit Card', 'Net Banking', 'Wallets'].map((method) => (
+              <span
+                key={method}
+                className="text-[11px] bg-[#FCFAF5] border border-[#E8DFC8] text-[#9A7818] font-semibold px-2.5 py-1 rounded-lg"
+              >
+                {method}
+              </span>
+            ))}
+          </div>
+        )}
 
         <button
           type="button"
           onClick={handlePay}
           disabled={!selectedPlanId || isProcessing}
-          className="w-full py-4 px-6 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 active:scale-[0.98] text-white font-extrabold text-sm rounded-xl shadow-lg shadow-[#D4AF37]/25 transition disabled:opacity-50 flex items-center justify-center gap-2"
+          className={`w-full py-4 px-6 text-white font-extrabold text-sm rounded-xl shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98] ${
+            isSelectedPlanFree
+              ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-105 shadow-amber-500/25'
+              : 'bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 shadow-[#D4AF37]/25'
+          }`}
         >
           {isProcessing ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Opening Cashfree Gateway...</span>
+              <span>{isSelectedPlanFree ? 'Activating Free Listing...' : 'Opening Cashfree Gateway...'}</span>
+            </>
+          ) : isSelectedPlanFree ? (
+            <>
+              <Sparkles className="w-5 h-5 text-amber-200" />
+              <span>Claim Free Navaratri Listing (₹0)</span>
+              <ArrowRight className="w-4 h-4" />
             </>
           ) : (
             <>

@@ -16,10 +16,20 @@ export const PaymentResultPage: React.FC = () => {
   const [verifiedSuccess, setVerifiedSuccess] = useState<boolean | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(messageParam);
 
+  const isFreeOffer =
+    searchParams.get('freeOffer') === 'true' ||
+    (orderId ? orderId.startsWith('free_order_') || orderId.startsWith('promo_') : false);
+
   const isSuccessParam =
     statusParam?.toLowerCase() === 'success' || statusParam?.toLowerCase() === 'completed';
 
   useEffect(() => {
+    // If it's a free promotional listing, mark success directly
+    if (isFreeOffer) {
+      setVerifiedSuccess(true);
+      return;
+    }
+
     // If Cashfree or Razorpay redirected back with orderId, verify order status with backend
     if (orderId && verifiedSuccess === null) {
       setVerifying(true);
@@ -49,38 +59,53 @@ export const PaymentResultPage: React.FC = () => {
     } else if (statusParam && !isSuccessParam) {
       setVerifiedSuccess(false);
     }
-  }, [orderId, isSuccessParam, paymentId, statusParam, verifiedSuccess]);
+  }, [orderId, isSuccessParam, paymentId, statusParam, verifiedSuccess, isFreeOffer]);
 
   const isSuccess = verifiedSuccess ?? isSuccessParam;
 
   return (
     <div className="max-w-xl mx-auto py-12 px-4 space-y-8">
-      <SEOHead title={isSuccess ? 'Payment Successful' : 'Payment Failed'} />
+      <SEOHead title={isSuccess ? (isFreeOffer ? 'Navaratri Free Listing Submitted' : 'Payment Successful') : 'Payment Failed'} />
 
       <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-100 shadow-xl text-center space-y-6">
         {verifying ? (
           <div className="py-12 space-y-4">
             <Loader2 className="w-12 h-12 text-[#C5A059] animate-spin mx-auto" />
             <p className="text-sm font-semibold text-gray-700">
-              Confirming payment status with Cashfree...
+              Confirming payment status...
             </p>
           </div>
         ) : isSuccess ? (
           <>
-            <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md shadow-emerald-500/20">
+            <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-md ${
+              isFreeOffer
+                ? 'bg-amber-100 text-amber-600 shadow-amber-500/20'
+                : 'bg-emerald-100 text-emerald-600 shadow-emerald-500/20'
+            }`}>
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-black uppercase tracking-widest text-emerald-600">
-                Payment Confirmed
+              <span className={`text-xs font-black uppercase tracking-widest ${
+                isFreeOffer ? 'text-amber-600' : 'text-emerald-600'
+              }`}>
+                {isFreeOffer ? '🎉 Navaratri Special Offer Applied' : 'Payment Confirmed'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                Listing Submitted for Review!
+                {isFreeOffer ? 'Free Listing Submitted for Review!' : 'Listing Submitted for Review!'}
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
-                Thank you! Your payment has been successfully verified. Your property listing is now under{' '}
-                <strong className="text-gray-800">Pending Admin Approval</strong>.
+                {isFreeOffer ? (
+                  <>
+                    Thank you! Your property listing was submitted <strong className="text-emerald-700">100% FREE</strong> under the <strong>Navaratri Special Offer</strong> with <strong>₹0 posting fee</strong>. It is now under{' '}
+                    <strong className="text-gray-800">Pending Admin Approval</strong>.
+                  </>
+                ) : (
+                  <>
+                    Thank you! Your payment has been successfully verified. Your property listing is now under{' '}
+                    <strong className="text-gray-800">Pending Admin Approval</strong>.
+                  </>
+                )}
               </p>
             </div>
 

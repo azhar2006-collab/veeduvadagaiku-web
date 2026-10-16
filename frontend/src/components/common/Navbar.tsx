@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown, Wrench } from 'lucide-react';
+import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown, Wrench, Gift } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useLanguage } from '../../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -74,6 +74,16 @@ export const Navbar: React.FC = () => {
             >
               <Wrench className="w-4 h-4 text-[#C5A059]" />
               {t('nav.homeServices')}
+            </Link>
+            <Link
+              to="/offers"
+              className="text-sm font-bold text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-1.5"
+            >
+              <Gift className="w-4 h-4 text-[#D4AF37]" />
+              <span>{t('nav.offers')}</span>
+              <span className="px-1.5 py-0.2 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                Free
+              </span>
             </Link>
             <Link
               to="/about"
@@ -303,6 +313,19 @@ export const Navbar: React.FC = () => {
           >
             <Wrench className="w-4 h-4 text-[#C5A059]" />
             {t('nav.homeServices')}
+          </Link>
+          <Link
+            to="/offers"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center justify-between px-3 py-3 text-sm font-bold text-[#9A7818] hover:bg-[#FAF6ED] rounded-xl"
+          >
+            <div className="flex items-center gap-3">
+              <Gift className="w-4 h-4 text-[#D4AF37]" />
+              <span>{t('nav.offers')}</span>
+            </div>
+            <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[10px] font-black rounded-full uppercase tracking-wider">
+              Free Offer
+            </span>
           </Link>
           <Link
             to="/about"

@@ -3,13 +3,15 @@ import { ApiResponse, Payment } from '../types';
 
 export interface CashfreeOrderResponse {
   success: boolean;
-  payment_session_id: string;
+  payment_session_id?: string;
   order_id: string;
   cf_order_id?: string;
   amount: number;
   currency: string;
   paymentId?: string;
   message?: string;
+  isFree?: boolean;
+  status?: string;
 }
 
 export interface RazorpayOrderResponse {

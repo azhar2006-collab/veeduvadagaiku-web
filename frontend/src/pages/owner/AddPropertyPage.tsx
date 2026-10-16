@@ -32,6 +32,7 @@ import {
 import toast from 'react-hot-toast';
 import { COMMERCIAL_SUBTYPES } from '../../utils/categoryUtils';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
+import { getNavaratriOffer, isOfferActive } from '../../config/offersConfig';
 
 export const AddPropertyPage: React.FC = () => {
   const navigate = useNavigate();
@@ -437,6 +438,28 @@ export const AddPropertyPage: React.FC = () => {
           Provide your locality, property specs, and NoBroker-style amenities. Then choose a plan to activate.
         </p>
       </div>
+
+      {/* Navaratri Festive Offer Active Banner */}
+      {isOfferActive(getNavaratriOffer()) && (
+        <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-2xl p-4 sm:p-5 text-white shadow-lg shadow-orange-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5 text-amber-200" />
+            </div>
+            <div>
+              <p className="font-black text-sm sm:text-base">
+                🎉 Navaratri Special Offer Active: Post This Property 100% FREE!
+              </p>
+              <p className="text-xs text-amber-100 font-medium">
+                ₹0 posting fee with the Navaratri Free Posting Plan. No credit card or payment required.
+              </p>
+            </div>
+          </div>
+          <span className="px-3 py-1 rounded-full bg-white text-orange-600 font-extrabold text-xs shrink-0 shadow-xs">
+            Save ₹222+
+          </span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Step 1: Listing Language Selection */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/common/Navbar';
 import { Footer } from '../components/common/Footer';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
@@ -8,9 +8,11 @@ import { LayoutDashboard, Building2, PlusCircle, MessageSquare, UserCheck } from
 
 export const OwnerLayout: React.FC = () => {
   const { isAuthenticated, isOwner } = useAuth();
+  const location = useLocation();
 
   if (!isAuthenticated) {
-    return <Navigate to="/login?role=OWNER" replace />;
+    const redirectParam = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/login?role=OWNER&redirect=${redirectParam}`} replace />;
   }
 
   if (!isOwner) {

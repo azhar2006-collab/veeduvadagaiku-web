@@ -30,6 +30,7 @@ import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, MARRIAGE_HALL_DINING, MARRIAGE_HALL_AC_TYPES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
+import { NavaratriPromotionalPopup } from '../../components/common/NavaratriPromotionalPopup';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -1851,6 +1852,9 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Navaratri Promotional Festive Offer Popup */}
+      <NavaratriPromotionalPopup />
     </div>
   );
 };

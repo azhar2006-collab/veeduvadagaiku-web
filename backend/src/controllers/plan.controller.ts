@@ -4,8 +4,43 @@ import { prisma } from '../config/database';
 import { successResponse, ApiError } from '../utils/response';
 import { createPlanSchema } from '../utils/validators';
 
+import { getNavaratriOffer, isOfferActive } from '../config/offerConfig';
+
+export async function syncPromotionalPlan() {
+  try {
+    const offer = getNavaratriOffer();
+    const active = isOfferActive(offer);
+
+    await prisma.listingPlan.upsert({
+      where: { id: offer.planId },
+      update: {
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+      create: {
+        id: offer.planId,
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+    });
+  } catch (err) {
+    console.warn('[syncPromotionalPlan] Failed to sync promo plan:', err);
+  }
+}
+
 export async function listPlans(req: Request, res: Response, next: NextFunction) {
   try {
+    await syncPromotionalPlan();
     const plans = await prisma.listingPlan.findMany({
       where: { isActive: true },
       orderBy: { sortOrder: 'asc' },
@@ -18,6 +53,12 @@ export async function listPlans(req: Request, res: Response, next: NextFunction)
 
 export async function getPlan(req: Request, res: Response, next: NextFunction) {
   try {
+    if (req.params.id === 'plan_navaratri_free') {
+      const offer = getNavaratriOffer();
+      if (!isOfferActive(offer)) {
+        throw new ApiError(404, 'Navaratri Free Posting Plan has expired');
+      }
+    }
     const plan = await prisma.listingPlan.findUnique({ where: { id: req.params.id } });
     if (!plan) throw new ApiError(404, 'Plan not found');
     res.json(successResponse(plan));

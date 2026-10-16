@@ -5,6 +5,7 @@ import { prisma } from '../config/database';
 import { successResponse, ApiError } from '../utils/response';
 import razorpay, { razorpayKeyId, razorpayKeySecret, isRazorpayConfigured } from '../config/razorpay';
 import cashfree, { isCashfreeConfigured } from '../config/cashfree';
+import { getNavaratriOffer, isOfferActive } from '../config/offerConfig';
 
 /**
  * Cashfree: Create Order
@@ -14,13 +15,6 @@ import cashfree, { isCashfreeConfigured } from '../config/cashfree';
  */
 export async function createCashfreeOrder(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    if (!isCashfreeConfigured()) {
-      return res.status(500).json({
-        success: false,
-        message: 'Cashfree is not configured. Please set CASHFREE_APP_ID and CASHFREE_SECRET_KEY in .env',
-      });
-    }
-
     const { propertyId, planId, currency = 'INR', returnUrl } = req.body;
     let amount = req.body.amount;
 
@@ -67,7 +61,60 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
         });
       }
 
+      // Check if this is the Navaratri Free Posting Plan or a ₹0 promotional plan
+      if (plan.price === 0 || plan.id === 'plan_navaratri_free') {
+        const navOffer = getNavaratriOffer();
+        if (!isOfferActive(navOffer)) {
+          return res.status(400).json({
+            success: false,
+            message: 'The Navaratri Free Posting offer has expired. Please select a standard listing plan.',
+          });
+        }
+
+        const freeOrderId = `free_order_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        const freeTransactionId = `promo_navaratri_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+        const paymentRecord = await prisma.payment.create({
+          data: {
+            userId: req.user.id,
+            ownerId: owner.id,
+            propertyId: property.id,
+            planId: plan.id,
+            amount: 0,
+            currency: currency || 'INR',
+            cfOrderId: freeOrderId,
+            transactionId: freeTransactionId,
+            paymentMethod: 'NAVARATRI_FREE_OFFER',
+            paymentStatus: 'SUCCESS',
+          },
+        });
+
+        await prisma.property.update({
+          where: { id: property.id },
+          data: { status: 'PENDING_APPROVAL', planId: plan.id },
+        });
+
+        return res.status(201).json({
+          success: true,
+          isFree: true,
+          status: 'PAID',
+          order_id: freeOrderId,
+          cf_order_id: freeOrderId,
+          amount: 0,
+          currency: currency || 'INR',
+          paymentId: paymentRecord.id,
+          message: 'Property submitted for admin review under Navaratri Free Posting Plan!',
+        });
+      }
+
       amount = plan.price;
+    }
+
+    if (!isCashfreeConfigured()) {
+      return res.status(500).json({
+        success: false,
+        message: 'Cashfree is not configured. Please set CASHFREE_APP_ID and CASHFREE_SECRET_KEY in .env',
+      });
     }
 
     if (amount === undefined || amount === null || typeof amount !== 'number' || isNaN(amount) || amount <= 0) {
@@ -160,18 +207,36 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
  */
 export async function verifyCashfreePayment(req: Request, res: Response, next: NextFunction) {
   try {
-    if (!isCashfreeConfigured()) {
-      return res.status(500).json({
-        success: false,
-        message: 'Cashfree is not configured',
-      });
-    }
-
     const orderId = req.body.order_id || req.body.orderId;
     if (!orderId) {
       return res.status(400).json({
         success: false,
         message: 'order_id is required',
+      });
+    }
+
+    // Check DB first for free promotional orders
+    const existingPayment = await prisma.payment.findFirst({
+      where: {
+        OR: [{ cfOrderId: orderId }, { transactionId: orderId }],
+      },
+      include: { plan: true, property: true },
+    });
+
+    if (existingPayment && existingPayment.paymentMethod === 'NAVARATRI_FREE_OFFER' && existingPayment.paymentStatus === 'SUCCESS') {
+      return res.status(200).json({
+        success: true,
+        status: 'PAID',
+        message: 'Navaratri Free Listing confirmed successfully',
+        order_id: orderId,
+        payment: existingPayment,
+      });
+    }
+
+    if (!isCashfreeConfigured()) {
+      return res.status(500).json({
+        success: false,
+        message: 'Cashfree is not configured',
       });
     }
 
@@ -329,6 +394,52 @@ export async function createRazorpayOrder(req: AuthRequest, res: Response, next:
         return res.status(404).json({
           success: false,
           message: 'Listing plan not found',
+        });
+      }
+
+      // Check if this is the Navaratri Free Posting Plan or a ₹0 promotional plan
+      if (plan.price === 0 || plan.id === 'plan_navaratri_free') {
+        const navOffer = getNavaratriOffer();
+        if (!isOfferActive(navOffer)) {
+          return res.status(400).json({
+            success: false,
+            message: 'The Navaratri Free Posting offer has expired. Please select a standard listing plan.',
+          });
+        }
+
+        const freeOrderId = `free_order_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+        const freeTransactionId = `promo_navaratri_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+        const paymentRecord = await prisma.payment.create({
+          data: {
+            userId: req.user.id,
+            ownerId: owner.id,
+            propertyId: property.id,
+            planId: plan.id,
+            amount: 0,
+            currency: currency || 'INR',
+            cfOrderId: freeOrderId,
+            transactionId: freeTransactionId,
+            paymentMethod: 'NAVARATRI_FREE_OFFER',
+            paymentStatus: 'SUCCESS',
+          },
+        });
+
+        await prisma.property.update({
+          where: { id: property.id },
+          data: { status: 'PENDING_APPROVAL', planId: plan.id },
+        });
+
+        return res.status(201).json({
+          success: true,
+          isFree: true,
+          status: 'PAID',
+          order_id: freeOrderId,
+          id: freeOrderId,
+          amount: 0,
+          currency: currency || 'INR',
+          paymentId: paymentRecord.id,
+          message: 'Property submitted for admin review under Navaratri Free Posting Plan!',
         });
       }
 
