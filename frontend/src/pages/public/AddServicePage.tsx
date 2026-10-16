@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Truck,
@@ -213,8 +213,8 @@ export const AddServicePage: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#FCFAF6] flex flex-col justify-center items-center px-4 py-16">
         <SEOHead
-          title={lang === 'ta' ? 'உரிமையாளர் உள்நுழைவு | VeeduVadagaiKu' : 'Owner Login Required | VeeduVadagaiKu'}
-          description="Owner access is required to list home services on VeeduVadagaiKu."
+          title={lang === 'ta' ? 'உரிமையாளர் உள்நுழைவு | VeeduVadagaikkuChennai' : 'Owner Login Required | VeeduVadagaikkuChennai'}
+          description="Owner access is required to list home services on VeeduVadagaikkuChennai."
         />
         <div className="bg-white rounded-3xl max-w-md w-full p-8 border border-[#E8DFC8] shadow-xl text-center space-y-5 animate-scale-in">
           <div className="w-16 h-16 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center mx-auto shadow-xs">
@@ -341,8 +341,8 @@ export const AddServicePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FCFAF6] pb-16">
       <SEOHead
-        title={lang === 'ta' ? 'சேவையை பட்டியலிடுங்கள் | VeeduVadagaiKu' : 'List Your Service | VeeduVadagaiKu'}
-        description="List your home service on VeeduVadagaiKu — Movers, Renovation, Cleaning, AC Service, Legal Documentation"
+        title={lang === 'ta' ? 'சேவையை பட்டியலிடுங்கள் | VeeduVadagaikkuChennai' : 'List Your Service | VeeduVadagaikkuChennai'}
+        description="List your home service on VeeduVadagaikkuChennai — Movers, Renovation, Cleaning, AC Service, Legal Documentation"
       />
 
       {/* ─── Header (Matching HomePage White & Lite Gold Theme) ─── */}

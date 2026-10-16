@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -38,7 +38,7 @@ export const ShopsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Commercial Shops and Retail Space for Rent in Chennai | Veedu Vadagaiku"
+        title="Commercial Shops and Retail Space for Rent in Chennai | Veedu Vadagaikku Chennai"
         description="Find prime retail shops, office spaces and commercial showrooms for rent across Chennai."
       />
 

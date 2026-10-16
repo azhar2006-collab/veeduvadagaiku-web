@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { Home, ShieldCheck } from 'lucide-react';
 import { PhoneOTPForm } from '../../components/auth/PhoneOTPForm';
@@ -36,8 +36,8 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="min-h-[calc(100vh-200px)] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <SEOHead
-        title="Login | Veedu Vadagaiku - Chennai Rental Marketplace"
-        description="Login to your Veedu Vadagaiku account using Mobile OTP or Google Sign-In."
+        title="Login | Veedu Vadagaikku Chennai - Rental Marketplace"
+        description="Login to your Veedu Vadagaikku Chennai account using Mobile OTP or Google Sign-In."
       />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -47,7 +47,7 @@ export const LoginPage: React.FC = () => {
           </div>
         </Link>
         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-          Welcome to Veedu Vadagaiku
+          Welcome to Veedu Vadagaikku Chennai
         </h2>
         <p className="mt-2 text-xs sm:text-sm text-gray-500">
           Sign in to manage your saved rentals or owner listings

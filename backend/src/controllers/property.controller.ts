@@ -1,4 +1,4 @@
-import { Response, NextFunction, Request } from 'express';
+﻿import { Response, NextFunction, Request } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
 import { successResponse, paginatedResponse, ApiError } from '../utils/response';
@@ -676,7 +676,7 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
           const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
             const stream = cloudinary.uploader.upload_stream(
               {
-                folder: `veeduvadagaiku/properties/${id}`,
+                folder: `VeeduVadagaikkuChennai/properties/${id}`,
                 transformation: [{ width: 1200, height: 800, crop: 'limit', quality: 'auto:good' }],
               },
               (error, result) => {

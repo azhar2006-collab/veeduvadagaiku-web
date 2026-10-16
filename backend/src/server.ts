@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+﻿import dotenv from 'dotenv';
 dotenv.config();
 
 import app from './app';
@@ -28,7 +28,7 @@ async function startServer() {
     }
 
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`[Server] Veedu Vadagaiku API running on http://0.0.0.0:${PORT}`);
+      console.log(`[Server] Veedu Vadagaikku Chennai API running on http://0.0.0.0:${PORT}`);
       console.log(`[Server] Health check available at http://0.0.0.0:${PORT}/health`);
       console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
     });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
@@ -124,7 +124,7 @@ export const PendingApprovalsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      <SEOHead title="Review Pending Approvals | Veedu Vadagaiku Admin" />
+      <SEOHead title="Review Pending Approvals | Veedu Vadagaikku Chennai Admin" />
 
       <div className="pb-4 border-b border-gray-200">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-orange-600">

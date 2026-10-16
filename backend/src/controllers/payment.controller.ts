@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+﻿import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
@@ -132,7 +132,7 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
 
     const customerId = req.user?.id ? `cust_${req.user.id.slice(0, 20)}` : `cust_${Date.now()}`;
     const customerPhone = req.user?.mobile || '9999999999';
-    const customerEmail = req.user?.email || 'customer@veeduvadagaiku.com';
+    const customerEmail = req.user?.email || 'customer@VeeduVadagaikkuChennai.com';
     const customerName = req.user?.name || 'Valued Customer';
 
     const cfOrderRequest = {

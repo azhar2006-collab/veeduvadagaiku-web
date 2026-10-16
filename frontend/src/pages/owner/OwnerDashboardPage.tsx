@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ownerService } from '../../services/owner.service';
@@ -34,7 +34,7 @@ export const OwnerDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      <SEOHead title="Owner Dashboard | Veedu Vadagaiku" />
+      <SEOHead title="Owner Dashboard | Veedu Vadagaikku Chennai" />
 
       {/* Top Banner with Quick Actions */}
       <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">

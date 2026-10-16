@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ownerService } from '../../services/owner.service';
 import { useAuth } from '../../hooks/useAuth';
@@ -48,7 +48,7 @@ export const OwnerProfilePage: React.FC = () => {
 
   return (
     <div className="max-w-3xl space-y-6">
-      <SEOHead title="Owner Profile | Veedu Vadagaiku" />
+      <SEOHead title="Owner Profile | Veedu Vadagaikku Chennai" />
 
       <div className="pb-4 border-b border-gray-200">
         <h1 className="text-2xl font-black text-gray-900 tracking-tight">Owner Profile</h1>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { loadRazorpayScript } from '../../utils/razorpay';
 import { paymentService } from '../../services/payment.service';
 import toast from 'react-hot-toast';
@@ -31,7 +31,7 @@ interface RazorpayCheckoutButtonProps {
 export const RazorpayCheckoutButton: React.FC<RazorpayCheckoutButtonProps> = ({
   amount,
   currency = 'INR',
-  name = 'Veedu Vadagaiku',
+  name = 'Veedu Vadagaikku Chennai',
   description = 'Rental Marketplace Payment',
   receipt,
   propertyId,

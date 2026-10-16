@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 interface PreloaderProps {
   fadeOut?: boolean;
@@ -14,7 +14,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ fadeOut = false }) => {
       <div className="flex flex-col items-center justify-center p-6">
         <img
           src="/logo-full.png"
-          alt="Veedu Vadagaiku"
+          alt="Veedu Vadagaikku Chennai"
           className="w-64 max-w-[78vw] h-auto object-contain animate-pulse"
         />
       </div>

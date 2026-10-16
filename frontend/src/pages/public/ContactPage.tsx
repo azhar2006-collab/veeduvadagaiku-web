@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from 'lucide-react';
 import { SEOHead } from '../../components/common/SEOHead';
 import toast from 'react-hot-toast';
@@ -18,8 +18,8 @@ export const ContactPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
       <SEOHead
-        title="Contact Us | Veedu Vadagaiku"
-        description="Get in touch with Veedu Vadagaiku support in Chennai. We're here to help landlords and tenants."
+        title="Contact Us | Veedu Vadagaikku Chennai"
+        description="Get in touch with Veedu Vadagaikku Chennai support in Chennai. We're here to help landlords and tenants."
       />
 
       <div className="text-center space-y-4 max-w-xl mx-auto">
@@ -66,7 +66,7 @@ export const ContactPage: React.FC = () => {
             </div>
             <div>
               <h4 className="text-sm font-bold text-gray-900 mb-1">Email Inquiries</h4>
-              <p className="text-xs text-gray-500">support@veeduvadagaiku.com</p>
+              <p className="text-xs text-gray-500">support@VeeduVadagaikkuChennai.com</p>
               <p className="text-[11px] text-gray-400 mt-1">Typical response within 2 hours</p>
             </div>
           </div>
@@ -81,7 +81,7 @@ export const ContactPage: React.FC = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900">Message Received!</h3>
               <p className="text-sm text-gray-500 max-w-sm mx-auto">
-                Thank you for contacting Veedu Vadagaiku. Our team will get back to you shortly.
+                Thank you for contacting Veedu Vadagaikku Chennai. Our team will get back to you shortly.
               </p>
               <button
                 onClick={() => setSubmitted(false)}

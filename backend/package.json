@@ -1,7 +1,7 @@
-{
-  "name": "veeduvadagaiku-backend",
+﻿{
+  "name": "VeeduVadagaikkuChennai-backend",
   "version": "1.0.0",
-  "description": "Veedu Vadagaiku Rental Marketplace Backend API",
+  "description": "Veedu Vadagaikku Chennai rental Marketplace Backend API",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",

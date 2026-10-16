@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 interface SEOHeadProps {
@@ -10,13 +10,13 @@ interface SEOHeadProps {
 }
 
 export const SEOHead: React.FC<SEOHeadProps> = ({
-  title = 'Veedu Vadagaiku - Chennai Rental Marketplace',
+  title = 'Veedu Vadagaikku Chennai - Rental Marketplace',
   description = 'Find houses and shops for rent in Chennai. Chennai’s trusted property rental platform.',
   keywords = 'houses for rent chennai, shops for rent chennai, chennai rentals, வீடு வாடகைக்கு',
   image = '/og-image.jpg',
   url,
 }) => {
-  const fullTitle = title.includes('Veedu Vadagaiku') ? title : `${title} | Veedu Vadagaiku`;
+  const fullTitle = title.includes('Veedu Vadagaikku Chennai') ? title : `${title} | Veedu Vadagaikku Chennai`;
 
   return (
     <Helmet>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   MapPin,
@@ -89,7 +89,7 @@ export const PropertyDetailPage: React.FC = () => {
       try {
         await navigator.share({
           title: property.title,
-          text: `Check out this rental property in ${property.locality}, Chennai on Veedu Vadagaiku:`,
+          text: `Check out this rental property in ${property.locality}, Chennai on Veedu Vadagaikku Chennai:`,
           url,
         });
       } catch {}
@@ -139,7 +139,7 @@ export const PropertyDetailPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-5 sm:space-y-8">
       <SEOHead
-        title={`${property.title} in ${property.locality}, Chennai | Veedu Vadagaiku`}
+        title={`${property.title} in ${property.locality}, Chennai | Veedu Vadagaikku Chennai`}
         description={`${property.propertyType === 'HOUSE' ? 'House' : 'Shop'} for rent in ${
           property.locality
         }, Chennai. Rent: ${formattedRent}/month. Direct owner contact.`}
@@ -405,7 +405,7 @@ export const PropertyDetailPage: React.FC = () => {
                       href={`https://wa.me/91${cleanPhone.slice(-10)}?text=${encodeURIComponent(
                         lang === 'ta'
                           ? `வணக்கம், நான் உங்கள் சொத்து விளம்பரத்தை வீடு வாடகைக்கு இணையதளத்தில் பார்த்தேன்: "${property.title}" (${property.locality}). இது தற்போது வாடகைக்கு உள்ளதா?`
-                          : `Hi, I found your property listing on Veedu Vadagaiku: "${property.title}" in ${property.locality}. Is it still available for rent?`
+                          : `Hi, I found your property listing on Veedu Vadagaikku Chennai: "${property.title}" in ${property.locality}. Is it still available for rent?`
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"

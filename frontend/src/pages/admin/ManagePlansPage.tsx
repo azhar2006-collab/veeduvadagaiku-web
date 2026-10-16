@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
 import { ListingPlan } from '../../types';
@@ -97,7 +97,7 @@ export const ManagePlansPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      <SEOHead title="Manage Listing Plans | Veedu Vadagaiku Admin" />
+      <SEOHead title="Manage Listing Plans | Veedu Vadagaikku Chennai Admin" />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-200 gap-4">
         <div>

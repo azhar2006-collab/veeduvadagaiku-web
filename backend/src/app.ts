@@ -1,4 +1,4 @@
-import 'dotenv/config';
+﻿import 'dotenv/config';
 import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
@@ -60,7 +60,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), service: 'Veedu Vadagaiku API' });
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), service: 'Veedu Vadagaikku Chennai API' });
 });
 
 // API routes

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Home, ShieldCheck } from 'lucide-react';
 import { PhoneOTPForm } from '../../components/auth/PhoneOTPForm';
@@ -43,8 +43,8 @@ export const RegisterPage: React.FC = () => {
   return (
     <div className="min-h-[calc(100vh-200px)] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <SEOHead
-        title="Register | Veedu Vadagaiku - Chennai Rental Marketplace"
-        description="Create your Veedu Vadagaiku account as a Tenant or Property Owner."
+        title="Register | Veedu Vadagaikku Chennai - Rental Marketplace"
+        description="Create your Veedu Vadagaikku Chennai account as a Tenant or Property Owner."
       />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">

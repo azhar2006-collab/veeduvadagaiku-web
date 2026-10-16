@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { LucideIcon, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -31,7 +31,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ title, items
         <Link to="/" className="block hover:opacity-95 transition">
           <img
             src="/logo-full.png"
-            alt="Veedu Vadagaiku"
+            alt="Veedu Vadagaikku Chennai"
             className="h-10 sm:h-11 w-auto object-contain"
           />
         </Link>

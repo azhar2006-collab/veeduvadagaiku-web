@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Home, ShieldCheck, Zap, Users, Building2, Store } from 'lucide-react';
 import { SEOHead } from '../../components/common/SEOHead';
 
@@ -6,13 +6,13 @@ export const AboutPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
       <SEOHead
-        title="About Us | Veedu Vadagaiku - Chennai Rental Marketplace"
-        description="Learn about Veedu Vadagaiku, Chennai's dedicated rental marketplace for verified houses and commercial shops."
+        title="About Us | Veedu Vadagaikku Chennai - Rental Marketplace"
+        description="Learn About Veedu Vadagaikku Chennai, Chennai's dedicated rental marketplace for verified houses and commercial shops."
       />
 
       <div className="text-center space-y-4 max-w-2xl mx-auto">
         <span className="text-xs font-black tracking-widest text-orange-600 uppercase">
-          About Veedu Vadagaiku
+          About Veedu Vadagaikku Chennai
         </span>
         <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
           Simplifying Rentals Across Chennai

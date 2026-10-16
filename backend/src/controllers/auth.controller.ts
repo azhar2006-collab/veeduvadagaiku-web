@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+﻿import { Response, NextFunction } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { getFirebaseAdmin } from '../config/firebase';
 import { prisma } from '../config/database';
@@ -10,7 +10,7 @@ import { successResponse, ApiError } from '../utils/response';
 const ADMIN_EMAILS = [
   'srinandhinihall@gmail.com',
   'azhar12082006@gmail.com',
-  'admin@veeduvadagaiku.com',
+  'admin@VeeduVadagaikkuChennai.com',
   ...(process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map((e) => e.trim().toLowerCase()) : []),
 ];
 

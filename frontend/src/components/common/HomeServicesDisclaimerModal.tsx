@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { X, Sparkles, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -83,7 +83,7 @@ export const HomeServicesDisclaimerModal: React.FC<HomeServicesDisclaimerModalPr
               id="home-services-disclaimer-heading"
               className="text-xl sm:text-2xl font-extrabold text-[#1E2329] tracking-tight mt-0.5"
             >
-              Welcome to VeeduVadagaiku!
+              Welcome to VeeduVadagaikkuChennai!
             </h2>
           </div>
         </div>
@@ -94,7 +94,7 @@ export const HomeServicesDisclaimerModal: React.FC<HomeServicesDisclaimerModalPr
           className="space-y-3.5 text-xs sm:text-sm text-gray-600 leading-relaxed bg-[#FCFAF6] p-4 sm:p-5 rounded-2xl border border-[#EFE8D8]"
         >
           <p>
-            VeeduVadagaiku is a platform that helps customers discover and connect with independent
+            VeeduVadagaikkuChennai is a platform that helps customers discover and connect with independent
             home service providers, workers, and service owners.
           </p>
           <p>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { planService } from '../../services/plan.service';
@@ -150,7 +150,7 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 pb-12">
-      <SEOHead title="Select Listing Plan & Pay | Veedu Vadagaiku" />
+      <SEOHead title="Select Listing Plan & Pay | Veedu Vadagaikku Chennai" />
 
       {/* Header */}
       <div className="text-center space-y-2">

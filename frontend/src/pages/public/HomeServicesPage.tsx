@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Phone,
@@ -257,8 +257,8 @@ export const HomeServicesPage: React.FC = () => {
       <SEOHead
         title={
           lang === 'ta'
-            ? 'சென்னை வீட்டு சேவைகள் | VeeduVadagaiKu'
-            : 'Chennai Home Services | VeeduVadagaiKu'
+            ? 'சென்னை வீட்டு சேவைகள் | VeeduVadagaikkuChennai'
+            : 'Chennai Home Services | VeeduVadagaikkuChennai'
         }
         description="Verified movers, renovation, deep cleaning, AC service and legal documentation experts across Chennai."
       />
@@ -748,8 +748,8 @@ export const HomeServicesPage: React.FC = () => {
             </span>
             <h3 className="text-xl sm:text-3xl font-extrabold text-gray-900">
               {lang === 'ta'
-                ? 'உங்கள் சேவையை VeeduVadagaiKu-வில் பட்டியலிடுங்கள்!'
-                : 'Grow Your Business with VeeduVadagaiKu!'}
+                ? 'உங்கள் சேவையை VeeduVadagaikkuChennai-வில் பட்டியலிடுங்கள்!'
+                : 'Grow Your Business with Veedu Vadagaikku Chennai!'}
             </h3>
             <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
               {lang === 'ta'

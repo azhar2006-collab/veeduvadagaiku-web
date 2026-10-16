@@ -1,4 +1,4 @@
-import axios from 'axios';
+﻿import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
 // Normalize base API URL
@@ -8,7 +8,7 @@ const getApiBaseUrl = () => {
     if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
       return 'http://localhost:5000';
     }
-    return 'https://veeduvadagaiku-web-production.up.railway.app';
+    return 'https://VeeduVadagaikkuChennai-web-production.up.railway.app';
   }
   url = url.trim();
   if (!url.startsWith('http://') && !url.startsWith('https://')) {

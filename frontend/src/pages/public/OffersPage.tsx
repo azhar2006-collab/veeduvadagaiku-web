@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { SEOHead } from '../../components/common/SEOHead';
@@ -30,8 +30,8 @@ export const OffersPage: React.FC = () => {
   return (
     <div className="space-y-12 pb-16">
       <SEOHead
-        title="Promotional Offers & Free Property Posting | Veedu Vadagaiku Chennai"
-        description="Check out latest promotional deals on Veedu Vadagaiku. Post your Chennai house, shop, or flat for free during our festive offers."
+        title="Promotional Offers & Free Property Posting | Veedu Vadagaikku Chennai Chennai"
+        description="Check out latest promotional deals on Veedu Vadagaikku Chennai. Post your Chennai house, shop, or flat for free during our festive offers."
       />
 
       {/* Hero Header */}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import api from '../../lib/axios';
 import { SEOHead } from '../../components/common/SEOHead';
@@ -33,7 +33,7 @@ export const UserProfilePage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead title="My Profile | Veedu Vadagaiku" />
+      <SEOHead title="My Profile | Veedu Vadagaikku Chennai" />
 
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
         <div>

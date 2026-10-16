@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldAlert, KeyRound, Lock, ArrowRight } from 'lucide-react';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
@@ -42,7 +42,7 @@ export const AdminLoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4 py-12">
-      <SEOHead title="Admin Access Portal | Veedu Vadagaiku" />
+      <SEOHead title="Admin Access Portal | Veedu Vadagaikku Chennai" />
 
       <div className="max-w-md w-full bg-gray-800 rounded-3xl p-8 border border-gray-700 shadow-2xl space-y-6 text-center">
         <div className="w-16 h-16 bg-orange-600/20 text-orange-500 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto">
@@ -52,7 +52,7 @@ export const AdminLoginPage: React.FC = () => {
         <div>
           <h2 className="text-2xl font-black text-white tracking-tight">Admin Control Portal</h2>
           <p className="text-xs text-gray-400 mt-1">
-            Restricted administrative access for Veedu Vadagaiku moderation
+            Restricted administrative access for Veedu Vadagaikku Chennai moderation
           </p>
         </div>
 

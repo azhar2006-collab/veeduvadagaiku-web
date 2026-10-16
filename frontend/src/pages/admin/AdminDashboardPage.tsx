@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
@@ -31,7 +31,7 @@ export const AdminDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8 pb-12">
-      <SEOHead title="Admin Dashboard | Veedu Vadagaiku" />
+      <SEOHead title="Admin Dashboard | Veedu Vadagaikku Chennai" />
 
       {/* Header Banner */}
       <div className="bg-gray-900 rounded-3xl p-6 sm:p-8 text-white border border-gray-800 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">

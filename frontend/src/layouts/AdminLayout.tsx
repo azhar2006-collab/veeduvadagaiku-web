@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Outlet, Navigate, Link } from 'react-router-dom';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
 import { useAuth } from '../hooks/useAuth';
@@ -48,7 +48,7 @@ export const AdminLayout: React.FC = () => {
               <div className="bg-white px-2.5 py-1 rounded-xl shadow-sm hover:opacity-95 transition">
                 <img
                   src="/logo-full.png"
-                  alt="Veedu Vadagaiku"
+                  alt="Veedu Vadagaikku Chennai"
                   className="h-8 w-auto object-contain"
                 />
               </div>

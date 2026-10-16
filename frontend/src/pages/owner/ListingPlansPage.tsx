@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { planService } from '../../services/plan.service';
@@ -17,7 +17,7 @@ export const ListingPlansPage: React.FC = () => {
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-12">
-      <SEOHead title="Listing Plans & Pricing | Veedu Vadagaiku" />
+      <SEOHead title="Listing Plans & Pricing | Veedu Vadagaikku Chennai" />
 
       <div className="text-center space-y-3 max-w-xl mx-auto">
         <span className="text-xs font-black uppercase tracking-widest text-[#9A7818]">

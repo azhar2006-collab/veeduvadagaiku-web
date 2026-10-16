@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Heart,
@@ -613,7 +613,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
           {currentProperty.contactWhatsapp ? (
             <a
               href={`https://wa.me/91${currentProperty.owner?.user?.mobile || ''}?text=${encodeURIComponent(
-                `Vanakkam! I saw your property "${currentProperty.title}" in ${currentProperty.locality} on VeeduVadagaiku. Is it still available for rent?`
+                `Vanakkam! I saw your property "${currentProperty.title}" in ${currentProperty.locality} on VeeduVadagaikkuChennai. Is it still available for rent?`
               )}`}
               target="_blank"
               rel="noopener noreferrer"

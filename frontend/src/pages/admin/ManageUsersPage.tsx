@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
 import { Loader } from '../../components/common/Loader';
@@ -34,7 +34,7 @@ export const ManageUsersPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      <SEOHead title="Manage Platform Users | Veedu Vadagaiku Admin" />
+      <SEOHead title="Manage Platform Users | Veedu Vadagaikku Chennai Admin" />
 
       <div className="pb-4 border-b border-gray-200">
         <h1 className="text-2xl font-black text-gray-900 tracking-tight">

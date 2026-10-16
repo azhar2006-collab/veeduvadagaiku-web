@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -93,7 +93,7 @@ export const MarriageHallsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Marriage Halls & Kalyana Mandapam for Rent in Chennai | Veedu Vadagaiku"
+        title="Marriage Halls & Kalyana Mandapam for Rent in Chennai | Veedu Vadagaikku Chennai"
         description="Book verified Kalyana Mandapams, mini party halls and wedding venues in Chennai directly from owners."
       />
 

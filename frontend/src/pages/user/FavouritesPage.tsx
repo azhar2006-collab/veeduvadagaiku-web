@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { favouriteService } from '../../services/favourite.service';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
@@ -15,7 +15,7 @@ export const FavouritesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead title="Saved Properties | Veedu Vadagaiku" />
+      <SEOHead title="Saved Properties | Veedu Vadagaikku Chennai" />
 
       <div className="flex items-center justify-between pb-4 border-b border-gray-200">
         <div>

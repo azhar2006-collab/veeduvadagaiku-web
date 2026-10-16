@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { enquiryService } from '../../services/enquiry.service';
 import { Loader } from '../../components/common/Loader';
@@ -31,7 +31,7 @@ export const OwnerEnquiriesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead title="Tenant Enquiries | Veedu Vadagaiku" />
+      <SEOHead title="Tenant Enquiries | Veedu Vadagaikku Chennai" />
 
       <div className="pb-4 border-b border-gray-200">
         <h1 className="text-2xl font-black text-gray-900 tracking-tight">

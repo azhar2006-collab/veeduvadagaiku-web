@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { useUserEnquiries } from '../../hooks/useEnquiries';
 import { SEOHead } from '../../components/common/SEOHead';
@@ -12,7 +12,7 @@ export const UserEnquiriesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead title="My Enquiries | Veedu Vadagaiku" />
+      <SEOHead title="My Enquiries | Veedu Vadagaikku Chennai" />
 
       <div className="pb-4 border-b border-gray-200">
         <h1 className="text-2xl font-black text-gray-900 tracking-tight">

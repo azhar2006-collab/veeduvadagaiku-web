@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -427,7 +427,7 @@ export const AddPropertyPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
-      <SEOHead title="Add New Property | Veedu Vadagaiku" />
+      <SEOHead title="Add New Property | Veedu Vadagaikku Chennai" />
 
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">

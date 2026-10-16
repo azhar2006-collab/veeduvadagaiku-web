@@ -1,12 +1,12 @@
-import React from 'react';
+﻿import React from 'react';
 import { SEOHead } from '../../components/common/SEOHead';
 
 export const PrivacyPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
       <SEOHead
-        title="Privacy Policy | Veedu Vadagaiku"
-        description="Privacy policy and data protection principles on Veedu Vadagaiku."
+        title="Privacy Policy | Veedu Vadagaikku Chennai"
+        description="Privacy policy and data protection principles on Veedu Vadagaikku Chennai."
       />
 
       <div className="border-b border-gray-200 pb-4">

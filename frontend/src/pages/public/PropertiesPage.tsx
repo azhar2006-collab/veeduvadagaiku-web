@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
@@ -161,7 +161,7 @@ export const PropertiesPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Verified Houses and Shops for Rent in Chennai | Veedu Vadagaiku"
+        title="Verified Houses and Shops for Rent in Chennai | Veedu Vadagaikku Chennai"
         description="Browse all available rental properties in Chennai. Filter by locality, rent range, bedrooms, and furnishing."
       />
 

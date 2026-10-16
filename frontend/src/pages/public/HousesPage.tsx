@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -40,7 +40,7 @@ export const HousesPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Houses and Flats for Rent in Chennai | Veedu Vadagaiku"
+        title="Houses and Flats for Rent in Chennai | Veedu Vadagaikku Chennai"
         description="Find verified 1 BHK, 2 BHK, 3 BHK houses and apartments for rent in Chennai. Direct contact with landlords."
       />
 

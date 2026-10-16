@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Heart, MessageSquare, Search, Building2, Store, ArrowRight, User, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -34,7 +34,7 @@ export const UserDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <SEOHead title="Tenant Dashboard | Veedu Vadagaiku" />
+      <SEOHead title="Tenant Dashboard | Veedu Vadagaikku Chennai" />
 
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-3xl p-6 sm:p-8 text-white shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

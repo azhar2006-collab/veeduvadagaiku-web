@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -60,7 +60,7 @@ export const MyPropertiesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead title="My Properties | Veedu Vadagaiku" />
+      <SEOHead title="My Properties | Veedu Vadagaikku Chennai" />
 
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-200 gap-4">
@@ -290,7 +290,7 @@ export const MyPropertiesPage: React.FC = () => {
       <ConfirmDialog
         isOpen={!!deleteId}
         title="Remove Property Listing?"
-        message="Are you sure you want to remove this property? It will no longer appear on Veedu Vadagaiku."
+        message="Are you sure you want to remove this property? It will no longer appear on Veedu Vadagaikku Chennai."
         confirmText="Yes, Remove"
         isDestructive
         isLoading={deleteMutation.isPending}

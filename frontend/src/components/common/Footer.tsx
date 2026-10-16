@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Phone, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
               <div className="bg-white p-2.5 rounded-2xl inline-block shadow-xs border border-[#EFE8D8]">
                 <img
                   src="/logo-full.png"
-                  alt="Veedu Vadagaiku"
+                  alt="Veedu Vadagaikku Chennai"
                   className="h-11 sm:h-13 w-auto object-contain"
                 />
               </div>
@@ -129,7 +129,7 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#C5A059] shrink-0" />
-                <span>support@veeduvadagaiku.com</span>
+                <span>support@VeeduVadagaikkuChennai.com</span>
               </li>
             </ul>
           </div>
@@ -137,7 +137,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#EFE8D8] flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-          <p>© {new Date().getFullYear()} Veedu Vadagaiku. {t('footer.rights')}</p>
+          <p>© {new Date().getFullYear()} Veedu Vadagaikku Chennai. {t('footer.rights')}</p>
           <div className="flex items-center gap-6">
             <Link to="/terms" className="hover:text-gray-800 transition">
               {t('footer.terms')}

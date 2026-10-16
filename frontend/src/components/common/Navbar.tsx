@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown, Wrench, Gift } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
             <Link to="/" className="flex items-center gap-3 group py-1">
               <img
                 src="/logo-full.png"
-                alt="Veedu Vadagaiku - Chennai's Rental Marketplace"
+                alt="Veedu Vadagaikku Chennai's Rental Marketplace"
                 className="h-8 sm:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
               />
             </Link>

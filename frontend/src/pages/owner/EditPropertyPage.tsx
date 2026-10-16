@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -99,7 +99,7 @@ export const EditPropertyPage: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-12">
-      <SEOHead title={`Edit Property | Veedu Vadagaiku`} />
+      <SEOHead title={`Edit Property | Veedu Vadagaikku Chennai`} />
 
       <div className="flex items-center gap-3 pb-4 border-b border-gray-200">
         <button

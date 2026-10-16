@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Generates WhatsApp share URL with prefilled rich message
  */
 export const getWhatsAppShareUrl = (
@@ -13,7 +13,7 @@ export const getWhatsAppShareUrl = (
   },
   lang: 'en' | 'ta' = 'en'
 ): string => {
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://veeduvadagaiku.com';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://VeeduVadagaikkuChennai.com';
   const url = `${origin}/property/${property.id}`;
 
   const formattedRent = new Intl.NumberFormat('en-IN', {
@@ -38,7 +38,7 @@ export const getWhatsAppShareUrl = (
   } else {
     message = `*${property.title}*\nLocation: ${property.locality}, Chennai\nRent: ${formattedRent}/month${
       formattedDeposit ? ` | Deposit: ${formattedDeposit}` : ''
-    }\n\nView photos & full details on Veedu Vadagaiku:\n${url}\n\n(Direct Landlord Contact - Verified Listings)`;
+    }\n\nView photos & full details on Veedu Vadagaikku Chennai:\n${url}\n\n(Direct Landlord Contact - Verified Listings)`;
   }
 
   return `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
