@@ -65,7 +65,7 @@ export const PaymentResultPage: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto py-12 px-4 space-y-8">
-      <SEOHead title={isSuccess ? (isFreeOffer ? '🏠 Property Posted LIVE!' : 'Payment Successful') : 'Payment Failed'} />
+      <SEOHead title={isSuccess ? (isFreeOffer ? '🎉 Request Received!' : 'Payment Successful') : 'Payment Failed'} />
 
       <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-100 shadow-xl text-center space-y-6">
         {verifying ? (
@@ -77,6 +77,7 @@ export const PaymentResultPage: React.FC = () => {
           </div>
         ) : isSuccess ? (
           <>
+            {/* Icon */}
             <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-md ${
               isFreeOffer
                 ? 'bg-amber-100 text-amber-600 shadow-amber-500/20'
@@ -85,19 +86,22 @@ export const PaymentResultPage: React.FC = () => {
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
+            {/* Header */}
             <div className="space-y-2">
               <span className={`text-xs font-black uppercase tracking-widest ${
                 isFreeOffer ? 'text-amber-600' : 'text-emerald-600'
               }`}>
-                {isFreeOffer ? '🎉 Navaratri Special Offer Applied' : 'Payment Confirmed'}
+                {isFreeOffer ? '🎉 Navaratri Special Offer — Request Received!' : 'Payment Confirmed'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-                {isFreeOffer ? '🏠 Your Property is Now LIVE!' : 'Listing Submitted for Review!'}
+                {isFreeOffer
+                  ? 'Your Request Has Been Submitted!'
+                  : 'Listing Submitted for Review!'}
               </h1>
-              <p className="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
+              <p className="text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
                 {isFreeOffer ? (
                   <>
-                    🎊 Congratulations! Your property has been <strong className="text-green-700">posted 100% FREE</strong> under the <strong>Navaratri Special Offer</strong> with <strong>₹0 posting fee</strong>. It is now <strong className="text-green-700">LIVE and visible</strong> to all renters on the platform!
+                    Thank you! Your property listing has been submitted <strong className="text-amber-700">100% FREE</strong> under the <strong>Navaratri Special Offer</strong> (₹0 posting fee). Our team will review and post it shortly.
                   </>
                 ) : (
                   <>
@@ -108,17 +112,48 @@ export const PaymentResultPage: React.FC = () => {
               </p>
             </div>
 
+            {/* 24hr promise banner — free offer only */}
+            {isFreeOffer && (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 text-left space-y-3">
+                {/* 24hr badge */}
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
+                    ⏱ Within 24 Hours
+                  </span>
+                  <span className="text-xs text-amber-700 font-semibold">Our team will review your listing</span>
+                </div>
+
+                {/* Step timeline */}
+                <ol className="space-y-2 text-xs text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">✓</span>
+                    <span><strong>Step 1 — Done:</strong> Your property details have been received and saved.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-amber-400 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
+                    <span><strong>Step 2 — In Progress:</strong> Our team will verify the listing details within <strong>24 hours</strong>.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px] font-black flex items-center justify-center flex-shrink-0">3</span>
+                    <span><strong>Step 3 — Coming Soon:</strong> Once approved, your property goes <strong>LIVE</strong> for all renters to see!</span>
+                  </li>
+                </ol>
+              </div>
+            )}
+
+            {/* Property title chip */}
             {propTitle && (
               <div className={`p-3.5 rounded-xl border text-xs font-bold truncate ${
                 isFreeOffer
                   ? 'bg-amber-50 border-amber-200 text-amber-900'
                   : 'bg-emerald-50 border-emerald-100 text-emerald-950'
               }`}>
-                {propTitle}
+                🏠 {propTitle}
               </div>
             )}
 
-            <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+            {/* CTAs */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 to="/owner/properties"
                 className={`px-6 py-3 font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 ${
@@ -127,7 +162,7 @@ export const PaymentResultPage: React.FC = () => {
                     : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                 }`}
               >
-                <span>{isFreeOffer ? 'View My Live Property' : 'View Property Status'}</span>
+                <span>{isFreeOffer ? 'Track My Request' : 'View Property Status'}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
