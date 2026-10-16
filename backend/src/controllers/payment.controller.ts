@@ -1,4 +1,4 @@
-﻿import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
@@ -46,18 +46,32 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
         });
       }
 
-      if (property.status !== 'DRAFT' && property.status !== 'REJECTED') {
-        return res.status(400).json({
-          success: false,
-          message: 'Payment can only be made for draft or rejected properties',
-        });
-      }
-
       plan = await prisma.listingPlan.findFirst({ where: { id: planId, isActive: true } });
       if (!plan) {
         return res.status(404).json({
           success: false,
           message: 'Listing plan not found',
+        });
+      }
+
+      // If already pending approval under free offer, return success gracefully
+      if (property.status === 'PENDING_APPROVAL' && (plan.price === 0 || plan.id === 'plan_navaratri_free')) {
+        return res.status(200).json({
+          success: true,
+          isFree: true,
+          status: 'PAID',
+          order_id: `free_order_${property.id}`,
+          cf_order_id: `free_order_${property.id}`,
+          amount: 0,
+          currency: currency || 'INR',
+          message: 'Request received! Our team will review and post your property within 24 hours.',
+        });
+      }
+
+      if (property.status !== 'DRAFT' && property.status !== 'REJECTED') {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment can only be made for draft or rejected properties',
         });
       }
 
@@ -382,18 +396,32 @@ export async function createRazorpayOrder(req: AuthRequest, res: Response, next:
         });
       }
 
-      if (property.status !== 'DRAFT' && property.status !== 'REJECTED') {
-        return res.status(400).json({
-          success: false,
-          message: 'Payment can only be made for draft or rejected properties',
-        });
-      }
-
       plan = await prisma.listingPlan.findFirst({ where: { id: planId, isActive: true } });
       if (!plan) {
         return res.status(404).json({
           success: false,
           message: 'Listing plan not found',
+        });
+      }
+
+      // If already pending approval under free offer, return success gracefully
+      if (property.status === 'PENDING_APPROVAL' && (plan.price === 0 || plan.id === 'plan_navaratri_free')) {
+        return res.status(200).json({
+          success: true,
+          isFree: true,
+          status: 'PAID',
+          order_id: `free_order_${property.id}`,
+          id: `free_order_${property.id}`,
+          amount: 0,
+          currency: currency || 'INR',
+          message: 'Request received! Our team will review and post your property within 24 hours.',
+        });
+      }
+
+      if (property.status !== 'DRAFT' && property.status !== 'REJECTED') {
+        return res.status(400).json({
+          success: false,
+          message: 'Payment can only be made for draft or rejected properties',
         });
       }
 

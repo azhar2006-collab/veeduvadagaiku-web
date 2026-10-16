@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { planService } from '../../services/plan.service';
 import { paymentService } from '../../services/payment.service';
@@ -8,7 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getCashfree } from '../../utils/cashfree';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
-import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2, Sparkles, Gift, CheckCircle2 } from 'lucide-react';
+import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2, Sparkles, Gift, CheckCircle2, X, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const PaymentPage: React.FC = () => {
@@ -19,6 +19,8 @@ export const PaymentPage: React.FC = () => {
 
   const [selectedPlanId, setSelectedPlanId] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [submittedPropTitle, setSubmittedPropTitle] = useState('');
 
   // Load plans
   const { data: plansRes, isLoading: loadingPlans } = useQuery({
@@ -72,15 +74,11 @@ export const PaymentPage: React.FC = () => {
       // 1. Create order on backend (handles both free promo and paid plans)
       const orderRes = await paymentService.createOrder(propertyId, selectedPlanId);
 
-      // If this is a free promotional plan, bypass payment gateway completely!
+      // If this is a free promotional plan, show success popup — no payment gateway needed!
       if (orderRes?.isFree || orderRes?.amount === 0 || isSelectedPlanFree) {
         setIsProcessing(false);
-        toast.success('🎉 Property submitted for free with Navaratri Special Offer!');
-        navigate(
-          `/owner/payment/result?status=success&orderId=${orderRes?.order_id || 'free_order'}&propTitle=${encodeURIComponent(
-            property?.title || 'Your Property'
-          )}&freeOffer=true`
-        );
+        setSubmittedPropTitle(property?.title || 'Your Property');
+        setShowSuccessPopup(true);
         return;
       }
 
@@ -328,6 +326,7 @@ export const PaymentPage: React.FC = () => {
           )}
         </button>
 
+        {/* Trust badges */}
         <div className="flex items-center justify-center gap-4 text-xs text-gray-400 flex-wrap">
           <span className="flex items-center gap-1">
             <ShieldCheck className="w-4 h-4 text-[#C5A059]" />
@@ -343,6 +342,76 @@ export const PaymentPage: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* ✅ Navaratri Free Claim Success Popup */}
+      {showSuccessPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-6 text-center animate-in fade-in zoom-in-95 duration-300">
+
+            {/* Festive top bar */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500" />
+
+            {/* Success icon */}
+            <div className="w-20 h-20 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+
+            {/* Heading */}
+            <div className="space-y-2">
+              <span className="text-xs font-black uppercase tracking-widest text-amber-600">
+                🎉 Navaratri Special Offer — Request Received!
+              </span>
+              <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+                Your Request Has Been Submitted!
+              </h2>
+              <p className="text-sm text-gray-500 leading-relaxed max-w-xs mx-auto">
+                Your property <strong className="text-gray-800">"{submittedPropTitle}"</strong> has been submitted <strong className="text-amber-700">100% FREE</strong> under the Navaratri Special Offer.
+              </p>
+            </div>
+
+            {/* 24hr promise card */}
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 text-left space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full">
+                  <Clock className="w-3 h-3" /> Within 24 Hours
+                </span>
+                <span className="text-xs text-amber-700 font-semibold">Our team will review your listing</span>
+              </div>
+              <ol className="space-y-2 text-xs text-gray-700">
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">✓</span>
+                  <span><strong>Step 1 — Done:</strong> Property details received &amp; saved.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 w-5 h-5 rounded-full bg-amber-400 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
+                  <span><strong>Step 2 — In Progress:</strong> Admin will verify within <strong>24 hours</strong>.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px] font-black flex items-center justify-center flex-shrink-0">3</span>
+                  <span><strong>Step 3 — Coming Soon:</strong> Once approved, your property goes <strong>LIVE</strong>!</span>
+                </li>
+              </ol>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                to="/owner/properties"
+                className="flex-1 py-3 px-5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-md shadow-amber-500/30 transition flex items-center justify-center gap-2"
+              >
+                <span>Track My Request</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/owner/dashboard"
+                className="flex-1 py-3 px-5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-sm rounded-xl transition flex items-center justify-center"
+              >
+                Go to Dashboard
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
