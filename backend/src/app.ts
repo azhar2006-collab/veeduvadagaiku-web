@@ -38,18 +38,30 @@ if (fs.existsSync(frontendPublicDir)) {
 }
 
 // CORS — allow production domain + localhost for development
-const ALLOWED_ORIGINS = [
+const configuredOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map((u) => u.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
+const ALLOWED_ORIGINS = new Set([
   'https://veeduvadagaikkuchennai.com',
   'https://www.veeduvadagaikkuchennai.com',
-  process.env.FRONTEND_URL || 'http://localhost:5173',
-];
+  'https://veeduvadagaiku-web-te54.vercel.app',
+  ...configuredOrigins,
+]);
+
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    const cleanOrigin = origin.replace(/\/$/, '');
+    if (ALLOWED_ORIGINS.has(cleanOrigin)) return callback(null, true);
     // In development, allow any localhost port
     if (process.env.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+$/.test(origin)) {
+      return callback(null, true);
+    }
+    // Allow any Vercel deployment URL for this project
+    if (/^https:\/\/veeduvadagaiku-web.*\.vercel\.app$/.test(cleanOrigin)) {
       return callback(null, true);
     }
     callback(new Error(`CORS blocked: ${origin}`));
