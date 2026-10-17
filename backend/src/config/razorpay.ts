@@ -9,13 +9,17 @@ export const isRazorpayConfigured = (): boolean => {
   return Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
 };
 
-export function createRazorpayInstance(): Razorpay {
+export function createRazorpayInstance(): any {
   const key_id = process.env.RAZORPAY_KEY_ID || 'rzp_placeholder';
   const key_secret = process.env.RAZORPAY_KEY_SECRET || 'secret_placeholder';
-  return new Razorpay({
-    key_id,
-    key_secret,
-  });
+  try {
+    return new Razorpay({
+      key_id,
+      key_secret,
+    });
+  } catch {
+    return {};
+  }
 }
 
 // Lazy proxy so it never throws on module import if keys are missing

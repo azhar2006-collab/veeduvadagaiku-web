@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -18,6 +18,7 @@ import {
   SendHorizonal,
   Clock,
   CheckCircle2,
+  Sparkles,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -223,22 +224,17 @@ export const MyPropertiesPage: React.FC = () => {
                   <div className="mx-4 mb-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900 flex-wrap">
                     <div className="flex items-center gap-2">
                       <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span>Property saved as draft. Choose a plan to activate or submit for review.</span>
+                      <span>Property saved as draft. Submit for admin review to get it published.</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Link
-                        to={`/owner/payment?propertyId=${prop.id}`}
-                        className="px-3 py-1.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white font-bold rounded-lg transition text-[11px] shadow-xs"
-                      >
-                        Choose Plan & Pay →
-                      </Link>
                       <button
                         type="button"
                         disabled={submitMutation.isPending}
                         onClick={() => submitMutation.mutate(prop.id)}
-                        className="px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-700 font-bold border border-gray-200 rounded-lg transition text-[11px] disabled:opacity-60"
+                        className="px-4 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white font-bold rounded-lg transition text-xs shadow-xs disabled:opacity-60 flex items-center gap-1.5"
                       >
-                        Submit Review
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Submit for Admin Review (Free) →</span>
                       </button>
                     </div>
                   </div>

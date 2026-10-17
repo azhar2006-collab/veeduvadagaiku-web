@@ -1,4 +1,4 @@
-﻿import { Response, NextFunction, Request } from 'express';
+import { Response, NextFunction, Request } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
 import { successResponse, paginatedResponse, ApiError } from '../utils/response';
@@ -793,6 +793,10 @@ export async function submitForReview(req: AuthRequest, res: Response, next: Nex
 
     const property = await prisma.property.findFirst({ where: { id, ownerId: owner.id } });
     if (!property) throw new ApiError(404, 'Property not found or not authorized');
+
+    if (property.status === 'PENDING_APPROVAL') {
+      return res.json(successResponse(null, 'Property is already submitted for admin review.'));
+    }
 
     if (!['DRAFT', 'REJECTED'].includes(property.status)) {
       throw new ApiError(400, `Property is already ${property.status.toLowerCase()}.`);

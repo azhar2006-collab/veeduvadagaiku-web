@@ -16,8 +16,12 @@ export function isCashfreeConfigured(): boolean {
 }
 
 /** Create and return Cashfree instance on demand with latest environment variables */
-export function createCashfreeInstance(): Cashfree {
-  return new Cashfree(getEnvironment(), getCashfreeAppId(), getCashfreeSecretKey());
+export function createCashfreeInstance(): any {
+  try {
+    return new Cashfree(getEnvironment(), getCashfreeAppId() || 'dummy_id', getCashfreeSecretKey() || 'dummy_secret');
+  } catch {
+    return {};
+  }
 }
 
 export const cashfree = new Proxy({} as Cashfree, {

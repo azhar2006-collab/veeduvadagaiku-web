@@ -1,36 +1,37 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { planService } from '../../services/plan.service';
-import { paymentService } from '../../services/payment.service';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
 import { useAuth } from '../../hooks/useAuth';
-import { loadRazorpayScript } from '../../utils/razorpay';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
-import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2, Sparkles, Gift, CheckCircle2, X, Clock } from 'lucide-react';
+import {
+  ShieldCheck,
+  ArrowRight,
+  Loader2,
+  Sparkles,
+  CheckCircle2,
+  Clock,
+  Building2,
+  MapPin,
+  Check,
+  Home,
+  CheckCircle,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const PaymentPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const propertyId = searchParams.get('propertyId') || '';
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  const [selectedPlanId, setSelectedPlanId] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [submittedPropTitle, setSubmittedPropTitle] = useState('');
 
-  // Load plans
-  const { data: plansRes, isLoading: loadingPlans } = useQuery({
-    queryKey: ['listingPlans'],
-    queryFn: () => planService.getPlans(),
-  });
-  const plans = plansRes?.data || [];
-
-  // Load property details (load early so we can auto-select correct plan)
-  const { data: propRes } = useQuery({
+  // Load property details
+  const { data: propRes, isLoading: loadingProp } = useQuery({
     queryKey: ['property', propertyId],
     queryFn: () => propertyService.getPropertyById(propertyId),
     enabled: !!propertyId,
@@ -38,409 +39,252 @@ export const PaymentPage: React.FC = () => {
   });
   const property = propRes?.data;
 
-  // Auto-select plan: prioritize Navaratri Free plan if available, else property type default
-  React.useEffect(() => {
-    if (plans.length > 0 && !selectedPlanId) {
-      const freePlan = plans.find((p) => p.price === 0 || p.id === 'plan_navaratri_free');
-      if (freePlan) {
-        setSelectedPlanId(freePlan.id);
-      } else if (property) {
-        const isCommercial = property.propertyType === 'SHOP';
-        const defaultPlanId = isCommercial ? 'plan_commercial_single' : 'plan_residential_single';
-        const defaultPlan = plans.find((p) => p.id === defaultPlanId) || plans[0];
-        if (defaultPlan) setSelectedPlanId(defaultPlan.id);
-      } else {
-        setSelectedPlanId(plans[0].id);
-      }
-    }
-  }, [plans, selectedPlanId, property]);
-
-  const selectedPlan = plans.find((p) => p.id === selectedPlanId);
-  const isSelectedPlanFree = selectedPlan?.price === 0 || selectedPlan?.id === 'plan_navaratri_free';
-
-  const handlePay = async () => {
+  const handleSubmitForReview = async () => {
     if (!propertyId) {
-      toast.error('Property not identified');
-      return;
-    }
-    if (!selectedPlanId) {
-      toast.error('Please select a listing plan');
+      toast.error('Property not identified. Please select a property from My Properties.');
       return;
     }
 
     try {
       setIsProcessing(true);
-
-      // 1. Create order on backend (handles both free promo and paid plans)
-      const orderRes = await paymentService.createOrder(propertyId, selectedPlanId);
-
-      // If this is a free promotional plan, show success popup — no payment gateway needed!
-      if (orderRes?.isFree || orderRes?.amount === 0 || isSelectedPlanFree) {
-        setIsProcessing(false);
-        setSubmittedPropTitle(property?.title || 'Your Property');
-        setShowSuccessPopup(true);
-        return;
-      }
-
-      const orderId = orderRes?.order_id || (orderRes as any)?.id;
-      if (!orderId) {
-        throw new Error(orderRes?.message || 'Payment order could not be created');
-      }
-
-      // 2. Load Razorpay Web SDK
-      const isLoaded = await loadRazorpayScript();
-      if (!isLoaded) {
-        setIsProcessing(false);
-        toast.error('Unable to load payment gateway. Please check your internet connection.');
-        return;
-      }
-
-      const keyId =
-        (import.meta.env.VITE_RAZORPAY_KEY_ID as string) ||
-        (orderRes as any)?.key_id ||
-        'rzp_test_Tl5i8JpPtdxvb1';
-
-      // 3. Open Razorpay Checkout Modal
-      const options = {
-        key: keyId,
-        amount: orderRes.amount,
-        currency: orderRes.currency || 'INR',
-        name: 'Veedu Vadagaikku Chennai',
-        description: selectedPlan?.name || 'Property Listing Plan',
-        order_id: orderId,
-        image: '/logo-full.png',
-        handler: async function (response: any) {
-          try {
-            setIsProcessing(true);
-            const verifyRes = await paymentService.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              order_id: response.razorpay_order_id,
-              paymentId: (orderRes as any)?.paymentId,
-              propertyId,
-            });
-
-            if (verifyRes.success || verifyRes.status === 'PAID') {
-              navigate(
-                `/owner/payment/result?status=success&orderId=${response.razorpay_order_id}&propTitle=${encodeURIComponent(
-                  property?.title || 'Your Property'
-                )}`
-              );
-            } else {
-              navigate(
-                `/owner/payment/result?status=failure&orderId=${response.razorpay_order_id}&message=${encodeURIComponent(
-                  verifyRes.message || 'Payment verification failed'
-                )}`
-              );
-            }
-          } catch (verifyErr: any) {
-            navigate(
-              `/owner/payment/result?status=failure&orderId=${response.razorpay_order_id}&message=${encodeURIComponent(
-                verifyErr.response?.data?.message || 'Payment verification error'
-              )}`
-            );
-          } finally {
-            setIsProcessing(false);
-          }
-        },
-        prefill: {
-          name: user?.name || '',
-          email: user?.email || '',
-          contact: user?.mobile || '',
-        },
-        theme: {
-          color: '#C5A059',
-        },
-        modal: {
-          ondismiss: function () {
-            setIsProcessing(false);
-            toast('Payment modal closed');
-          },
-        },
-      };
-
-      const rzpInstance = new (window as any).Razorpay(options);
-      rzpInstance.on('payment.failed', function (failureResponse: any) {
-        setIsProcessing(false);
-        const errorDescription =
-          failureResponse?.error?.description || 'Payment failed. Please try again.';
-        toast.error(`Payment failed: ${errorDescription}`);
-      });
-      rzpInstance.open();
+      await propertyService.submitForReview(propertyId);
+      queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['property', propertyId] });
+      setShowSuccessPopup(true);
     } catch (err: any) {
+      const errMsg = err.response?.data?.message || 'Failed to submit property for review';
+      if (errMsg.includes('already')) {
+        setShowSuccessPopup(true);
+      } else {
+        toast.error(errMsg);
+      }
+    } finally {
       setIsProcessing(false);
-      const errMsg =
-        err.response?.data?.message || err.message || 'Could not initiate payment. Try again.';
-      toast.error(errMsg);
     }
   };
 
-  if (loadingPlans) {
-    return <Loader fullScreen text="Loading listing plans..." />;
+  if (loadingProp) {
+    return <Loader fullScreen text="Loading property details..." />;
   }
 
+  const isAlreadyPending = property?.status === 'PENDING_APPROVAL';
+  const isAlreadyPublished = property?.status === 'PUBLISHED';
+
   return (
-    <div className="max-w-3xl mx-auto space-y-8 pb-12">
-      <SEOHead title="Select Listing Plan & Pay | Veedu Vadagaikku Chennai" />
+    <div className="max-w-2xl mx-auto space-y-8 pb-12">
+      <SEOHead title="Submit Property for Review | Veedu Vadagaikku Chennai" />
 
       {/* Header */}
       <div className="text-center space-y-2">
-        <span className="text-xs font-black uppercase tracking-widest text-[#9A7818] bg-[#FAF4E6] border border-[#E8DFC8] px-3 py-1 rounded-full">
-          Step 2 of 2
+        <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#9A7818] bg-[#FAF4E6] border border-[#E8DFC8] px-3.5 py-1 rounded-full">
+          <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+          100% Free Listing — No Payment Required
         </span>
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-          Select Listing Plan for Your Property
+          Submit Your Property for Review
         </h1>
-        {property ? (
-          <p className="text-sm text-gray-500 font-normal">
-            Activating: <span className="font-bold text-gray-800">{property.title}</span> in{' '}
-            <span className="font-bold text-gray-800">{property.locality}</span>
-          </p>
-        ) : propertyId ? (
-          <p className="text-sm text-gray-500 font-normal">
-            Activating Property: <span className="font-mono font-bold text-gray-700">{propertyId}</span>
-          </p>
-        ) : null}
+        <p className="text-sm text-gray-500 max-w-lg mx-auto">
+          Veedu Vadagaikku Chennai is 100% free for property owners. Once submitted, our team verifies and publishes your listing within 24 hours.
+        </p>
       </div>
 
-      {/* Plan Selection Grid */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-gray-900">Choose a Plan</h2>
-          <span className="text-xs text-gray-500 font-medium">30-day listing per property</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {plans.map((plan) => {
-            const isSelected = selectedPlanId === plan.id;
-            const isFree = plan.price === 0 || plan.id === 'plan_navaratri_free';
-            const isPack = plan.id.includes('_pack_');
-            const perAdPrice = plan.id === 'plan_residential_pack_5' ? 199 : plan.id === 'plan_commercial_pack_5' ? 444 : null;
-            return (
-              <button
-                key={plan.id}
-                type="button"
-                onClick={() => setSelectedPlanId(plan.id)}
-                className={`relative rounded-2xl p-5 border text-left transition-all flex flex-col justify-between ${
-                  isFree && isSelected
-                    ? 'border-amber-400 bg-[#FFFDF9] ring-2 ring-amber-400/80 shadow-lg shadow-amber-500/15 sm:col-span-2'
-                    : isFree
-                    ? 'border-amber-300 bg-amber-50/40 hover:border-amber-400 sm:col-span-2'
-                    : isSelected
-                    ? 'border-[#C5A059] bg-[#FCFAF5] ring-2 ring-[#C5A059] shadow-md shadow-[#D4AF37]/15'
-                    : 'border-[#EFE8D8] bg-white hover:border-[#C5A059]'
-                }`}
-              >
-                {isFree ? (
-                  <span className="absolute -top-3 left-4 px-3 py-0.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" />
-                    <span>🎉 Navaratri Special Offer • 100% Free</span>
-                  </span>
-                ) : isPack ? (
-                  <span className="absolute -top-3 left-4 px-2.5 py-0.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs">
-                    Best Value
-                  </span>
-                ) : null}
-                {isSelected && (
-                  <span className="absolute -top-3 right-4 px-2.5 py-0.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white text-[10px] font-black rounded-full uppercase tracking-wider shadow-xs">
-                    Selected
-                  </span>
-                )}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-sm text-gray-900">{plan.name}</h3>
-                      {isFree && (
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                          ₹0 Posting Fee
-                        </span>
-                      )}
-                    </div>
-                    <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isSelected ? 'border-[#C5A059]' : 'border-gray-300'
-                      }`}
-                    >
-                      {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-[#C5A059]" />}
-                    </div>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    {isFree && (
-                      <span className="text-base text-gray-400 line-through font-bold">
-                        ₹222
-                      </span>
-                    )}
-                    <p className={`text-2xl font-black ${isFree ? 'text-emerald-600' : 'text-gray-900'}`}>
-                      ₹{plan.price.toLocaleString('en-IN')}
-                    </p>
-                  </div>
-                  {isFree && (
-                    <p className="text-xs font-bold text-amber-700">🎉 Save ₹222 during Navaratri festive promotion!</p>
-                  )}
-                  {perAdPrice && (
-                    <p className="text-xs font-bold text-emerald-600">₹{perAdPrice}/ad — save with pack!</p>
-                  )}
-                  <p className="text-xs text-[#9A7818] font-bold">{plan.durationDays} Days Active per Listing</p>
-                  <p className="text-[11px] text-gray-500 pt-2 border-t border-gray-100">
-                    {plan.description}
-                  </p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Property Summary Card */}
+      {property && (
+        <div className="bg-white rounded-3xl p-6 border border-[#EFE8D8] shadow-sm space-y-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#9A7818] bg-[#FAF4E6] px-2.5 py-0.5 rounded-full">
+                {property.propertyType}
+              </span>
+              <h2 className="text-lg font-black text-gray-900 leading-snug">
+                {property.title}
+              </h2>
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                <span>{property.locality}, Chennai</span>
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <span className="text-xs text-gray-400 block font-medium">Rent</span>
+              <span className="text-xl font-black text-[#0B3B60]">
+                ₹{property.rent?.toLocaleString('en-IN') || '—'}
+                <span className="text-xs font-normal text-gray-500">/mo</span>
+              </span>
+            </div>
+          </div>
 
-      {/* Payment Button & Trust Badges */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EFE8D8] shadow-sm space-y-6">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500 font-medium">Payment Gateway</span>
-          {isSelectedPlanFree ? (
-            <span className="font-bold text-emerald-700 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Festive Offer: Gateway Bypassed (₹0)
-            </span>
-          ) : (
-            <span className="font-bold text-gray-900 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              Razorpay Secure Checkout
-            </span>
+          {/* Status Alert if already submitted */}
+          {isAlreadyPending && (
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center gap-2.5 text-xs text-blue-900 font-semibold">
+              <Clock className="w-4 h-4 text-blue-600 shrink-0" />
+              <span>This property is already under admin review and will be live shortly.</span>
+            </div>
+          )}
+
+          {isAlreadyPublished && (
+            <div className="p-3 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2.5 text-xs text-green-900 font-semibold">
+              <CheckCircle className="w-4 h-4 text-green-600 shrink-0" />
+              <span>This property is already published and live to Chennai renters!</span>
+            </div>
           )}
         </div>
+      )}
 
-        {/* Accepted Payment Methods / Offer notice */}
-        {isSelectedPlanFree ? (
-          <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200/80 text-xs text-amber-900 font-medium flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-            <span>
-              <strong>Navaratri Promotion Active:</strong> No payment required. Submit your property listing 100% free with one click!
-            </span>
+      {/* Free Plan Benefit Box */}
+      <div className="bg-gradient-to-br from-[#FFFDF9] to-[#FAF6EE] rounded-3xl p-6 sm:p-8 border border-[#E8DFC8] shadow-sm space-y-6">
+        <div className="flex items-center justify-between pb-4 border-b border-[#EFE8D8]">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-[#FAF4E6] border border-[#D4AF37]/30 flex items-center justify-center text-[#9A7818]">
+              <Home className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-gray-900">Standard Listing Plan</h3>
+              <p className="text-xs text-emerald-700 font-semibold">100% Free Forever</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-xs text-gray-400 line-through block font-medium">₹222</span>
+            <span className="text-2xl font-black text-emerald-600">₹0</span>
+          </div>
+        </div>
+
+        {/* Feature List */}
+        <ul className="space-y-3 text-xs sm:text-sm text-gray-700 font-medium">
+          {[
+            'Free property listing across Chennai for 30+ days',
+            'Direct tenant inquiries via Phone Call & WhatsApp — Zero Brokerage',
+            'Admin quality verification within 24 hours',
+            'Visible to all Chennai visitors, even non-registered users',
+            'High-resolution photo gallery & locality search prominence',
+          ].map((feature, i) => (
+            <li key={i} className="flex items-center gap-2.5">
+              <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                <Check className="w-3.5 h-3.5" />
+              </div>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Action Button */}
+        {isAlreadyPublished ? (
+          <Link
+            to="/owner/properties"
+            className="w-full py-4 px-6 bg-[#0B3B60] hover:bg-[#072640] text-white font-extrabold text-sm rounded-xl shadow-lg transition flex items-center justify-center gap-2"
+          >
+            <span>View in My Properties</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        ) : isAlreadyPending ? (
+          <div className="space-y-3">
+            <button
+              type="button"
+              disabled
+              className="w-full py-4 px-6 bg-blue-600 text-white font-extrabold text-sm rounded-xl opacity-90 cursor-default flex items-center justify-center gap-2"
+            >
+              <Clock className="w-5 h-5" />
+              <span>Already Under Admin Review</span>
+            </button>
+            <div className="text-center">
+              <Link
+                to="/owner/properties"
+                className="text-xs text-[#0B3B60] font-bold hover:underline"
+              >
+                ← Return to My Properties
+              </Link>
+            </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Accepted:</span>
-            {['UPI (GPay / PhonePe / Paytm)', 'Credit Card', 'Debit Card', 'Net Banking', 'Wallets'].map((method) => (
-              <span
-                key={method}
-                className="text-[11px] bg-[#FCFAF5] border border-[#E8DFC8] text-[#9A7818] font-semibold px-2.5 py-1 rounded-lg"
-              >
-                {method}
-              </span>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={handleSubmitForReview}
+            disabled={isProcessing}
+            className="w-full py-4 px-6 text-white font-extrabold text-sm rounded-xl shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98] bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 shadow-[#D4AF37]/25"
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Submitting for Admin Review...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 text-amber-200" />
+                <span>Submit for Admin Review (100% Free)</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
         )}
 
-        <button
-          type="button"
-          onClick={handlePay}
-          disabled={!selectedPlanId || isProcessing}
-          className={`w-full py-4 px-6 text-white font-extrabold text-sm rounded-xl shadow-lg transition disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98] ${
-            isSelectedPlanFree
-              ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-105 shadow-amber-500/25'
-              : 'bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 shadow-[#D4AF37]/25'
-          }`}
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>{isSelectedPlanFree ? 'Activating Free Listing...' : 'Opening Razorpay Gateway...'}</span>
-            </>
-          ) : isSelectedPlanFree ? (
-            <>
-              <Sparkles className="w-5 h-5 text-amber-200" />
-              <span>Claim Free Navaratri Listing (₹0)</span>
-              <ArrowRight className="w-4 h-4" />
-            </>
-          ) : (
-            <>
-              <CreditCard className="w-5 h-5" />
-              <span>Pay & Activate Listing with Razorpay</span>
-              <ArrowRight className="w-4 h-4" />
-            </>
-          )}
-        </button>
-
-        {/* Trust badges */}
-        <div className="flex items-center justify-center gap-4 text-xs text-gray-400 flex-wrap">
-          <span className="flex items-center gap-1">
+        {/* Trust Badges */}
+        <div className="flex items-center justify-center gap-5 text-xs text-gray-400 pt-2 flex-wrap">
+          <span className="flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[#C5A059]" />
-            256-bit SSL Encrypted
+            Verified Chennai Platform
           </span>
-          <span className="flex items-center gap-1">
-            <Smartphone className="w-4 h-4 text-[#C5A059]" />
-            UPI Instant Verification
+          <span className="flex items-center gap-1.5">
+            <Clock className="w-4 h-4 text-[#C5A059]" />
+            24-Hour Review Turnaround
           </span>
-          <span className="flex items-center gap-1">
-            <Banknote className="w-4 h-4 text-[#C5A059]" />
-            Razorpay Trusted Gateway
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 text-[#C5A059]" />
+            Zero Commission
           </span>
         </div>
       </div>
 
-      {/* ✅ Navaratri Free Claim Success Popup */}
+      {/* ✅ Success Popup Modal */}
       {showSuccessPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 space-y-6 text-center animate-in fade-in zoom-in-95 duration-300">
-
-            {/* Festive top bar */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500" />
+            {/* Top decorative bar */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 rounded-t-3xl bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#0B3B60]" />
 
             {/* Success icon */}
-            <div className="w-20 h-20 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/20">
+            <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
             {/* Heading */}
             <div className="space-y-2">
-              <span className="text-xs font-black uppercase tracking-widest text-amber-600">
-                🎉 Navaratri Special Offer — Request Received!
+              <span className="text-xs font-black uppercase tracking-widest text-[#9A7818]">
+                🎉 Listing Submitted Successfully!
               </span>
               <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-                Your Request Has Been Submitted!
+                Your Request Has Been Received
               </h2>
               <p className="text-sm text-gray-500 leading-relaxed max-w-xs mx-auto">
-                Your property <strong className="text-gray-800">"{submittedPropTitle}"</strong> has been submitted <strong className="text-amber-700">100% FREE</strong> under the Navaratri Special Offer.
+                Your property <strong className="text-gray-800">"{property?.title || 'Your Property'}"</strong> has been submitted <strong className="text-emerald-700">100% FREE</strong> for admin review.
               </p>
             </div>
 
             {/* 24hr promise card */}
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 text-left space-y-3">
+            <div className="bg-[#FCFAF5] border border-[#E8DFC8] rounded-2xl px-5 py-4 text-left space-y-3">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full">
+                <span className="inline-flex items-center gap-1.5 bg-[#0B3B60] text-white text-xs font-black px-3 py-1 rounded-full">
                   <Clock className="w-3 h-3" /> Within 24 Hours
                 </span>
-                <span className="text-xs text-amber-700 font-semibold">Our team will review your listing</span>
+                <span className="text-xs font-bold text-gray-700">Fast Admin Review</span>
               </div>
-              <ol className="space-y-2 text-xs text-gray-700">
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">✓</span>
-                  <span><strong>Step 1 — Done:</strong> Property details received &amp; saved.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-amber-400 text-white text-[10px] font-black flex items-center justify-center flex-shrink-0">2</span>
-                  <span><strong>Step 2 — In Progress:</strong> Admin will verify within <strong>24 hours</strong>.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-[10px] font-black flex items-center justify-center flex-shrink-0">3</span>
-                  <span><strong>Step 3 — Coming Soon:</strong> Once approved, your property goes <strong>LIVE</strong>!</span>
-                </li>
-              </ol>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Our team will verify the listing photos and details. Once approved, your property will go live immediately on Veedu Vadagaikku Chennai.
+              </p>
             </div>
 
             {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/owner/properties"
-                className="flex-1 py-3 px-5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl shadow-md shadow-amber-500/30 transition flex items-center justify-center gap-2"
+            <div className="space-y-2 pt-2">
+              <button
+                type="button"
+                onClick={() => navigate('/owner/properties')}
+                className="w-full py-3.5 px-6 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white font-black text-sm rounded-xl shadow-lg transition active:scale-[0.98]"
               >
-                <span>Track My Request</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                Go to My Properties →
+              </button>
               <Link
-                to="/owner/dashboard"
-                className="flex-1 py-3 px-5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-sm rounded-xl transition flex items-center justify-center"
+                to="/"
+                className="block text-xs text-gray-400 font-bold hover:text-gray-600 transition pt-1"
               >
-                Go to Dashboard
+                Return to Home
               </Link>
             </div>
           </div>

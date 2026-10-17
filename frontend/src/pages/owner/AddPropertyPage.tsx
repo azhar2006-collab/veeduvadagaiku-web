@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -410,13 +410,22 @@ export const AddPropertyPage: React.FC = () => {
       const newPropertyId = res.data.id;
 
       // Step 2: Upload images
-      await propertyService.uploadImages(newPropertyId, files);
+      if (files.length > 0) {
+        await propertyService.uploadImages(newPropertyId, files);
+      }
+
+      // Step 3: Automatically submit for admin review (100% Free Listing)
+      try {
+        await propertyService.submitForReview(newPropertyId);
+      } catch (submitErr) {
+        console.warn('Auto-submit review notice:', submitErr);
+      }
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
-      toast.success('🎉 Property saved! Please select a listing plan to activate.');
+      toast.success('🎉 Property submitted for admin review! Our team will verify and publish it within 24 hours.');
 
-      // Step 3: Redirect directly to Plan Selection & Activation page
-      navigate(`/owner/payment?propertyId=${newPropertyId}`);
+      // Step 4: Redirect directly to My Properties
+      navigate('/owner/properties');
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Failed to create property. Please try again.');
@@ -435,7 +444,7 @@ export const AddPropertyPage: React.FC = () => {
           List Your Chennai Property
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Provide your locality, property specs, and NoBroker-style amenities. Then choose a plan to activate.
+          Provide your locality, property specs, and photos. Your listing is 100% free and submitted directly for admin review.
         </p>
       </div>
 
