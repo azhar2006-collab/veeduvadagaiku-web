@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { SEOHead } from '../../components/common/SEOHead';
 
 export const PrivacyPage: React.FC = () => {
@@ -25,7 +25,7 @@ export const PrivacyPage: React.FC = () => {
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-gray-900">2. How We Use Your Information</h2>
           <p>
-            Your information is used solely to facilitate connection between verified tenants and property landlords in Chennai, to process listing subscription payments securely via Cashfree, and to improve our platform experience.
+            Your information is used solely to facilitate connection between verified tenants and property landlords in Chennai, to process listing subscription payments securely via Razorpay, and to improve our platform experience.
           </p>
         </section>
 

@@ -125,9 +125,12 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
     }
 
     if (!isCashfreeConfigured()) {
+      if (isRazorpayConfigured()) {
+        return createRazorpayOrder(req, res, next);
+      }
       return res.status(500).json({
         success: false,
-        message: 'Cashfree is not configured. Please set CASHFREE_APP_ID and CASHFREE_SECRET_KEY in .env',
+        message: 'Payment gateway is not configured. Please contact support.',
       });
     }
 
@@ -358,13 +361,6 @@ export async function verifyCashfreePayment(req: Request, res: Response, next: N
  */
 export async function createRazorpayOrder(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    if (!isRazorpayConfigured()) {
-      return res.status(500).json({
-        success: false,
-        message: 'Razorpay is not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env',
-      });
-    }
-
     const { propertyId, planId, currency = 'INR', receipt, notes } = req.body;
     let amount = req.body.amount;
 
@@ -472,6 +468,13 @@ export async function createRazorpayOrder(req: AuthRequest, res: Response, next:
       }
 
       amount = Math.round(plan.price * 100);
+    }
+
+    if (!isRazorpayConfigured()) {
+      return res.status(500).json({
+        success: false,
+        message: 'Razorpay is not configured. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env',
+      });
     }
 
     if (amount === undefined || amount === null || typeof amount !== 'number' || isNaN(amount)) {

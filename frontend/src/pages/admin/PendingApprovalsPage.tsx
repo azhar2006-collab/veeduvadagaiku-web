@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
@@ -214,7 +214,7 @@ export const PendingApprovalsPage: React.FC = () => {
                       {prop.propertyType}
                     </span>
                     <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200">
-                      Paid via Cashfree
+                      Payment Verified
                     </span>
                     <span className="text-xs text-gray-400">
                       Submitted on{' '}

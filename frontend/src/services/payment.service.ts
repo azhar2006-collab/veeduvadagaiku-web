@@ -70,10 +70,10 @@ export const paymentService = {
   },
 
   /**
-   * Generic Create Order (defaults to Cashfree)
+   * Generic Create Order (defaults to Razorpay)
    */
   createOrder: async (propertyId: string, planId: string) => {
-    const res = await api.post<CashfreeOrderResponse>('/api/payments/create-order', {
+    const res = await api.post<RazorpayOrderResponse & CashfreeOrderResponse>('/api/payments/create-order', {
       propertyId,
       planId,
     });

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
 import { Loader } from '../../components/common/Loader';
@@ -29,7 +29,7 @@ export const ManagePaymentsPage: React.FC = () => {
           Transaction Records ({data?.pagination?.total || payments.length})
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Cashfree listing subscription transactions and server-verified payments
+          Listing subscription transactions and server-verified payments
         </p>
       </div>
 

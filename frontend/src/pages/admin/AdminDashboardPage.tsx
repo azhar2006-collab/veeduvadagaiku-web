@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
@@ -41,7 +41,7 @@ export const AdminDashboardPage: React.FC = () => {
           </span>
           <h1 className="text-2xl sm:text-3xl font-black mt-1">Platform Analytics & Control</h1>
           <p className="text-xs sm:text-sm text-gray-400 mt-1">
-            Supervise active listings, review paid ads, and monitor Cashfree revenue.
+            Supervise active listings, review paid ads, and monitor platform revenue.
           </p>
         </div>
 

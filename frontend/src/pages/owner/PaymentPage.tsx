@@ -5,7 +5,7 @@ import { planService } from '../../services/plan.service';
 import { paymentService } from '../../services/payment.service';
 import { propertyService } from '../../services/property.service';
 import { useAuth } from '../../hooks/useAuth';
-import { getCashfree } from '../../utils/cashfree';
+import { loadRazorpayScript } from '../../utils/razorpay';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
 import { CreditCard, ShieldCheck, ArrowRight, Smartphone, Banknote, Loader2, Sparkles, Gift, CheckCircle2, X, Clock } from 'lucide-react';
@@ -82,58 +82,92 @@ export const PaymentPage: React.FC = () => {
         return;
       }
 
-      const paymentSessionId = orderRes?.payment_session_id;
-      const orderId = orderRes?.order_id;
-
-      if (!paymentSessionId || !orderId) {
-        throw new Error(orderRes?.message || 'Payment session could not be created');
+      const orderId = orderRes?.order_id || (orderRes as any)?.id;
+      if (!orderId) {
+        throw new Error(orderRes?.message || 'Payment order could not be created');
       }
 
-      // 2. Initialize Cashfree Web SDK
-      const cashfree = await getCashfree();
-
-      // 3. Open Cashfree Checkout Modal
-      const checkoutResult = await cashfree.checkout({
-        paymentSessionId,
-        redirectTarget: '_modal',
-      });
-
-      if (checkoutResult?.error) {
+      // 2. Load Razorpay Web SDK
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded) {
         setIsProcessing(false);
-        toast.error(checkoutResult.error.message || 'Payment was cancelled');
+        toast.error('Unable to load payment gateway. Please check your internet connection.');
         return;
       }
 
-      // If checkout finishes inline in modal or redirects
-      if (checkoutResult?.paymentDetails) {
-        // Verify payment status with backend
-        try {
-          const verifyRes = await paymentService.verifyPayment({ order_id: orderId });
-          setIsProcessing(false);
-          if (verifyRes.success || verifyRes.status === 'PAID') {
+      const keyId =
+        (import.meta.env.VITE_RAZORPAY_KEY_ID as string) ||
+        (orderRes as any)?.key_id ||
+        'rzp_test_Tl5i8JpPtdxvb1';
+
+      // 3. Open Razorpay Checkout Modal
+      const options = {
+        key: keyId,
+        amount: orderRes.amount,
+        currency: orderRes.currency || 'INR',
+        name: 'Veedu Vadagaikku Chennai',
+        description: selectedPlan?.name || 'Property Listing Plan',
+        order_id: orderId,
+        image: '/logo-full.png',
+        handler: async function (response: any) {
+          try {
+            setIsProcessing(true);
+            const verifyRes = await paymentService.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              order_id: response.razorpay_order_id,
+              paymentId: (orderRes as any)?.paymentId,
+              propertyId,
+            });
+
+            if (verifyRes.success || verifyRes.status === 'PAID') {
+              navigate(
+                `/owner/payment/result?status=success&orderId=${response.razorpay_order_id}&propTitle=${encodeURIComponent(
+                  property?.title || 'Your Property'
+                )}`
+              );
+            } else {
+              navigate(
+                `/owner/payment/result?status=failure&orderId=${response.razorpay_order_id}&message=${encodeURIComponent(
+                  verifyRes.message || 'Payment verification failed'
+                )}`
+              );
+            }
+          } catch (verifyErr: any) {
             navigate(
-              `/owner/payment/result?status=success&orderId=${orderId}&propTitle=${encodeURIComponent(
-                property?.title || 'Your Property'
+              `/owner/payment/result?status=failure&orderId=${response.razorpay_order_id}&message=${encodeURIComponent(
+                verifyErr.response?.data?.message || 'Payment verification error'
               )}`
             );
-          } else {
-            navigate(
-              `/owner/payment/result?status=failure&orderId=${orderId}&message=${encodeURIComponent(
-                verifyRes.message || 'Payment verification failed'
-              )}`
-            );
+          } finally {
+            setIsProcessing(false);
           }
-        } catch (verifyErr: any) {
-          setIsProcessing(false);
-          navigate(
-            `/owner/payment/result?status=failure&orderId=${orderId}&message=${encodeURIComponent(
-              verifyErr.response?.data?.message || 'Payment verification error'
-            )}`
-          );
-        }
-      } else {
+        },
+        prefill: {
+          name: user?.name || '',
+          email: user?.email || '',
+          contact: user?.mobile || '',
+        },
+        theme: {
+          color: '#C5A059',
+        },
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+            toast('Payment modal closed');
+          },
+        },
+      };
+
+      const rzpInstance = new (window as any).Razorpay(options);
+      rzpInstance.on('payment.failed', function (failureResponse: any) {
         setIsProcessing(false);
-      }
+        const errorDescription =
+          failureResponse?.error?.description || 'Payment failed. Please try again.';
+        toast.error(`Payment failed: ${errorDescription}`);
+      });
+      rzpInstance.open();
     } catch (err: any) {
       setIsProcessing(false);
       const errMsg =
@@ -269,7 +303,7 @@ export const PaymentPage: React.FC = () => {
           ) : (
             <span className="font-bold text-gray-900 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              Cashfree Secure Checkout
+              Razorpay Secure Checkout
             </span>
           )}
         </div>
@@ -309,7 +343,7 @@ export const PaymentPage: React.FC = () => {
           {isProcessing ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>{isSelectedPlanFree ? 'Activating Free Listing...' : 'Opening Cashfree Gateway...'}</span>
+              <span>{isSelectedPlanFree ? 'Activating Free Listing...' : 'Opening Razorpay Gateway...'}</span>
             </>
           ) : isSelectedPlanFree ? (
             <>
@@ -320,7 +354,7 @@ export const PaymentPage: React.FC = () => {
           ) : (
             <>
               <CreditCard className="w-5 h-5" />
-              <span>Pay & Activate Listing with Cashfree</span>
+              <span>Pay & Activate Listing with Razorpay</span>
               <ArrowRight className="w-4 h-4" />
             </>
           )}
@@ -338,7 +372,7 @@ export const PaymentPage: React.FC = () => {
           </span>
           <span className="flex items-center gap-1">
             <Banknote className="w-4 h-4 text-[#C5A059]" />
-            Cashfree Trusted Gateway
+            Razorpay Trusted Gateway
           </span>
         </div>
       </div>
