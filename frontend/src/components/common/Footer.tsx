@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, Phone, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
@@ -13,12 +13,20 @@ export const Footer: React.FC = () => {
           {/* Brand Info */}
           <div>
             <div className="mb-4">
-              <div className="bg-white p-2.5 rounded-2xl inline-block shadow-xs border border-[#EFE8D8]">
+              <div className="flex items-center gap-2.5">
                 <img
                   src="/logo-full.png"
-                  alt="Veedu Vadagaikku Chennai"
-                  className="h-11 sm:h-13 w-auto object-contain"
+                  alt="veeduvadagaikkuchennai"
+                  className="h-9 sm:h-11 w-auto object-contain"
                 />
+                <div className="flex flex-col">
+                  <span className="font-black text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
+                    veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
+                  </span>
+                  <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase mt-0.5">
+                    Rental Marketplace
+                  </span>
+                </div>
               </div>
             </div>
             <p className="text-sm text-gray-600 mb-4 leading-relaxed font-normal">
@@ -129,7 +137,7 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#C5A059] shrink-0" />
-                <span>support@VeeduVadagaikkuChennai.com</span>
+                <span>support@veeduvadagaikkuchennai.com</span>
               </li>
             </ul>
           </div>
@@ -137,7 +145,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#EFE8D8] flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-          <p>© {new Date().getFullYear()} Veedu Vadagaikku Chennai. {t('footer.rights')}</p>
+          <p>© {new Date().getFullYear()} veeduvadagaikkuchennai. {t('footer.rights')}</p>
           <div className="flex items-center gap-6">
             <Link to="/terms" className="hover:text-gray-800 transition">
               {t('footer.terms')}

@@ -5,8 +5,8 @@ export const PrivacyPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
       <SEOHead
-        title="Privacy Policy | Veedu Vadagaikku Chennai"
-        description="Privacy policy and data protection principles on Veedu Vadagaikku Chennai."
+        title="Privacy Policy | veeduvadagaikkuchennai"
+        description="Privacy policy and data protection principles on veeduvadagaikkuchennai."
       />
 
       <div className="border-b border-gray-200 pb-4">
@@ -25,7 +25,7 @@ export const PrivacyPage: React.FC = () => {
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-gray-900">2. How We Use Your Information</h2>
           <p>
-            Your information is used solely to facilitate connection between verified tenants and property landlords in Chennai, to process listing subscription payments securely via Razorpay, and to improve our platform experience.
+            Your information is used solely to facilitate direct connection between verified tenants and property owners in Chennai, and to improve our platform experience.
           </p>
         </section>
 

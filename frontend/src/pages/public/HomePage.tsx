@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Search,
@@ -185,8 +185,8 @@ export const HomePage: React.FC = () => {
   return (
     <div className="space-y-6 sm:space-y-16 pb-12">
       <SEOHead
-        title="Chennai's Exclusive One-Stop Property Rental Webapp | Veedu Vadagaikku Chennai"
-        description="Chennai's exclusive one-stop property rental webapp. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
+        title="Chennai's Exclusive One-Stop Property Rental Webapp | veeduvadagaikkuchennai"
+        description="veeduvadagaikkuchennai - Chennai's exclusive one-stop property rental webapp. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
@@ -1779,7 +1779,7 @@ export const HomePage: React.FC = () => {
               Simple 3-Step Process
             </span>
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-gray-900">
-              How Veedu Vadagaikku Chennai Works
+              How veeduvadagaikkuchennai Works
             </h2>
             <p className="text-sm text-gray-600 font-normal">
               We connect tenants directly with verified Chennai landlords without middlemen or hidden commission.

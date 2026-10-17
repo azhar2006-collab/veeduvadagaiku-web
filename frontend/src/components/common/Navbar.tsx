@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Home, Search, Heart, User, LogOut, Menu, X, PlusCircle, Building2, Store, Users, Sparkles, MapPin, ChevronDown, Wrench, Gift } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -22,17 +22,25 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo & City Selector (NoBroker style) */}
-          <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-3 group py-1">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-2.5 group py-1">
               <img
                 src="/logo-full.png"
-                alt="Veedu Vadagaikku Chennai's Rental Marketplace"
-                className="h-8 sm:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
+                alt="veeduvadagaikkuchennai"
+                className="h-8 sm:h-9 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
               />
+              <div className="flex flex-col">
+                <span className="font-black text-base sm:text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
+                  veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
+                </span>
+                <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase leading-none mt-0.5">
+                  Rental Marketplace
+                </span>
+              </div>
             </Link>
 
             {/* NoBroker style City Indicator */}
-            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
+            <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
               <MapPin className="w-3.5 h-3.5 text-[#C5A059]" />
               <span>Chennai</span>
             </div>
