@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PropertyImage } from '../../types';
 import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { getImageUrl } from '../../utils/imageUrl';
 
 interface PropertyImageGalleryProps {
   images: PropertyImage[];
@@ -32,9 +33,12 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
       {/* Main Large Image */}
       <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden bg-gray-900 shadow-lg group">
         <img
-          src={images[selectedIndex]?.imageUrl}
+          src={getImageUrl(images[selectedIndex]?.imageUrl)}
           alt={`${title} - Photo ${selectedIndex + 1}`}
           className="w-full h-full object-cover transition-all duration-300"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/properties/property-1.png';
+          }}
         />
 
         {/* Counter Badge */}
@@ -76,7 +80,14 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
                   : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
-              <img src={img.imageUrl} alt="" className="w-full h-full object-cover" />
+              <img
+                src={getImageUrl(img.imageUrl)}
+                alt=""
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                }}
+              />
             </button>
           ))}
         </div>

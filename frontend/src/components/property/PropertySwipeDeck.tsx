@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Heart,
@@ -21,6 +21,7 @@ import {
 import { Property } from '../../types';
 import { useFavourites } from '../../hooks/useFavourites';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../utils/imageUrl';
 
 interface PropertySwipeDeckProps {
   properties: Property[];
@@ -67,7 +68,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
 
   // Current property photos
   const currentImages = currentProperty?.images && currentProperty.images.length > 0
-    ? currentProperty.images.map((img) => img.imageUrl)
+    ? currentProperty.images.map((img) => getImageUrl(img.imageUrl))
     : ['/properties/property-1.png'];
 
   // Handle Swipe logic
@@ -343,12 +344,12 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 style={{ zIndex: 1 }}
               >
                 <img
-                  src={
-                    thirdProperty.images?.[0]?.imageUrl ||
-                    '/properties/property-1.png'
-                  }
+                  src={getImageUrl(thirdProperty.images?.[0]?.imageUrl)}
                   alt={thirdProperty.title}
                   className="w-full h-full object-cover blur-sm brightness-50"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                  }}
                 />
               </div>
             )}
@@ -369,12 +370,12 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 }}
               >
                 <img
-                  src={
-                    nextProperty.images?.[0]?.imageUrl ||
-                    '/properties/property-1.png'
-                  }
+                  src={getImageUrl(nextProperty.images?.[0]?.imageUrl)}
                   alt={nextProperty.title}
                   className="w-full h-full object-cover brightness-75"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">

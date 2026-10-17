@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { UploadCloud, X, Star, AlertCircle } from 'lucide-react';
 import { PropertyImage } from '../../types';
+import { getImageUrl } from '../../utils/imageUrl';
 
 interface ImageUploaderProps {
   existingImages?: PropertyImage[];
@@ -91,7 +92,14 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               key={img.id}
               className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group bg-gray-100"
             >
-              <img src={img.imageUrl} alt="" className="w-full h-full object-cover" />
+              <img
+                src={getImageUrl(img.imageUrl)}
+                alt=""
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                }}
+              />
 
               {/* Primary badge */}
               {img.isPrimary && (

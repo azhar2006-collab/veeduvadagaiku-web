@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../utils/imageUrl';
 
 export const MyPropertiesPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -114,9 +115,9 @@ export const MyPropertiesPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {properties.map((prop) => {
-            const primaryImg =
-              prop.images?.[0]?.imageUrl ||
-              '/properties/property-1.png';
+            const primaryImg = getImageUrl(
+              prop.images?.find((img) => img.isPrimary)?.imageUrl || prop.images?.[0]?.imageUrl
+            );
 
             const canEdit = ['DRAFT', 'REJECTED', 'PENDING_APPROVAL'].includes(prop.status);
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';

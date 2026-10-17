@@ -702,8 +702,11 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
         const ext = path.extname(file.originalname) || '.jpg';
         const fileName = `${id}_${Date.now()}_${i}${ext}`;
         const filePath = path.join(uploadsDir, fileName);
-        fs.writeFileSync(filePath, file.buffer);
-        imageUrl = `/uploads/${fileName}`;
+        const host =
+          process.env.BACKEND_URL ||
+          (req.get('host') ? `${req.protocol}://${req.get('host')}` : 'https://veeduvadagaiku-web-production.up.railway.app');
+        const cleanHost = host.replace(/\/$/, '');
+        imageUrl = `${cleanHost}/uploads/${fileName}`;
       }
 
       const isPrimary = existingCount === 0 && i === 0;

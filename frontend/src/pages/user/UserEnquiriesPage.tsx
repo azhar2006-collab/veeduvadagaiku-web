@@ -1,10 +1,11 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useUserEnquiries } from '../../hooks/useEnquiries';
 import { SEOHead } from '../../components/common/SEOHead';
 import { Loader } from '../../components/common/Loader';
 import { EmptyState } from '../../components/common/EmptyState';
 import { MessageSquare, Calendar, Building2, MapPin, ArrowRight } from 'lucide-react';
+import { getImageUrl } from '../../utils/imageUrl';
 
 export const UserEnquiriesPage: React.FC = () => {
   const { data, isLoading } = useUserEnquiries();
@@ -12,7 +13,7 @@ export const UserEnquiriesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <SEOHead title="My Enquiries | Veedu Vadagaikku Chennai" />
+      <SEOHead title="My Enquiries | veeduvadagaikkuchennai" />
 
       <div className="pb-4 border-b border-gray-200">
         <h1 className="text-2xl font-black text-gray-900 tracking-tight">
@@ -37,9 +38,7 @@ export const UserEnquiriesPage: React.FC = () => {
         <div className="space-y-4">
           {enquiries.map((enq) => {
             const prop = enq.property;
-            const primaryImg =
-              prop?.images?.[0]?.imageUrl ||
-              '/properties/property-1.png';
+            const primaryImg = getImageUrl(prop?.images?.[0]?.imageUrl);
 
             const statusColors: Record<string, string> = {
               NEW: 'bg-blue-50 text-blue-700 border-blue-200',

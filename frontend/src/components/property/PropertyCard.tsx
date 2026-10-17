@@ -6,6 +6,7 @@ import { useFavourites } from '../../hooks/useFavourites';
 import { useLanguage } from '../../context/LanguageContext';
 import { getWhatsAppShareUrl } from '../../utils/shareUtils';
 import { getPropertyCategory, getCategoryBadgeInfo } from '../../utils/categoryUtils';
+import { getImageUrl } from '../../utils/imageUrl';
 
 interface PropertyCardProps {
   property: Property;
@@ -36,10 +37,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   }).format(property.deposit);
 
   // Primary image or first image or placeholder
-  const primaryImg =
+  const primaryImg = getImageUrl(
     property.images?.find((img) => img.isPrimary)?.imageUrl ||
-    property.images?.[0]?.imageUrl ||
-    '/properties/property-1.png';
+    property.images?.[0]?.imageUrl
+  );
 
   const furnishingLabel: Record<string, string> = {
     FURNISHED: t('card.furnished'),

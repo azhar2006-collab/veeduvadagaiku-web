@@ -24,6 +24,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../utils/imageUrl';
 
 export const PendingApprovalsPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -199,9 +200,9 @@ export const PendingApprovalsPage: React.FC = () => {
       ) : (
         <div className="space-y-6">
           {properties.map((prop) => {
-            const primaryImg =
-              prop.images?.[0]?.imageUrl ||
-              '/properties/property-1.png';
+            const primaryImg = getImageUrl(
+              prop.images?.find((img) => img.isPrimary)?.imageUrl || prop.images?.[0]?.imageUrl
+            );
 
             return (
               <div
@@ -253,8 +254,12 @@ export const PendingApprovalsPage: React.FC = () => {
                   <div className="space-y-2">
                     <img
                       src={primaryImg}
-                      alt=""
+                      alt={prop.title}
+                      loading="lazy"
                       className="w-full aspect-[4/3] rounded-2xl object-cover bg-gray-100 shadow-sm"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                      }}
                     />
                     <p className="text-[11px] text-gray-400 text-center">
                       {prop.images?.length || 1} photo(s) uploaded
