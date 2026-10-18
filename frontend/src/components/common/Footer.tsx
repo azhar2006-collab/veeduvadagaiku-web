@@ -19,14 +19,9 @@ export const Footer: React.FC = () => {
                   alt="veeduvadagaikkuchennai"
                   className="h-9 sm:h-11 w-auto object-contain"
                 />
-                <div className="flex flex-col">
-                  <span className="font-black text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
-                    veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
-                  </span>
-                  <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase mt-0.5">
-                    Rental Marketplace
-                  </span>
-                </div>
+                <span className="font-black text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
+                  veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
+                </span>
               </div>
             </div>
             <p className="text-sm text-gray-600 mb-4 leading-relaxed font-normal">

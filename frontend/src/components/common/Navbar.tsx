@@ -29,14 +29,9 @@ export const Navbar: React.FC = () => {
                 alt="veeduvadagaikkuchennai"
                 className="h-8 sm:h-9 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
               />
-              <div className="flex flex-col">
-                <span className="font-black text-base sm:text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
-                  veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
-                </span>
-                <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase leading-none mt-0.5">
-                  Rental Marketplace
-                </span>
-              </div>
+              <span className="font-black text-base sm:text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
+                veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
+              </span>
             </Link>
 
             {/* NoBroker style City Indicator */}
