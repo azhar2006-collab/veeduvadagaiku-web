@@ -1,20 +1,21 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
+  Building2,
+  Store,
+  Users,
+  Sparkles,
+  Wrench,
+  Gift,
   Phone,
   MessageCircle,
   MapPin,
-  Wrench,
   Truck,
-  Sparkles,
   Wind,
   FileText,
-  ChevronDown,
   Plus,
   Clock,
   Shield,
-  Search,
-  X,
   CheckCircle2,
   ArrowRight,
   Lock,
@@ -61,7 +62,7 @@ const CATEGORIES: {
     id: 'ALL',
     label: 'All Services',
     labelTa: 'அனைத்து சேவைகளும்',
-    icon: <Sparkles className="w-4 h-4" />,
+    icon: <Sparkles className="w-5 h-5" />,
     subcategories: [
       'Local Shifting',
       'Painting',
@@ -77,7 +78,7 @@ const CATEGORIES: {
     id: 'MOVERS',
     label: 'Movers & Packers',
     labelTa: 'மூவர்ஸ் & பேக்கர்ஸ்',
-    icon: <Truck className="w-4 h-4" />,
+    icon: <Truck className="w-5 h-5" />,
     subcategories: [
       'Local Shifting',
       'Intercity Shifting',
@@ -90,7 +91,7 @@ const CATEGORIES: {
     id: 'RENOVATION',
     label: 'Renovation & Repairs',
     labelTa: 'புதுப்பித்தல் & பழுது',
-    icon: <Wrench className="w-4 h-4" />,
+    icon: <Wrench className="w-5 h-5" />,
     subcategories: [
       'Electrical Work',
       'Plumbing',
@@ -107,7 +108,7 @@ const CATEGORIES: {
     id: 'CLEANING',
     label: 'Cleaning & Pest Control',
     labelTa: 'துப்புரவு & பூச்சி கட்டுப்பாடு',
-    icon: <Sparkles className="w-4 h-4" />,
+    icon: <Sparkles className="w-5 h-5" />,
     subcategories: [
       'Deep Home Cleaning',
       'Sofa & Carpet Cleaning',
@@ -124,7 +125,7 @@ const CATEGORIES: {
     id: 'AC_SERVICE',
     label: 'AC Service & Cleaning',
     labelTa: 'AC சேவை & துப்புரவு',
-    icon: <Wind className="w-4 h-4" />,
+    icon: <Wind className="w-5 h-5" />,
     subcategories: [
       'AC Service & Gas Refill',
       'AC Deep Cleaning',
@@ -137,7 +138,7 @@ const CATEGORIES: {
     id: 'LEGAL',
     label: 'Legal Documentation',
     labelTa: 'சட்ட ஆவணங்கள்',
-    icon: <FileText className="w-4 h-4" />,
+    icon: <FileText className="w-5 h-5" />,
     subcategories: [
       'Rental Agreement',
       'Property Registration',
@@ -148,15 +149,6 @@ const CATEGORIES: {
       'Tenant Police Verification',
     ],
   },
-];
-
-const BUDGET_PRESETS = [
-  { label: 'Any Budget', value: '' },
-  { label: 'Up to ₹1,000', value: '1000' },
-  { label: 'Up to ₹2,500', value: '2500' },
-  { label: 'Up to ₹5,000', value: '5000' },
-  { label: 'Up to ₹10,000', value: '10000' },
-  { label: '₹10,000+', value: '50000' },
 ];
 
 export const HomeServicesPage: React.FC = () => {
@@ -196,7 +188,6 @@ export const HomeServicesPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ServiceCategory>('ALL');
   const [selectedLocality, setSelectedLocality] = useState<string>('');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('');
-  const [selectedBudget, setSelectedBudget] = useState<string>('');
 
   // Service Data State
   const [services, setServices] = useState<HomeService[]>([]);
@@ -221,7 +212,6 @@ export const HomeServicesPage: React.FC = () => {
         category: activeCategory !== 'ALL' ? activeCategory : undefined,
         subcategory: selectedSubcategory || undefined,
         locality: selectedLocality || undefined,
-        maxPrice: selectedBudget || undefined,
         limit: 50,
       })
       .then((data) => setServices(data.services || []))
@@ -234,12 +224,12 @@ export const HomeServicesPage: React.FC = () => {
 
   useEffect(() => {
     fetchServices();
-  }, [activeCategory, selectedSubcategory, selectedLocality, selectedBudget]);
+  }, [activeCategory, selectedSubcategory, selectedLocality]);
 
   const handleResetFilters = () => {
+    setActiveCategory('ALL');
     setSelectedLocality('');
     setSelectedSubcategory('');
-    setSelectedBudget('');
   };
 
   const handleListServiceClick = () => {
@@ -250,20 +240,20 @@ export const HomeServicesPage: React.FC = () => {
     }
   };
 
-  const hasActiveFilters = !!(selectedLocality || selectedSubcategory || selectedBudget);
+  const hasActiveFilters = !!(activeCategory !== 'ALL' || selectedLocality || selectedSubcategory);
 
   return (
-    <div className="space-y-6 sm:space-y-16 pb-12 bg-[#FCFAF6] min-h-screen">
+    <div className="space-y-10 sm:space-y-16 pb-16 bg-[#FCFAF6] min-h-screen">
       <SEOHead
         title={
           lang === 'ta'
             ? 'சென்னை வீட்டு சேவைகள் | VeeduVadagaikkuChennai'
             : 'Chennai Home Services | VeeduVadagaikkuChennai'
         }
-        description="Verified movers, renovation, deep cleaning, AC service and legal documentation experts across Chennai."
+        description="Verified movers, renovation, deep cleaning, AC care & legal documentation across Chennai."
       />
 
-      {/* ─── Hero Section (Exact HomePage White & Lite Gold Theme) ─── */}
+      {/* ─── Hero Section (Exact HomePage White & Lite Gold Theme, Matching Image) ─── */}
       <section className="relative overflow-x-hidden pt-4 pb-4 sm:pb-6 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
         {/* Subtle decorative gold radial glows */}
         <div
@@ -281,11 +271,7 @@ export const HomeServicesPage: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-2">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
                 <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
-                <span>
-                  {lang === 'ta'
-                    ? 'சென்னையின் நம்பகமான வீட்டு சேவைகள் — நேரடி தொடர்பு'
-                    : "Chennai's Exclusive Home Services — Direct Provider Connect"}
-                </span>
+                <span>{lang === 'ta' ? 'நேரடி உரிமையாளர் தொடர்பு' : 'Direct Owner Connect'}</span>
               </div>
               <button
                 type="button"
@@ -299,133 +285,84 @@ export const HomeServicesPage: React.FC = () => {
             </div>
 
             <h1 className="text-xl sm:text-3xl lg:text-[2.25rem] font-bold sm:font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
-              {lang === 'ta' ? 'சென்னையின் நம்பகமான' : "Chennai's Trusted"}{' '}
+              {lang === 'ta' ? 'சென்னையின் பிரத்யேக' : "Chennai's Exclusive"}{' '}
               <span className="text-[#C5A059]">
-                {lang === 'ta' ? 'வீட்டு சேவைகள்' : 'Home Services'}
+                {lang === 'ta' ? 'ஒரே இட வீட்டு சேவைகள்' : 'One-Stop Home Services Webapp'}
               </span>
             </h1>
 
             <p className="max-w-xl mx-auto text-xs sm:text-sm text-gray-600 font-medium leading-relaxed">
               {lang === 'ta'
-                ? 'மூவர்ஸ், புதுப்பித்தல், ஏசி பராமரிப்பு, துப்புரவு மற்றும் சட்ட ஆவண வல்லுநர்கள்.'
-                : 'Movers & Packers, Renovation, AC Care, Cleaning & Pest Control, Legal Documentation.'}
+                ? 'சென்னையில் சரிபார்க்கப்பட்ட மூவர்ஸ், புதுப்பித்தல், துப்புரவு, ஏசி பராமரிப்பு மற்றும் சட்ட ஆவண சேவைகள்.'
+                : 'Verified movers, renovation, deep cleaning, AC care & legal documentation across Chennai.'}
             </p>
             <p className="max-w-xl mx-auto text-[11px] sm:text-xs text-[#9A7818] font-medium leading-relaxed">
-              {lang === 'ta'
-                ? 'நேரடி அழைப்பு · நியாயமான கட்டணம் · 100% தரமான சேவை'
-                : 'Direct Phone & WhatsApp · Transparent Pricing · Zero Middlemen'}
+              {t('hero.descSub')}
             </p>
+          </div>
 
-            <div className="pt-2">
-              <button
-                type="button"
-                onClick={handleListServiceClick}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md hover:brightness-105 transition"
+          {/* Quick Categories Bar (Matching Image Exactly) */}
+          <div className="w-full flex items-center justify-start min-[920px]:justify-center overflow-x-auto no-scrollbar py-3 px-4 sm:px-6">
+            <div className="flex items-center gap-3.5 sm:gap-5 lg:gap-7 shrink-0">
+              <Link
+                to="/houses"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
               >
-                <Plus className="w-4 h-4" />
-                <span>{lang === 'ta' ? 'சேவையை சேர்க்க (உரிமையாளர்கள் மட்டும்)' : 'List Your Service (Owners Only)'}</span>
-              </button>
+                <Building2 className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <span>{t('nav.houses')}</span>
+              </Link>
+
+              <Link
+                to="/shops"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+              >
+                <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <span>{t('nav.shops')}</span>
+              </Link>
+
+              <Link
+                to="/hostels"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 text-left"
+              >
+                <Users className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <div className="flex flex-col leading-tight">
+                  <span className="whitespace-nowrap">{lang === 'ta' ? 'விடுதிகள் & PG' : 'Hostels & PG'}</span>
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-gray-500 group-hover:text-[#B08B40] transition-colors whitespace-nowrap">
+                    Accommodation
+                  </span>
+                </div>
+              </Link>
+
+              <Link
+                to="/marriage-halls"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+              >
+                <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <span>{t('nav.marriageHalls')}</span>
+              </Link>
+
+              <Link
+                to="/home-services"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-[#9A7818] bg-[#FAF4E6] border border-[#E8DFC8] px-2.5 py-1 rounded-xl transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap shadow-2xs"
+              >
+                <Wrench className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <span>{t('nav.homeServices')}</span>
+              </Link>
+
+              <Link
+                to="/offers"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+              >
+                <Gift className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#D4AF37] group-hover:scale-110 transition-transform shrink-0" />
+                <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
+                <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                  Free
+                </span>
+              </Link>
             </div>
           </div>
 
-
-
-          {/* ─── Classic Search / Filter Box (Matching HomePage Search Card) ─── */}
-          <div className="pt-1 max-w-4xl mx-auto animate-fade-in">
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-xl shadow-[#D4AF37]/10 border border-[#E8DFC8] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 items-center">
-              {/* Filter 1: Locality Dropdown */}
-              <div className="relative text-left">
-                <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider mb-1 ml-1">
-                  {t('filter.locality')}
-                </label>
-                <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
-                  <MapPin className="w-4 h-4 text-[#C5A059] shrink-0" />
-                  <select
-                    value={selectedLocality}
-                    onChange={(e) => setSelectedLocality(e.target.value)}
-                    className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    <option value="">{lang === 'ta' ? 'அனைத்து பகுதிகள்' : 'All Chennai Localities'}</option>
-                    {localities.map((loc) => (
-                      <option key={loc} value={loc}>
-                        {loc}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Filter 2: Service Subcategory */}
-              <div className="relative text-left">
-                <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider mb-1 ml-1">
-                  {lang === 'ta' ? 'சேவை பிரிவு' : 'Service Type'}
-                </label>
-                <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
-                  <Wrench className="w-4 h-4 text-[#C5A059] shrink-0" />
-                  <select
-                    value={selectedSubcategory}
-                    onChange={(e) => setSelectedSubcategory(e.target.value)}
-                    className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    <option value="">{lang === 'ta' ? 'அனைத்து பிரிவுகள்' : 'All Service Types'}</option>
-                    {activeCategoryMeta.subcategories.map((sub) => (
-                      <option key={sub} value={sub}>
-                        {sub}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Filter 3: Budget Range */}
-              <div className="relative text-left">
-                <div className="flex items-center justify-between mb-1 ml-1">
-                  <label className="block text-[11px] font-bold uppercase text-gray-600 tracking-wider">
-                    {t('hero.maxBudget')}
-                  </label>
-                  <span className="text-[10px] text-gray-400 font-medium">Starting</span>
-                </div>
-                <div className="flex items-center gap-2 bg-[#FCFAF5] hover:bg-[#FAF7F0] p-2.5 rounded-xl border border-[#E8DFC8] transition">
-                  <span className="text-sm font-bold text-[#C5A059] pl-1">₹</span>
-                  <select
-                    value={selectedBudget}
-                    onChange={(e) => setSelectedBudget(e.target.value)}
-                    className="w-full bg-transparent text-sm font-medium text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    {BUDGET_PRESETS.map((bp) => (
-                      <option key={bp.label} value={bp.value}>
-                        {bp.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Filter 4: Search Button / Reset */}
-              <div className="sm:col-span-2 lg:col-span-1 pt-1 sm:pt-0 flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={fetchServices}
-                  className="flex-1 h-[48px] flex items-center justify-center gap-2 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-md shadow-[#D4AF37]/25 transition active:scale-[0.98]"
-                >
-                  <Search className="w-4 h-4 text-white" />
-                  <span>{lang === 'ta' ? 'தேடுக' : 'Find Services'}</span>
-                </button>
-                {hasActiveFilters && (
-                  <button
-                    type="button"
-                    onClick={handleResetFilters}
-                    title="Reset filters"
-                    className="h-[48px] px-3 bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] rounded-xl hover:bg-[#F5EDD8] transition text-xs font-bold flex items-center justify-center"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* ─── Trust Guarantee Badges (Matching HomePage) ─── */}
+          {/* Trust Guarantee Badges (Matching Image Exactly) */}
           <div className="pt-1 sm:pt-3 grid grid-cols-3 gap-1.5 sm:gap-3 max-w-3xl mx-auto">
             <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
               <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
@@ -433,38 +370,38 @@ export const HomeServicesPage: React.FC = () => {
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">
-                  {lang === 'ta' ? 'நேரடி வல்லுநர் தொடர்பு' : 'Direct Provider Connect'}
+                  {lang === 'ta' ? 'நேரடி உரிமையாளர் தொடர்பு' : 'Direct Owner Connect'}
                 </p>
                 <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">
-                  {lang === 'ta' ? 'இடைத்தரகர் இல்லை' : 'Zero commission or middlemen'}
+                  {lang === 'ta' ? 'உரிமையாளர்களுடன் நேரடி தொடர்பு' : 'Connect directly with verified owners'}
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
               <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <Shield className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">
-                  {lang === 'ta' ? 'சரிபார்க்கப்பட்ட வல்லுநர்கள்' : 'Verified Professionals'}
+                  {lang === 'ta' ? 'சரிபார்க்கப்பட்ட பட்டியல்கள்' : 'Verified Listings'}
                 </p>
                 <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">
-                  {lang === 'ta' ? 'அனுபவம் மற்றும் ஆவண சோதனை' : 'Strict background verification'}
+                  {lang === 'ta' ? 'நிர்வாகியால் சரிபார்க்கப்பட்ட புகைப்படங்கள்' : 'Admin-checked photos & real locations'}
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
               <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <Sparkles className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
+                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">
-                  {lang === 'ta' ? 'வெளிப்படையான கட்டணம்' : 'Transparent Pricing'}
+                  {lang === 'ta' ? 'நேரடி தொலைபேசி & வாட்ஸ்அப்' : 'Direct Phone & WhatsApp'}
                 </p>
                 <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">
-                  {lang === 'ta' ? 'மறைமுக கட்டணம் இல்லை' : 'Clear upfront estimates'}
+                  {lang === 'ta' ? 'உரிமையாளர்களுடன் நேரடி உரையாடல்' : 'Direct conversation with owners'}
                 </p>
               </div>
             </div>
@@ -472,87 +409,144 @@ export const HomeServicesPage: React.FC = () => {
         </div>
       </section>
 
-      {/* ─── Sidebar + Service Results Section ─── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-
-          {/* ── Left Sidebar: Category Nav ── */}
-          <aside className="w-full lg:w-60 xl:w-64 shrink-0">
-            {/* Mobile: horizontal scrollable strip */}
-            <div className="flex lg:hidden overflow-x-auto gap-2 pb-2 -mx-4 px-4">
-              {CATEGORIES.map((cat) => {
-                const isActive = activeCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => { setActiveCategory(cat.id); setSelectedSubcategory(''); }}
-                    className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition shrink-0 ${
+      {/* ─── Browse By Service Category Section (Matching HomePage Category Cards) ─── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {CATEGORIES.filter((c) => c.id !== 'ALL').map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => {
+                  setActiveCategory(isActive ? 'ALL' : cat.id);
+                  setSelectedSubcategory('');
+                }}
+                className={`group bg-white rounded-2xl p-3.5 sm:p-5 border shadow-xs hover:shadow-xl transition-all flex flex-col justify-between text-left ${
+                  isActive
+                    ? 'border-[#C5A059] ring-2 ring-[#C5A059]/20 bg-[#FCFAF5]'
+                    : 'border-[#EFE8D8] hover:border-[#C5A059]'
+                }`}
+              >
+                <div className="space-y-2">
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center border transition ${
                       isActive
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-sm'
-                        : 'bg-white border-[#E8DFC8] text-gray-600 hover:bg-[#FAF7F0]'
+                        ? 'bg-[#FAF4E6] text-[#9A7818] border-[#E8DFC8]'
+                        : 'bg-[#FAF7F0] text-[#C5A059] border-[#EFE8D8] group-hover:scale-110'
                     }`}
                   >
-                    <span>{cat.icon}</span>
-                    <span>{lang === 'ta' ? cat.labelTa : cat.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Desktop: vertical sticky sidebar */}
-            <div className="hidden lg:block sticky top-24">
-              <div className="bg-white border border-[#E8DFC8] rounded-2xl shadow-sm overflow-hidden">
-                <div className="px-4 py-3 border-b border-[#F0E8D5] bg-[#FAF7F0]">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-[#9A7818]">
-                    {lang === 'ta' ? 'சேவை வகைகள்' : 'Service Categories'}
+                    {cat.icon}
+                  </div>
+                  <h3 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-[#B08B40] transition leading-tight">
+                    {lang === 'ta' ? cat.labelTa : cat.label}
+                  </h3>
+                  <p className="text-[11px] text-gray-500 leading-relaxed hidden sm:block">
+                    {cat.subcategories.slice(0, 2).join(', ')}...
                   </p>
                 </div>
-                <nav className="p-2 space-y-0.5">
-                  {CATEGORIES.map((cat) => {
-                    const isActive = activeCategory === cat.id;
-                    return (
-                      <button
-                        key={cat.id}
-                        type="button"
-                        onClick={() => { setActiveCategory(cat.id); setSelectedSubcategory(''); }}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-left transition ${
-                          isActive
-                            ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-sm'
-                            : 'text-gray-700 hover:bg-[#FAF7F0] hover:text-[#9A7818]'
-                        }`}
-                      >
-                        <span className={isActive ? 'text-white' : 'text-[#C5A059]'}>{cat.icon}</span>
-                        <span className="leading-tight">{lang === 'ta' ? cat.labelTa : cat.label}</span>
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-            </div>
-          </aside>
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#C5A059] group-hover:text-[#9A7818] pt-2 sm:pt-3">
+                  <span>
+                    {isActive
+                      ? lang === 'ta'
+                        ? 'தேர்ந்தெடுக்கப்பட்டது'
+                        : 'Active'
+                      : lang === 'ta'
+                      ? 'காண்க'
+                      : 'Explore'}
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
-          {/* ── Right: Results ── */}
-          <div className="flex-1 min-w-0 space-y-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
-                  {lang === 'ta' ? 'கிடைக்கும் சேவைகள்' : 'Available Services'}
-                </h2>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {services.length} {lang === 'ta' ? 'வல்லுநர்கள் பட்டியலில் உள்ளனர்' : 'professionals available across Chennai'}
-                </p>
-              </div>
-              {hasActiveFilters && (
-                <button
-                  onClick={handleResetFilters}
-                  className="text-xs font-bold text-[#9A7818] hover:underline"
+      {/* ─── Available Verified Home Services (Matching HomePage Showcase Grid) ─── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#9A7818] bg-[#FAF4E6] border border-[#E8DFC8] px-3 py-1 rounded-full mb-1">
+              <Shield className="w-3.5 h-3.5 text-[#C5A059]" />
+              <span>{lang === 'ta' ? 'சரிபார்க்கப்பட்ட சேவைகள்' : 'Verified Professionals'}</span>
+            </div>
+            <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-900">
+              {activeCategory === 'ALL'
+                ? lang === 'ta'
+                  ? 'சென்னை வீட்டு சேவைகள்'
+                  : 'Chennai Home Services'
+                : lang === 'ta'
+                ? activeCategoryMeta.labelTa
+                : activeCategoryMeta.label}
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">
+              {services.length}{' '}
+              {lang === 'ta'
+                ? 'வல்லுநர்கள் பட்டியலில் உள்ளனர்'
+                : 'verified professionals ready to serve across Chennai'}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Locality Quick Selector */}
+            <div className="flex items-center gap-1.5 bg-white border border-[#E8DFC8] rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 shadow-2xs">
+              <MapPin className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+              <select
+                value={selectedLocality}
+                onChange={(e) => setSelectedLocality(e.target.value)}
+                className="bg-transparent focus:outline-none cursor-pointer text-xs"
+              >
+                <option value="">{lang === 'ta' ? 'அனைத்து பகுதிகள்' : 'All Localities'}</option>
+                {localities.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Subcategory selector if active category has subcategories */}
+            {activeCategoryMeta.subcategories.length > 0 && activeCategory !== 'ALL' && (
+              <div className="flex items-center gap-1.5 bg-white border border-[#E8DFC8] rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 shadow-2xs">
+                <Wrench className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                <select
+                  value={selectedSubcategory}
+                  onChange={(e) => setSelectedSubcategory(e.target.value)}
+                  className="bg-transparent focus:outline-none cursor-pointer text-xs"
                 >
-                  {lang === 'ta' ? 'அனைத்து வடிகட்டிகளையும் நீக்குக' : 'Clear Filters'}
-                </button>
-              )}
-            </div>
+                  <option value="">{lang === 'ta' ? 'அனைத்து வகைகள்' : 'All Types'}</option>
+                  {activeCategoryMeta.subcategories.map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="px-3 py-2 bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] rounded-xl text-xs font-bold hover:bg-[#F5EDD8] transition"
+              >
+                {lang === 'ta' ? 'மீட்டமைக்க' : 'Clear'}
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleListServiceClick}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#D4AF37] to-[#C5A059] shadow-xs hover:brightness-105 transition"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>{lang === 'ta' ? 'சேவை சேர்க்க' : 'List Service'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Services Cards Grid */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -569,7 +563,7 @@ export const HomeServicesPage: React.FC = () => {
             ))}
           </div>
         ) : services.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-[#EFE8D8] p-8 shadow-xs">
+          <div className="text-center py-16 bg-white rounded-3xl border border-[#EFE8D8] p-8 shadow-xs max-w-2xl mx-auto">
             <div className="w-16 h-16 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-2xl mx-auto mb-4">
               🔧
             </div>
@@ -606,7 +600,7 @@ export const HomeServicesPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {services.map((service) => {
               const catMeta =
                 CATEGORIES.find((c) => c.id === service.category) || CATEGORIES[0];
@@ -729,52 +723,148 @@ export const HomeServicesPage: React.FC = () => {
             })}
           </div>
         )}
+      </section>
 
-          </div>{/* end flex-1 right column */}
-        </div>{/* end flex-col lg:flex-row */}
+      {/* ─── Popular Chennai Areas Grid (Matching HomePage) ─── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
+        <div className="text-center max-w-xl mx-auto space-y-2">
+          <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-gray-900">
+            {t('hero.popularLocalities')}
+          </h2>
+          <p className="text-sm text-gray-600 font-normal">
+            {lang === 'ta'
+              ? 'சென்னையின் முக்கிய பகுதிகளில் நம்பகமான வீட்டு சேவைகளை கண்டறியுங்கள்.'
+              : 'Find trusted home services and repair professionals across Chennai neighborhoods.'}
+          </p>
+        </div>
 
-        {/* ─── Bottom CTA Banner (Matching White & Lite Gold Theme) ─── */}
-        <section className="mt-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border border-[#E8DFC8] rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-sm">
-          <div
-            className="absolute inset-0 pointer-events-none opacity-40"
-            style={{
-              background:
-                'radial-gradient(circle at 50% 50%, rgba(212,175,55,0.12) 0%, transparent 70%)',
-            }}
-          />
-          <div className="relative z-10 max-w-2xl mx-auto space-y-3">
-            <span className="inline-block px-3 py-1 bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] rounded-full text-xs font-bold uppercase tracking-wider">
-              {lang === 'ta' ? 'சேவை வழங்குநர்களுக்கு' : 'For Property & Business Owners'}
-            </span>
-            <h3 className="text-xl sm:text-3xl font-extrabold text-gray-900">
-              {lang === 'ta'
-                ? 'உங்கள் சேவையை VeeduVadagaikkuChennai-வில் பட்டியலிடுங்கள்!'
-                : 'Grow Your Business with Veedu Vadagaikku Chennai!'}
-            </h3>
-            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-              {lang === 'ta'
-                ? 'சென்னை வாடகையாளர்களை நேரடியாக அடையுங்கள். இடைத்தரகர் இல்லை, கட்டணமில்லா பட்டியல்.'
-                : 'Reach thousands of Chennai tenants and property seekers directly. Zero commission.'}
-            </p>
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
+          {localities.slice(0, 12).map((loc) => {
+            const isSelected = selectedLocality === loc;
+            return (
               <button
+                key={loc}
                 type="button"
-                onClick={handleListServiceClick}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold px-6 py-3 rounded-xl text-xs sm:text-sm shadow-md hover:brightness-105 transition"
+                onClick={() => setSelectedLocality(isSelected ? '' : loc)}
+                className={`p-2.5 sm:p-4 rounded-2xl border transition text-center group ${
+                  isSelected
+                    ? 'bg-[#FAF4E6] border-[#C5A059] shadow-md scale-[1.02]'
+                    : 'bg-white border-[#EFE8D8] hover:border-[#C5A059] hover:shadow-md'
+                }`}
               >
-                <Plus className="w-4 h-4" />
-                <span>{lang === 'ta' ? 'சேவையை சேர்க்க (உரிமையாளர்கள்)' : 'List Your Service (Owners)'}</span>
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] mx-auto mb-1 sm:mb-2 group-hover:scale-110 transition" />
+                <h4 className="text-[10px] sm:text-sm font-semibold text-gray-800 group-hover:text-[#9A7818] transition leading-tight">
+                  {loc}
+                </h4>
+                <span className="hidden sm:block text-[11px] text-gray-500 font-normal">
+                  {isSelected ? (lang === 'ta' ? 'தேர்வு செய்யப்பட்டது' : 'Selected') : (lang === 'ta' ? 'சேவைகள்' : 'Find Services')}
+                </span>
               </button>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 bg-white border border-[#E8DFC8] text-gray-700 font-semibold px-5 py-3 rounded-xl text-xs sm:text-sm hover:bg-[#FAF7F0] transition"
-              >
-                {lang === 'ta' ? 'உதவிக்கு தொடர்பு கொள்ள' : 'Contact Support'}
-              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ─── Simple 3-Step Process (Matching HomePage How It Works) ─── */}
+      <section className="bg-[#FAF8F4] text-gray-900 py-16 border-y border-[#EFE8D8]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="inline-block px-3 py-1 bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] rounded-full text-xs font-bold uppercase tracking-wider">
+              Simple 3-Step Process
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-gray-900">
+              {lang === 'ta' ? 'வீட்டு சேவைகள் எவ்வாறு செயல்படுகின்றன' : 'How Home Services Work'}
+            </h2>
+            <p className="text-sm text-gray-600 font-normal">
+              {lang === 'ta'
+                ? 'இடைத்தரகர் இல்லை, கூடுதல் கட்டணம் இல்லை — சென்னை வல்லுநர்களுடன் நேரடி தொடர்பு.'
+                : 'Direct connection to verified service providers with zero commission and upfront pricing.'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="p-6 bg-white rounded-3xl border border-[#EFE8D8] shadow-xs space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-lg mx-auto shadow-xs">
+                1
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                {lang === 'ta' ? 'சேவை வகையைத் தேர்ந்தெடுக்கவும்' : 'Choose Service Category'}
+              </h3>
+              <p className="text-sm text-gray-600 font-normal">
+                {lang === 'ta'
+                  ? 'மூவர்ஸ், பெயிண்டிங், பிளம்பிங், ஏசி பழுது அல்லது சட்ட ஆவண சேவைகளை கண்டறியுங்கள்.'
+                  : 'Select from Movers & Packers, Renovation, Deep Cleaning, AC Care, or Legal Agreement services.'}
+              </p>
+            </div>
+
+            <div className="p-6 bg-white rounded-3xl border border-[#EFE8D8] shadow-xs space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-lg mx-auto shadow-xs">
+                2
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                {lang === 'ta' ? 'விலை மற்றும் விவரங்களைச் சரிபார்க்கவும்' : 'Check Verified Rates & Coverage'}
+              </h3>
+              <p className="text-sm text-gray-600 font-normal">
+                {lang === 'ta'
+                  ? 'தொடக்க விலை, சேவை பகுதிகள், அனுபவம் மற்றும் கூடுதல் அம்சங்களை எளிதாக பார்க்கவும்.'
+                  : 'Review starting prices, service coverage, experience, and working hours with complete transparency.'}
+              </p>
+            </div>
+
+            <div className="p-6 bg-white rounded-3xl border border-[#EFE8D8] shadow-xs space-y-3">
+              <div className="w-14 h-14 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-lg mx-auto shadow-xs">
+                3
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                {lang === 'ta' ? 'தொலைபேசி அல்லது வாட்ஸ்அப் மூலம் நேரடி தொடர்பு' : 'Call or WhatsApp Directly'}
+              </h3>
+              <p className="text-sm text-gray-600 font-normal">
+                {lang === 'ta'
+                  ? 'உடனடியாக போன் செய்து அல்லது வாட்ஸ்அப் மெசேஜ் அனுப்பி உங்கள் தேவையைப் பேசி முடிக்கவும்.'
+                  : 'Directly dial the provider or send a WhatsApp message instantly to book and get work done.'}
+              </p>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* ─── For Service Providers CTA (Matching HomePage Property Owners CTA) ─── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-[#FAF4E6] via-[#F8F1E0] to-[#F4E8D0] rounded-3xl p-8 sm:p-12 text-gray-900 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#E5DAC4]">
+          <div className="space-y-4 max-w-xl text-center lg:text-left">
+            <span className="inline-block px-3.5 py-1 bg-white border border-[#E8DFC8] text-[#9A7818] rounded-full text-xs font-bold uppercase tracking-wider shadow-2xs">
+              {lang === 'ta' ? 'சேவை வழங்குநர்களுக்கு' : 'Service Partners & Property Owners'}
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight leading-tight text-gray-900">
+              {lang === 'ta'
+                ? 'சென்னையில் உங்கள் சேவையை வழங்க விரும்புகிறீர்களா?'
+                : 'Offer Home Services in Chennai? Grow Your Business!'}
+            </h2>
+            <p className="text-sm sm:text-base text-gray-700 font-normal">
+              {lang === 'ta'
+                ? 'ஆயிரக்கணக்கான வாடகை மற்றும் சொத்து தேடுபவர்களை நேரடியாக அடையுங்கள். இடைத்தரகர் இல்லை, நேரடி வாடிக்கையாளர் தொடர்பு.'
+                : 'Connect with thousands of tenants and property owners seeking verified home services. Zero commission, direct leads.'}
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleListServiceClick}
+              className="px-6 py-3.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#D4AF37]/25 text-center transition active:scale-95 flex items-center justify-center gap-2"
+            >
+              <span>{lang === 'ta' ? 'சேவையை சேர்க்க (உரிமையாளர்கள்)' : 'List Your Service'}</span>
+              <ArrowRight className="w-4 h-4 text-white" />
+            </button>
+            <Link
+              to="/contact"
+              className="px-6 py-3.5 bg-white hover:bg-[#FAF7F0] border border-[#E8DFC8] text-gray-800 font-bold text-sm rounded-2xl text-center transition shadow-xs flex items-center justify-center"
+            >
+              {lang === 'ta' ? 'உதவிக்கு தொடர்பு கொள்ள' : 'Contact Support'}
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ─── Owner Access Gate Modal ─── */}
       {showOwnerModal && (

@@ -34,7 +34,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.switchLang': 'தமிழ்',
 
     // Hero Section
-    'hero.badge': "Chennai's Exclusive Rent & Lease Platform — Direct Owner Connect",
+    'hero.badge': 'Direct Owner Connect',
     'hero.title1': "Chennai's Exclusive",
     'hero.titleHouse': 'One-Stop Property Rent & Lease Webapp',
     'hero.titleOr': '',
@@ -242,7 +242,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.switchLang': 'English',
 
     // Hero Section
-    'hero.badge': 'சென்னையின் பிரத்யேக வாடகை / குத்தகை தளம் — நேரடி உரிமையாளர் தொடர்பு',
+    'hero.badge': 'நேரடி உரிமையாளர் தொடர்பு',
     'hero.title1': 'சென்னையின் பிரத்யேக',
     'hero.titleHouse': 'ஒரே இட வாடகை / குத்தகை இணையதளம்',
     'hero.titleOr': '',
