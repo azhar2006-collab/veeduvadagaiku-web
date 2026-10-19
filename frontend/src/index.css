@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    font-family: 'Outfit', 'Noto Sans Tamil', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', 'Noto Sans Tamil', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -12,11 +12,11 @@
 
   body {
     @apply bg-[#FAFAF8] text-slate-800 font-sans antialiased selection:bg-[#C5A059] selection:text-white font-normal;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.005em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.015em;
+    letter-spacing: -0.005em;
   }
 }
 

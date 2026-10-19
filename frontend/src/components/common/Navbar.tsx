@@ -22,36 +22,36 @@ export const Navbar: React.FC = () => {
       <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo & City Selector */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1 shrink-0">
               <img
                 src="/logo-full.png"
                 alt="veeduvadagaikkuchennai"
-                className="h-9 sm:h-11 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
+                className="h-8 sm:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
               />
-              <span className="font-black text-xl sm:text-2xl tracking-tight text-[#0B3B60] leading-none lowercase">
+              <span className="hidden xl:inline font-bold text-xl tracking-tight text-[#0B3B60] leading-none lowercase">
                 veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
               </span>
             </Link>
 
             {/* City Indicator */}
-            <div className="hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs sm:text-sm font-bold text-gray-700 shadow-2xs">
-              <MapPin className="w-4 h-4 text-[#C5A059]" />
+            <div className="hidden 2xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
+              <MapPin className="w-3.5 h-3.5 text-[#C5A059]" />
               <span>Chennai</span>
             </div>
           </div>
 
           {/* Right Navigation & Action Buttons (Spaced accordingly) */}
-          <div className="hidden md:flex items-center gap-4 lg:gap-6">
+          <div className="hidden md:flex items-center gap-3.5 lg:gap-5 shrink-0">
             <Link
               to="/about"
-              className="text-sm sm:text-base font-bold text-gray-700 hover:text-[#9A7818] transition-colors"
+              className="text-sm font-medium text-gray-700 hover:text-[#9A7818] transition-colors whitespace-nowrap"
             >
               {t('nav.about')}
             </Link>
             <Link
               to="/contact"
-              className="text-sm sm:text-base font-bold text-gray-700 hover:text-[#9A7818] transition-colors"
+              className="text-sm font-medium text-gray-700 hover:text-[#9A7818] transition-colors whitespace-nowrap"
             >
               {t('nav.contact')}
             </Link>

@@ -219,32 +219,32 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Quick Categories Bar */}
-          <div className="w-full flex items-center justify-start min-[920px]:justify-center overflow-x-auto no-scrollbar py-3 px-4 sm:px-6">
-            <div className="flex items-center gap-3.5 sm:gap-5 lg:gap-7 shrink-0">
+          <div className="w-full flex items-center justify-start min-[920px]:justify-center overflow-x-auto no-scrollbar py-3.5 px-4 sm:px-6">
+            <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 shrink-0">
               <Link
                 to="/houses"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
               >
-                <Building2 className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <Building2 className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
                 <span>{t('nav.houses')}</span>
               </Link>
 
               <Link
                 to="/shops"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
               >
-                <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
                 <span>{t('nav.shops')}</span>
               </Link>
 
               <Link
                 to="/hostels"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 text-left"
+                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 text-left px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
               >
-                <Users className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <Users className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
                 <div className="flex flex-col leading-tight">
                   <span className="whitespace-nowrap">{lang === 'ta' ? 'விடுதிகள் & PG' : 'Hostels & PG'}</span>
-                  <span className="text-[10px] sm:text-[11px] font-semibold text-gray-500 group-hover:text-[#B08B40] transition-colors whitespace-nowrap">
+                  <span className="text-[10px] sm:text-[11px] font-normal text-gray-400 group-hover:text-[#9A7818] transition-colors whitespace-nowrap">
                     Accommodation
                   </span>
                 </div>
@@ -252,27 +252,27 @@ export const HomePage: React.FC = () => {
 
               <Link
                 to="/marriage-halls"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
               >
-                <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
                 <span>{t('nav.marriageHalls')}</span>
               </Link>
 
               <Link
                 to="/home-services"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
               >
-                <Wrench className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <Wrench className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
                 <span>{t('nav.homeServices')}</span>
               </Link>
 
               <Link
                 to="/offers"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
               >
-                <Gift className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#D4AF37] group-hover:scale-110 transition-transform shrink-0" />
+                <Gift className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#D4AF37] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
                 <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
-                <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-bold rounded-full uppercase tracking-wider animate-pulse">
                   Free
                 </span>
               </Link>
