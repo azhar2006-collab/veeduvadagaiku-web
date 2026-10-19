@@ -218,164 +218,56 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Tab Switcher: All Rentals | Houses for Rent | Shops for Rent | Hostels & PG | Marriage Halls | Home Services | Offers */}
-          <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar py-1 px-4 sm:px-0">
-            <div
-              className="inline-flex items-center p-1 sm:p-1.5 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap shrink-0 sm:mx-auto gap-1"
-              role="tablist"
-              aria-label="Browse mode"
-            >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedCategory === ''}
-                onClick={() => {
-                  setSelectedCategory('');
-                  setRentalTab('RESIDENTIAL');
-                  setSelectedFloor('');
-                  setSelectedParking('');
-                  setSelectedSizeRange('');
-                  setMinSize('');
-                  setMaxSize('');
-                  setHallCapacity('');
-                  setHallDining('');
-                  setHallAc('');
-                }}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  selectedCategory === ''
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
-                }`}
+          {/* Quick Categories Bar (From 1st image) */}
+          <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar py-3 px-4 sm:px-0">
+            <div className="flex items-center gap-6 sm:gap-9 flex-nowrap shrink-0 sm:mx-auto">
+              <Link
+                to="/houses"
+                className="text-sm sm:text-base font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-2 group whitespace-nowrap"
               >
-                <LayoutGrid className={`w-4 h-4 ${selectedCategory === '' ? 'text-white' : 'text-[#C5A059]'}`} />
-                <span>{lang === 'ta' ? 'அனைத்தும்' : 'All Rentals'}</span>
-              </button>
-
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedCategory === 'HOUSE'}
-                onClick={() => {
-                  setSelectedCategory('HOUSE');
-                  setRentalTab('RESIDENTIAL');
-                  setSelectedFloor('');
-                  setSelectedParking('');
-                  setSelectedSizeRange('');
-                  setMinSize('');
-                  setMaxSize('');
-                  setHallCapacity('');
-                  setHallDining('');
-                  setHallAc('');
-                }}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  selectedCategory === 'HOUSE'
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
-                }`}
-              >
-                <Building2 className={`w-4 h-4 ${selectedCategory === 'HOUSE' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] group-hover:scale-110 transition-transform" />
                 <span>{t('nav.houses')}</span>
-              </button>
+              </Link>
 
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedCategory === 'SHOP'}
-                onClick={() => {
-                  setSelectedCategory('SHOP');
-                  setRentalTab('COMMERCIAL');
-                  setSelectedCommercialTypes([]);
-                  setSelectedFloor('');
-                  setSelectedParking('');
-                  setSelectedSizeRange('');
-                  setMinSize('');
-                  setMaxSize('');
-                  setHallCapacity('');
-                  setHallDining('');
-                  setHallAc('');
-                }}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  selectedCategory === 'SHOP'
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
-                }`}
+              <Link
+                to="/shops"
+                className="text-sm sm:text-base font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-2 group whitespace-nowrap"
               >
-                <Store className={`w-4 h-4 ${selectedCategory === 'SHOP' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <Store className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] group-hover:scale-110 transition-transform" />
                 <span>{t('nav.shops')}</span>
-              </button>
+              </Link>
 
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedCategory === 'HOSTEL'}
-                onClick={() => {
-                  setSelectedCategory('HOSTEL');
-                  setRentalTab('HOSTEL');
-                  setHostelGender('');
-                  setHostelSharing('');
-                  setHostelTotalMembers('');
-                  setSelectedFloor('');
-                  setSelectedParking('');
-                  setSelectedSizeRange('');
-                  setMinSize('');
-                  setMaxSize('');
-                  setHallCapacity('');
-                  setHallDining('');
-                  setHallAc('');
-                }}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  selectedCategory === 'HOSTEL'
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
-                }`}
+              <Link
+                to="/hostels"
+                className="text-sm sm:text-base font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-2 group whitespace-nowrap"
               >
-                <Users className={`w-4 h-4 ${selectedCategory === 'HOSTEL' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] group-hover:scale-110 transition-transform" />
                 <span>{t('nav.hostels')}</span>
-              </button>
+              </Link>
 
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedCategory === 'MARRIAGE_HALL'}
-                onClick={() => {
-                  setSelectedCategory('MARRIAGE_HALL');
-                  setRentalTab('MARRIAGE_HALL');
-                  setHallCapacity('');
-                  setHallDining('');
-                  setHallAc('');
-                  setSelectedFloor('');
-                  setSelectedParking('');
-                  setSelectedSizeRange('');
-                  setMinSize('');
-                  setMaxSize('');
-                }}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  selectedCategory === 'MARRIAGE_HALL'
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
-                }`}
+              <Link
+                to="/marriage-halls"
+                className="text-sm sm:text-base font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-2 group whitespace-nowrap"
               >
-                <Sparkles className={`w-4 h-4 ${selectedCategory === 'MARRIAGE_HALL' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] group-hover:scale-110 transition-transform" />
                 <span>{t('nav.marriageHalls')}</span>
-              </button>
+              </Link>
 
-              {/* Home Services */}
               <Link
                 to="/home-services"
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6] transition-all duration-200"
+                className="text-sm sm:text-base font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-2 group whitespace-nowrap"
               >
-                <Wrench className="w-4 h-4 text-[#C5A059]" />
+                <Wrench className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059] group-hover:scale-110 transition-transform" />
                 <span>{t('nav.homeServices')}</span>
               </Link>
 
-              {/* Offers FREE */}
               <Link
                 to="/offers"
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap text-[#9A7818] hover:text-[#B08B40] hover:bg-[#FAF4E6] transition-all duration-200"
+                className="text-sm sm:text-base font-bold text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-2 group whitespace-nowrap"
               >
-                <Gift className="w-4 h-4 text-[#D4AF37]" />
+                <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] group-hover:scale-110 transition-transform" />
                 <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
-                <span className="px-1.5 py-0.2 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
                   Free
                 </span>
               </Link>

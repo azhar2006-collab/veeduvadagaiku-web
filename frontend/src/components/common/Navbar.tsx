@@ -42,52 +42,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-7">
-            <Link
-              to="/houses"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Building2 className="w-4 h-4 text-[#C5A059]" />
-              {t('nav.houses')}
-            </Link>
-            <Link
-              to="/shops"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Store className="w-4 h-4 text-[#C5A059]" />
-              {t('nav.shops')}
-            </Link>
-            <Link
-              to="/hostels"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Users className="w-4 h-4 text-[#C5A059]" />
-              {t('nav.hostels')}
-            </Link>
-            <Link
-              to="/marriage-halls"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Sparkles className="w-4 h-4 text-[#C5A059]" />
-              {t('nav.marriageHalls')}
-            </Link>
-            <Link
-              to="/home-services"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Wrench className="w-4 h-4 text-[#C5A059]" />
-              {t('nav.homeServices')}
-            </Link>
-            <Link
-              to="/offers"
-              className="text-sm font-bold text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-1.5"
-            >
-              <Gift className="w-4 h-4 text-[#D4AF37]" />
-              <span>{t('nav.offers')}</span>
-              <span className="px-1.5 py-0.2 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
-                Free
-              </span>
-            </Link>
+          <div className="hidden md:flex items-center gap-6">
             <Link
               to="/about"
               className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition"
