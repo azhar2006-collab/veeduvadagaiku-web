@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
 import { PropertyFilters as FilterType } from '../../types';
 import { SEOHead } from '../../components/common/SEOHead';
 import { Store, ChevronLeft, ChevronRight } from 'lucide-react';
+import { filterByCommercialType, filterByExtendedCategory } from '../../utils/categoryUtils';
 
 export const ShopsPage: React.FC = () => {
   const [filters, setFilters] = useState<FilterType>({
@@ -13,6 +14,8 @@ export const ShopsPage: React.FC = () => {
     minRent: '',
     maxRent: '',
     furnishing: '',
+    commercialType: '',
+    category: '',
     sortBy: 'newest',
     page: 1,
     limit: 9,
@@ -27,6 +30,8 @@ export const ShopsPage: React.FC = () => {
       minRent: '',
       maxRent: '',
       furnishing: '',
+      commercialType: '',
+      category: '',
       sortBy: 'newest',
       page: 1,
       limit: 9,
@@ -34,12 +39,24 @@ export const ShopsPage: React.FC = () => {
   };
 
   const pagination = data?.pagination;
+  const allProperties = data?.data || [];
+
+  const shopProperties = useMemo(() => {
+    let list = allProperties;
+    if (filters.category === 'COMMERCIAL_BUILDING') {
+      list = filterByExtendedCategory(list, 'COMMERCIAL_BUILDING');
+    }
+    if (filters.commercialType) {
+      list = filterByCommercialType(list, filters.commercialType);
+    }
+    return list;
+  }, [allProperties, filters.category, filters.commercialType]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Commercial Shops and Retail Space for Rent / Lease in Chennai | Veedu Vadagaikku Chennai"
-        description="Find prime retail shops, office spaces and commercial showrooms for rent and lease across Chennai."
+        title="Commercial Shops and Retail Space for Rent in Chennai | Veedu Vadagaikku Chennai"
+        description="Find prime retail shops, office spaces and commercial showrooms for rent across Chennai."
       />
 
       {/* Header */}
@@ -50,10 +67,10 @@ export const ShopsPage: React.FC = () => {
             <span>Commercial Real Estate</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            Commercial Shops for Rent / Lease in Chennai
+            Commercial Shops for Rent in Chennai
           </h1>
           <p className="text-xs sm:text-sm text-gray-600">
-            {pagination ? `${pagination.total} commercial shops and spaces available` : 'Loading...'}
+            {pagination ? `${shopProperties.length} commercial shops and spaces available` : 'Loading...'}
           </p>
         </div>
       </div>
@@ -69,7 +86,7 @@ export const ShopsPage: React.FC = () => {
 
         <div className="lg:col-span-3 space-y-8">
           <PropertyGrid
-            properties={data?.data || []}
+            properties={shopProperties}
             isLoading={isLoading}
             emptyTitle="No shops found"
             emptyDescription="Try selecting different Chennai localities or adjusting rent limits."

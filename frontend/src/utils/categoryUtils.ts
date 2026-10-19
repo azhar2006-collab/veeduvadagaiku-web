@@ -2,7 +2,7 @@ import React from 'react';
 import { Building2, Building, Store, Users, Sparkles } from 'lucide-react';
 import { Property } from '../types';
 
-export type ExtendedCategory = 'ALL' | 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL';
+export type ExtendedCategory = 'ALL' | 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL' | 'VILLA' | 'BUILDER_FLOOR';
 
 /**
  * Determines whether a property is a House, Apartment/Flat, Shop, Commercial Building, Hostel/PG, or Marriage Hall/Mandapam.
@@ -86,6 +86,18 @@ export function filterByExtendedCategory(
   category: ExtendedCategory | ''
 ): Property[] {
   if (!category || category === 'ALL') return properties;
+  if (category === 'VILLA') {
+    return properties.filter((p) => {
+      const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+      return text.includes('villa') || text.includes('வில்லா');
+    });
+  }
+  if (category === 'BUILDER_FLOOR') {
+    return properties.filter((p) => {
+      const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+      return text.includes('builder') || text.includes('floor') || text.includes('புளோர்');
+    });
+  }
   return properties.filter((p) => getPropertyCategory(p) === category);
 }
 

@@ -172,7 +172,7 @@ export interface PaginatedResponse<T> {
 
 export interface PropertyFilters {
   propertyType?: PropertyType | '';
-  category?: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL' | '';
+  category?: 'HOUSE' | 'APARTMENT' | 'SHOP' | 'COMMERCIAL_BUILDING' | 'HOSTEL' | 'MARRIAGE_HALL' | 'VILLA' | 'BUILDER_FLOOR' | '';
   locality?: string;
   minRent?: number | '';
   maxRent?: number | '';

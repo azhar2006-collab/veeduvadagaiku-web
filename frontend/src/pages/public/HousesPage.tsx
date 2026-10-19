@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -9,6 +9,7 @@ import { Building2, ChevronLeft, ChevronRight } from 'lucide-react';
 export const HousesPage: React.FC = () => {
   const [filters, setFilters] = useState<FilterType>({
     propertyType: 'HOUSE',
+    category: '',
     locality: '',
     minRent: '',
     maxRent: '',
@@ -24,6 +25,7 @@ export const HousesPage: React.FC = () => {
   const handleReset = () => {
     setFilters({
       propertyType: 'HOUSE',
+      category: '',
       locality: '',
       minRent: '',
       maxRent: '',
@@ -36,6 +38,44 @@ export const HousesPage: React.FC = () => {
   };
 
   const pagination = data?.pagination;
+  const allProperties = data?.data || [];
+
+  const houseProperties = useMemo(() => {
+    let list = allProperties;
+    if (filters.category === 'APARTMENT') {
+      list = list.filter((p) => {
+        const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+        return (
+          text.includes('apartment') ||
+          text.includes('flat') ||
+          text.includes('[category:apartment]') ||
+          text.includes('அபார்ட்மெண்ட்') ||
+          text.includes('பிளாட்')
+        );
+      });
+    } else if (filters.category === 'HOUSE') {
+      list = list.filter((p) => {
+        const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+        return (
+          !text.includes('[category:apartment]') &&
+          !text.includes('apartment') &&
+          !text.includes('flat') &&
+          !text.includes('[category:hostel]')
+        );
+      });
+    } else if ((filters.category as string) === 'VILLA') {
+      list = list.filter((p) => {
+        const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+        return text.includes('villa') || text.includes('வில்லா');
+      });
+    } else if ((filters.category as string) === 'BUILDER_FLOOR') {
+      list = list.filter((p) => {
+        const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
+        return text.includes('builder') || text.includes('floor') || text.includes('புளோர்');
+      });
+    }
+    return list;
+  }, [allProperties, filters.category]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -55,7 +95,7 @@ export const HousesPage: React.FC = () => {
             Houses for Rent / Lease in Chennai
           </h1>
           <p className="text-xs sm:text-sm text-gray-600">
-            {pagination ? `${pagination.total} verified houses and flats available` : 'Loading...'}
+            {pagination ? `${houseProperties.length} verified houses and flats available` : 'Loading...'}
           </p>
         </div>
       </div>
@@ -70,7 +110,7 @@ export const HousesPage: React.FC = () => {
         </div>
 
         <div className="lg:col-span-3 space-y-8">
-          <PropertyGrid properties={data?.data || []} isLoading={isLoading} />
+          <PropertyGrid properties={houseProperties} isLoading={isLoading} />
 
           {pagination && pagination.totalPages > 1 && (
             <div className="flex items-center justify-center gap-3 pt-6 border-t border-gray-100">

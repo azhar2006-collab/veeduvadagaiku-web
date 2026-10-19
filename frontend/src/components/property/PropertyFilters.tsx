@@ -78,138 +78,170 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           )}
         </div>
 
-        {/* Property Category Radio */}
+        {/* Section / Category Dropdown */}
         <div>
-          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">
-            {t('filter.propertyCategory')}
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+            {filters.propertyType === 'HOUSE' && filters.category !== 'HOSTEL'
+              ? (lang === 'ta' ? 'வீடு வகை (House Type)' : 'House Type')
+              : filters.propertyType === 'SHOP' && filters.category !== 'MARRIAGE_HALL'
+              ? (lang === 'ta' ? 'வணிக வகை / வசதிகள்' : 'Commercial Facility / Type')
+              : filters.category === 'HOSTEL'
+              ? (lang === 'ta' ? 'விடுதி வகை' : 'Hostel & PG Accommodation')
+              : filters.category === 'MARRIAGE_HALL'
+              ? (lang === 'ta' ? 'மண்டபம் வகை' : 'Marriage Hall Facility')
+              : t('filter.propertyCategory')}
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                const isSelected = filters.category === 'HOUSE';
-                onChange({
-                  ...filters,
-                  propertyType: isSelected ? undefined : 'HOUSE',
-                  category: isSelected ? undefined : 'HOUSE',
-                  page: 1,
-                });
-              }}
-              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
-                filters.category === 'HOUSE'
-                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span className="truncate">{t('card.house')}</span>
-            </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                const isSelected = filters.category === 'APARTMENT';
+          {/* 1. House Section Dropdown */}
+          {filters.propertyType === 'HOUSE' && filters.category !== 'HOSTEL' && (
+            <select
+              value={filters.category || ''}
+              onChange={(e) => {
+                const val = e.target.value;
                 onChange({
                   ...filters,
-                  propertyType: isSelected ? undefined : 'HOUSE',
-                  category: isSelected ? undefined : 'APARTMENT',
+                  propertyType: 'HOUSE',
+                  category: val as any,
                   page: 1,
                 });
               }}
-              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
-                filters.category === 'APARTMENT'
-                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
-              }`}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
-              <Building className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span className="truncate">{t('card.apartment', 'Apartment')}</span>
-            </button>
+              <option value="">{lang === 'ta' ? 'அனைத்து வீடுகள் (All Residential)' : 'All Residential (Houses & Flats)'}</option>
+              <option value="HOUSE">{lang === 'ta' ? '🏢 தனி வீடு (Individual / Independent House)' : '🏢 Individual / Independent House'}</option>
+              <option value="APARTMENT">{lang === 'ta' ? '🏢 அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : '🏢 Apartment / Flat'}</option>
+              <option value="VILLA">{lang === 'ta' ? '🏡 தனி வில்லா (Independent Villa)' : '🏡 Independent Villa'}</option>
+              <option value="BUILDER_FLOOR">{lang === 'ta' ? '🏠 பில்டர் புளோர் (Builder Floor)' : '🏠 Builder / Independent Floor'}</option>
+            </select>
+          )}
 
-            <button
-              type="button"
-              onClick={() => {
-                const isSelected = filters.category === 'SHOP';
-                onChange({
-                  ...filters,
-                  propertyType: isSelected ? undefined : 'SHOP',
-                  category: isSelected ? undefined : 'SHOP',
-                  page: 1,
-                });
-              }}
-              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
-                filters.category === 'SHOP'
-                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
-              }`}
-            >
-              <Store className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span className="truncate">{t('card.shop')}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                const isSelected = filters.category === 'COMMERCIAL_BUILDING';
-                onChange({
-                  ...filters,
-                  propertyType: isSelected ? undefined : 'SHOP',
-                  category: isSelected ? undefined : 'COMMERCIAL_BUILDING',
-                  page: 1,
-                });
-              }}
-              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
+          {/* 2. Shop Section Dropdown (Related Facilities) */}
+          {filters.propertyType === 'SHOP' && filters.category !== 'MARRIAGE_HALL' && (
+            <select
+              value={
                 filters.category === 'COMMERCIAL_BUILDING'
-                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
-              }`}
+                  ? 'COMMERCIAL_BUILDING'
+                  : filters.commercialType === 'Office Space'
+                  ? 'OFFICE_SPACE'
+                  : filters.commercialType === 'Showroom'
+                  ? 'SHOWROOM'
+                  : filters.commercialType === 'Godown/Warehouse'
+                  ? 'GODOWN'
+                  : filters.commercialType === 'Industrial Shed'
+                  ? 'INDUSTRIAL_SHED'
+                  : filters.commercialType === 'Shop' || filters.category === 'SHOP'
+                  ? 'RETAIL_SHOP'
+                  : ''
+              }
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) {
+                  onChange({ ...filters, propertyType: 'SHOP', category: undefined, commercialType: undefined, page: 1 });
+                } else if (val === 'COMMERCIAL_BUILDING') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'COMMERCIAL_BUILDING', commercialType: undefined, page: 1 });
+                } else if (val === 'RETAIL_SHOP') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'SHOP', commercialType: 'Shop', page: 1 });
+                } else if (val === 'OFFICE_SPACE') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'SHOP', commercialType: 'Office Space', page: 1 });
+                } else if (val === 'SHOWROOM') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'SHOP', commercialType: 'Showroom', page: 1 });
+                } else if (val === 'GODOWN') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'SHOP', commercialType: 'Godown/Warehouse', page: 1 });
+                } else if (val === 'INDUSTRIAL_SHED') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'SHOP', commercialType: 'Industrial Shed', page: 1 });
+                }
+              }}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
-              <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span className="truncate">{t('card.commercialBuilding', 'Commercial Building')}</span>
-            </button>
+              <option value="">{lang === 'ta' ? 'அனைத்து வணிக வசதிகள் & கடைகள்' : 'All Commercial Facilities & Shops'}</option>
+              <option value="RETAIL_SHOP">{lang === 'ta' ? '🏪 சில்லறை கடை (Retail Shop / Store)' : '🏪 Retail Shop / Store'}</option>
+              <option value="COMMERCIAL_BUILDING">{lang === 'ta' ? '🏢 வணிக கட்டிடம் (Commercial Building / Complex)' : '🏢 Commercial Building / Complex'}</option>
+              <option value="OFFICE_SPACE">{lang === 'ta' ? '💼 அலுவலக இடம் (Office Space / IT)' : '💼 Office Space / Corporate'}</option>
+              <option value="SHOWROOM">{lang === 'ta' ? '✨ ஷோரூம் (Commercial Showroom)' : '✨ Commercial Showroom'}</option>
+              <option value="GODOWN">{lang === 'ta' ? '📦 கிடங்கு (Godown / Warehouse)' : '📦 Godown / Warehouse'}</option>
+              <option value="INDUSTRIAL_SHED">{lang === 'ta' ? '🏭 தொழிற்சாலை / தொழிலக ஷெட் (Industrial)' : '🏭 Industrial Shed / Building'}</option>
+            </select>
+          )}
 
-            <button
-              type="button"
-              onClick={() => {
-                const isSelected = filters.category === 'HOSTEL';
+          {/* 3. Hostel Section Dropdown */}
+          {filters.category === 'HOSTEL' && (
+            <select
+              value={filters.hostelGender || ''}
+              onChange={(e) => {
                 onChange({
                   ...filters,
-                  propertyType: isSelected ? undefined : 'HOUSE',
-                  category: isSelected ? undefined : 'HOSTEL',
+                  category: 'HOSTEL',
+                  propertyType: 'HOUSE',
+                  hostelGender: (e.target.value as any) || undefined,
                   page: 1,
                 });
               }}
-              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition ${
-                filters.category === 'HOSTEL'
-                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
-              }`}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
-              <Users className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span className="truncate">{t('filter.hostel')}</span>
-            </button>
+              <option value="">{lang === 'ta' ? 'அனைத்து விடுதிகள் & PG Accommodations' : 'All Hostels & PG Accommodations'}</option>
+              <option value="MALE">{lang === 'ta' ? "👨 ஆண்கள் விடுதி / PG (Men's / Gents)" : "👨 Men's / Gents Hostel & PG"}</option>
+              <option value="FEMALE">{lang === 'ta' ? "👩 பெண்கள் விடுதி / PG (Women's / Ladies)" : "👩 Women's / Ladies Hostel & PG"}</option>
+              <option value="COLIVING">{lang === 'ta' ? '👥 கோ-லிவிங் (Co-Living PG)' : '👥 Co-Living PG'}</option>
+            </select>
+          )}
 
-            <button
-              type="button"
-              onClick={() => {
-                const isSelected = filters.category === 'MARRIAGE_HALL';
+          {/* 4. Marriage Hall Section Dropdown */}
+          {filters.category === 'MARRIAGE_HALL' && (
+            <select
+              value={filters.hallAc || ''}
+              onChange={(e) => {
                 onChange({
                   ...filters,
-                  propertyType: isSelected ? undefined : 'SHOP',
-                  category: isSelected ? undefined : 'MARRIAGE_HALL',
+                  category: 'MARRIAGE_HALL',
+                  propertyType: 'SHOP',
+                  hallAc: (e.target.value as any) || undefined,
                   page: 1,
                 });
               }}
-              className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold border transition col-span-2 sm:col-span-1 ${
-                filters.category === 'MARRIAGE_HALL'
-                  ? 'bg-[#FAF4E6] border-[#C5A059] text-[#9A7818] shadow-xs'
-                  : 'border-[#E8DFC8] text-gray-700 hover:bg-[#FAF7F0]'
-              }`}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
-              <PartyPopper className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span className="truncate">{t('card.marriageHall')}</span>
-            </button>
-          </div>
+              <option value="">{lang === 'ta' ? 'அனைத்து மண்டபங்கள்' : 'All Marriage Halls & Mandapams'}</option>
+              <option value="AC">{lang === 'ta' ? '❄️ ஏசி கல்யாண மண்டபம் (Central AC)' : '❄️ Central AC Marriage Hall'}</option>
+              <option value="NON_AC">{lang === 'ta' ? '🌿 நான்-ஏசி / மினி ஹால் (Non-AC)' : '🌿 Non-AC / Mini Hall'}</option>
+            </select>
+          )}
+
+          {/* 5. General / All Categories Dropdown */}
+          {!((filters.propertyType === 'HOUSE' && filters.category !== 'HOSTEL') ||
+            (filters.propertyType === 'SHOP' && filters.category !== 'MARRIAGE_HALL') ||
+            filters.category === 'HOSTEL' ||
+            filters.category === 'MARRIAGE_HALL') && (
+            <select
+              value={filters.category || (filters.propertyType === 'SHOP' ? 'SHOP' : filters.propertyType === 'HOUSE' ? 'HOUSE' : '')}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) {
+                  onChange({ ...filters, propertyType: undefined, category: undefined, page: 1 });
+                } else if (val === 'HOUSE') {
+                  onChange({ ...filters, propertyType: 'HOUSE', category: 'HOUSE', page: 1 });
+                } else if (val === 'APARTMENT') {
+                  onChange({ ...filters, propertyType: 'HOUSE', category: 'APARTMENT', page: 1 });
+                } else if (val === 'SHOP') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'SHOP', page: 1 });
+                } else if (val === 'COMMERCIAL_BUILDING') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'COMMERCIAL_BUILDING', page: 1 });
+                } else if (val === 'HOSTEL') {
+                  onChange({ ...filters, propertyType: 'HOUSE', category: 'HOSTEL', page: 1 });
+                } else if (val === 'MARRIAGE_HALL') {
+                  onChange({ ...filters, propertyType: 'SHOP', category: 'MARRIAGE_HALL', page: 1 });
+                }
+              }}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
+            >
+              <option value="">{lang === 'ta' ? 'அனைத்து சொத்து பிரிவுகள்' : 'All Property Categories'}</option>
+              <option value="HOUSE">{lang === 'ta' ? '🏢 தனி வீடு / வில்லா (House / Villa)' : '🏢 Independent House / Villa'}</option>
+              <option value="APARTMENT">{lang === 'ta' ? '🏢 அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : '🏢 Apartment / Flat'}</option>
+              <option value="SHOP">{lang === 'ta' ? '🏪 வணிக கடை (Retail Shop)' : '🏪 Commercial Shop'}</option>
+              <option value="COMMERCIAL_BUILDING">{lang === 'ta' ? '🏢 வணிக கட்டிடம் (Commercial Building)' : '🏢 Commercial Building'}</option>
+              <option value="HOSTEL">{lang === 'ta' ? '👥 விடுதிகள் & PG Accommodation' : '👥 Hostels & PG Accommodation'}</option>
+              <option value="MARRIAGE_HALL">{lang === 'ta' ? '🎉 கல்யாண மண்டபம் (Marriage Hall)' : '🎉 Marriage Hall / Mandapam'}</option>
+            </select>
+          )}
         </div>
 
         {/* Chennai Locality */}

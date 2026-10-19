@@ -38,8 +38,27 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
           { description: { contains: 'பிளாட்', mode: 'insensitive' } },
           { description: { contains: 'அபார்ட்மெண்ட்', mode: 'insensitive' } },
         ];
-      } else if (cat === 'HOUSE') {
+      } else if (cat === 'HOUSE' || cat === 'INDIVIDUAL_HOUSE') {
         where.propertyType = 'HOUSE';
+        where.NOT = [
+          { description: { contains: '[category:apartment]', mode: 'insensitive' } },
+          { description: { contains: '[category:hostel]', mode: 'insensitive' } },
+        ];
+      } else if (cat === 'VILLA') {
+        where.propertyType = 'HOUSE';
+        where.OR = [
+          { title: { contains: 'villa', mode: 'insensitive' } },
+          { description: { contains: 'villa', mode: 'insensitive' } },
+          { description: { contains: 'வில்லா', mode: 'insensitive' } },
+        ];
+      } else if (cat === 'BUILDER_FLOOR') {
+        where.propertyType = 'HOUSE';
+        where.OR = [
+          { title: { contains: 'builder', mode: 'insensitive' } },
+          { title: { contains: 'floor', mode: 'insensitive' } },
+          { description: { contains: 'builder', mode: 'insensitive' } },
+          { description: { contains: 'floor', mode: 'insensitive' } },
+        ];
       } else if (cat === 'SHOP') {
         where.propertyType = 'SHOP';
       } else if (cat === 'COMMERCIAL_BUILDING') {

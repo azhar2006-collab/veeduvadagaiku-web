@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -94,7 +94,7 @@ export const HostelsPage: React.FC = () => {
             <span>{lang === 'ta' ? 'விடுதிகள் & PG மேன்ஷன்' : 'Student & Working Professional Living'}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            {lang === 'ta' ? 'சென்னையில் வாடகை விடுதிகள் & PG' : 'Hostels & PG for Rent in Chennai'}
+            {lang === 'ta' ? 'சென்னையில் விடுதிகள் & PG Accommodations' : 'Hostels & PG Accommodations in Chennai'}
           </h1>
           <p className="text-xs sm:text-sm text-gray-600">
             {pagination ? `${hostelProperties.length} ${lang === 'ta' ? 'சரிபார்க்கப்பட்ட விடுதிகள் உள்ளன' : 'verified accommodations available'}` : 'Loading...'}
