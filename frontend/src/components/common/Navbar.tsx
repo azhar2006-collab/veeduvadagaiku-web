@@ -19,46 +19,44 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EFE8D8] shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16">
-          {/* Logo & City Selector (NoBroker style) */}
-          <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2.5 group py-1">
+      <div className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          {/* Logo & City Selector */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1">
               <img
                 src="/logo-full.png"
                 alt="veeduvadagaikkuchennai"
-                className="h-8 sm:h-9 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
+                className="h-9 sm:h-11 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
               />
-              <span className="font-black text-base sm:text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
+              <span className="font-black text-xl sm:text-2xl tracking-tight text-[#0B3B60] leading-none lowercase">
                 veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
               </span>
             </Link>
 
-            {/* NoBroker style City Indicator */}
-            <div className="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
-              <MapPin className="w-3.5 h-3.5 text-[#C5A059]" />
+            {/* City Indicator */}
+            <div className="hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs sm:text-sm font-bold text-gray-700 shadow-2xs">
+              <MapPin className="w-4 h-4 text-[#C5A059]" />
               <span>Chennai</span>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          {/* Right Navigation & Action Buttons (Spaced accordingly) */}
+          <div className="hidden md:flex items-center gap-4 lg:gap-6">
             <Link
               to="/about"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition"
+              className="text-sm sm:text-base font-bold text-gray-700 hover:text-[#9A7818] transition-colors"
             >
               {t('nav.about')}
             </Link>
             <Link
               to="/contact"
-              className="text-sm font-medium text-gray-700 hover:text-[#B08B40] transition"
+              className="text-sm sm:text-base font-bold text-gray-700 hover:text-[#9A7818] transition-colors"
             >
               {t('nav.contact')}
             </Link>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="hidden md:flex items-center gap-4">
+            <div className="h-6 w-px bg-[#E8DFC8]"></div>
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -195,21 +193,21 @@ export const Navbar: React.FC = () => {
             {/* Language Switcher Button (Desktop) */}
             <LanguageSwitcher />
 
-            {/* NoBroker style "Post Property" CTA in Lite Gold */}
+            {/* "Post Property" CTA in Lite Gold */}
             {isOwner ? (
               <Link
                 to="/owner/properties/add"
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white rounded-xl font-bold text-sm shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
+                className="flex items-center gap-2 px-5 py-2.5 sm:py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white rounded-xl sm:rounded-2xl font-extrabold text-sm sm:text-[15px] shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
               >
-                <PlusCircle className="w-4 h-4" />
+                <PlusCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 {t('nav.postProperty')}
               </Link>
             ) : (
               <Link
                 to={isAuthenticated ? '/owner/dashboard' : '/login?role=OWNER'}
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white rounded-xl font-bold text-sm shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
+                className="flex items-center gap-2 px-5 py-2.5 sm:py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white rounded-xl sm:rounded-2xl font-extrabold text-sm sm:text-[15px] shadow-md shadow-[#D4AF37]/25 transition active:scale-95"
               >
-                <PlusCircle className="w-4 h-4" />
+                <PlusCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 {t('nav.listProperty')}
               </Link>
             )}
