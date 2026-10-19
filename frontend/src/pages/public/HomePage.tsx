@@ -23,6 +23,8 @@ import {
   Maximize2,
   Briefcase,
   Utensils,
+  Gift,
+  LayoutGrid,
 } from 'lucide-react';
 import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
@@ -216,10 +218,10 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
 
-          {/* Tab Switcher: All Rentals | House | Shop | Commercial Building | Hostel / PG | Kalyana Mandapam | Home Services | Swipe Deck */}
+          {/* Tab Switcher: All Rentals | Houses for Rent | Shops for Rent | Hostels & PG | Marriage Halls | Home Services | Offers */}
           <div className="w-full flex items-center justify-start sm:justify-center overflow-x-auto no-scrollbar py-1 px-4 sm:px-0">
             <div
-              className="inline-flex items-center p-1 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap shrink-0 sm:mx-auto gap-1"
+              className="inline-flex items-center p-1 sm:p-1.5 rounded-2xl bg-[#FAF7F0] border border-[#E8DFC8] shadow-xs flex-nowrap shrink-0 sm:mx-auto gap-1"
               role="tablist"
               aria-label="Browse mode"
             >
@@ -239,12 +241,13 @@ export const HomePage: React.FC = () => {
                   setHallDining('');
                   setHallAc('');
                 }}
-                className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === ''
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
                 }`}
               >
+                <LayoutGrid className={`w-4 h-4 ${selectedCategory === '' ? 'text-white' : 'text-[#C5A059]'}`} />
                 <span>{lang === 'ta' ? 'அனைத்தும்' : 'All Rentals'}</span>
               </button>
 
@@ -264,13 +267,14 @@ export const HomePage: React.FC = () => {
                   setHallDining('');
                   setHallAc('');
                 }}
-                className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'HOUSE'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
                 }`}
               >
-                <span>{t('card.house')}</span>
+                <Building2 className={`w-4 h-4 ${selectedCategory === 'HOUSE' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <span>{t('nav.houses')}</span>
               </button>
 
               <button
@@ -290,40 +294,14 @@ export const HomePage: React.FC = () => {
                   setHallDining('');
                   setHallAc('');
                 }}
-                className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'SHOP'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
                 }`}
               >
-                <span>{t('card.shop')}</span>
-              </button>
-
-              {/* Commercial Building beside Shop */}
-              <button
-                type="button"
-                role="tab"
-                aria-selected={selectedCategory === 'COMMERCIAL_BUILDING'}
-                onClick={() => {
-                  setSelectedCategory('COMMERCIAL_BUILDING');
-                  setRentalTab('COMMERCIAL');
-                  setSelectedCommercialTypes([]);
-                  setSelectedFloor('');
-                  setSelectedParking('');
-                  setSelectedSizeRange('');
-                  setMinSize('');
-                  setMaxSize('');
-                  setHallCapacity('');
-                  setHallDining('');
-                  setHallAc('');
-                }}
-                className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
-                  selectedCategory === 'COMMERCIAL_BUILDING'
-                    ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <span>{lang === 'ta' ? 'வணிக கட்டிடம்' : 'Commercial Building'}</span>
+                <Store className={`w-4 h-4 ${selectedCategory === 'SHOP' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <span>{t('nav.shops')}</span>
               </button>
 
               <button
@@ -345,13 +323,14 @@ export const HomePage: React.FC = () => {
                   setHallDining('');
                   setHallAc('');
                 }}
-                className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'HOSTEL'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
                 }`}
               >
-                <span>{t('card.hostel')}</span>
+                <Users className={`w-4 h-4 ${selectedCategory === 'HOSTEL' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <span>{t('nav.hostels')}</span>
               </button>
 
               <button
@@ -370,22 +349,35 @@ export const HomePage: React.FC = () => {
                   setMinSize('');
                   setMaxSize('');
                 }}
-                className={`flex items-center px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
                   selectedCategory === 'MARRIAGE_HALL'
                     ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white shadow-xs'
-                    : 'text-gray-600 hover:text-gray-900'
+                    : 'text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6]'
                 }`}
               >
-                <span>{t('card.marriageHall')}</span>
+                <Sparkles className={`w-4 h-4 ${selectedCategory === 'MARRIAGE_HALL' ? 'text-white' : 'text-[#C5A059]'}`} />
+                <span>{t('nav.marriageHalls')}</span>
               </button>
 
-              {/* Home Services at last */}
+              {/* Home Services */}
               <Link
                 to="/home-services"
-                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap text-[#9A7818] bg-[#FAF4E6] hover:bg-[#F5EDD8] border border-[#E8DFC8] transition-all duration-200"
+                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap text-gray-700 hover:text-[#B08B40] hover:bg-[#FAF4E6] transition-all duration-200"
               >
-                <Wrench className="w-3.5 h-3.5 text-[#C5A059]" />
-                <span>{lang === 'ta' ? 'வீட்டு சேவைகள்' : 'Home Services'}</span>
+                <Wrench className="w-4 h-4 text-[#C5A059]" />
+                <span>{t('nav.homeServices')}</span>
+              </Link>
+
+              {/* Offers FREE */}
+              <Link
+                to="/offers"
+                className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap text-[#9A7818] hover:text-[#B08B40] hover:bg-[#FAF4E6] transition-all duration-200"
+              >
+                <Gift className="w-4 h-4 text-[#D4AF37]" />
+                <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
+                <span className="px-1.5 py-0.2 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse">
+                  Free
+                </span>
               </Link>
             </div>
           </div>
