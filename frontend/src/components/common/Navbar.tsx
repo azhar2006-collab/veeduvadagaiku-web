@@ -19,7 +19,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EFE8D8] shadow-xs">
-      <div className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-20">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo & City Selector */}
           <div className="flex items-center gap-3 sm:gap-4">
