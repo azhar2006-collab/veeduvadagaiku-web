@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -38,8 +38,8 @@ export const ShopsPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Commercial Shops and Retail Space for Rent in Chennai | Veedu Vadagaikku Chennai"
-        description="Find prime retail shops, office spaces and commercial showrooms for rent across Chennai."
+        title="Commercial Shops and Retail Space for Rent / Lease in Chennai | Veedu Vadagaikku Chennai"
+        description="Find prime retail shops, office spaces and commercial showrooms for rent and lease across Chennai."
       />
 
       {/* Header */}
@@ -50,7 +50,7 @@ export const ShopsPage: React.FC = () => {
             <span>Commercial Real Estate</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            Commercial Shops for Rent in Chennai
+            Commercial Shops for Rent / Lease in Chennai
           </h1>
           <p className="text-xs sm:text-sm text-gray-600">
             {pagination ? `${pagination.total} commercial shops and spaces available` : 'Loading...'}

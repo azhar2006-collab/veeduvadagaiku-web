@@ -851,7 +851,7 @@ export const AddPropertyPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Monthly Rent (₹)
+                    Monthly Rent / Lease Amount (₹)
                   </label>
                   <span className="text-[10px] text-gray-400 font-medium">No maximum limit (₹1 to Infinity)</span>
                 </div>
@@ -868,7 +868,7 @@ export const AddPropertyPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Security Deposit (₹)
+                  Security Deposit / Advance (₹)
                 </label>
                 <input
                   type="number"

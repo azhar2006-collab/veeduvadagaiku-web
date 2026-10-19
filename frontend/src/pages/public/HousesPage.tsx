@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useProperties } from '../../hooks/useProperties';
 import { PropertyGrid } from '../../components/property/PropertyGrid';
 import { PropertyFilters as FilterComponent } from '../../components/property/PropertyFilters';
@@ -40,8 +40,8 @@ export const HousesPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       <SEOHead
-        title="Houses and Flats for Rent in Chennai | Veedu Vadagaikku Chennai"
-        description="Find verified 1 BHK, 2 BHK, 3 BHK houses and apartments for rent in Chennai. Direct contact with landlords."
+        title="Houses and Flats for Rent / Lease in Chennai | Veedu Vadagaikku Chennai"
+        description="Find verified 1 BHK, 2 BHK, 3 BHK houses and apartments for rent and lease in Chennai. Direct contact with landlords."
       />
 
       {/* Header */}
@@ -52,7 +52,7 @@ export const HousesPage: React.FC = () => {
             <span>Residential Living</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-            Houses for Rent in Chennai
+            Houses for Rent / Lease in Chennai
           </h1>
           <p className="text-xs sm:text-sm text-gray-600">
             {pagination ? `${pagination.total} verified houses and flats available` : 'Loading...'}
