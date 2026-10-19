@@ -368,7 +368,7 @@ export const HomePage: React.FC = () => {
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
                       { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
-                      { id: 'covered', label: lang === 'ta' ? '🛡️ கவர்டு பார்க்கிங்' : '🛡️ Covered Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (
@@ -530,7 +530,7 @@ export const HomePage: React.FC = () => {
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
                       { id: 'car', label: lang === 'ta' ? '🚗 வாடிக்கையாளர் பார்க்கிங்' : '🚗 Car / Customer Parking' },
-                      { id: 'covered', label: lang === 'ta' ? '🛡️ கவர்டு பார்க்கிங்' : '🛡️ Covered Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (
@@ -694,7 +694,7 @@ export const HomePage: React.FC = () => {
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
                       { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
-                      { id: 'covered', label: lang === 'ta' ? '🛡️ பிரத்யேக / கவர்டு பார்க்கிங்' : '🛡️ Dedicated / Covered Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (
@@ -1038,7 +1038,7 @@ export const HomePage: React.FC = () => {
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
                       { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
-                      { id: 'covered', label: lang === 'ta' ? '🛡️ பிரத்யேக / கவர்டு பார்க்கிங்' : '🛡️ Dedicated / Covered Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (

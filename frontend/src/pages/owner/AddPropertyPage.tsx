@@ -1098,21 +1098,6 @@ export const AddPropertyPage: React.FC = () => {
                 <span className="text-xs">🚗 Car Parking (Four Wheeler)</span>
               </label>
 
-              <label
-                className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition ${
-                  parkingCovered
-                    ? 'border-[#C5A059] bg-[#FCFAF5] font-bold text-gray-900 shadow-2xs'
-                    : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={parkingCovered}
-                  onChange={(e) => setParkingCovered(e.target.checked)}
-                  className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
-                />
-                <span className="text-xs">🛡️ Covered Parking</span>
-              </label>
             </div>
           </div>
 

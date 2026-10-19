@@ -692,12 +692,16 @@ export function filterByParking(properties: Property[], parking: string | boolea
   return properties.filter((p) => {
     const text = `${p.title} ${p.description} ${(p.amenities || []).join(' ')}`.toLowerCase();
 
-    if (pStr === 'covered') {
+    if (pStr === 'bike' || pStr === 'two_wheeler') {
       return (
-        text.includes('covered parking') ||
-        text.includes('covered car parking') ||
-        text.includes('covered') ||
-        text.includes('🛡️')
+        text.includes('bike') ||
+        text.includes('two wheeler') ||
+        text.includes('two-wheeler') ||
+        text.includes('motorcycle') ||
+        text.includes('scooter') ||
+        text.includes('இருசக்கர') ||
+        text.includes('பைக்') ||
+        text.includes('🛵')
       );
     }
     if (pStr === 'car' || pStr === 'true' || pStr === 'yes') {
@@ -706,7 +710,7 @@ export function filterByParking(properties: Property[], parking: string | boolea
         text.includes('car park') ||
         text.includes('four wheeler') ||
         text.includes('covered parking') ||
-        text.includes('parking') ||
+        text.includes('car') ||
         text.includes('🚗')
       );
     }

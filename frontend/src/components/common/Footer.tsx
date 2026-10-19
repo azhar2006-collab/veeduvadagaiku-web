@@ -9,30 +9,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#FAF8F5] text-gray-600 pt-10 pb-8 sm:pt-16 sm:pb-12 border-t border-[#EFE8D8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 sm:gap-10 sm:mb-12">
-          {/* Brand Info */}
-          <div>
-            <div className="mb-4">
-              <div className="flex items-center gap-2.5">
-                <img
-                  src="/logo-full.png"
-                  alt="veeduvadagaikkuchennai"
-                  className="h-9 sm:h-11 w-auto object-contain"
-                />
-                <span className="font-black text-lg tracking-tight text-[#0B3B60] leading-none lowercase">
-                  veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
-                </span>
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 mb-4 leading-relaxed font-normal">
-              {t('footer.tagline')}
-            </p>
-            <div className="flex items-center gap-2 text-xs text-[#9A7818] font-bold bg-[#FAF4E6] p-2.5 rounded-xl border border-[#E8DFC8]">
-              <ShieldCheck className="w-4 h-4 text-[#C5A059] shrink-0" />
-              {t('footer.adminVerified')}
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 sm:gap-10 sm:mb-12">
           {/* Quick Links */}
           <div>
             <h4 className="text-gray-900 font-bold text-xs mb-4 tracking-wider uppercase">

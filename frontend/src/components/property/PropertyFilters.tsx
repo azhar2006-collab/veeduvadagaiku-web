@@ -272,15 +272,57 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </select>
         </div>
 
-        {/* Rent Range - Enter any value up to infinity */}
+        {/* Rent Range - Scaling Slider + Numeric Inputs */}
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-1.5">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
               {t('filter.budget')}
             </label>
-            <span className="text-[10px] text-gray-400 font-medium">₹0 – Any (No Limit)</span>
+            <span className="text-xs font-extrabold text-[#9A7818]">
+              {filters.maxRent
+                ? `≤ ₹${Number(filters.maxRent).toLocaleString('en-IN')}`
+                : filters.minRent
+                ? `≥ ₹${Number(filters.minRent).toLocaleString('en-IN')}`
+                : lang === 'ta'
+                ? 'அனைத்தும் (No Limit)'
+                : 'Any Budget'}
+            </span>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+
+          {/* Interactive Scaling Slider */}
+          <div className="py-2 px-1">
+            <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 mb-1">
+              <span>₹5k</span>
+              <span>₹25k</span>
+              <span>₹50k</span>
+              <span>₹1L+</span>
+            </div>
+            <input
+              type="range"
+              min="5000"
+              max="100000"
+              step="2500"
+              value={filters.maxRent ? Math.min(100000, Number(filters.maxRent)) : 100000}
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                handleFieldChange('maxRent', val >= 100000 ? '' : val);
+              }}
+              className="w-full h-2 bg-gradient-to-r from-[#FAF4E6] via-[#D4AF37] to-[#9A7818] rounded-lg appearance-none cursor-pointer accent-[#C5A059]"
+            />
+            <div className="flex justify-between items-center text-[10px] text-gray-400 mt-1">
+              <span>{lang === 'ta' ? 'குறைந்தது: ₹5,000' : 'Min: ₹5,000'}</span>
+              <span>
+                {filters.maxRent && Number(filters.maxRent) < 100000
+                  ? `≤ ₹${Number(filters.maxRent).toLocaleString('en-IN')}`
+                  : lang === 'ta'
+                  ? 'வரம்பற்றது (No Limit)'
+                  : 'No Limit'}
+              </span>
+            </div>
+          </div>
+
+          {/* Numeric Min / Max Inputs */}
+          <div className="grid grid-cols-2 gap-2 mt-1">
             <div>
               <input
                 type="number"
@@ -290,7 +332,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
                 onChange={(e) =>
                   handleFieldChange('minRent', e.target.value ? Number(e.target.value) : '')
                 }
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition"
               />
             </div>
             <div>
@@ -302,7 +344,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
                 onChange={(e) =>
                   handleFieldChange('maxRent', e.target.value ? Number(e.target.value) : '')
                 }
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition"
               />
             </div>
           </div>
@@ -440,27 +482,71 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         )}
 
-        {/* Built-up Area / Sq Ft Filter */}
+        {/* Built-up Area / Sq Ft Filter - Scaling Slider + Numeric Inputs */}
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-1.5">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
               {t('filter.sqft', 'Built-up Area (Sq Ft)')}
             </label>
-            {(filters.minSize || filters.maxSize) && (
-              <button
-                type="button"
-                onClick={() => {
-                  handleFieldChange('minSize', '');
-                  handleFieldChange('maxSize', '');
-                }}
-                className="text-[10px] font-bold text-[#9A7818] hover:underline"
-              >
-                Clear
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-extrabold text-[#9A7818]">
+                {filters.maxSize
+                  ? `≤ ${Number(filters.maxSize).toLocaleString('en-IN')} sqft`
+                  : filters.minSize
+                  ? `≥ ${Number(filters.minSize).toLocaleString('en-IN')} sqft`
+                  : lang === 'ta'
+                  ? 'அனைத்தும் (No Limit)'
+                  : 'Any Size'}
+              </span>
+              {(filters.minSize || filters.maxSize) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleFieldChange('minSize', '');
+                    handleFieldChange('maxSize', '');
+                  }}
+                  className="text-[10px] font-bold text-[#9A7818] hover:underline"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-2.5">
+          {/* Interactive Scaling Slider for Sq Ft */}
+          <div className="py-2 px-1">
+            <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 mb-1">
+              <span>300</span>
+              <span>1k</span>
+              <span>2.5k</span>
+              <span>5k+ sqft</span>
+            </div>
+            <input
+              type="range"
+              min="300"
+              max="5000"
+              step="100"
+              value={filters.maxSize ? Math.min(5000, Number(filters.maxSize)) : 5000}
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                handleFieldChange('maxSize', val >= 5000 ? '' : val);
+              }}
+              className="w-full h-2 bg-gradient-to-r from-[#FAF4E6] via-[#D4AF37] to-[#9A7818] rounded-lg appearance-none cursor-pointer accent-[#C5A059]"
+            />
+            <div className="flex justify-between items-center text-[10px] text-gray-400 mt-1">
+              <span>{lang === 'ta' ? 'குறைந்தது: 300 ச.அடி' : 'Min: 300 sqft'}</span>
+              <span>
+                {filters.maxSize && Number(filters.maxSize) < 5000
+                  ? `≤ ${Number(filters.maxSize).toLocaleString('en-IN')} sqft`
+                  : lang === 'ta'
+                  ? 'வரம்பற்றது (No Limit)'
+                  : 'No Limit'}
+              </span>
+            </div>
+          </div>
+
+          {/* Quick Area Preset Pills */}
+          <div className="flex flex-wrap gap-1.5 mb-2.5">
             {[
               { min: '', max: '', label: t('filter.allSizes', 'All Sizes') },
               { min: '', max: '500', label: '< 500 sqft' },
@@ -479,7 +565,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
                     handleFieldChange('minSize', sz.min ? Number(sz.min) : '');
                     handleFieldChange('maxSize', sz.max ? Number(sz.max) : '');
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                  className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border transition ${
                     isSelected
                       ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
                       : 'border-gray-200 text-gray-700 hover:bg-gray-50'
@@ -491,29 +577,30 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             })}
           </div>
 
+          {/* Numeric Min / Max Inputs */}
           <div className="grid grid-cols-2 gap-2">
             <input
               type="number"
               placeholder="Min Sq Ft"
               value={filters.minSize || ''}
               onChange={(e) => handleFieldChange('minSize', e.target.value ? Number(e.target.value) : '')}
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
+              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059]"
             />
             <input
               type="number"
               placeholder="Max Sq Ft"
               value={filters.maxSize || ''}
               onChange={(e) => handleFieldChange('maxSize', e.target.value ? Number(e.target.value) : '')}
-              className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#C5A059]"
+              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059]"
             />
           </div>
         </div>
 
-        {/* Car Parking Filter */}
+        {/* Parking Filter (Car & Bike Parking - Covered Parking removed) */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-              {t('filter.carParking', 'Car Parking')}
+              {lang === 'ta' ? 'வாகன பார்க்கிங்' : 'Parking'}
             </label>
             {filters.carParking && (
               <button
@@ -529,7 +616,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             {[
               { val: '', label: t('filter.allParking', 'All Parking') },
               { val: 'car', label: '🚗 ' + t('filter.carParking', 'Car Parking') },
-              { val: 'covered', label: '🛡️ ' + t('filter.coveredParking', 'Covered Parking') },
+              { val: 'bike', label: '🛵 ' + t('filter.bikeParking', 'Bike Parking') },
             ].map((pk) => {
               const isSelected = String(filters.carParking || '') === pk.val;
               return (
