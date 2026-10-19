@@ -191,11 +191,873 @@ export const HomePage: React.FC = () => {
         description="veeduvadagaikkuchennai - Chennai's exclusive one-stop property rental webapp. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
       />
 
-      {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
-      <section className="relative overflow-x-hidden pt-4 pb-4 sm:pb-6 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
-        {/* Subtle decorative gold radial glows */}
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
-        <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 65%)' }} />
+      {/* ===== PREMIUM HERO SECTION ===== */}
+      <section className="relative overflow-hidden pt-6 pb-6 sm:pb-10 md:pt-10 md:pb-16 px-4 sm:px-6 lg:px-8 animate-gradient-shift border-b border-[#EFE8D8]"
+        style={{ background: 'linear-gradient(135deg, #FDFBF7 0%, #FAF4E6 25%, #FFFFFF 50%, #F8F5EE 75%, #FDFBF7 100%)' }}>
+
+        {/* Floating gold particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+          <div className="absolute top-[10%] left-[8%] w-2 h-2 rounded-full bg-[#D4AF37]/30 animate-float-slow" />
+          <div className="absolute top-[20%] right-[12%] w-3 h-3 rounded-full bg-[#C5A059]/20 animate-float-medium" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-[60%] left-[15%] w-1.5 h-1.5 rounded-full bg-[#D4AF37]/25 animate-float-fast" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-[40%] right-[20%] w-2.5 h-2.5 rounded-full bg-[#C5A059]/20 animate-float-slow" style={{ animationDelay: '3s' }} />
+          <div className="absolute bottom-[20%] left-[30%] w-2 h-2 rounded-full bg-[#D4AF37]/15 animate-float-medium" style={{ animationDelay: '0.5s' }} />
+          <div className="absolute top-[30%] left-[60%] w-1 h-1 rounded-full bg-[#B08B40]/30 animate-float-fast" style={{ animationDelay: '1.5s' }} />
+          <div className="absolute bottom-[35%] right-[35%] w-2 h-2 rounded-full bg-[#D4AF37]/20 animate-float-slow" style={{ animationDelay: '4s' }} />
+          {/* Decorative gold radial glows */}
+          <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.18) 0%, transparent 70%)' }} />
+          <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full opacity-25" style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.15) 0%, transparent 65%)' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 50%)' }} />
+        </div>
+
+        <div className="relative max-w-5xl mx-auto space-y-5 sm:space-y-7">
+          {/* Top Badge with shimmer */}
+          <div className="text-center animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-lg shadow-[#D4AF37]/5 relative overflow-hidden">
+              <div className="absolute inset-0 animate-shimmer rounded-full" />
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C5A059] animate-spin-slow relative z-10" />
+              <span className="relative z-10">{t('hero.badge')}</span>
+            </div>
+          </div>
+
+          {/* Hero Title with gradient text */}
+          <div className="text-center space-y-3 max-w-3xl mx-auto px-2 animate-slide-up" style={{ animationDelay: '100ms' }}>
+            <h1 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
+              {t('hero.title1')}{' '}
+              <span className="bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B08B40] bg-clip-text text-transparent">
+                {t('hero.titleHouse')}
+              </span>
+            </h1>
+
+            <p className="max-w-xl mx-auto text-xs sm:text-sm text-gray-600 font-medium leading-relaxed animate-slide-up" style={{ animationDelay: '200ms' }}>
+              {t('hero.desc')}
+            </p>
+            <p className="max-w-xl mx-auto text-[11px] sm:text-xs font-semibold leading-relaxed animate-slide-up" style={{ animationDelay: '250ms' }}>
+              <span className="bg-gradient-to-r from-[#9A7818] to-[#C5A059] bg-clip-text text-transparent">
+                {t('hero.descSub')}
+              </span>
+            </p>
+          </div>
+
+          {/* Interactive Category Pills */}
+          <div className="w-full flex items-center justify-start min-[920px]:justify-center overflow-x-auto no-scrollbar py-3 px-4 sm:px-6 animate-slide-up" style={{ animationDelay: '300ms' }}>
+            <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
+              <Link
+                to="/houses"
+                className="relative text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap px-3 py-2 rounded-xl hover:bg-[#FAF4E6]/80 hover:shadow-md hover:shadow-[#D4AF37]/10"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] border border-[#E8DFC8] flex items-center justify-center group-hover:scale-110 group-hover:shadow-md group-hover:shadow-[#D4AF37]/15 transition-all duration-300">
+                  <Building2 className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:text-[#9A7818] transition-colors" />
+                </div>
+                <span>{t('nav.houses')}</span>
+              </Link>
+
+              <Link
+                to="/shops"
+                className="relative text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap px-3 py-2 rounded-xl hover:bg-[#FAF4E6]/80 hover:shadow-md hover:shadow-[#D4AF37]/10"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] border border-[#E8DFC8] flex items-center justify-center group-hover:scale-110 group-hover:shadow-md group-hover:shadow-[#D4AF37]/15 transition-all duration-300">
+                  <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:text-[#9A7818] transition-colors" />
+                </div>
+                <span>{t('nav.shops')}</span>
+              </Link>
+
+              <Link
+                to="/hostels"
+                className="relative text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group shrink-0 text-left px-3 py-2 rounded-xl hover:bg-[#FAF4E6]/80 hover:shadow-md hover:shadow-[#D4AF37]/10"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] border border-[#E8DFC8] flex items-center justify-center group-hover:scale-110 group-hover:shadow-md group-hover:shadow-[#D4AF37]/15 transition-all duration-300">
+                  <Users className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:text-[#9A7818] transition-colors" />
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="whitespace-nowrap">{lang === 'ta' ? 'விடுதிகள் & PG' : 'Hostels & PG'}</span>
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-gray-400 group-hover:text-[#B08B40] transition-colors whitespace-nowrap">
+                    Accommodation
+                  </span>
+                </div>
+              </Link>
+
+              <Link
+                to="/marriage-halls"
+                className="relative text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap px-3 py-2 rounded-xl hover:bg-[#FAF4E6]/80 hover:shadow-md hover:shadow-[#D4AF37]/10"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] border border-[#E8DFC8] flex items-center justify-center group-hover:scale-110 group-hover:shadow-md group-hover:shadow-[#D4AF37]/15 transition-all duration-300">
+                  <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:text-[#9A7818] transition-colors" />
+                </div>
+                <span>{t('nav.marriageHalls')}</span>
+              </Link>
+
+              <Link
+                to="/home-services"
+                className="relative text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap px-3 py-2 rounded-xl hover:bg-[#FAF4E6]/80 hover:shadow-md hover:shadow-[#D4AF37]/10"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] border border-[#E8DFC8] flex items-center justify-center group-hover:scale-110 group-hover:shadow-md group-hover:shadow-[#D4AF37]/15 transition-all duration-300">
+                  <Wrench className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:text-[#9A7818] transition-colors" />
+                </div>
+                <span>{t('nav.homeServices')}</span>
+              </Link>
+
+              <Link
+                to="/offers"
+                className="relative text-xs sm:text-sm lg:text-[15px] font-bold text-[#9A7818] hover:text-[#B08B40] transition-all duration-300 flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap px-3 py-2 rounded-xl hover:bg-[#FAF4E6]/80 hover:shadow-md hover:shadow-[#D4AF37]/10"
+              >
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] border border-[#E8DFC8] flex items-center justify-center group-hover:scale-110 group-hover:shadow-md group-hover:shadow-[#D4AF37]/15 transition-all duration-300">
+                  <Gift className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#D4AF37] group-hover:text-[#9A7818] transition-colors" />
+                </div>
+                <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
+                <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-black rounded-full uppercase tracking-wider animate-pulse shadow-lg shadow-red-500/20">
+                  Free
+                </span>
+              </Link>
+            </div>
+          </div>
+
+          {/* House Sub-filters: All BHKs, Floor, Car Parking, All */}
+          {selectedCategory === 'HOUSE' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-bounce-in">
+              <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-xl shadow-[#D4AF37]/8 space-y-3">
+                {/* 1. BHK Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Building2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'அறைகள் (BHK)' : 'Bedrooms'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து BHK (All)' : 'All BHKs' },
+                      { id: '1RK', label: '1 RK' },
+                      { id: '1', label: '1 BHK' },
+                      { id: '2', label: '2 BHK' },
+                      { id: '3', label: '3 BHK' },
+                      { id: '4+', label: '4+ BHK' },
+                    ].map((item) => {
+                      const isSelected = item.id === '' ? selectedBhks.length === 0 : selectedBhks.includes(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (item.id === '') {
+                              setSelectedBhks([]);
+                            } else {
+                              setSelectedBhks((prev) =>
+                                prev.includes(item.id) ? prev.filter((x) => x !== item.id) : [...prev, item.id]
+                              );
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Floor Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'தளம் (Floor)' : 'Floor'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து தளம் (All)' : 'All Floors' },
+                      { id: 'ground', label: lang === 'ta' ? 'தரை தளம் (Ground)' : 'Ground Floor' },
+                      { id: '1-3', label: lang === 'ta' ? '1 – 3 வது தளம்' : '1st – 3rd Floor' },
+                      { id: '4+', label: lang === 'ta' ? '4+ வது தளம்' : '4th+ Floor' },
+                    ].map((item) => {
+                      const isSelected = selectedFloor === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedFloor(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Car Parking Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'கார் பார்க்கிங்' : 'Car Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
+                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Shop Sub-filters: Area (Sq Ft), Floor, Shop Type, Parking */}
+          {selectedCategory === 'SHOP' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-bounce-in">
+              <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-xl shadow-[#D4AF37]/8 space-y-3">
+                {/* 1. Size / Area Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பரப்பளவு' : 'Area (Sq Ft)'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sq Ft', min: '', max: '' },
+                      { id: '<300', label: lang === 'ta' ? '< 300 ச.அடி' : '< 300 sq ft', min: '', max: '300' },
+                      { id: '300-600', label: lang === 'ta' ? '300 – 600 ச.அடி' : '300 – 600 sq ft', min: '300', max: '600' },
+                      { id: '600-1200', label: lang === 'ta' ? '600 – 1,200 ச.அடி' : '600 – 1,200 sq ft', min: '600', max: '1200' },
+                      { id: '1200+', label: lang === 'ta' ? '1,200+ ச.அடி' : '1,200+ sq ft', min: '1200', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Floor Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'தளம் (Floor)' : 'Floor'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து தளம் (All)' : 'All Floors' },
+                      { id: 'ground', label: lang === 'ta' ? 'தரை தளம் (Ground)' : 'Ground Floor' },
+                      { id: '1-3', label: lang === 'ta' ? '1 – 2 வது தளம்' : '1st – 2nd Floor' },
+                      { id: '4+', label: lang === 'ta' ? 'மேல் தளம் / பிற' : 'Upper / Other' },
+                    ].map((item) => {
+                      const isSelected = selectedFloor === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedFloor(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Shop Type */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Store className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'கடை வகை' : 'Shop Type'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து வகை (All)' : 'All Shop Types' },
+                      { id: 'Shop', label: lang === 'ta' ? 'சில்லறை கடை (Retail)' : 'Retail Shop' },
+                      { id: 'Showroom', label: lang === 'ta' ? 'காட்சியகம் (Showroom)' : 'Showroom' },
+                      { id: 'Godown/Warehouse', label: lang === 'ta' ? 'கிடங்கு (Godown)' : 'Godown / Storage' },
+                      { id: 'Office Space', label: lang === 'ta' ? 'வணிக இடம்' : 'Commercial Space' },
+                    ].map((item) => {
+                      const isSelected = item.id === '' ? selectedCommercialTypes.length === 0 : selectedCommercialTypes.includes(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (item.id === '') {
+                              setSelectedCommercialTypes([]);
+                            } else {
+                              setSelectedCommercialTypes((prev) =>
+                                prev.includes(item.id) ? prev.filter((x) => x !== item.id) : [...prev, item.id]
+                              );
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Parking Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பார்க்கிங்' : 'Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
+                      { id: 'car', label: lang === 'ta' ? '🚗 வாடிக்கையாளர் பார்க்கிங்' : '🚗 Car / Customer Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Commercial Building Sub-filters: Area (Sq Ft), Building Type, Floor, Parking */}
+          {selectedCategory === 'COMMERCIAL_BUILDING' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-bounce-in">
+              <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-xl shadow-[#D4AF37]/8 space-y-3">
+                {/* 1. Size / Area Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பரப்பளவு' : 'Building Area'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sq Ft', min: '', max: '' },
+                      { id: '<1000', label: lang === 'ta' ? '< 1,000 ச.அடி' : '< 1,000 sq ft', min: '', max: '1000' },
+                      { id: '1000-3000', label: lang === 'ta' ? '1,000 – 3,000 ச.அடி' : '1,000 – 3,000 sq ft', min: '1000', max: '3000' },
+                      { id: '3000-5000', label: lang === 'ta' ? '3,000 – 5,000 ச.அடி' : '3,000 – 5,000 sq ft', min: '3000', max: '5000' },
+                      { id: '5000-10000', label: lang === 'ta' ? '5,000 – 10,000 ச.அடி' : '5,000 – 10,000 sq ft', min: '5000', max: '10000' },
+                      { id: '10000+', label: lang === 'ta' ? '10,000+ ச.அடி' : '10,000+ sq ft', min: '10000', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Building Type */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Building className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'கட்டிட வகை' : 'Building Type'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து வகை' : 'All Types' },
+                      { id: 'Industrial Building', label: lang === 'ta' ? 'தொழிற்சாலை' : 'Industrial Building' },
+                      { id: 'Office Space', label: lang === 'ta' ? 'அலுவலக இடம்' : 'Office Space' },
+                      { id: 'Commercial Building', label: lang === 'ta' ? 'வணிக கட்டிடம்' : 'Commercial Building' },
+                    ].map((item) => {
+                      const isSelected = item.id === '' ? selectedCommercialTypes.length === 0 : selectedCommercialTypes.includes(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (item.id === '') {
+                              setSelectedCommercialTypes([]);
+                            } else {
+                              setSelectedCommercialTypes((prev) =>
+                                prev.includes(item.id) ? prev.filter((x) => x !== item.id) : [...prev, item.id]
+                              );
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Floor Filter */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Layers className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'தளம்' : 'Floor'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து தளம்' : 'All Floors' },
+                      { id: 'ground', label: lang === 'ta' ? 'தரை தளம்' : 'Ground Floor' },
+                      { id: '1-3', label: lang === 'ta' ? '1–3 தளம்' : '1st – 3rd' },
+                      { id: '4+', label: lang === 'ta' ? '4+ தளம்' : '4th+' },
+                    ].map((item) => {
+                      const isSelected = selectedFloor === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedFloor(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Parking */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பார்க்கிங்' : 'Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும்' : 'All Parking' },
+                      { id: 'car', label: '🚗 Car Parking' },
+                      { id: 'bike', label: '🛵 Bike Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Hostel Sub-filters */}
+          {selectedCategory === 'HOSTEL' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-bounce-in">
+              <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-xl shadow-[#D4AF37]/8 space-y-3">
+                {/* 1. Gender */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Users className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பாலினம்' : 'Gender'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Hostels' },
+                      { id: 'MALE', label: lang === 'ta' ? '👨 ஆண்கள் விடுதி' : '👨 Gents Hostel' },
+                      { id: 'FEMALE', label: lang === 'ta' ? '👩 மகளிர் விடுதி' : '👩 Ladies Hostel' },
+                      { id: 'COLIVING', label: lang === 'ta' ? '🏠 கோ-லிவிங்' : '🏠 Co-Living' },
+                    ].map((item) => {
+                      const isSelected = hostelGender === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHostelGender(item.id as any)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Sharing */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-32 shrink-0">
+                    <Home className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பகிர்வு வகை' : 'Sharing'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும்' : 'All Sharing' },
+                      { id: 'single', label: lang === 'ta' ? 'ஒற்றை அறை' : 'Single Room' },
+                      { id: '2share', label: lang === 'ta' ? '2 பேர் பகிர்வு' : '2 Sharing' },
+                      { id: '3share', label: lang === 'ta' ? '3 பேர் பகிர்வு' : '3 Sharing' },
+                      { id: '4+share', label: lang === 'ta' ? '4+ பேர் பகிர்வு' : '4+ Sharing' },
+                    ].map((item) => {
+                      const isSelected = hostelSharing === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHostelSharing(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Marriage Hall Sub-filters */}
+          {selectedCategory === 'MARRIAGE_HALL' && (
+            <div className="w-full max-w-4xl mx-auto px-4 sm:px-0 animate-bounce-in">
+              <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-3 sm:p-4 border border-[#E8DFC8] shadow-xl shadow-[#D4AF37]/8 space-y-3">
+                {/* 1. Guest Capacity */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <PartyPopper className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'விருந்தினர் கொள்ளளவு' : 'Guest Capacity'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அரங்கம் (All)' : 'All Halls' },
+                      { id: 'UP_TO_250', label: lang === 'ta' ? '🏛️ 250 பேர் வரை (மினி ஹால்)' : '🏛️ Up to 250 (Mini Hall)' },
+                      { id: '250_TO_500', label: lang === 'ta' ? '🏛️ 250 – 500 பேர் (நடுத்தர)' : '🏛️ 250 – 500 (Medium)' },
+                      { id: '500_TO_1000', label: lang === 'ta' ? '🏛️ 500 – 1000 பேர் (பெரிய)' : '🏛️ 500 – 1000 (Large)' },
+                      { id: '1000_PLUS', label: lang === 'ta' ? '✨ 1000+ பேர் (பிரம்மாண்ட மஹால்)' : '✨ 1000+ Guests (Convention)' },
+                    ].map((item) => {
+                      const isSelected = hallCapacity === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHallCapacity(item.id as any)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Dining Seating Capacity */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Utensils className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பந்தி கொள்ளளவு' : 'Dining Capacity'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து பந்தி (All)' : 'All Dining' },
+                      { id: 'UP_TO_150', label: lang === 'ta' ? '🍽️ 150 இலைகள் வரை' : '🍽️ Up to 150 Seater' },
+                      { id: '150_TO_350', label: lang === 'ta' ? '🍽️ 150 – 350 இலைகள்' : '🍽️ 150 – 350 Seater' },
+                      { id: '350_TO_600', label: lang === 'ta' ? '🍽️ 350 – 600 இலைகள்' : '🍽️ 350 – 600 Seater' },
+                      { id: '600_PLUS', label: lang === 'ta' ? '🍽️ 600+ இலைகள் (பிரம்மாண்ட பந்தி)' : '🍽️ 600+ Seater (Grand)' },
+                    ].map((item) => {
+                      const isSelected = hallDining === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHallDining(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. Air Conditioning Type */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Wind className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'ஏசி வசதி' : 'Hall AC Type'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அரங்கம் (All)' : 'All Hall Types' },
+                      { id: 'AC', label: lang === 'ta' ? '❄️ முழு ஏசி அரங்கம் (AC Hall)' : '❄️ Centralized AC Hall' },
+                      { id: 'NON_AC', label: lang === 'ta' ? '🍃 ஏசி அல்லாதது (Non-AC)' : '🍃 Non-AC Hall' },
+                    ].map((item) => {
+                      const isSelected = hallAc === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setHallAc(item.id as any)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. Hall Area / Built-up Size (Sq Ft) */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Maximize2 className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'அரங்க பரப்பளவு' : 'Hall Area (Sq Ft)'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்து அளவுகளும்' : 'All Sizes', min: '', max: '' },
+                      { id: '<3000', label: lang === 'ta' ? '< 3,000 ச.அடி' : '< 3,000 sq ft', min: '', max: '3000' },
+                      { id: '3000-7000', label: lang === 'ta' ? '3,000 – 7,000 ச.அடி' : '3k – 7k sq ft', min: '3000', max: '7000' },
+                      { id: '7000-15000', label: lang === 'ta' ? '7,000 – 15,000 ச.அடி' : '7k – 15k sq ft', min: '7000', max: '15000' },
+                      { id: '15000+', label: lang === 'ta' ? '15,000+ ச.அடி' : '15,000+ sq ft', min: '15000', max: '' },
+                    ].map((item) => {
+                      const isSelected = selectedSizeRange === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSizeRange('');
+                              setMinSize('');
+                              setMaxSize('');
+                            } else {
+                              setSelectedSizeRange(item.id);
+                              setMinSize(item.min);
+                              setMaxSize(item.max);
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 5. Car Parking */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-1.5 w-36 shrink-0">
+                    <Car className="w-3.5 h-3.5 text-[#C5A059]" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-700">
+                      {lang === 'ta' ? 'பார்க்கிங்' : 'Parking'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    {[
+                      { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
+                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
+                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                    ].map((item) => {
+                      const isSelected = selectedParking === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => setSelectedParking(item.id)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 border ${
+                            isSelected
+                              ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-md shadow-[#D4AF37]/20 scale-[1.03]'
+                              : 'bg-white/80 text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6] hover:border-[#D8BC76] hover:shadow-sm'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ===== PREMIUM TRUST BADGES with glassmorphism & animations ===== */}
+          <div className="pt-2 sm:pt-4 grid grid-cols-3 gap-2 sm:gap-4 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: '400ms' }}>
+            {/* Badge 1: Direct Owner Connect */}
+            <div className="group flex flex-col sm:flex-row items-center text-center sm:text-left gap-1.5 sm:gap-3 p-2.5 sm:p-4 bg-white/70 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-lg shadow-[#D4AF37]/5 hover:shadow-xl hover:shadow-[#D4AF37]/10 hover:border-[#D8BC76] hover:bg-white/90 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-2xl" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 relative z-10">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0 relative z-10">
+                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.zeroBrokerage')}</p>
+                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.zeroBrokerageDesc')}</p>
+              </div>
+            </div>
+
+            {/* Badge 2: Verified Listings */}
+            <div className="group flex flex-col sm:flex-row items-center text-center sm:text-left gap-1.5 sm:gap-3 p-2.5 sm:p-4 bg-white/70 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-lg shadow-[#D4AF37]/5 hover:shadow-xl hover:shadow-[#D4AF37]/10 hover:border-[#D8BC76] hover:bg-white/90 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-2xl" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 relative z-10">
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0 relative z-10">
+                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.verifiedListings')}</p>
+                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.verifiedListingsDesc')}</p>
+              </div>
+            </div>
+
+            {/* Badge 3: Direct Phone & WhatsApp */}
+            <div className="group flex flex-col sm:flex-row items-center text-center sm:text-left gap-1.5 sm:gap-3 p-2.5 sm:p-4 bg-white/70 backdrop-blur-md rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-lg shadow-[#D4AF37]/5 hover:shadow-xl hover:shadow-[#D4AF37]/10 hover:border-[#D8BC76] hover:bg-white/90 transition-all duration-300 hover:-translate-y-0.5 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-2xl" />
+              <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-[#FAF4E6] to-[#F3E8CE] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 relative z-10">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0 relative z-10">
+                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.instantConnect')}</p>
+                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.instantConnectDesc')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
         <div className="relative max-w-5xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
