@@ -188,7 +188,7 @@ export const HomePage: React.FC = () => {
     <div className="space-y-6 sm:space-y-16 pb-12">
       <SEOHead
         title="Chennai's Exclusive One-Stop Property Rental Webapp | veeduvadagaikkuchennai"
-        description="veeduvadagaikkuchennai - Chennai's exclusive one-stop property rental webapp. Verified houses, apartments, shops, hostels & marriage halls direct from owners."
+        description="veeduvadagaikkuchennai - Chennai's exclusive one-stop property rental webapp. Verified houses for rent, hostels & PG accommodation, shops / commercial for rent, marriage halls & home services direct from owners."
       />
 
       {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}

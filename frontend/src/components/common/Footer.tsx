@@ -27,18 +27,23 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/shops" className="hover:text-[#B08B40] transition">
-                  {t('footer.commercialShops')}
-                </Link>
-              </li>
-              <li>
                 <Link to="/hostels" className="hover:text-[#B08B40] transition">
                   {t('footer.hostels')}
                 </Link>
               </li>
               <li>
+                <Link to="/shops" className="hover:text-[#B08B40] transition">
+                  {t('footer.commercialShops')}
+                </Link>
+              </li>
+              <li>
                 <Link to="/marriage-halls" className="hover:text-[#B08B40] transition">
                   {t('footer.marriageHalls')}
+                </Link>
+              </li>
+              <li>
+                <Link to="/home-services" className="hover:text-[#B08B40] transition">
+                  {t('footer.homeServices', 'Chennai Home Services')}
                 </Link>
               </li>
               <li>
