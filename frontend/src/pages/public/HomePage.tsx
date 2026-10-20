@@ -197,7 +197,7 @@ export const HomePage: React.FC = () => {
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
         <div className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 65%)' }} />
 
-        <div className="relative max-w-5xl mx-auto space-y-4 sm:space-y-6">
+        <div className="relative max-w-7xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
           <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
@@ -219,11 +219,8 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Quick Categories Bar */}
-          <div className="w-full overflow-x-auto no-scrollbar py-3 px-3 sm:px-6">
-            <div
-              className="flex items-center gap-2.5 sm:gap-4 md:gap-5 lg:gap-6 shrink-0 w-max min-w-full justify-start min-[1200px]:justify-center px-1"
-              style={{ justifyContent: 'safe center' }}
-            >
+          <div className="w-full overflow-x-auto no-scrollbar py-2.5 px-2 sm:px-4">
+            <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 shrink-0 w-fit min-w-full justify-start min-[1150px]:justify-center px-2">
               <Link
                 to="/houses"
                 className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"

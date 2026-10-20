@@ -265,7 +265,7 @@ export const HomeServicesPage: React.FC = () => {
           style={{ background: 'radial-gradient(circle, rgba(197,160,89,0.12) 0%, transparent 65%)' }}
         />
 
-        <div className="relative max-w-5xl mx-auto space-y-4 sm:space-y-6">
+        <div className="relative max-w-7xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
           <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
             <div className="flex flex-wrap items-center justify-center gap-2">
@@ -302,11 +302,8 @@ export const HomeServicesPage: React.FC = () => {
           </div>
 
           {/* Quick Categories Bar (Matching Image Exactly) */}
-          <div className="w-full overflow-x-auto no-scrollbar py-3 px-3 sm:px-6">
-            <div
-              className="flex items-center gap-2.5 sm:gap-4 md:gap-5 lg:gap-6 shrink-0 w-max min-w-full justify-start min-[1200px]:justify-center px-1"
-              style={{ justifyContent: 'safe center' }}
-            >
+          <div className="w-full overflow-x-auto no-scrollbar py-2.5 px-2 sm:px-4">
+            <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 shrink-0 w-fit min-w-full justify-start min-[1150px]:justify-center px-2">
               <Link
                 to="/houses"
                 className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
