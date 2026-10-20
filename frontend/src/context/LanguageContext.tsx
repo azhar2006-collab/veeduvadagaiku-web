@@ -13,7 +13,7 @@ export const translations: Record<Language, Record<string, string>> = {
   en: {
     // Navigation
     'nav.allRentals': 'All Rent / Lease',
-    'nav.houses': 'Houses for Rent / Lease',
+    'nav.houses': 'Houses for Rent',
     'nav.shops': 'Shops / Commercial for Rent',
     'nav.hostels': 'Hostels & PG Accommodation',
     'nav.marriageHalls': 'Marriage Halls',
@@ -221,7 +221,7 @@ export const translations: Record<Language, Record<string, string>> = {
   ta: {
     // Navigation
     'nav.allRentals': 'அனைத்து வாடகை / குத்தகை சொத்துக்கள்',
-    'nav.houses': 'வாடகை / குத்தகை வீடுகள்',
+    'nav.houses': 'வாடகை வீடுகள்',
     'nav.shops': 'கடைகள் / வணிக இடங்கள் (வாடகை)',
     'nav.hostels': 'விடுதிகள் & PG Accommodation',
     'nav.marriageHalls': 'கல்யாண மண்டபங்கள்',

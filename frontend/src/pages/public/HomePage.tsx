@@ -219,8 +219,11 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Quick Categories Bar */}
-          <div className="w-full flex items-center justify-start min-[920px]:justify-center overflow-x-auto no-scrollbar py-3.5 px-4 sm:px-6">
-            <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 shrink-0">
+          <div className="w-full overflow-x-auto no-scrollbar py-3 px-3 sm:px-6">
+            <div
+              className="flex items-center gap-2.5 sm:gap-4 md:gap-5 lg:gap-6 shrink-0 w-max min-w-full justify-start min-[1200px]:justify-center px-1"
+              style={{ justifyContent: 'safe center' }}
+            >
               <Link
                 to="/houses"
                 className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"

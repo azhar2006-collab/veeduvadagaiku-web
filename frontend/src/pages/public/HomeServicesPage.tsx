@@ -302,8 +302,11 @@ export const HomeServicesPage: React.FC = () => {
           </div>
 
           {/* Quick Categories Bar (Matching Image Exactly) */}
-          <div className="w-full flex items-center justify-start min-[920px]:justify-center overflow-x-auto no-scrollbar py-3 px-4 sm:px-6">
-            <div className="flex items-center gap-3.5 sm:gap-5 lg:gap-7 shrink-0">
+          <div className="w-full overflow-x-auto no-scrollbar py-3 px-3 sm:px-6">
+            <div
+              className="flex items-center gap-2.5 sm:gap-4 md:gap-5 lg:gap-6 shrink-0 w-max min-w-full justify-start min-[1200px]:justify-center px-1"
+              style={{ justifyContent: 'safe center' }}
+            >
               <Link
                 to="/houses"
                 className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
