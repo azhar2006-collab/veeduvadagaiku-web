@@ -596,7 +596,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         </div>
 
-        {/* Parking Filter (Car & Bike Parking - Covered Parking removed) */}
+        {/* Parking Filter (Dropdown) */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
@@ -612,29 +612,15 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               </button>
             )}
           </div>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { val: '', label: t('filter.allParking', 'All Parking') },
-              { val: 'car', label: '🚗 ' + t('filter.carParking', 'Car Parking') },
-              { val: 'bike', label: '🛵 ' + t('filter.bikeParking', 'Bike Parking') },
-            ].map((pk) => {
-              const isSelected = String(filters.carParking || '') === pk.val;
-              return (
-                <button
-                  key={pk.val || 'all'}
-                  type="button"
-                  onClick={() => handleFieldChange('carParking', pk.val)}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition ${
-                    isSelected
-                      ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
-                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {pk.label}
-                </button>
-              );
-            })}
-          </div>
+          <select
+            value={typeof filters.carParking === 'boolean' ? (filters.carParking ? 'car' : '') : (filters.carParking || '')}
+            onChange={(e) => handleFieldChange('carParking', e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
+          >
+            <option value="">{t('filter.allParking', 'All Parking')}</option>
+            <option value="car">🚗 {t('filter.carParking', 'Car Parking')}</option>
+            <option value="bike">🛵 {t('filter.bikeParking', 'Bike Parking')}</option>
+          </select>
         </div>
 
         {/* Commercial Property Types (Matching Image 2 - NoBroker & OLX checklist) */}
@@ -934,7 +920,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </div>
         )}
 
-        {/* Furnishing */}
+        {/* Furnishing (Dropdown) */}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
@@ -950,26 +936,18 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               </button>
             )}
           </div>
-          <div className="flex flex-wrap gap-2">
-            {FURNISHING_OPTIONS.map(({ id, label }) => {
-              const isSelected = filters.furnishing === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => handleFieldChange('furnishing', isSelected ? '' : id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition ${
-                    isSelected
-                      ? 'bg-[#FAF4E6] text-[#9A7818] border-[#C5A059] shadow-xs'
-                      : 'border-gray-200 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {isSelected && <Check className="w-3 h-3" />}
-                  <span>{label}</span>
-                </button>
-              );
-            })}
-          </div>
+          <select
+            value={filters.furnishing || ''}
+            onChange={(e) => handleFieldChange('furnishing', e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
+          >
+            <option value="">{lang === 'ta' ? 'அனைத்து பர்னிச்சர் நிலை (All)' : 'All Furnishing Status'}</option>
+            {FURNISHING_OPTIONS.map(({ id, label, labelTa }) => (
+              <option key={id} value={id}>
+                {lang === 'ta' ? labelTa : label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Sort Order */}

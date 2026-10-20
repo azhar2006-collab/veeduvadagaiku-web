@@ -313,14 +313,6 @@ export const HomeServicesPage: React.FC = () => {
               </Link>
 
               <Link
-                to="/shops"
-                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
-              >
-                <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
-                <span>{t('nav.shops')}</span>
-              </Link>
-
-              <Link
                 to="/hostels"
                 className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 text-left"
               >
@@ -331,6 +323,14 @@ export const HomeServicesPage: React.FC = () => {
                     Accommodation
                   </span>
                 </div>
+              </Link>
+
+              <Link
+                to="/shops"
+                className="text-xs sm:text-sm lg:text-[15px] font-bold text-gray-800 hover:text-[#B08B40] transition flex items-center gap-1.5 sm:gap-2 group shrink-0 whitespace-nowrap"
+              >
+                <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] lg:w-5 lg:h-5 text-[#C5A059] group-hover:scale-110 transition-transform shrink-0" />
+                <span>{t('nav.shops')}</span>
               </Link>
 
               <Link

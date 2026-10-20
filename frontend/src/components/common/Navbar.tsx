@@ -239,20 +239,20 @@ export const Navbar: React.FC = () => {
             {t('nav.houses')}
           </Link>
           <Link
-            to="/shops"
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
-          >
-            <Store className="w-4 h-4 text-[#C5A059]" />
-            {t('nav.shops')}
-          </Link>
-          <Link
             to="/hostels"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             <Users className="w-4 h-4 text-[#C5A059]" />
             {t('nav.hostels')}
+          </Link>
+          <Link
+            to="/shops"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+          >
+            <Store className="w-4 h-4 text-[#C5A059]" />
+            {t('nav.shops')}
           </Link>
           <Link
             to="/marriage-halls"
