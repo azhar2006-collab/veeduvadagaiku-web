@@ -32,7 +32,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ title, items
           <img
             src="/logo-circle.png"
             alt="Veedu Vadagaikku Chennai"
-            className="h-12 w-12 object-contain rounded-full drop-shadow-sm"
+            className="h-16 w-16 sm:h-20 sm:w-20 object-contain rounded-full drop-shadow-sm hover:scale-105 transition-transform"
           />
         </Link>
       </div>

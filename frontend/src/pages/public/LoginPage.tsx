@@ -45,7 +45,7 @@ export const LoginPage: React.FC = () => {
           <img
             src="/logo-circle.png"
             alt="veeduvadagaikkuchennai"
-            className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full drop-shadow-md group-hover:scale-105 transition-transform"
+            className="w-24 h-24 sm:w-32 sm:h-32 object-contain rounded-full drop-shadow-lg group-hover:scale-105 transition-transform"
           />
         </Link>
         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">

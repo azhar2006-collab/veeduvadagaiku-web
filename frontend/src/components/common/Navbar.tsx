@@ -27,9 +27,9 @@ export const Navbar: React.FC = () => {
               <img
                 src="/logo-circle.png"
                 alt="veeduvadagaikkuchennai"
-                className="h-10 sm:h-12 w-10 sm:w-12 object-contain rounded-full group-hover:scale-[1.05] transition-transform drop-shadow-xs"
+                className="h-12 sm:h-16 w-12 sm:w-16 object-contain rounded-full group-hover:scale-[1.05] transition-transform drop-shadow-sm"
               />
-              <span className="hidden xl:inline font-bold text-xl tracking-tight text-[#0B3B60] leading-none lowercase">
+              <span className="hidden xl:inline font-bold text-xl sm:text-2xl tracking-tight text-[#0B3B60] leading-none lowercase">
                 veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
               </span>
             </Link>

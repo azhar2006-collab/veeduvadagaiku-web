@@ -48,7 +48,7 @@ export const AdminLayout: React.FC = () => {
               <img
                 src="/logo-circle.png"
                 alt="Veedu Vadagaikku Chennai"
-                className="h-10 w-10 object-contain rounded-full drop-shadow-sm hover:scale-105 transition"
+                className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full drop-shadow-sm hover:scale-105 transition"
               />
             </Link>
             <span className="text-slate-700">|</span>
