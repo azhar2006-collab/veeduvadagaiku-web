@@ -623,7 +623,7 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
           </select>
         </div>
 
-        {/* Commercial Property Types checklist */}
+        {/* Commercial Property Types (Matching Image 2 - NoBroker & OLX checklist) */}
         {(filters.propertyType === 'SHOP' || filters.category === 'SHOP' || filters.category === 'COMMERCIAL_BUILDING') && (
           <div>
             <div className="flex items-center justify-between mb-2">

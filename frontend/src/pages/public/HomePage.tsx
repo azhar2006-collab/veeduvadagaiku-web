@@ -200,7 +200,10 @@ export const HomePage: React.FC = () => {
         <div className="relative max-w-7xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
           <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
-
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
+              <span className="text-center leading-snug">{t('hero.badge')}</span>
+            </div>
 
             <h1 className="text-xl sm:text-3xl lg:text-[2.25rem] font-bold sm:font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
               <span className="text-[#C5A059]">{t('hero.title1')}</span>{' '}
@@ -210,9 +213,7 @@ export const HomePage: React.FC = () => {
             <p className="max-w-xl mx-auto text-xs sm:text-sm text-gray-600 font-medium leading-relaxed">
               {t('hero.desc')}
             </p>
-            <p className="max-w-xl mx-auto text-[11px] sm:text-xs text-[#9A7818] font-medium leading-relaxed">
-              {t('hero.descSub')}
-            </p>
+
           </div>
 
           {/* Quick Categories Bar */}
@@ -234,7 +235,7 @@ export const HomePage: React.FC = () => {
                 <div className="flex flex-col leading-tight">
                   <span className="whitespace-nowrap">{lang === 'ta' ? 'விடுதிகள் & PG' : 'Hostels & PG'}</span>
                   <span className="text-[10px] font-semibold text-gray-400 group-hover:text-[#B08B40] transition-colors whitespace-nowrap">
-                    {lang === 'ta' ? 'தங்கும் வசதி' : 'Accommodation'}
+                    Accommodation
                   </span>
                 </div>
               </Link>
@@ -270,7 +271,7 @@ export const HomePage: React.FC = () => {
                 <Gift className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#D4AF37] shrink-0" strokeWidth={2} />
                 <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
                 <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-bold rounded-full uppercase tracking-wider animate-pulse">
-                  {lang === 'ta' ? 'இலவசம்' : 'Free'}
+                  Free
                 </span>
               </Link>
             </div>
@@ -1065,7 +1066,28 @@ export const HomePage: React.FC = () => {
             </div>
           )}
 
+          {/* Trust Guarantee Badges — 2 boxes side by side */}
+          <div className="pt-1 sm:pt-3 grid grid-cols-2 gap-2 sm:gap-3 max-w-xl mx-auto">
+            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FAF4E6] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.zeroBrokerage')}</p>
+                <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.zeroBrokerageDesc')}</p>
+              </div>
+            </div>
 
+            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FAF4E6] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.instantConnect')}</p>
+                <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.instantConnectDesc')}</p>
+              </div>
+            </div>
+          </div>
 
 
         </div>

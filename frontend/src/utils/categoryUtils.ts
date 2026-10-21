@@ -159,7 +159,7 @@ export function getCategoryBadgeInfo(category: 'HOUSE' | 'APARTMENT' | 'SHOP' | 
 }
 
 /**
- * Commercial Property Subtypes (Commercial checklist)
+ * Commercial Property Subtypes (Matching NoBroker & OLX checklist)
  */
 export const COMMERCIAL_SUBTYPES = [
   { id: 'Office Space', label: 'Office Space', labelTa: 'அலுவலக இடம் (Office Space)' },
