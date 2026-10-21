@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
 import { useLocalities } from '../../hooks/useProperties';
+import { useLanguage } from '../../context/LanguageContext';
 import { ImageUploader } from '../../components/property/ImageUploader';
 import { SEOHead } from '../../components/common/SEOHead';
 import {
@@ -37,11 +38,18 @@ import { getNavaratriOffer, isOfferActive } from '../../config/offersConfig';
 export const AddPropertyPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { lang, setLang } = useLanguage();
   const { data: localitiesData } = useLocalities();
   const localities = (Array.isArray(localitiesData) && localitiesData.length > 0) ? localitiesData : CHENNAI_LOCALITIES;
 
-  // Listing Language state (English or Tamil)
-  const [listingLanguage, setListingLanguage] = useState<'EN' | 'TA'>('EN');
+  // Listing Language state (English or Tamil) - synced with global language
+  const [listingLanguage, setListingLanguage] = useState<'EN' | 'TA'>(() => (lang === 'ta' ? 'TA' : 'EN'));
+
+  useEffect(() => {
+    setListingLanguage(lang === 'ta' ? 'TA' : 'EN');
+  }, [lang]);
+
+  const isTamil = listingLanguage === 'TA' || lang === 'ta';
 
   // Form states
   const [category, setCategory] = useState<'HOUSE' | 'APARTMENT' | 'SHOP' | 'HOSTEL' | 'MARRIAGE_HALL'>('HOUSE');
@@ -69,7 +77,7 @@ export const AddPropertyPage: React.FC = () => {
   const [contactWhatsapp, setContactWhatsapp] = useState(true);
   const [contactEnquiry, setContactEnquiry] = useState(true);
 
-  // NoBroker-style Property Specifics
+  // Property Specifics
   const [bathrooms, setBathrooms] = useState('2');
   const [balconies, setBalconies] = useState('1');
   const [attachedBathroom, setAttachedBathroom] = useState(true);
@@ -79,7 +87,7 @@ export const AddPropertyPage: React.FC = () => {
   const [parkingCar, setParkingCar] = useState(false);
   const [parkingCovered, setParkingCovered] = useState(false);
 
-  // Tenant Preferences (NoBroker)
+  // Tenant Preferences
   const [petFriendly, setPetFriendly] = useState(false);
   const [bachelorsAllowed, setBachelorsAllowed] = useState(false);
   const [familyOnly, setFamilyOnly] = useState(true);
@@ -277,15 +285,15 @@ export const AddPropertyPage: React.FC = () => {
 
   const categorySpecificAmenities =
     category === 'HOSTEL'
-      ? listingLanguage === 'TA'
+      ? isTamil
         ? hostelAmenitiesListTa
         : hostelAmenitiesListEn
       : category === 'MARRIAGE_HALL'
-      ? listingLanguage === 'TA'
+      ? isTamil
         ? marriageHallAmenitiesListTa
         : marriageHallAmenitiesListEn
       : category === 'SHOP'
-      ? listingLanguage === 'TA'
+      ? isTamil
         ? shopAmenitiesListTa
         : shopAmenitiesListEn
       : [];
@@ -302,11 +310,11 @@ export const AddPropertyPage: React.FC = () => {
     e.preventDefault();
 
     if (!locality) {
-      toast.error('Please select a Chennai locality or detect your current location');
+      toast.error(isTamil ? 'சென்னை பகுதியைத் தேர்வு செய்யவும் அல்லது தற்போதைய இருப்பிடத்தை கண்டறியவும்' : 'Please select a Chennai locality or detect your current location');
       return;
     }
     if (files.length === 0) {
-      toast.error('Please upload at least 1 photo of the property');
+      toast.error(isTamil ? 'குறைந்தது 1 புகைப்படத்தையாவது பதிவேற்றவும்' : 'Please upload at least 1 photo of the property');
       return;
     }
 
@@ -316,7 +324,7 @@ export const AddPropertyPage: React.FC = () => {
       let finalDesc = description.trim();
       const compiledAmenities = new Set<string>();
 
-      if (listingLanguage === 'TA') {
+      if (isTamil) {
         compiledAmenities.add('[LANG:TA]');
       }
 
@@ -344,7 +352,7 @@ export const AddPropertyPage: React.FC = () => {
         compiledAmenities.add(tag);
       }
 
-      // Add NoBroker checkboxes to amenities list
+      // Add property specifics to amenities list
       if (category === 'HOUSE' || category === 'APARTMENT' || category === 'HOSTEL') {
         compiledAmenities.add(`${bathrooms} ${parseInt(bathrooms) === 1 ? 'Bathroom' : 'Bathrooms'}`);
         if (attachedBathroom) compiledAmenities.add('Attached Bathroom');
@@ -441,10 +449,12 @@ export const AddPropertyPage: React.FC = () => {
       {/* Header */}
       <div className="border-b border-gray-200 pb-4">
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-          List Your Chennai Property
+          {isTamil ? 'உங்கள் சென்னை சொத்தை பதிவேற்றுக' : 'List Your Chennai Property'}
         </h1>
         <p className="text-xs sm:text-sm text-gray-500 mt-1">
-          Provide your locality, property specs, and photos. Your listing is 100% free and submitted directly for admin review.
+          {isTamil
+            ? 'உங்கள் பகுதி, சொத்து விவரங்கள் மற்றும் புகைப்படங்களை உள்ளிடவும். உங்கள் விளம்பரம் 100% இலவசம் மற்றும் நிர்வாகி சரிபார்ப்புக்கு நேரடியாக சமர்ப்பிக்கப்படும்.'
+            : 'Provide your locality, property specs, and photos. Your listing is 100% free and submitted directly for admin review.'}
         </p>
       </div>
 
@@ -457,15 +467,19 @@ export const AddPropertyPage: React.FC = () => {
             </div>
             <div>
               <p className="font-black text-sm sm:text-base">
-                🎉 Navaratri Special Offer Active: Post This Property 100% FREE!
+                {isTamil
+                  ? '🎉 நவராத்திரி சிறப்பு சலுகை: இந்த சொத்தை 100% இலவசமாக பதிவேற்றுக!'
+                  : '🎉 Navaratri Special Offer Active: Post This Property 100% FREE!'}
               </p>
               <p className="text-xs text-amber-100 font-medium">
-                ₹0 posting fee with the Navaratri Free Posting Plan. No credit card or payment required.
+                {isTamil
+                  ? 'நவராத்திரி இலவச திட்டத்துடன் ₹0 கட்டணம். கிரெடிட் கார்டு அல்லது கட்டணம் தேவையில்லை.'
+                  : '₹0 posting fee with the Navaratri Free Posting Plan. No credit card or payment required.'}
               </p>
             </div>
           </div>
           <span className="px-3 py-1 rounded-full bg-white text-orange-600 font-extrabold text-xs shrink-0 shadow-xs">
-            Save ₹222+
+            {isTamil ? '₹222+ சேமிப்பு' : 'Save ₹222+'}
           </span>
         </div>
       )}
@@ -475,10 +489,10 @@ export const AddPropertyPage: React.FC = () => {
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-              1. Listing Language / விளம்பர மொழி
+              {isTamil ? '1. விளம்பர மொழி (Listing Language)' : '1. Listing Language / விளம்பர மொழி'}
             </label>
             <span className="text-xs font-semibold text-[#9A7818]">
-              {listingLanguage === 'TA' ? 'தமிழில் விளம்பரம் தேர்வு செய்யப்பட்டுள்ளது' : 'English listing selected'}
+              {isTamil ? 'தமிழில் விளம்பரம் தேர்வு செய்யப்பட்டுள்ளது' : 'English listing selected'}
             </span>
           </div>
 
@@ -487,10 +501,11 @@ export const AddPropertyPage: React.FC = () => {
               type="button"
               onClick={() => {
                 setListingLanguage('EN');
+                setLang('en');
                 setSelectedAmenities([]);
               }}
               className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition ${
-                listingLanguage === 'EN'
+                !isTamil
                   ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 font-bold shadow-xs'
                   : 'border-gray-200 hover:border-gray-300 text-gray-600'
               }`}
@@ -506,10 +521,11 @@ export const AddPropertyPage: React.FC = () => {
               type="button"
               onClick={() => {
                 setListingLanguage('TA');
+                setLang('ta');
                 setSelectedAmenities([]);
               }}
               className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition ${
-                listingLanguage === 'TA'
+                isTamil
                   ? 'border-[#C5A059] bg-[#FAF4E6] text-gray-900 font-bold shadow-xs'
                   : 'border-gray-200 hover:border-gray-300 text-gray-600'
               }`}
@@ -526,7 +542,7 @@ export const AddPropertyPage: React.FC = () => {
         {/* Step 2: Property Category */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EFE8D8] shadow-xs space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            2. Select Property Category / சொத்து பிரிவு
+            {isTamil ? '2. சொத்து வகையை தேர்வு செய்க (Category)' : '2. Select Property Category / சொத்து பிரிவு'}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* 1. House */}
@@ -548,10 +564,10 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'தனி வீடு / வில்லா (House / Villa)' : 'Independent House / Villa'}
+                  {isTamil ? 'தனி வீடு / வில்லா (House / Villa)' : 'Independent House / Villa'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  1BHK, 2BHK, 3BHK, Independent House, Villa
+                  {isTamil ? '1 BHK, 2 BHK, 3 BHK, தனி வீடு, வில்லா' : '1BHK, 2BHK, 3BHK, Independent House, Villa'}
                 </div>
               </div>
             </button>
@@ -575,10 +591,10 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : 'Apartment / Flat / Community'}
+                  {isTamil ? 'அபார்ட்மெண்ட் / அடுக்குமாடி குடியிருப்பு (Flat)' : 'Apartment / Flat / Community'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Gated Community, High-rise Flat, Multi-storey
+                  {isTamil ? 'கேட்டட் கம்யூனிட்டி, அடுக்குமாடி பிளாட்' : 'Gated Community, High-rise Flat, Multi-storey'}
                 </div>
               </div>
             </button>
@@ -602,10 +618,10 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'கடை / வணிக கட்டிடம் (Shops / Commercial Buildings)' : 'Shops / Commercial Buildings'}
+                  {isTamil ? 'கடை / வணிக கட்டிடம் (Shops / Commercial Buildings)' : 'Shops / Commercial Buildings'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Retail Store, Showroom, Office, Clinic, Godown, Building
+                  {isTamil ? 'சில்லறை கடை, ஷோரூம், அலுவலகம், கிளினிக், குடோன், கட்டிடம்' : 'Retail Store, Showroom, Office, Clinic, Godown, Building'}
                 </div>
               </div>
             </button>
@@ -629,10 +645,10 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'விடுதி / பி.ஜி (Hostel / PG / Coliving)' : 'Hostel / PG / Co-Living'}
+                  {isTamil ? 'விடுதிகள் & PG தங்குமிடம் (Hostels & PG)' : 'Hostels & PG Accommodation'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Men's PG, Women's Hostel, Shared rooms
+                  {isTamil ? 'ஆண்கள் விடுதி, மகளிர் விடுதி, PG தங்குமிடம்' : "Men's PG, Women's Hostel, Shared rooms"}
                 </div>
               </div>
             </button>
@@ -656,28 +672,28 @@ export const AddPropertyPage: React.FC = () => {
               </div>
               <div>
                 <div className="text-base font-bold">
-                  {listingLanguage === 'TA' ? 'திருமண மண்டபம் / மஹால் (Marriage Hall)' : 'Marriage Hall / Mandapam'}
+                  {isTamil ? 'திருமண / பார்ட்டி மண்டபங்கள் (Marriage & Party Halls)' : 'Marriage & Party Halls for Rent'}
                 </div>
                 <div className="text-xs text-gray-500 mt-0.5">
-                  Kalyana Mandapam, Mini Hall, Party Hall
+                  {isTamil ? 'கல்யாண மண்டபம், மினி ஹால், பார்ட்டி ஹால்' : 'Kalyana Mandapam, Mini Hall, Party Hall'}
                 </div>
               </div>
             </button>
           </div>
 
-          {/* Commercial Subtype Selector (Image 2) */}
+          {/* Commercial Subtype Selector */}
           {category === 'SHOP' && (
             <div className="pt-4 border-t border-gray-100 space-y-3 animate-fade-in">
               <div className="flex items-center justify-between">
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                  {listingLanguage === 'TA' ? 'வணிக சொத்து வகை (Commercial Type)' : 'Commercial Subtype'}
+                  {isTamil ? 'வணிக சொத்து வகை (Commercial Subtype)' : 'Commercial Subtype'}
                 </label>
                 <span className="text-[11px] font-semibold text-[#9A7818]">
                   {commercialSubtype}
                 </span>
               </div>
               <p className="text-xs text-gray-500">
-                {listingLanguage === 'TA'
+                {isTamil
                   ? 'சரியான வணிக வகையைத் தேர்வு செய்யவும் (எ.கா: கடை, ஷோரூம், அலுவலகம், கிடங்கு)'
                   : 'Select the exact commercial subtype for targeted tenant inquiries (e.g. Shop, Office, Showroom, Warehouse)'}
               </p>
@@ -693,7 +709,7 @@ export const AddPropertyPage: React.FC = () => {
                         : 'border-gray-200 text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    {listingLanguage === 'TA' ? sub.labelTa : sub.label}
+                    {isTamil ? sub.labelTa : sub.label}
                   </button>
                 ))}
               </div>
@@ -706,10 +722,12 @@ export const AddPropertyPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                3. Property Location & Locality / இருப்பிடம்
+                {isTamil ? '3. சொத்தின் இருப்பிடம் & பகுதி (Location & Locality)' : '3. Property Location & Locality / இருப்பிடம்'}
               </label>
               <p className="text-xs text-gray-500 mt-0.5">
-                Map your property by Chennai locality (e.g. Kodambakkam, Vadapalani). Full street address is completely optional.
+                {isTamil
+                  ? 'உங்கள் சொத்தின் சென்னை பகுதியைத் தேர்வு செய்யவும் (எ.கா: கோடம்பாக்கம், வடபழனி). தெரு முகவரி விருப்பத்திற்குரியது.'
+                  : 'Map your property by Chennai locality (e.g. Kodambakkam, Vadapalani). Full street address is completely optional.'}
               </p>
             </div>
 
@@ -721,14 +739,18 @@ export const AddPropertyPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#FAF4E6] hover:bg-[#F3E8CD] border border-[#E8DFC8] text-[#9A7818] font-bold text-xs rounded-xl shadow-2xs transition active:scale-95 disabled:opacity-50 shrink-0"
             >
               <Navigation className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin' : ''}`} />
-              <span>{isLocating ? 'Detecting Location...' : 'Use Current Location (GPS)'}</span>
+              <span>
+                {isLocating
+                  ? isTamil ? 'இருப்பிடத்தை கண்டறிகிறது...' : 'Detecting Location...'
+                  : isTamil ? 'தற்போதைய இருப்பிடத்தை பயன்படுத்து (GPS)' : 'Use Current Location (GPS)'}
+              </span>
             </button>
           </div>
 
           {/* Quick Locality Pick Chips */}
           <div className="space-y-1.5">
             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-              Popular Chennai Localities (1-Click Select):
+              {isTamil ? 'பிரபல சென்னை பகுதிகள் (1-கிளிக் தேர்வு):' : 'Popular Chennai Localities (1-Click Select):'}
             </span>
             <div className="flex flex-wrap gap-2 pt-1">
               {popularLocalities.map((popLoc) => {
@@ -756,7 +778,7 @@ export const AddPropertyPage: React.FC = () => {
           {/* Locality Dropdown */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-              All Chennai Localities
+              {isTamil ? 'அனைத்து சென்னை பகுதிகள்' : 'All Chennai Localities'}
             </label>
             <select
               required
@@ -764,7 +786,7 @@ export const AddPropertyPage: React.FC = () => {
               onChange={(e) => setLocality(e.target.value)}
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#C5A059] cursor-pointer"
             >
-              <option value="">Select Chennai Area</option>
+              <option value="">{isTamil ? 'சென்னை பகுதியைத் தேர்வு செய்க' : 'Select Chennai Area'}</option>
               {localities.map((loc) => (
                 <option key={loc} value={loc}>
                   {loc}
@@ -777,9 +799,15 @@ export const AddPropertyPage: React.FC = () => {
             <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between text-xs text-emerald-800">
               <span className="flex items-center gap-2 font-semibold">
                 <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>GPS Coordinates Mapped: {latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+                <span>
+                  {isTamil
+                    ? `ஜிபிஎஸ் ஆயத்தொலைவுகள் இணைக்கப்பட்டது: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
+                    : `GPS Coordinates Mapped: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`}
+                </span>
               </span>
-              <span className="text-[11px] text-emerald-700">Locality: {locality || 'Detected'}</span>
+              <span className="text-[11px] text-emerald-700">
+                {isTamil ? `பகுதி: ${locality || 'கண்டறியப்பட்டது'}` : `Locality: ${locality || 'Detected'}`}
+              </span>
             </div>
           )}
 
@@ -792,10 +820,12 @@ export const AddPropertyPage: React.FC = () => {
                 onChange={(e) => setShowFullAddress(e.target.checked)}
                 className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
               />
-              <span>Add full street address / door no (Optional)</span>
+              <span>{isTamil ? 'முழு தெரு முகவரி / கதவு எண் சேர்க்கவும் (விருப்பத்திற்குரியது)' : 'Add full street address / door no (Optional)'}</span>
             </label>
             <p className="text-[11px] text-gray-500 leading-relaxed">
-              By default, only your Locality ({locality || 'e.g. Kodambakkam, Chennai'}) will be shown publicly to protect your privacy. Check the box above if you want to provide door number, street, or landmark details.
+              {isTamil
+                ? `இயல்பாக, உங்கள் தனியுரிமையைப் பாதுகாக்க உங்கள் பகுதி (${locality || 'எ.கா: கோடம்பாக்கம், சென்னை'}) மட்டுமே பொதுவில் காட்டப்படும். கதவு எண் அல்லது அடையாளங்களை வழங்க விரும்பினால் மேலே உள்ள கட்டத்தைத் தேர்வுசெய்யவும்.`
+                : `By default, only your Locality (${locality || 'e.g. Kodambakkam, Chennai'}) will be shown publicly to protect your privacy. Check the box above if you want to provide door number, street, or landmark details.`}
             </p>
 
             {showFullAddress && (
@@ -803,7 +833,7 @@ export const AddPropertyPage: React.FC = () => {
                 <textarea
                   rows={2}
                   placeholder={
-                    listingLanguage === 'TA'
+                    isTamil
                       ? 'கதவு எண் 14, 2வது மெயின் ரோடு, சாந்தி தியேட்டர் அருகில், சென்னை'
                       : 'Door No. 14, 2nd Main Road, Near Landmark, Chennai'
                   }
@@ -819,13 +849,13 @@ export const AddPropertyPage: React.FC = () => {
         {/* Step 4: Basic Property Details */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            4. Property Details & Pricing
+            {isTamil ? '4. சொத்து விவரங்கள் & வாடகை (Details & Pricing)' : '4. Property Details & Pricing'}
           </label>
 
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Listing Title
+                {isTamil ? 'விளம்பர தலைப்பு (Listing Title)' : 'Listing Title'}
               </label>
               <input
                 type="text"
@@ -833,7 +863,15 @@ export const AddPropertyPage: React.FC = () => {
                 minLength={5}
                 maxLength={100}
                 placeholder={
-                  category === 'HOUSE'
+                  isTamil
+                    ? category === 'HOUSE'
+                      ? 'எ.கா: கோடம்பாக்கம் ரயில் நிலையம் அருகில் 2 BHK தனி வீடு வாடகைக்கு'
+                      : category === 'SHOP'
+                      ? 'வடபழனி மெயின் ரோட்டில் பிரைம் தரைத்தள கடை வாடகைக்கு'
+                      : category === 'HOSTEL'
+                      ? 'அண்ணா நகரில் உணவு & AC உடன் கூடிய ஆண்கள் PG விடுதி'
+                      : 'அடையாறில் பிரம்மாண்ட ஏசி கல்யாண மண்டபம்'
+                    : category === 'HOUSE'
                     ? 'Spacious 2 BHK Apartment near Kodambakkam Railway Station'
                     : category === 'SHOP'
                     ? 'Prime Ground Floor Commercial Retail Shop on Vadapalani Main Road'
@@ -851,9 +889,11 @@ export const AddPropertyPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                    Monthly Rent / Lease Amount (₹)
+                    {isTamil ? 'மாத வாடகை / குத்தகை தொகை (₹)' : 'Monthly Rent / Lease Amount (₹)'}
                   </label>
-                  <span className="text-[10px] text-gray-400 font-medium">No maximum limit (₹1 to Infinity)</span>
+                  <span className="text-[10px] text-gray-400 font-medium">
+                    {isTamil ? 'அதிகபட்ச வரம்பு இல்லை (₹1 முதல் எவ்வளவும்)' : 'No maximum limit (₹1 to Infinity)'}
+                  </span>
                 </div>
                 <input
                   type="number"
@@ -868,7 +908,7 @@ export const AddPropertyPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Security Deposit / Advance (₹)
+                  {isTamil ? 'முன்பணம் / அட்வான்ஸ் தொகை (₹)' : 'Security Deposit / Advance (₹)'}
                 </label>
                 <input
                   type="number"
@@ -885,7 +925,7 @@ export const AddPropertyPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  Super Built-up Area (Sq.Ft)
+                  {isTamil ? 'பரப்பளவு (சதுர அடி / Sq.Ft)' : 'Super Built-up Area (Sq.Ft)'}
                 </label>
                 <input
                   type="number"
@@ -901,7 +941,7 @@ export const AddPropertyPage: React.FC = () => {
               {category === 'HOUSE' ? (
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    Bedrooms (BHK)
+                    {isTamil ? 'படுக்கையறைகள் (BHK)' : 'Bedrooms (BHK)'}
                   </label>
                   <select
                     value={bedrooms}
@@ -918,7 +958,7 @@ export const AddPropertyPage: React.FC = () => {
               ) : (
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    Number of Rooms / Spaces
+                    {isTamil ? 'அறைகளின் எண்ணிக்கை' : 'Number of Rooms / Spaces'}
                   </label>
                   <input
                     type="number"
@@ -934,22 +974,22 @@ export const AddPropertyPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  {listingLanguage === 'TA' ? 'பர்னிச்சர் வசதி (Furnishing)' : 'Furnishing Status'}
+                  {isTamil ? 'பர்னிச்சர் வசதி (Furnishing)' : 'Furnishing Status'}
                 </label>
                 <select
                   value={furnishing}
                   onChange={(e) => setFurnishing(e.target.value as any)}
                   className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#C5A059]"
                 >
-                  <option value="UNFURNISHED">Unfurnished</option>
-                  <option value="SEMI_FURNISHED">Semi-Furnished</option>
-                  <option value="FURNISHED">Fully Furnished</option>
+                  <option value="UNFURNISHED">{isTamil ? 'பர்னிச்சர் இல்லை (Unfurnished)' : 'Unfurnished'}</option>
+                  <option value="SEMI_FURNISHED">{isTamil ? 'பகுதி பர்னிச்சர் வசதி (Semi-Furnished)' : 'Semi-Furnished'}</option>
+                  <option value="FURNISHED">{isTamil ? 'முழு பர்னிச்சர் வசதி (Fully Furnished)' : 'Fully Furnished'}</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                  {listingLanguage === 'TA' ? 'வாடகைக்கு கிடைக்கும் நாள்' : 'Available From Date'}
+                  {isTamil ? 'வாடகைக்கு கிடைக்கும் நாள்' : 'Available From Date'}
                 </label>
                 <input
                   type="date"
@@ -963,14 +1003,14 @@ export const AddPropertyPage: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                {listingLanguage === 'TA' ? 'முழு விவரங்கள் (Description)' : 'Detailed Property Description'}
+                {isTamil ? 'முழு விவரங்கள் (Description)' : 'Detailed Property Description'}
               </label>
               <textarea
                 rows={3}
                 required
                 minLength={20}
                 placeholder={
-                  listingLanguage === 'TA'
+                  isTamil
                     ? 'வீட்டின் சிறப்பம்சங்கள், மெட்ரோ குடிநீர் வசதி, கார் பார்க்கிங், அருகிலுள்ள பேருந்து/மெட்ரோ நிலையங்கள், வாடகை நிபந்தனைகள்...'
                     : 'Highlight ventilation, neighborhood advantages, water sources, natural light, preferred tenants, etc.'
                 }
@@ -982,15 +1022,17 @@ export const AddPropertyPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 5: NoBroker-Style Checkboxes (Bathrooms, Balcony, Parking, Pets, Gym) */}
+        {/* Step 5: Property Specifics & Checklists */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-6">
           <div className="border-b border-gray-100 pb-3">
             <h3 className="text-base font-black text-gray-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-[#C5A059]" />
-              <span>5. Property Specifics & NoBroker Checklists</span>
+              <span>{isTamil ? '5. சொத்து வசதிகள் & சரிபார்ப்பு பட்டியல்' : '5. Property Specifics & Checklists'}</span>
             </h3>
             <p className="text-xs text-gray-500 mt-1">
-              Select bathrooms, balconies, parking, tenant restrictions, and society amenities.
+              {isTamil
+                ? 'குளியலறைகள், பால்கனி, பார்க்கிங், வாடகைதாரர் விருப்பங்கள் மற்றும் கட்டிட வசதிகளைத் தேர்வு செய்யவும்.'
+                : 'Select bathrooms, balconies, parking, tenant restrictions, and society amenities.'}
             </p>
           </div>
 
@@ -998,13 +1040,13 @@ export const AddPropertyPage: React.FC = () => {
           {(category === 'HOUSE' || category === 'HOSTEL') && (
             <div className="space-y-4">
               <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Bathrooms & Balconies
+                {isTamil ? 'குளியலறைகள் & பால்கனிகள்' : 'Bathrooms & Balconies'}
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Bathrooms count */}
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
                   <label className="block text-xs font-bold text-gray-800">
-                    Number of Bathrooms
+                    {isTamil ? 'குளியலறைகள் எண்ணிக்கை' : 'Number of Bathrooms'}
                   </label>
                   <div className="flex gap-2">
                     {['1', '2', '3', '4+'].map((num) => (
@@ -1030,14 +1072,14 @@ export const AddPropertyPage: React.FC = () => {
                       onChange={(e) => setAttachedBathroom(e.target.checked)}
                       className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                     />
-                    <span>Attached Bathroom in Bedroom(s)</span>
+                    <span>{isTamil ? 'படுக்கையறையில் இணைக்கப்பட்ட குளியலறை (Attached Bath)' : 'Attached Bathroom in Bedroom(s)'}</span>
                   </label>
                 </div>
 
                 {/* Balconies count */}
                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 space-y-2">
                   <label className="block text-xs font-bold text-gray-800">
-                    Number of Balconies
+                    {isTamil ? 'பால்கனிகள் எண்ணிக்கை' : 'Number of Balconies'}
                   </label>
                   <div className="flex gap-2">
                     {['0', '1', '2', '3+'].map((num) => (
@@ -1051,7 +1093,7 @@ export const AddPropertyPage: React.FC = () => {
                             : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
                         }`}
                       >
-                        {num === '0' ? 'None' : `${num} Balcony`}
+                        {num === '0' ? (isTamil ? 'இல்லை' : 'None') : `${num} ${isTamil ? 'பால்கனி' : 'Balcony'}`}
                       </button>
                     ))}
                   </div>
@@ -1063,7 +1105,7 @@ export const AddPropertyPage: React.FC = () => {
           {/* Section B: Vehicular Parking */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-              Parking Facilities
+              {isTamil ? 'வாகன பார்க்கிங் வசதிகள்' : 'Parking Facilities'}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <label
@@ -1079,7 +1121,7 @@ export const AddPropertyPage: React.FC = () => {
                   onChange={(e) => setParkingBike(e.target.checked)}
                   className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                 />
-                <span className="text-xs">🏍️ Bike Parking (Two Wheeler)</span>
+                <span className="text-xs">{isTamil ? '🏍️ டூ வீலர் பார்க்கிங் (Two Wheeler)' : '🏍️ Bike Parking (Two Wheeler)'}</span>
               </label>
 
               <label
@@ -1095,17 +1137,17 @@ export const AddPropertyPage: React.FC = () => {
                   onChange={(e) => setParkingCar(e.target.checked)}
                   className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                 />
-                <span className="text-xs">🚗 Car Parking (Four Wheeler)</span>
+                <span className="text-xs">{isTamil ? '🚗 கார் பார்க்கிங் (Four Wheeler)' : '🚗 Car Parking (Four Wheeler)'}</span>
               </label>
 
             </div>
           </div>
 
-          {/* Section C: Tenant Preferences & Rules (NoBroker) */}
+          {/* Section C: Tenant Preferences & Rules */}
           {category === 'HOUSE' && (
             <div className="space-y-3">
               <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Tenant Preferences & Rules (NoBroker Style)
+                {isTamil ? 'வாடகைதாரர் விருப்பங்கள் & விதிகள்' : 'Tenant Preferences & Rules'}
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <label
@@ -1121,7 +1163,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setPetFriendly(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">🐾 Pet Friendly (Pets Allowed)</span>
+                  <span className="text-xs">{isTamil ? '🐾 செல்லப்பிராணிகள் வளர்க்கலாம் (Pets Allowed)' : '🐾 Pet Friendly (Pets Allowed)'}</span>
                 </label>
 
                 <label
@@ -1137,7 +1179,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setBachelorsAllowed(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">👨‍💼 Bachelors Allowed</span>
+                  <span className="text-xs">{isTamil ? '👨‍💼 பேச்சிலர்கள் அனுமதிக்கப்படுவர்' : '👨‍💼 Bachelors Allowed'}</span>
                 </label>
 
                 <label
@@ -1153,7 +1195,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setFamilyOnly(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">👨‍👩‍👧 Family Preferred</span>
+                  <span className="text-xs">{isTamil ? '👨‍👩‍👧 குடும்பத்தினர் முன்னுரிமை (Family Preferred)' : '👨‍👩‍👧 Family Preferred'}</span>
                 </label>
 
                 <label
@@ -1169,7 +1211,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setVegetarianOnly(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">🥗 Vegetarians Only</span>
+                  <span className="text-xs">{isTamil ? '🥗 சைவம் மட்டும் (Vegetarians Only)' : '🥗 Vegetarians Only'}</span>
                 </label>
 
                 <label
@@ -1185,7 +1227,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setNonVegAllowed(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">🍗 Non-Veg Allowed</span>
+                  <span className="text-xs">{isTamil ? '🍗 அசைவம் அனுமதிக்கப்படும் (Non-Veg Allowed)' : '🍗 Non-Veg Allowed'}</span>
                 </label>
               </div>
             </div>
@@ -1194,28 +1236,28 @@ export const AddPropertyPage: React.FC = () => {
           {/* Section D: Building & Society Amenities (Gym, Lift, Water, Power) */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-              Society & Building Amenities (NoBroker Checklist)
+              {isTamil ? 'கட்டிட மற்றும் குடியிருப்பு வசதிகள்' : 'Society & Building Amenities'}
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '🏋️ Gym / Fitness Centre', checked: gym, setter: setGym },
-                { label: '🛗 Lift / Elevator', checked: lift, setter: setLift },
-                { label: '⚡ 100% Power Backup', checked: powerBackup, setter: setPowerBackup },
-                { label: '💧 24/7 Metro Water', checked: waterMetro, setter: setWaterMetro },
-                { label: '🚰 Borewell Water', checked: waterBorewell, setter: setWaterBorewell },
-                { label: '👮 Security Guard & CCTV', checked: securityCCTV, setter: setSecurityCCTV },
-                { label: '🚪 Gated Community', checked: gatedCommunity, setter: setGatedCommunity },
-                { label: '🏊 Swimming Pool', checked: swimmingPool, setter: setSwimmingPool },
-                { label: '❄️ Air Conditioner (AC)', checked: ac, setter: setAc },
-                { label: '🍽️ Modular Kitchen', checked: modularKitchen, setter: setModularKitchen },
-                { label: '☀️ Geyser / Water Heater', checked: geyser, setter: setGeyser },
-                { label: '🧺 Utility / Washing Area', checked: washingArea, setter: setWashingArea },
-                { label: '📶 High-Speed WiFi Ready', checked: wifi, setter: setWifi },
-                { label: '🔥 Piped Gas Connection', checked: pipedGas, setter: setPipedGas },
-                { label: '🧘 Clubhouse / Hall', checked: clubhouse, setter: setClubhouse },
-                { label: '🌿 Private Terrace / Garden', checked: privateTerrace, setter: setPrivateTerrace },
-                { label: '🚆 Near Metro Station', checked: nearMetro, setter: setNearMetro },
-                { label: '🚌 Near Bus Stand', checked: nearBusStand, setter: setNearBusStand },
+                { label: isTamil ? '🏋️ உடற்பயிற்சி கூடம் (Gym)' : '🏋️ Gym / Fitness Centre', checked: gym, setter: setGym },
+                { label: isTamil ? '🛗 லிப்ட் வசதி (Lift / Elevator)' : '🛗 Lift / Elevator', checked: lift, setter: setLift },
+                { label: isTamil ? '⚡ 100% பவர் பேக்கப் (Power Backup)' : '⚡ 100% Power Backup', checked: powerBackup, setter: setPowerBackup },
+                { label: isTamil ? '💧 24/7 மெட்ரோ குடிநீர் (Metro Water)' : '💧 24/7 Metro Water', checked: waterMetro, setter: setWaterMetro },
+                { label: isTamil ? '🚰 போர்வெல் தண்ணீர் (Borewell Water)' : '🚰 Borewell Water', checked: waterBorewell, setter: setWaterBorewell },
+                { label: isTamil ? '👮 செக்யூரிட்டி & சிசிடிவி (CCTV)' : '👮 Security Guard & CCTV', checked: securityCCTV, setter: setSecurityCCTV },
+                { label: isTamil ? '🚪 கேடட் கம்யூனிட்டி (Gated Community)' : '🚪 Gated Community', checked: gatedCommunity, setter: setGatedCommunity },
+                { label: isTamil ? '🏊 நீச்சல் குளம் (Swimming Pool)' : '🏊 Swimming Pool', checked: swimmingPool, setter: setSwimmingPool },
+                { label: isTamil ? '❄️ ஏர் கண்டிஷனர் (AC)' : '❄️ Air Conditioner (AC)', checked: ac, setter: setAc },
+                { label: isTamil ? '🍽️ மாடுலர் கிச்சன் (Modular Kitchen)' : '🍽️ Modular Kitchen', checked: modularKitchen, setter: setModularKitchen },
+                { label: isTamil ? '☀️ கீசர் / வாட்டர் ஹீட்டர்' : '☀️ Geyser / Water Heater', checked: geyser, setter: setGeyser },
+                { label: isTamil ? '🧺 வாஷிங் பகுதி (Washing Area)' : '🧺 Utility / Washing Area', checked: washingArea, setter: setWashingArea },
+                { label: isTamil ? '📶 அதிவேக வைஃபை வசதி (WiFi)' : '📶 High-Speed WiFi Ready', checked: wifi, setter: setWifi },
+                { label: isTamil ? '🔥 குழாய் எரிவாயு இணைப்பு (Piped Gas)' : '🔥 Piped Gas Connection', checked: pipedGas, setter: setPipedGas },
+                { label: isTamil ? '🧘 கிளப்ஹவுஸ் / மண்டபம்' : '🧘 Clubhouse / Hall', checked: clubhouse, setter: setClubhouse },
+                { label: isTamil ? '🌿 தனி மொட்டை மாடி / தோட்டம்' : '🌿 Private Terrace / Garden', checked: privateTerrace, setter: setPrivateTerrace },
+                { label: isTamil ? '🚆 மெட்ரோ நிலையம் அருகில்' : '🚆 Near Metro Station', checked: nearMetro, setter: setNearMetro },
+                { label: isTamil ? '🚌 பேருந்து நிலையம் அருகில்' : '🚌 Near Bus Stand', checked: nearBusStand, setter: setNearBusStand },
               ].map((item, idx) => (
                 <label
                   key={idx}
@@ -1241,7 +1283,7 @@ export const AddPropertyPage: React.FC = () => {
           {categorySpecificAmenities.length > 0 && (
             <div className="space-y-3 pt-2 border-t border-gray-100">
               <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Category Highlights ({category})
+                {isTamil ? `பிரிவு சிறப்பம்சங்கள் (${category})` : `Category Highlights (${category})`}
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {categorySpecificAmenities.map((amenity) => {
@@ -1276,7 +1318,7 @@ export const AddPropertyPage: React.FC = () => {
         {/* Step 6: Contact Preferences */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            6. Tenant Contact Preferences
+            {isTamil ? '6. வாடகைதாரர் தொடர்பு விருப்பங்கள் (Contact Preferences)' : '6. Tenant Contact Preferences'}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <label className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl cursor-pointer">
@@ -1286,7 +1328,9 @@ export const AddPropertyPage: React.FC = () => {
                 onChange={(e) => setContactPhone(e.target.checked)}
                 className="w-4 h-4 text-[#C5A059] rounded"
               />
-              <span className="text-xs font-semibold text-gray-800">Direct Phone Calling</span>
+              <span className="text-xs font-semibold text-gray-800">
+                {isTamil ? 'நேரடி தொலைபேசி அழைப்பு (Direct Call)' : 'Direct Phone Calling'}
+              </span>
             </label>
 
             <label className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl cursor-pointer">
@@ -1296,7 +1340,9 @@ export const AddPropertyPage: React.FC = () => {
                 onChange={(e) => setContactWhatsapp(e.target.checked)}
                 className="w-4 h-4 text-[#C5A059] rounded"
               />
-              <span className="text-xs font-semibold text-gray-800">WhatsApp Redirection</span>
+              <span className="text-xs font-semibold text-gray-800">
+                {isTamil ? 'வாட்ஸ்அப் தொடர்பு (WhatsApp)' : 'WhatsApp Redirection'}
+              </span>
             </label>
 
             <label className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl cursor-pointer">
@@ -1306,7 +1352,9 @@ export const AddPropertyPage: React.FC = () => {
                 onChange={(e) => setContactEnquiry(e.target.checked)}
                 className="w-4 h-4 text-[#C5A059] rounded"
               />
-              <span className="text-xs font-semibold text-gray-800">In-App Message Enquiry</span>
+              <span className="text-xs font-semibold text-gray-800">
+                {isTamil ? 'செயலி வழி செய்தி விசாரணை (In-App Enquiry)' : 'In-App Message Enquiry'}
+              </span>
             </label>
           </div>
         </div>
@@ -1314,7 +1362,7 @@ export const AddPropertyPage: React.FC = () => {
         {/* Step 7: Photos Upload */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm space-y-4">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            7. Upload Property Photos
+            {isTamil ? '7. சொத்தின் புகைப்படங்களை பதிவேற்றுக (Property Photos)' : '7. Upload Property Photos'}
           </label>
           <ImageUploader newFiles={files} onFilesChange={setFiles} maxFiles={10} />
         </div>
@@ -1324,7 +1372,9 @@ export const AddPropertyPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <Info className="w-5 h-5 text-[#C5A059] shrink-0" />
             <p className="text-xs text-gray-700 leading-relaxed font-medium">
-              After clicking Save, you will be directed to select a Listing Plan (Residential ₹222 / Commercial ₹555 for 30 days) to activate and submit your property for admin review.
+              {isTamil
+                ? 'சேமித்த பிறகு, உங்கள் சொத்தை செயல்படுத்தி நிர்வாகி சரிபார்ப்புக்கு சமர்ப்பிக்க பட்டியல் திட்டத்தைத் (குடியிருப்பு ₹222 / வணிகம் ₹555 - 30 நாட்களுக்கு) தேர்வு செய்ய வழிநடத்தப்படுவீர்கள்.'
+                : 'After clicking Save, you will be directed to select a Listing Plan (Residential ₹222 / Commercial ₹555 for 30 days) to activate and submit your property for admin review.'}
             </p>
           </div>
 
@@ -1333,7 +1383,11 @@ export const AddPropertyPage: React.FC = () => {
             disabled={isSubmitting}
             className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl shadow-lg shadow-[#D4AF37]/25 transition active:scale-95 disabled:opacity-50 whitespace-nowrap flex items-center justify-center gap-2"
           >
-            <span>{isSubmitting ? 'Uploading Photos...' : 'Save & Select Plan'}</span>
+            <span>
+              {isSubmitting
+                ? isTamil ? 'புகைப்படங்கள் பதிவேற்றப்படுகிறது...' : 'Uploading Photos...'
+                : isTamil ? 'சேமித்து திட்டத்தை தேர்வு செய்க' : 'Save & Select Plan'}
+            </span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

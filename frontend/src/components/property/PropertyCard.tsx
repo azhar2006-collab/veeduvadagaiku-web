@@ -130,7 +130,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </Link>
         </div>
 
-        {/* NoBroker Signature 3-Column Spec Box */}
+        {/* 3-Column Spec Box */}
         <div className="bg-[#FCFAF5] rounded-xl p-2.5 border border-[#EFE8D8] grid grid-cols-3 divide-x divide-[#EFE8D8] text-center text-xs">
           <div className="px-1">
             <span className="text-[10px] text-gray-400 block font-medium uppercase tracking-wider">{t('card.deposit')}</span>

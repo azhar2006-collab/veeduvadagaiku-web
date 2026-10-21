@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ownerService } from '../../services/owner.service';
 import { useAuth } from '../../hooks/useAuth';
@@ -65,10 +65,7 @@ export const OwnerProfilePage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-extrabold text-lg text-gray-900">{user?.name}</h3>
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Verified Owner
-              </span>
+
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
               Managing {owner?._count?.properties || 0} Chennai properties

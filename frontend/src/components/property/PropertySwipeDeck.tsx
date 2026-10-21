@@ -480,10 +480,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                       )}
                     </span>
 
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-600/90 backdrop-blur-md text-white text-[11px] font-medium rounded-full shadow-sm">
-                      <CheckCircle2 className="w-3 h-3 text-white" />
-                      <span>Verified Owner</span>
-                    </span>
+
                   </div>
 
                   {/* Bottom Property Info Sheet */}

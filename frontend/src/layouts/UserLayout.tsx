@@ -4,20 +4,22 @@ import { Navbar } from '../components/common/Navbar';
 import { Footer } from '../components/common/Footer';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../context/LanguageContext';
 import { LayoutDashboard, Heart, MessageSquare, User } from 'lucide-react';
 
 export const UserLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
+  const { t, lang } = useLanguage();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   const items: SidebarItem[] = [
-    { label: 'Overview', href: '/user/dashboard', icon: LayoutDashboard },
-    { label: 'Saved Properties', href: '/user/favourites', icon: Heart },
-    { label: 'My Enquiries', href: '/user/enquiries', icon: MessageSquare },
-    { label: 'My Profile', href: '/user/profile', icon: User },
+    { label: lang === 'ta' ? 'கண்ணோட்டம்' : 'Overview', href: '/user/dashboard', icon: LayoutDashboard },
+    { label: t('nav.saved', 'Saved Properties'), href: '/user/favourites', icon: Heart },
+    { label: t('nav.enquiries', 'My Enquiries'), href: '/user/enquiries', icon: MessageSquare },
+    { label: t('nav.profile', 'My Profile'), href: '/user/profile', icon: User },
   ];
 
   return (

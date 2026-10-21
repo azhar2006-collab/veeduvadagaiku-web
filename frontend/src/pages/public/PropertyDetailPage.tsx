@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   MapPin,
@@ -372,7 +372,7 @@ export const PropertyDetailPage: React.FC = () => {
                 <h4 className="text-sm font-bold text-gray-900 truncate">
                   {property.owner?.user?.name || 'Chennai Property Owner'}
                 </h4>
-                <p className="text-xs text-[#9A7818] font-semibold">{t('detail.verifiedOwner')}</p>
+
               </div>
             </div>
 

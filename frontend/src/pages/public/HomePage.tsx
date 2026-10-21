@@ -191,7 +191,7 @@ export const HomePage: React.FC = () => {
         description="veeduvadagaikkuchennai - Chennai's exclusive one-stop property rental webapp. Verified houses for rent, hostels & PG accommodation, shops / commercial for rent, marriage halls & home services direct from owners."
       />
 
-      {/* Hero Section (NoBroker style with White & Lite Gold Theme) */}
+      {/* Hero Section */}
       <section className="relative overflow-x-hidden pt-4 pb-4 sm:pb-6 md:pt-8 md:pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#FCFAF6] via-white to-[#F8F5EE] border-b border-[#EFE8D8]">
         {/* Subtle decorative gold radial glows */}
         <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-40" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)' }} />
@@ -200,13 +200,10 @@ export const HomePage: React.FC = () => {
         <div className="relative max-w-7xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
           <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
-              <span className="text-center leading-snug">{t('hero.badge')}</span>
-            </div>
+
 
             <h1 className="text-xl sm:text-3xl lg:text-[2.25rem] font-bold sm:font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
-              {t('hero.title1')}{' '}
+              <span className="text-[#C5A059]">{t('hero.title1')}</span>{' '}
               <span className="text-[#C5A059]">{t('hero.titleHouse')}</span>
             </h1>
 
@@ -220,64 +217,65 @@ export const HomePage: React.FC = () => {
 
           {/* Quick Categories Bar */}
           <div className="w-full overflow-x-auto no-scrollbar py-2.5 px-2 sm:px-4">
-            <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 shrink-0 w-fit min-w-full justify-start min-[1150px]:justify-center px-2">
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 w-fit min-w-full justify-start min-[1150px]:justify-center px-2">
               <Link
                 to="/houses"
-                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Building2 className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
+                <Building2 className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />
                 <span>{t('nav.houses')}</span>
               </Link>
 
               <Link
                 to="/hostels"
-                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 text-left px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 text-left transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Users className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
+                <Users className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />
                 <div className="flex flex-col leading-tight">
                   <span className="whitespace-nowrap">{lang === 'ta' ? 'விடுதிகள் & PG' : 'Hostels & PG'}</span>
-                  <span className="text-[10px] sm:text-[11px] font-normal text-gray-400 group-hover:text-[#9A7818] transition-colors whitespace-nowrap">
-                    Accommodation
+                  <span className="text-[10px] font-semibold text-gray-400 group-hover:text-[#B08B40] transition-colors whitespace-nowrap">
+                    {lang === 'ta' ? 'தங்கும் வசதி' : 'Accommodation'}
                   </span>
                 </div>
               </Link>
 
               <Link
                 to="/shops"
-                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Store className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
+                <Store className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />
                 <span>{t('nav.shops')}</span>
               </Link>
 
               <Link
                 to="/marriage-halls"
-                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Sparkles className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
+                <Sparkles className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />
                 <span>{t('nav.marriageHalls')}</span>
               </Link>
 
               <Link
                 to="/home-services"
-                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-gray-700 hover:text-[#9A7818] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Wrench className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#C5A059] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
+                <Wrench className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />
                 <span>{t('nav.homeServices')}</span>
               </Link>
 
               <Link
                 to="/offers"
-                className="text-xs sm:text-[13px] lg:text-sm font-medium tracking-normal text-[#9A7818] hover:text-[#B08B40] transition flex items-center gap-2 group shrink-0 whitespace-nowrap px-2 py-1 rounded-lg hover:bg-[#FAF4E6]/50"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#D4AF37] bg-[#FFFDF5] hover:bg-[#FAF4E6] hover:border-[#C5A059] text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Gift className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#D4AF37] group-hover:scale-105 transition-transform shrink-0" strokeWidth={1.8} />
+                <Gift className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#D4AF37] shrink-0" strokeWidth={2} />
                 <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
                 <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-bold rounded-full uppercase tracking-wider animate-pulse">
-                  Free
+                  {lang === 'ta' ? 'இலவசம்' : 'Free'}
                 </span>
               </Link>
             </div>
           </div>
+
 
           {/* House Sub-filters: All BHKs, Floor, Car Parking, All */}
           {selectedCategory === 'HOUSE' && (
@@ -1069,38 +1067,7 @@ export const HomePage: React.FC = () => {
 
 
 
-          {/* NoBroker-style Trust Guarantee Badges */}
-          <div className="pt-1 sm:pt-3 grid grid-cols-3 gap-1.5 sm:gap-3 max-w-3xl mx-auto">
-            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.zeroBrokerage')}</p>
-                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.zeroBrokerageDesc')}</p>
-              </div>
-            </div>
 
-            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.verifiedListings')}</p>
-                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.verifiedListingsDesc')}</p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-3 p-2 sm:p-3 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-6 h-6 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#C5A059]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.instantConnect')}</p>
-                <p className="text-[9px] sm:text-[11px] text-gray-500 hidden sm:block">{t('hero.instantConnectDesc')}</p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -1442,7 +1409,7 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* For Property Owners CTA (NoBroker White & Lite Gold Theme) */}
+      {/* For Property Owners CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-[#FAF4E6] via-[#F8F1E0] to-[#F4E8D0] rounded-3xl p-8 sm:p-12 text-gray-900 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#E5DAC4]">
           <div className="space-y-4 max-w-xl text-center lg:text-left">
