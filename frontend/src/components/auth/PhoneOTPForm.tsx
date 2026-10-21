@@ -3,7 +3,7 @@ import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'fi
 import { auth } from '../../config/firebase';
 import { authService } from '../../services/auth.service';
 import { useAuth } from '../../hooks/useAuth';
-import { Phone, KeyRound, ArrowRight, RotateCcw, Sparkles, ShieldCheck } from 'lucide-react';
+import { Phone, KeyRound, ArrowRight, RotateCcw, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface PhoneOTPFormProps {
@@ -20,16 +20,16 @@ function getFriendlyFirebaseError(err: any): string {
     return 'Please enter a valid 10-digit Indian mobile number.';
   }
   if (code.includes('too-many-requests')) {
-    return 'Too many OTP requests. Please wait a minute or use Quick Demo Login below.';
+    return 'Too many OTP requests. Please wait a minute and try again.';
   }
   if (code.includes('quota-exceeded')) {
-    return 'Firebase SMS limit reached for today. Please use Quick Demo Login to continue.';
+    return 'SMS limit reached. Please try again later.';
   }
   if (code.includes('unauthorized-domain')) {
-    return 'Domain not authorized in Firebase Console. Please use Quick Demo Login below.';
+    return 'Domain not authorized in Firebase Console. Please contact support.';
   }
   if (code.includes('captcha-check-failed') || code.includes('invalid-app-credential')) {
-    return 'reCAPTCHA check failed. Please try again or use Quick Demo Login.';
+    return 'reCAPTCHA check failed. Please refresh the page and try again.';
   }
   if (code.includes('invalid-verification-code')) {
     return 'Incorrect 6-digit OTP code. Please check and re-enter.';
@@ -52,7 +52,6 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'PHONE' | 'OTP'>('PHONE');
   const [loading, setLoading] = useState(false);
-  const [demoLoading, setDemoLoading] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [countdown, setCountdown] = useState(0);
 
@@ -126,7 +125,7 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
     try {
       const verifier = initRecaptcha();
       if (!verifier) {
-        throw new Error('Unable to initialize verification. Please try Quick Demo Login.');
+        throw new Error('Unable to initialize verification. Please refresh the page and try again.');
       }
 
       const confirmation = await signInWithPhoneNumber(auth, formattedPhone, verifier);
@@ -182,31 +181,6 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
     }
   };
 
-  // Instant Quick Demo Mobile Login (bypasses carrier SMS / quota blocks)
-  const handleQuickDemoLogin = async () => {
-    setDemoLoading(true);
-    try {
-      const cleanPhone = phoneNumber.trim().replace(/\D/g, '') || '9840012345';
-      const demoToken = `demo_tenant_token_${cleanPhone}`;
-      const response = await authService.firebaseLogin(
-        demoToken,
-        role,
-        `User ${cleanPhone.slice(-4)}`
-      );
-
-      if (response.success && response.data) {
-        setUser(response.data.user, response.data.token);
-        toast.success(`Verified as +91 ${cleanPhone}! Landlord details unlocked.`);
-        onSuccess?.();
-      }
-    } catch (err: any) {
-      console.error('Demo Login Error:', err);
-      toast.error('Quick login failed. Please try again.');
-    } finally {
-      setDemoLoading(false);
-    }
-  };
-
   return (
     <div className="space-y-4">
       {/* Dynamic Recaptcha Container */}
@@ -234,31 +208,19 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
             </div>
             <p className="text-[11px] text-gray-500 mt-1.5 flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-[#C5A059]" />
-              We'll send a 6-digit verification OTP to this number.
+              A random 6-digit OTP will be sent to this number via SMS.
             </p>
           </div>
 
           <button
             type="submit"
-            disabled={loading || demoLoading}
+            disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl transition shadow-md shadow-[#D4AF37]/25 active:scale-[0.99] disabled:opacity-50"
           >
+            <Phone className="w-4 h-4" />
             <span>{loading ? 'Sending OTP...' : 'Send OTP via SMS'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-
-          {/* Quick Demo Login Option */}
-          <div className="pt-2 border-t border-[#F0E8D5]">
-            <button
-              type="button"
-              disabled={loading || demoLoading}
-              onClick={handleQuickDemoLogin}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-[#FCFAF5] hover:bg-[#F9F4E8] text-[#9A7818] border border-[#E8DFC8] font-bold text-xs rounded-xl transition active:scale-[0.99]"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span>{demoLoading ? 'Logging in...' : 'Quick Mobile Login (Skip SMS OTP)'}</span>
-            </button>
-          </div>
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp} className="space-y-4">
@@ -290,18 +252,22 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
                 className="w-full pl-10 pr-4 py-3 bg-white border border-[#E8DFC8] rounded-xl text-gray-900 font-bold tracking-widest text-center text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/25 focus:border-[#C5A059] transition shadow-xs"
               />
             </div>
+            <p className="text-[11px] text-gray-500 mt-1.5 flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#C5A059]" />
+              OTP sent to +91 {phoneNumber}. Check your SMS inbox.
+            </p>
           </div>
 
           <button
             type="submit"
-            disabled={loading || demoLoading}
+            disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-xl transition shadow-md shadow-[#D4AF37]/25 active:scale-[0.99] disabled:opacity-50"
           >
             <span>{loading ? 'Verifying OTP...' : 'Verify & Continue'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 
-          <div className="flex items-center justify-between pt-2 text-xs">
+          <div className="flex items-center justify-center pt-1 text-xs">
             {countdown > 0 ? (
               <span className="text-gray-400 font-medium">Resend OTP in {countdown}s</span>
             ) : (
@@ -314,14 +280,6 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
                 Resend OTP
               </button>
             )}
-
-            <button
-              type="button"
-              onClick={handleQuickDemoLogin}
-              className="text-[#9A7818] font-bold hover:underline"
-            >
-              Skip OTP & Verify
-            </button>
           </div>
         </form>
       )}
