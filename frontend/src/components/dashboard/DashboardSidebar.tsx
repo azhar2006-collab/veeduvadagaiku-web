@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { LucideIcon, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -30,9 +30,9 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ title, items
       <div className="px-1 pb-4 mb-3 border-b border-gray-100 flex items-center justify-center">
         <Link to="/" className="block hover:opacity-95 transition">
           <img
-            src="/logo-full.png"
+            src="/logo-circle.png"
             alt="Veedu Vadagaikku Chennai"
-            className="h-10 sm:h-11 w-auto object-contain"
+            className="h-12 w-12 object-contain rounded-full drop-shadow-sm"
           />
         </Link>
       </div>

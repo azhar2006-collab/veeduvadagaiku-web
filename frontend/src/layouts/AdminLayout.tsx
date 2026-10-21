@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Outlet, Navigate, Link } from 'react-router-dom';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
 import { useAuth } from '../hooks/useAuth';
@@ -45,13 +45,11 @@ export const AdminLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
-              <div className="bg-white px-2.5 py-1 rounded-xl shadow-sm hover:opacity-95 transition">
-                <img
-                  src="/logo-full.png"
-                  alt="Veedu Vadagaikku Chennai"
-                  className="h-8 w-auto object-contain"
-                />
-              </div>
+              <img
+                src="/logo-circle.png"
+                alt="Veedu Vadagaikku Chennai"
+                className="h-10 w-10 object-contain rounded-full drop-shadow-sm hover:scale-105 transition"
+              />
             </Link>
             <span className="text-slate-700">|</span>
             <span className="text-xs font-extrabold text-amber-400 uppercase tracking-widest bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/20">

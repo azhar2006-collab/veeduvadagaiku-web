@@ -41,10 +41,12 @@ export const LoginPage: React.FC = () => {
       />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link to="/" className="inline-flex items-center gap-2 mb-4">
-          <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-orange-600/30">
-            <Home className="w-7 h-7" />
-          </div>
+        <Link to="/" className="inline-flex items-center gap-2 mb-4 group">
+          <img
+            src="/logo-circle.png"
+            alt="veeduvadagaikkuchennai"
+            className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full drop-shadow-md group-hover:scale-105 transition-transform"
+          />
         </Link>
         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
           Welcome to veeduvadagaikkuchennai

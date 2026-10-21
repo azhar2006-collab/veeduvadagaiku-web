@@ -25,9 +25,9 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1 shrink-0">
               <img
-                src="/logo-full.png"
+                src="/logo-circle.png"
                 alt="veeduvadagaikkuchennai"
-                className="h-8 sm:h-10 w-auto object-contain group-hover:scale-[1.02] transition-transform drop-shadow-xs"
+                className="h-10 sm:h-12 w-10 sm:w-12 object-contain rounded-full group-hover:scale-[1.05] transition-transform drop-shadow-xs"
               />
               <span className="hidden xl:inline font-bold text-xl tracking-tight text-[#0B3B60] leading-none lowercase">
                 veeduvadagaikku<span className="text-[#C5A059]">chennai</span>

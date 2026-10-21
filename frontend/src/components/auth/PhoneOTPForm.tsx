@@ -100,7 +100,7 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
       targetElement.innerHTML = '';
 
       const verifier = new RecaptchaVerifier(auth, targetElement, {
-        size: 'invisible',
+        size: 'normal',
         callback: () => {},
         'expired-callback': () => {
           clearVerifier();
