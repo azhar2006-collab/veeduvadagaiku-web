@@ -215,6 +215,28 @@ export const HomePage: React.FC = () => {
             </p>
 
           </div>
+          {/* Trust Guarantee Badges — 2 boxes side by side */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-xl mx-auto">
+            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FAF4E6] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.zeroBrokerage')}</p>
+                <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.zeroBrokerageDesc')}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FAF4E6] border border-[#E8DFC8] flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.instantConnect')}</p>
+                <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.instantConnectDesc')}</p>
+              </div>
+            </div>
+          </div>
 
           {/* Quick Categories Bar */}
           <div className="w-full overflow-x-auto no-scrollbar py-2.5 px-2 sm:px-4">
@@ -1065,29 +1087,6 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
           )}
-
-          {/* Trust Guarantee Badges — 2 boxes side by side */}
-          <div className="pt-1 sm:pt-3 grid grid-cols-2 gap-2 sm:gap-3 max-w-xl mx-auto">
-            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FAF4E6] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.zeroBrokerage')}</p>
-                <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.zeroBrokerageDesc')}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-[#EFE8D8] shadow-2xs">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#FAF4E6] border border-[#E8DFC8] flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#C5A059]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[11px] sm:text-xs font-bold text-gray-900 leading-tight">{t('hero.instantConnect')}</p>
-                <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.instantConnectDesc')}</p>
-              </div>
-            </div>
-          </div>
 
 
         </div>
