@@ -40,23 +40,6 @@ function getFriendlyFirebaseError(err: any): string {
   return msg.replace(/^Firebase:\s*/i, '') || 'Failed to authenticate. Please try again.';
 }
 
-// Global recaptcha verifier — kept outside component to survive re-renders
-let globalRecaptchaVerifier: RecaptchaVerifier | null = null;
-
-function clearGlobalRecaptcha() {
-  if (globalRecaptchaVerifier) {
-    try {
-      globalRecaptchaVerifier.clear();
-    } catch {}
-    globalRecaptchaVerifier = null;
-  }
-  // Also physically clear any rendered recaptcha widgets from DOM
-  const widgets = document.querySelectorAll('[id^="recaptcha-"]');
-  widgets.forEach((el) => {
-    el.innerHTML = '';
-  });
-}
-
 export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
   role = 'USER',
   containerId = 'recaptcha-container',
@@ -71,11 +54,25 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
 
   const { setUser } = useAuth();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const verifierRef = useRef<RecaptchaVerifier | null>(null);
+
+  const clearVerifier = () => {
+    if (verifierRef.current) {
+      try {
+        verifierRef.current.clear();
+      } catch {}
+      verifierRef.current = null;
+    }
+    const target = containerRef.current || document.getElementById(containerId);
+    if (target) {
+      target.innerHTML = '';
+    }
+  };
 
   // Clean up recaptcha on unmount
   useEffect(() => {
     return () => {
-      clearGlobalRecaptcha();
+      clearVerifier();
     };
   }, []);
 
@@ -89,9 +86,8 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
 
   const getOrCreateRecaptcha = (): RecaptchaVerifier | null => {
     try {
-      // Reuse existing verifier if it exists and is valid
-      if (globalRecaptchaVerifier) {
-        return globalRecaptchaVerifier;
+      if (verifierRef.current) {
+        return verifierRef.current;
       }
 
       const targetElement = containerRef.current || document.getElementById(containerId);
@@ -103,19 +99,19 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
       // Clear any leftover content in the container
       targetElement.innerHTML = '';
 
-      globalRecaptchaVerifier = new RecaptchaVerifier(auth, targetElement, {
+      const verifier = new RecaptchaVerifier(auth, targetElement, {
         size: 'invisible',
         callback: () => {},
         'expired-callback': () => {
-          // When expired, clear so it gets recreated on next attempt
-          clearGlobalRecaptcha();
+          clearVerifier();
         },
       });
 
-      return globalRecaptchaVerifier;
+      verifierRef.current = verifier;
+      return verifier;
     } catch (err) {
       console.error('reCAPTCHA init error:', err);
-      clearGlobalRecaptcha();
+      clearVerifier();
       return null;
     }
   };
@@ -146,7 +142,7 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
     } catch (err: any) {
       console.error('SMS OTP Error:', err);
       // Clear verifier on error so it gets recreated fresh on retry
-      clearGlobalRecaptcha();
+      clearVerifier();
       const friendlyMsg = getFriendlyFirebaseError(err);
       toast.error(friendlyMsg);
     } finally {
@@ -237,7 +233,7 @@ export const PhoneOTPForm: React.FC<PhoneOTPFormProps> = ({
               </label>
               <button
                 type="button"
-                onClick={() => { setStep('PHONE'); clearGlobalRecaptcha(); }}
+                onClick={() => { setStep('PHONE'); clearVerifier(); }}
                 className="text-xs text-[#C5A059] hover:underline font-semibold"
               >
                 Change Number (+91 {phoneNumber})
