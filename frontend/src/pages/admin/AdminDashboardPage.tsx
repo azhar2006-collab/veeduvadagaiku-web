@@ -5,17 +5,12 @@ import { adminService } from '../../services/admin.service';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
 import {
-  Users,
-  Building2,
   Clock,
-  CheckCircle2,
-  AlertTriangle,
-  CreditCard,
-  TrendingUp,
-  ShieldCheck,
   ArrowRight,
   Sparkles,
   Flame,
+  Building2,
+  ShieldCheck,
   IndianRupee,
   Store,
 } from 'lucide-react';
@@ -23,7 +18,7 @@ import {
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: React.ElementType;
+  icon?: React.ElementType;
   accent?: 'gold' | 'wine' | 'emerald' | 'rose' | 'sky' | 'amber';
   sub?: string;
 }
@@ -31,49 +26,42 @@ interface StatCardProps {
 const DeepavaliStatCard: React.FC<StatCardProps> = ({
   title,
   value,
-  icon: Icon,
   accent = 'gold',
   sub,
 }) => {
   const styles = {
     gold: {
       card: 'bg-gradient-to-br from-[#240a15] to-[#391121] border-[#f59e0b]/30',
-      icon: 'bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/30',
       title: 'text-[#fde68a]',
       value: 'text-[#f59e0b]',
       sub: 'text-[#edd8de]',
     },
     wine: {
       card: 'bg-white border-[#e8d5cb]',
-      icon: 'bg-[#240a15]/10 text-[#240a15] border border-[#240a15]/20',
       title: 'text-gray-500',
       value: 'text-[#240a15]',
       sub: 'text-gray-500',
     },
     emerald: {
       card: 'bg-white border-[#e8d5cb]',
-      icon: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
       title: 'text-gray-500',
       value: 'text-emerald-700',
       sub: 'text-gray-500',
     },
     rose: {
       card: 'bg-white border-[#e8d5cb]',
-      icon: 'bg-rose-50 text-rose-700 border border-rose-100',
       title: 'text-gray-500',
       value: 'text-rose-700',
       sub: 'text-gray-500',
     },
     sky: {
       card: 'bg-white border-[#e8d5cb]',
-      icon: 'bg-sky-50 text-sky-700 border border-sky-100',
       title: 'text-gray-500',
       value: 'text-sky-700',
       sub: 'text-gray-500',
     },
     amber: {
       card: 'bg-white border-[#e8d5cb]',
-      icon: 'bg-amber-50 text-amber-700 border border-amber-100',
       title: 'text-gray-500',
       value: 'text-amber-700',
       sub: 'text-gray-500',
@@ -84,17 +72,12 @@ const DeepavaliStatCard: React.FC<StatCardProps> = ({
     <div
       className={`rounded-2xl p-5 border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ${styles.card}`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1 min-w-0">
-          <p className={`text-[11px] font-bold uppercase tracking-wider truncate ${styles.title}`}>
-            {title}
-          </p>
-          <h3 className={`text-2xl font-black tracking-tight ${styles.value}`}>{value}</h3>
-          {sub && <p className={`text-[11px] font-semibold ${styles.sub}`}>{sub}</p>}
-        </div>
-        <div className={`p-3 rounded-xl shrink-0 ${styles.icon}`}>
-          <Icon className="w-5 h-5" />
-        </div>
+      <div className="space-y-1.5 min-w-0">
+        <p className={`text-[11px] font-bold uppercase tracking-wider truncate ${styles.title}`}>
+          {title}
+        </p>
+        <h3 className={`text-2xl sm:text-3xl font-black tracking-tight ${styles.value}`}>{value}</h3>
+        {sub && <p className={`text-[11px] font-semibold ${styles.sub}`}>{sub}</p>}
       </div>
     </div>
   );
@@ -182,14 +165,14 @@ export const AdminDashboardPage: React.FC = () => {
 
       {/* ── KEY METRIC STAT CARDS ── */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DeepavaliStatCard title="Total Users" value={stats?.users?.total || 0} icon={Users} accent="sky" sub="Registered seekers & owners" />
-        <DeepavaliStatCard title="Property Owners" value={stats?.users?.owners || 0} icon={ShieldCheck} accent="wine" sub="Active advertisers" />
-        <DeepavaliStatCard title="Active Published" value={stats?.properties?.PUBLISHED || 0} icon={CheckCircle2} accent="emerald" sub="Live & visible listings" />
-        <DeepavaliStatCard title="Pending Approvals" value={pendingApprovalsCount} icon={Clock} accent="gold" sub="Awaiting admin review" />
-        <DeepavaliStatCard title="Rejected / Issues" value={stats?.properties?.REJECTED || 0} icon={AlertTriangle} accent="rose" sub="Need attention" />
-        <DeepavaliStatCard title="Total Payments" value={stats?.payments?.total || 0} icon={CreditCard} accent="wine" sub="Gateway transactions" />
-        <DeepavaliStatCard title="Platform Revenue" value={`₹${(stats?.payments?.revenue || 0).toLocaleString('en-IN')}`} icon={TrendingUp} accent="emerald" sub="Total collected revenue" />
-        <DeepavaliStatCard title="Total Properties" value={stats?.properties?.total || 0} icon={Building2} accent="amber" sub="Across Chennai pincodes" />
+        <DeepavaliStatCard title="Total Users" value={stats?.users?.total || 0} accent="sky" sub="Registered seekers & owners" />
+        <DeepavaliStatCard title="Property Owners" value={stats?.users?.owners || 0} accent="wine" sub="Active advertisers" />
+        <DeepavaliStatCard title="Active Published" value={stats?.properties?.PUBLISHED || 0} accent="emerald" sub="Live & visible listings" />
+        <DeepavaliStatCard title="Pending Approvals" value={pendingApprovalsCount} accent="gold" sub="Awaiting admin review" />
+        <DeepavaliStatCard title="Rejected / Issues" value={stats?.properties?.REJECTED || 0} accent="rose" sub="Need attention" />
+        <DeepavaliStatCard title="Total Payments" value={stats?.payments?.total || 0} accent="wine" sub="Gateway transactions" />
+        <DeepavaliStatCard title="Platform Revenue" value={`₹${(stats?.payments?.revenue || 0).toLocaleString('en-IN')}`} accent="emerald" sub="Total collected revenue" />
+        <DeepavaliStatCard title="Total Properties" value={stats?.properties?.total || 0} accent="amber" sub="Across Chennai pincodes" />
       </div>
 
       {/* ── TABLES: Recent Properties & Payments ── */}
