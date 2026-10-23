@@ -5,17 +5,7 @@ import { adminService } from '../../services/admin.service';
 import { StatCard } from '../../components/dashboard/StatCard';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
-import {
-  Users,
-  Building2,
-  Clock,
-  CheckCircle2,
-  AlertTriangle,
-  CreditCard,
-  TrendingUp,
-  ShieldCheck,
-  ArrowRight,
-} from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 export const AdminDashboardPage: React.FC = () => {
   const { data, isLoading } = useQuery({
@@ -39,7 +29,7 @@ export const AdminDashboardPage: React.FC = () => {
           <span className="text-xs font-bold text-orange-400 uppercase tracking-widest">
             Chennai Platform Overview
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black mt-1">Platform Analytics & Control</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold mt-1 tracking-tight">Platform Analytics & Control</h1>
           <p className="text-xs sm:text-sm text-gray-400 mt-1">
             Supervise active listings, review paid ads, and monitor platform revenue.
           </p>
@@ -61,49 +51,41 @@ export const AdminDashboardPage: React.FC = () => {
         <StatCard
           title="Total Users"
           value={stats?.users?.total || 0}
-          icon={Users}
           color="blue"
         />
         <StatCard
           title="Property Owners"
           value={stats?.users?.owners || 0}
-          icon={ShieldCheck}
           color="purple"
         />
         <StatCard
           title="Active Published"
           value={stats?.properties?.PUBLISHED || 0}
-          icon={CheckCircle2}
           color="green"
         />
         <StatCard
           title="Pending Approvals"
           value={pendingApprovalsCount}
-          icon={Clock}
           color="orange"
         />
         <StatCard
           title="Rejected / Issues"
           value={stats?.properties?.REJECTED || 0}
-          icon={AlertTriangle}
           color="red"
         />
         <StatCard
           title="Total Payments"
           value={stats?.payments?.total || 0}
-          icon={CreditCard}
           color="purple"
         />
         <StatCard
           title="Total Platform Revenue"
           value={`₹${(stats?.payments?.revenue || 0).toLocaleString('en-IN')}`}
-          icon={TrendingUp}
           color="green"
         />
         <StatCard
           title="Total Properties"
           value={stats?.properties?.total || 0}
-          icon={Building2}
           color="orange"
         />
       </div>

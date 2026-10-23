@@ -179,9 +179,9 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
               <option value="">{lang === 'ta' ? 'அனைத்து விடுதிகள் & PG Accommodations' : 'All Hostels & PG Accommodations'}</option>
-              <option value="MALE">{lang === 'ta' ? "👨 ஆண்கள் விடுதி / PG (Men's / Gents)" : "👨 Men's / Gents Hostel & PG"}</option>
-              <option value="FEMALE">{lang === 'ta' ? "👩 பெண்கள் விடுதி / PG (Women's / Ladies)" : "👩 Women's / Ladies Hostel & PG"}</option>
-              <option value="COLIVING">{lang === 'ta' ? '👥 கோ-லிவிங் (Co-Living PG)' : '👥 Co-Living PG'}</option>
+              <option value="MALE">{lang === 'ta' ? "\u0b86\u0ba3\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bbf\u0b9f\u0bc1\u0ba4\u0bbf / PG (Men's / Gents)" : "Men's / Gents Hostel & PG"}</option>
+              <option value="FEMALE">{lang === 'ta' ? "\u0baa\u0bc6\u0ba3\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0bbf\u0b9f\u0bc1\u0ba4\u0bbf / PG (Women's / Ladies)" : "Women's / Ladies Hostel & PG"}</option>
+              <option value="COLIVING">{lang === 'ta' ? '\u0b95\u0bcb-\u0bb2\u0bbf\u0bb5\u0bbf\u0b99\u0bcd (Co-Living PG)' : 'Co-Living PG'}</option>
             </select>
           )}
 
@@ -201,8 +201,8 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
               <option value="">{lang === 'ta' ? 'அனைத்து மண்டபங்கள்' : 'All Marriage Halls & Mandapams'}</option>
-              <option value="AC">{lang === 'ta' ? '❄️ ஏசி கல்யாண மண்டபம் (Central AC)' : '❄️ Central AC Marriage Hall'}</option>
-              <option value="NON_AC">{lang === 'ta' ? '🌿 நான்-ஏசி / மினி ஹால் (Non-AC)' : '🌿 Non-AC / Mini Hall'}</option>
+              <option value="AC">{lang === 'ta' ? 'ஏசி கல்யாண மண்டபம் (Central AC)' : 'Central AC Marriage Hall'}</option>
+              <option value="NON_AC">{lang === 'ta' ? 'நான்-ஏசி / மினி ஹால் (Non-AC)' : 'Non-AC / Mini Hall'}</option>
             </select>
           )}
 

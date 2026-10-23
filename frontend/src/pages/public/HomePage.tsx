@@ -393,8 +393,8 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
-                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
-                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                      { id: 'car', label: lang === 'ta' ? 'கார் பார்க்கிங்' : 'Car Parking' },
+                      { id: 'bike', label: lang === 'ta' ? 'பைக் பார்க்கிங்' : 'Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (
@@ -402,7 +402,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setSelectedParking(item.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -555,8 +555,8 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
-                      { id: 'car', label: lang === 'ta' ? '🚗 வாடிக்கையாளர் பார்க்கிங்' : '🚗 Car / Customer Parking' },
-                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                      { id: 'car', label: lang === 'ta' ? 'வாடிக்கையாளர் பார்க்கிங்' : 'Car / Customer Parking' },
+                      { id: 'bike', label: lang === 'ta' ? 'பைக் பார்க்கிங்' : 'Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (
@@ -564,7 +564,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setSelectedParking(item.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -759,9 +759,9 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All (Any Gender)' },
-                      { id: 'MALE', label: lang === 'ta' ? '👨 ஆண்கள் விடுதி' : "👨 Men's / Boys" },
-                      { id: 'FEMALE', label: lang === 'ta' ? '👩 பெண்கள் விடுதி' : "👩 Women's / Girls" },
-                      { id: 'COLIVING', label: lang === 'ta' ? '👫 இருபாலர் / Co-Living' : '👫 Co-Living / Any' },
+                      { id: 'MALE', label: lang === 'ta' ? 'ஆண்கள் விடுதி' : "Men's / Boys" },
+                      { id: 'FEMALE', label: lang === 'ta' ? 'பெண்கள் விடுதி' : "Women's / Girls" },
+                      { id: 'COLIVING', label: lang === 'ta' ? 'இருபாலர் / Co-Living' : 'Co-Living / Any' },
                     ].map((item) => {
                       const isSelected = hostelGender === item.id;
                       return (
@@ -769,7 +769,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setHostelGender(item.id as any)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -793,10 +793,10 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்து பகிர்வும் (All)' : 'All Sharing' },
-                      { id: '1', label: lang === 'ta' ? '👤 தனி நபர் (Single)' : '👤 Single Room (1 Member)' },
-                      { id: '2', label: lang === 'ta' ? '👥 2 பேர் பகிர்வு' : '👥 2 Sharing (2 Members)' },
-                      { id: '3', label: lang === 'ta' ? '👥 3 பேர் பகிர்வு' : '👥 3 Sharing (3 Members)' },
-                      { id: '4+', label: lang === 'ta' ? '👥 4+ பேர் பகிர்வு' : '👥 4+ Sharing (Dorm)' },
+                      { id: '1', label: lang === 'ta' ? 'தனி நபர் (Single)' : 'Single Room (1 Member)' },
+                      { id: '2', label: lang === 'ta' ? '2 பேர் பகிர்வு' : '2 Sharing (2 Members)' },
+                      { id: '3', label: lang === 'ta' ? '3 பேர் பகிர்வு' : '3 Sharing (3 Members)' },
+                      { id: '4+', label: lang === 'ta' ? '4+ பேர் பகிர்வு' : '4+ Sharing (Dorm)' },
                     ].map((item) => {
                       const isSelected = hostelSharing === item.id;
                       return (
@@ -804,7 +804,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setHostelSharing(item.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -915,10 +915,10 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்து கொள்ளளவு (All)' : 'All Capacities' },
-                      { id: 'UP_TO_250', label: lang === 'ta' ? '🎉 250 பேர் வரை (மினி ஹால்)' : '🎉 Up to 250 Guests (Mini Hall)' },
-                      { id: '250_TO_500', label: lang === 'ta' ? '🏛️ 250 – 500 பேர் (மண்டபம்)' : '🏛️ 250 – 500 Guests' },
-                      { id: '500_TO_1000', label: lang === 'ta' ? '👑 500 – 1000 பேர் (திருமண மஹால்)' : '👑 500 – 1000 Guests' },
-                      { id: '1000_PLUS', label: lang === 'ta' ? '✨ 1000+ பேர் (பிரம்மாண்ட மஹால்)' : '✨ 1000+ Guests (Convention)' },
+                      { id: 'UP_TO_250', label: lang === 'ta' ? '250 பேர் வரை (மினி ஹால்)' : 'Up to 250 Guests (Mini Hall)' },
+                      { id: '250_TO_500', label: lang === 'ta' ? '250 – 500 பேர் (மண்டபம்)' : '250 – 500 Guests' },
+                      { id: '500_TO_1000', label: lang === 'ta' ? '500 – 1000 பேர் (திருமண மஹால்)' : '500 – 1000 Guests' },
+                      { id: '1000_PLUS', label: lang === 'ta' ? '1000+ பேர் (பிரம்மாண்ட மஹால்)' : '1000+ Guests (Convention)' },
                     ].map((item) => {
                       const isSelected = hallCapacity === item.id;
                       return (
@@ -926,7 +926,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setHallCapacity(item.id as any)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -950,10 +950,10 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்து பந்தி (All)' : 'All Dining' },
-                      { id: 'UP_TO_150', label: lang === 'ta' ? '🍽️ 150 இலைகள் வரை' : '🍽️ Up to 150 Seater' },
-                      { id: '150_TO_350', label: lang === 'ta' ? '🍽️ 150 – 350 இலைகள்' : '🍽️ 150 – 350 Seater' },
-                      { id: '350_TO_600', label: lang === 'ta' ? '🍽️ 350 – 600 இலைகள்' : '🍽️ 350 – 600 Seater' },
-                      { id: '600_PLUS', label: lang === 'ta' ? '🍽️ 600+ இலைகள் (பிரம்மாண்ட பந்தி)' : '🍽️ 600+ Seater (Grand)' },
+                      { id: 'UP_TO_150', label: lang === 'ta' ? '150 இலைகள் வரை' : 'Up to 150 Seater' },
+                      { id: '150_TO_350', label: lang === 'ta' ? '150 – 350 இலைகள்' : '150 – 350 Seater' },
+                      { id: '350_TO_600', label: lang === 'ta' ? '350 – 600 இலைகள்' : '350 – 600 Seater' },
+                      { id: '600_PLUS', label: lang === 'ta' ? '600+ இலைகள் (பிரம்மாண்ட பந்தி)' : '600+ Seater (Grand)' },
                     ].map((item) => {
                       const isSelected = hallDining === item.id;
                       return (
@@ -961,7 +961,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setHallDining(item.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -985,8 +985,8 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்து அரங்கம் (All)' : 'All Hall Types' },
-                      { id: 'AC', label: lang === 'ta' ? '❄️ முழு ஏசி அரங்கம் (AC Hall)' : '❄️ Centralized AC Hall' },
-                      { id: 'NON_AC', label: lang === 'ta' ? '🍃 ஏசி அல்லாதது (Non-AC)' : '🍃 Non-AC Hall' },
+                      { id: 'AC', label: lang === 'ta' ? 'முழு ஏசி அரங்கம் (AC Hall)' : 'Centralized AC Hall' },
+                      { id: 'NON_AC', label: lang === 'ta' ? 'ஏசி அல்லாதது (Non-AC)' : 'Non-AC Hall' },
                     ].map((item) => {
                       const isSelected = hallAc === item.id;
                       return (
@@ -994,7 +994,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setHallAc(item.id as any)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'
@@ -1063,8 +1063,8 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
-                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
-                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                      { id: 'car', label: lang === 'ta' ? 'கார் பார்க்கிங்' : 'Car Parking' },
+                      { id: 'bike', label: lang === 'ta' ? 'பைக் பார்க்கிங்' : 'Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (
@@ -1072,7 +1072,7 @@ export const HomePage: React.FC = () => {
                           key={item.id}
                           type="button"
                           onClick={() => setSelectedParking(item.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide whitespace-nowrap transition-all border ${
                             isSelected
                               ? 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white border-[#C5A059] shadow-2xs scale-[1.02]'
                               : 'bg-[#FCFAF5] text-gray-700 border-[#E8DFC8] hover:bg-[#FAF4E6]'

@@ -9,6 +9,20 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#FAF8F5] text-gray-600 pt-10 pb-8 sm:pt-16 sm:pb-12 border-t border-[#EFE8D8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Brand Header */}
+        <div className="pb-8 mb-8 border-b border-[#EFE8D8] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <Link to="/" className="inline-block group">
+            <img
+              src="/logo.png"
+              alt="வீடு வாடகைக்கு சென்னை"
+              className="h-12 sm:h-14 w-auto object-contain rounded-xl drop-shadow-sm group-hover:scale-[1.02] transition-transform"
+            />
+          </Link>
+          <p className="text-xs sm:text-sm text-gray-500 max-w-xl leading-relaxed">
+            {t('footer.tagline')}
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 sm:gap-10 sm:mb-12">
           {/* Quick Links */}
           <div>

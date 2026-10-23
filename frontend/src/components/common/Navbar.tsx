@@ -23,19 +23,16 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo & City Selector */}
           <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1 shrink-0">
+            <Link to="/" className="flex items-center group py-1 shrink-0">
               <img
-                src="/logo-circle.png"
-                alt="veeduvadagaikkuchennai"
-                className="h-12 sm:h-16 w-12 sm:w-16 object-contain rounded-full group-hover:scale-[1.05] transition-transform drop-shadow-sm"
+                src="/logo.png"
+                alt="வீடு வாடகைக்கு சென்னை - Veedu Vadagaikku Chennai"
+                className="h-10 sm:h-12 md:h-14 w-auto object-contain rounded-xl drop-shadow-sm group-hover:scale-[1.02] transition-transform"
               />
-              <span className="hidden xl:inline font-bold text-xl sm:text-2xl tracking-tight text-[#0B3B60] leading-none lowercase">
-                veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
-              </span>
             </Link>
 
             {/* City Indicator */}
-            <div className="hidden 2xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
+            <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
               <MapPin className="w-3.5 h-3.5 text-[#C5A059]" />
               <span>Chennai</span>
             </div>

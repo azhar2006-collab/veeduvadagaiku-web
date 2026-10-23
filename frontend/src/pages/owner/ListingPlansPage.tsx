@@ -1,178 +1,300 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { planService } from '../../services/plan.service';
-import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
-import { Check, Zap, Sparkles, ShieldCheck } from 'lucide-react';
-import { RazorpayCheckoutButton } from '../../components/payment/RazorpayCheckoutButton';
+import { Check, Sparkles, Building2, Store, PartyPopper, Wrench, ArrowRight } from 'lucide-react';
+
+const DEEPAVALI_DATE = '8 Nov 2026';
+
+const topPlans = [
+  {
+    id: 'deepavali_free',
+    badge: 'Live now · till Deepavali',
+    badgeStyle: 'bg-amber-500 text-white',
+    name: 'Deepavali Free Listing',
+    price: 0,
+    period: null as string | null,
+    features: [
+      'Houses, flats, shops, halls and home services',
+      'Listed across all Chennai pincodes',
+      `Post on or before ${DEEPAVALI_DATE}`,
+    ],
+    ctaLabel: 'Start free listing',
+    ctaLink: '/owner/properties/add',
+    highlight: true,
+  },
+  {
+    id: 'residential',
+    badge: 'After the offer',
+    badgeStyle: 'bg-gray-100 text-gray-600',
+    name: 'Residential Listing',
+    price: 99,
+    period: '60 days' as string | null,
+    features: [
+      'Houses, flats and independent floors',
+      'Listed across all Chennai pincodes',
+      'Your listing stays live for 60 days',
+    ],
+    ctaLabel: 'List a home',
+    ctaLink: '/owner/properties/add',
+    highlight: false,
+  },
+  {
+    id: 'shops_commercial',
+    badge: 'After the offer',
+    badgeStyle: 'bg-gray-100 text-gray-600',
+    name: 'Shops & Commercial',
+    price: 555,
+    period: '60 days' as string | null,
+    features: [
+      'Shops and other commercial spaces',
+      'Your listing stays live for 60 days',
+      'Listed across all Chennai pincodes',
+    ],
+    ctaLabel: 'List a shop',
+    ctaLink: '/owner/properties/add',
+    highlight: false,
+  },
+];
+
+const additionalPlans = [
+  {
+    id: 'marriage_hall',
+    tag: 'Wedding & event venues',
+    tagStyle: 'bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8]',
+    name: 'Kalyana Mandapam & Convention Hall',
+    nameTa: 'கல்யாண மண்டபம் · மாநாட்டு அரங்கம்',
+    price: 1000,
+    period: '31 days',
+    features: [
+      'Marriage halls, mandapams and convention halls',
+      'Listed across all Chennai pincodes, live for 31 days',
+    ],
+    ctaLabel: 'List a hall',
+    ctaLink: '/owner/properties/add',
+  },
+  {
+    id: 'home_services',
+    tag: 'For advertisers',
+    tagStyle: 'bg-rose-50 text-rose-700 border border-rose-200',
+    name: 'Home Services',
+    nameTa: 'வீட்டு சேவைகள்',
+    price: 444,
+    period: '60 days',
+    features: [
+      'Advertise your home service to Chennai home seekers and owners',
+      'Listed across all Chennai pincodes, live for 60 days',
+    ],
+    ctaLabel: 'Advertise a service',
+    ctaLink: '/home-services/list',
+  },
+];
+
+const steps = [
+  {
+    num: 1,
+    title: 'Add your property',
+    desc: 'Enter the area, pincode, rent and photos of your house or shop.',
+  },
+  {
+    num: 2,
+    title: 'Go live in Chennai',
+    desc: 'Your listing shows up for home seekers searching your pincode.',
+  },
+  {
+    num: 3,
+    title: 'Get enquiries',
+    desc: 'Seekers find your listing and get in touch with you.',
+  },
+];
 
 export const ListingPlansPage: React.FC = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['listingPlans'],
-    queryFn: () => planService.getPlans(),
-  });
-
-  const plans = data?.data || [];
-
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-12">
+    <div className="space-y-10 max-w-4xl mx-auto pb-16 px-4 sm:px-6">
       <SEOHead title="Listing Plans & Pricing | Veedu Vadagaikku Chennai" />
 
-      <div className="text-center space-y-3 max-w-xl mx-auto">
-        <span className="text-xs font-black uppercase tracking-widest text-[#9A7818]">
-          Transparent Pricing
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
-          Simple Plans, No Hidden Fees
-        </h1>
-        <p className="text-xs sm:text-sm text-gray-500">
-          List your property for 30 days. Save more with pack deals. No commissions, no brokerage.
+      {/* Header */}
+      <div className="space-y-1 pt-2">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#9A7818]">
+          Owner Advertising Plans · விளம்பரத் திட்டங்கள்
         </p>
-        {/* Quick price summary pills */}
-        <div className="flex flex-wrap justify-center gap-2 pt-2">
-          {[
-            { label: 'Residential', price: '₹222/ad' },
-            { label: 'Commercial', price: '₹555/ad' },
-            { label: 'Residential Pack', price: '₹199/ad ×5' },
-            { label: 'Commercial Pack', price: '₹444/ad ×5' },
-          ].map(({ label, price }) => (
-            <span
-              key={label}
-              className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF4E6] border border-[#E8DFC8] rounded-full text-[11px] font-bold text-[#9A7818]"
+        <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
+          Simple pricing for owners
+        </h1>
+        <p className="text-sm text-gray-500 font-normal">
+          One price per listing. Free right now, and low after the offer ends.
+        </p>
+      </div>
+
+      {/* Top 3 plan cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {topPlans.map((plan) => (
+          <div
+            key={plan.id}
+            className={`relative rounded-2xl border flex flex-col justify-between transition-all ${
+              plan.highlight
+                ? 'bg-[#1E1208] text-white border-[#3B2410] shadow-xl'
+                : 'bg-white border-[#E8DFC8] shadow-sm hover:border-[#C5A059] hover:shadow-md'
+            }`}
+          >
+            <div className="px-5 pt-5">
+              <span
+                className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${plan.badgeStyle}`}
+              >
+                {plan.badge}
+              </span>
+            </div>
+
+            <div className="px-5 pt-3 pb-5 flex flex-col flex-1 gap-4">
+              <h2
+                className={`text-lg font-extrabold leading-tight ${
+                  plan.highlight ? 'text-white' : 'text-gray-900'
+                }`}
+              >
+                {plan.name}
+              </h2>
+
+              <div className="flex items-baseline gap-1 flex-wrap">
+                <span
+                  className={`font-black tracking-tight ${
+                    plan.highlight ? 'text-amber-400 text-5xl' : 'text-gray-900 text-4xl'
+                  }`}
+                >
+                  ₹{plan.price.toLocaleString('en-IN')}
+                </span>
+                {plan.period && (
+                  <span
+                    className={`text-xs font-semibold ${
+                      plan.highlight ? 'text-amber-200/70' : 'text-gray-500'
+                    }`}
+                  >
+                    per listing · {plan.period}
+                  </span>
+                )}
+              </div>
+
+              <ul className="space-y-2 flex-1">
+                {plan.features.map((feat, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs">
+                    <Check
+                      className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${
+                        plan.highlight ? 'text-amber-400' : 'text-emerald-500'
+                      }`}
+                    />
+                    <span className={plan.highlight ? 'text-amber-100/80' : 'text-gray-600'}>
+                      {feat}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                to={plan.ctaLink}
+                className={`mt-2 w-full py-3 rounded-xl text-xs font-extrabold text-center transition active:scale-95 flex items-center justify-center gap-2 ${
+                  plan.highlight
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:brightness-105 text-white shadow-md shadow-amber-600/30'
+                    : 'border border-[#D4AF37] text-gray-800 hover:bg-[#FAF4E6] bg-white'
+                }`}
+              >
+                {plan.ctaLabel}
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Additional plans — full-width rows */}
+      <div className="space-y-4">
+        {additionalPlans.map((plan) => (
+          <div
+            key={plan.id}
+            className="bg-white rounded-2xl border border-[#EFE8D8] shadow-sm hover:border-[#C5A059] hover:shadow-md transition p-5 sm:p-6"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1 space-y-2">
+                <span
+                  className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${plan.tagStyle}`}
+                >
+                  {plan.tag}
+                </span>
+                <div>
+                  <h3 className="text-base font-extrabold text-gray-900 leading-tight">
+                    {plan.name}
+                  </h3>
+                  <p className="text-xs text-gray-400 font-normal">{plan.nameTa}</p>
+                </div>
+                <ul className="space-y-1">
+                  {plan.features.map((feat, i) => (
+                    <li key={i} className="flex items-start gap-1.5 text-xs text-gray-600">
+                      <Check className="w-3.5 h-3.5 mt-0.5 text-emerald-500 shrink-0" />
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 sm:gap-3 shrink-0">
+                <div className="text-right">
+                  <span className="text-3xl font-black text-gray-900">
+                    ₹{plan.price.toLocaleString('en-IN')}
+                  </span>
+                  <span className="text-xs text-gray-500 block font-semibold">
+                    per listing · {plan.period}
+                  </span>
+                </div>
+                <Link
+                  to={plan.ctaLink}
+                  className="shrink-0 px-5 py-2.5 border border-[#D4AF37] bg-white hover:bg-[#FAF4E6] text-gray-800 font-extrabold text-xs rounded-xl transition active:scale-95"
+                >
+                  {plan.ctaLabel}
+                </Link>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Three steps to list */}
+      <div className="space-y-6">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Three steps to list</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {steps.map((step) => (
+            <div
+              key={step.num}
+              className="bg-white rounded-2xl border border-[#EFE8D8] p-5 space-y-2 shadow-sm"
             >
-              {label}: <span className="text-gray-900">{price}</span>
-            </span>
+              <div className="w-8 h-8 rounded-full bg-[#1E1208] text-amber-400 flex items-center justify-center font-black text-sm shrink-0">
+                {step.num}
+              </div>
+              <h3 className="text-sm font-bold text-gray-900">{step.title}</h3>
+              <p className="text-xs text-gray-500 font-normal leading-relaxed">{step.desc}</p>
+            </div>
           ))}
         </div>
       </div>
 
-      {isLoading ? (
-        <Loader text="Loading listing plans..." />
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-stretch">
-          {plans.map((plan) => {
-            const isFree = plan.price === 0 || plan.id === 'plan_navaratri_free';
-            const isPack = plan.id.includes('_pack_');
-            const perAdPrice = plan.id === 'plan_residential_pack_5' ? 199 : plan.id === 'plan_commercial_pack_5' ? 444 : null;
+      {/* Offer details note */}
+      <div className="bg-[#FAF8F2] rounded-2xl border border-[#E8DFC8] p-5 sm:p-6 space-y-2">
+        <h3 className="text-sm font-bold text-gray-900">Offer details</h3>
+        <p className="text-xs text-gray-600 font-normal leading-relaxed">
+          This page is for property owners and home service advertisers. All listings — properties
+          and home services — posted on or before Deepavali, {DEEPAVALI_DATE} carry no listing fee.
+          From then on the listing prices above apply: ₹99 per residential listing (live for 60
+          days), ₹555 per shop or commercial listing (live for 60 days), ₹1,000 per kalyana
+          mandapam or convention hall listing (live for 31 days), and ₹444 per home service listing
+          (live for 60 days).
+        </p>
+      </div>
 
-            return (
-              <div
-                key={plan.id}
-                className={`relative bg-white rounded-3xl p-6 sm:p-8 border flex flex-col justify-between transition-all ${
-                  isFree
-                    ? 'border-amber-400 ring-2 ring-amber-400/50 shadow-xl shadow-amber-500/15 sm:col-span-2 bg-gradient-to-b from-[#FFFDF9] to-white'
-                    : isPack
-                    ? 'border-emerald-400 shadow-xl shadow-emerald-500/10'
-                    : 'border-[#E8DFC8] shadow-sm hover:border-[#C5A059]'
-                }`}
-              >
-                {isFree ? (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white text-[11px] font-black rounded-full uppercase tracking-wider shadow-md flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>🎉 Limited-Time Navaratri Special Offer • ₹0 Fee</span>
-                  </div>
-                ) : isPack ? (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-[10px] font-extrabold rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" />
-                    <span>Best Value</span>
-                  </div>
-                ) : null}
-
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-black text-gray-900">{plan.name}</h3>
-                      {isFree && (
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                          100% Free
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">{plan.description}</p>
-                  </div>
-
-                  <div className="pt-2 pb-4 border-b border-gray-100">
-                    <div className="flex items-baseline gap-2">
-                      {isFree && (
-                        <span className="text-lg text-gray-400 line-through font-bold">
-                          ₹222
-                        </span>
-                      )}
-                      <span className={`text-3xl sm:text-4xl font-black ${isFree ? 'text-emerald-600' : 'text-gray-900'}`}>
-                        ₹{plan.price.toLocaleString('en-IN')}
-                      </span>
-                    </div>
-                    {isFree && (
-                      <span className="text-xs font-bold text-amber-700 block mt-0.5">
-                        🎉 ₹0 posting fee during the Navaratri promotional period!
-                      </span>
-                    )}
-                    {perAdPrice && (
-                      <span className="text-xs font-bold text-emerald-600 block mt-0.5">
-                        ₹{perAdPrice}/ad — save with 5-pack!
-                      </span>
-                    )}
-                    <span className="text-xs font-semibold text-[#9A7818] block mt-1">
-                      {plan.durationDays} Days Active per Listing
-                    </span>
-                  </div>
-
-                  {/* Features list */}
-                  <ul className="space-y-2.5 text-xs text-gray-600">
-                    {plan.features.map((feat, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-emerald-500 shrink-0" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="pt-6">
-                  <Link
-                    to="/owner/properties/add"
-                    className={`w-full py-3.5 px-4 rounded-xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 transition active:scale-95 ${
-                      isFree
-                        ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-105 text-white shadow-lg shadow-amber-500/25'
-                        : isPack
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/30'
-                        : 'bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white shadow-md shadow-[#D4AF37]/25'
-                    }`}
-                  >
-                    <span>{isFree ? 'Post Property FREE with this Plan' : `List & Choose ${plan.name}`}</span>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <div className="p-6 bg-[#FCFAF5] rounded-3xl border border-[#E8DFC8] space-y-4">
-        <div className="flex items-center gap-3">
-          <ShieldCheck className="w-6 h-6 text-[#C5A059] shrink-0" />
-          <div>
-            <h3 className="text-sm font-bold text-gray-900">Razorpay Standard Checkout</h3>
-            <p className="text-xs text-gray-600">
-              Safe & Secure Indian Payments: All transactions are processed via Razorpay (UPI, Cards, Net Banking, Wallets) with instant HMAC-SHA256 signature verification.
-            </p>
-          </div>
-        </div>
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#EFE8D8]">
-          <span className="text-xs text-gray-500 font-medium">
-            Demo & Testing: Verify Razorpay Standard Checkout modal (₹1 minimum test)
-          </span>
-          <div className="w-full sm:w-auto">
-            <RazorpayCheckoutButton
-              amount={100}
-              description="Razorpay Checkout Test"
-              className="px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-sm hover:brightness-105 active:scale-95 transition"
-            >
-              Test Razorpay Checkout (₹1)
-            </RazorpayCheckoutButton>
-          </div>
-        </div>
+      {/* CTA */}
+      <div className="text-center">
+        <Link
+          to="/owner/properties/add"
+          className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-[#D4AF37]/25 hover:brightness-105 active:scale-95 transition"
+        >
+          <Sparkles className="w-4 h-4" />
+          Post your free listing before Deepavali
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </div>
   );
