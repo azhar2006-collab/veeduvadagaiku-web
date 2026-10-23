@@ -31,7 +31,6 @@ import { PropertyCard } from '../../components/property/PropertyCard';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
-import { NavaratriPromotionalPopup } from '../../components/common/NavaratriPromotionalPopup';
 import { DeepavaliPlansShowcase } from '../../components/plans/DeepavaliPlansShowcase';
 
 export const HomePage: React.FC = () => {
@@ -1466,9 +1465,6 @@ export const HomePage: React.FC = () => {
       <section className="-mx-4 sm:-mx-6 lg:-mx-8">
         <DeepavaliPlansShowcase hideHeroBrandBar={true} />
       </section>
-
-      {/* Navaratri/Deepavali Promotional Festive Offer Popup */}
-      <NavaratriPromotionalPopup />
     </div>
   );
 };

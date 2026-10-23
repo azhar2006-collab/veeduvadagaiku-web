@@ -46,15 +46,9 @@ export const AdminLayout: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
               <img
-                src="/logo-circle.png"
+                src="/logo.png"
                 alt="Veedu Vadagaikku Chennai"
-                className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full drop-shadow-sm hover:scale-105 transition"
-                onError={(e) => {
-                  const img = e.currentTarget;
-                  if (img.src !== window.location.origin + '/logo.png') {
-                    img.src = '/logo.png';
-                  }
-                }}
+                className="h-10 sm:h-12 w-auto object-contain rounded-lg drop-shadow-sm hover:scale-105 transition"
               />
             </Link>
             <span className="text-slate-700">|</span>

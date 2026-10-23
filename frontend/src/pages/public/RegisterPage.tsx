@@ -50,9 +50,9 @@ export const RegisterPage: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center gap-2 mb-4 group">
           <img
-            src="/logo-circle.png"
+            src="/logo.png"
             alt="veeduvadagaikkuchennai"
-            className="w-24 h-24 sm:w-32 sm:h-32 object-contain rounded-full drop-shadow-lg group-hover:scale-105 transition-transform"
+            className="h-20 sm:h-24 w-auto object-contain rounded-2xl drop-shadow-lg group-hover:scale-105 transition-transform"
           />
         </Link>
         <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
