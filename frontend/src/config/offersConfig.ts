@@ -23,40 +23,145 @@ export interface PromotionalOffer {
   features: string[];
 }
 
+export interface StandardPlan {
+  id: string;
+  category: 'FREE_OFFER' | 'RESIDENTIAL' | 'COMMERCIAL' | 'HALL' | 'SERVICE';
+  badge: string;
+  badgeType: 'promo' | 'after_offer' | 'tag';
+  title: string;
+  tamilTitle?: string;
+  price: number;
+  priceDisplay: string;
+  billingPeriod: string;
+  features: string[];
+  ctaText: string;
+  ctaLink: string;
+  isFeatured?: boolean;
+}
+
+export const DEEPAVALI_PLANS: StandardPlan[] = [
+  {
+    id: 'plan_deepavali_free',
+    category: 'FREE_OFFER',
+    badge: 'Live now • till Deepavali',
+    badgeType: 'promo',
+    title: 'Deepavali Free Listing',
+    price: 0,
+    priceDisplay: '₹0',
+    billingPeriod: 'per listing',
+    features: [
+      'Houses, flats, shops, halls and home services',
+      'Listed across all Chennai pincodes',
+      'Post on or before 8 Nov 2026',
+    ],
+    ctaText: 'Start free listing',
+    ctaLink: '/owner/properties/add',
+    isFeatured: true,
+  },
+  {
+    id: 'plan_residential_single',
+    category: 'RESIDENTIAL',
+    badge: 'After the offer',
+    badgeType: 'after_offer',
+    title: 'Residential Listing',
+    price: 99,
+    priceDisplay: '₹99',
+    billingPeriod: 'per listing · 60 days',
+    features: [
+      'Houses, flats and independent floors',
+      'Listed across all Chennai pincodes',
+      'Your listing stays live for 60 days',
+    ],
+    ctaText: 'List a home',
+    ctaLink: '/owner/properties/add?type=HOUSE',
+  },
+  {
+    id: 'plan_commercial_single',
+    category: 'COMMERCIAL',
+    badge: 'After the offer',
+    badgeType: 'after_offer',
+    title: 'Shops & Commercial',
+    price: 555,
+    priceDisplay: '₹555',
+    billingPeriod: 'per listing · 60 days',
+    features: [
+      'Shops and other commercial spaces',
+      'Your listing stays live for 60 days',
+      'Listed across all Chennai pincodes',
+    ],
+    ctaText: 'List a shop',
+    ctaLink: '/owner/properties/add?type=SHOP',
+  },
+  {
+    id: 'plan_mandapam_single',
+    category: 'HALL',
+    badge: 'Wedding & event venues',
+    badgeType: 'tag',
+    title: 'Kalyana Mandapam & Convention Hall',
+    tamilTitle: 'கல்யாண மண்டபம் · மாநாட்டு அரங்கம்',
+    price: 1000,
+    priceDisplay: '₹1,000',
+    billingPeriod: 'per listing · 31 days',
+    features: [
+      'Marriage halls, mandapams and convention halls',
+      'Listed across all Chennai pincodes, live for 31 days',
+    ],
+    ctaText: 'List a hall',
+    ctaLink: '/owner/properties/add?type=MARRIAGE_HALL',
+  },
+  {
+    id: 'plan_service_single',
+    category: 'SERVICE',
+    badge: 'For advertisers',
+    badgeType: 'tag',
+    title: 'Home Services',
+    tamilTitle: 'வீட்டு சேவைகள்',
+    price: 444,
+    priceDisplay: '₹444',
+    billingPeriod: 'per listing · 60 days',
+    features: [
+      'Advertise your home service to Chennai home seekers and owners',
+      'Listed across all Chennai pincodes, live for 60 days',
+    ],
+    ctaText: 'Advertise a service',
+    ctaLink: '/home-services/list',
+  },
+];
+
 export const PROMOTIONAL_OFFERS: PromotionalOffer[] = [
   {
-    id: 'navaratri_free_posting_2026',
-    planId: 'plan_navaratri_free',
-    name: 'Navaratri Special – Free Property Posting',
-    planName: 'Navaratri Free Posting Plan',
-    badge: 'Limited-Time Festive Offer',
-    tagline: '🎉 NAVARATRI SPECIAL OFFER 🎉',
-    subheading: 'Grab the Opportunity!',
-    headline: 'Post your property for FREE during this Navaratri season!',
+    id: 'deepavali_free_posting_2026',
+    planId: 'plan_deepavali_free',
+    name: 'Deepavali Special – Free Listing for Properties & Services',
+    planName: 'Deepavali Free Listing',
+    badge: 'Live now • till Deepavali',
+    tagline: '🪔 DEEPAVALI SPECIAL OFFER 🪔',
+    subheading: 'தீபாவளி வரை உங்கள் சொத்தையும் சேவைகளையும் இலவசமாக பதிவு செய்யுங்கள்',
+    headline: 'List your property & services free till Deepavali',
     price: 0,
-    originalPrice: 222,
-    commercialOriginalPrice: 555,
+    originalPrice: 99,
+    commercialOriginalPrice: 1000,
     currency: 'INR',
-    startDate: '2026-10-10T00:00:00+05:30',
-    endDate: '2026-10-25T23:59:59+05:30',
-    expiryDisplay: 'End of Navaratri (October 25, 2026)',
+    startDate: '2026-10-01T00:00:00+05:30',
+    endDate: '2026-11-08T23:59:59+05:30',
+    expiryDisplay: 'Deepavali, 8 Nov 2026',
     isActive: true,
-    durationDays: 30,
-    description: 'Post your property without any posting fee during the promotional period.',
-    ctaText: 'Post Your Property for FREE',
+    durationDays: 60,
+    description: 'Put your house, shop, hall or home service in front of Chennai across every pincode. No listing fee on anything posted on or before Deepavali.',
+    ctaText: 'Post my free listing',
     ctaLink: '/owner/properties/add',
     bulletPoints: [
-      '₹0 Posting Fee',
-      'No Payment Required to Post a Property',
-      'Limited-Time Festive Offer',
+      'Houses, flats, shops, halls and home services',
+      'Listed across all Chennai pincodes',
+      'Post on or before 8 Nov 2026',
     ],
     features: [
-      '100% Free Property Listing (₹0 Posting Fee)',
-      '30 Days Active Listing across Chennai',
-      'Direct Tenant Phone Calls & WhatsApp Messages',
-      'Up to 10 HD Photos with Cloud Hosting',
-      'Priority Admin Review & Listing Verification',
-      'Valid for Residential Houses, Flats & Commercial Shops',
+      'Houses, flats, shops, halls and home services',
+      'Listed across all Chennai pincodes',
+      'Post on or before 8 Nov 2026',
+      'Direct tenant phone calls & WhatsApp enquiries',
+      'Up to 10 HD photos with cloud hosting',
+      'Verified listing badge upon admin review',
     ],
   },
 ];
@@ -69,6 +174,11 @@ export function isOfferActive(offer: PromotionalOffer): boolean {
   return now >= start && now <= end;
 }
 
+export function getDeepavaliOffer(): PromotionalOffer {
+  return PROMOTIONAL_OFFERS[0];
+}
+
+// Backward-compatibility alias
 export function getNavaratriOffer(): PromotionalOffer {
   return PROMOTIONAL_OFFERS[0];
 }
@@ -76,3 +186,4 @@ export function getNavaratriOffer(): PromotionalOffer {
 export function getActiveOffers(): PromotionalOffer[] {
   return PROMOTIONAL_OFFERS.filter(isOfferActive);
 }
+

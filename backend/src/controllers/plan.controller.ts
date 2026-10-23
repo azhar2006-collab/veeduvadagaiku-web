@@ -11,6 +11,7 @@ export async function syncPromotionalPlan() {
     const offer = getNavaratriOffer();
     const active = isOfferActive(offer);
 
+    // Sync primary plan (plan_deepavali_free)
     await prisma.listingPlan.upsert({
       where: { id: offer.planId },
       update: {
@@ -33,6 +34,30 @@ export async function syncPromotionalPlan() {
         sortOrder: 0,
       },
     });
+
+    // Also sync legacy plan_navaratri_free as alias so older references don't break
+    await prisma.listingPlan.upsert({
+      where: { id: 'plan_navaratri_free' },
+      update: {
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+      create: {
+        id: 'plan_navaratri_free',
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+    });
   } catch (err) {
     console.warn('[syncPromotionalPlan] Failed to sync promo plan:', err);
   }
@@ -41,8 +66,9 @@ export async function syncPromotionalPlan() {
 export async function listPlans(req: Request, res: Response, next: NextFunction) {
   try {
     await syncPromotionalPlan();
+    // Return plans excluding the redundant legacy alias if present
     const plans = await prisma.listingPlan.findMany({
-      where: { isActive: true },
+      where: { isActive: true, NOT: { id: 'plan_navaratri_free' } },
       orderBy: { sortOrder: 'asc' },
     });
     res.json(successResponse(plans));
@@ -53,10 +79,10 @@ export async function listPlans(req: Request, res: Response, next: NextFunction)
 
 export async function getPlan(req: Request, res: Response, next: NextFunction) {
   try {
-    if (req.params.id === 'plan_navaratri_free') {
+    if (req.params.id === 'plan_navaratri_free' || req.params.id === 'plan_deepavali_free') {
       const offer = getNavaratriOffer();
       if (!isOfferActive(offer)) {
-        throw new ApiError(404, 'Navaratri Free Posting Plan has expired');
+        throw new ApiError(404, 'Deepavali Free Listing Plan has expired');
       }
     }
     const plan = await prisma.listingPlan.findUnique({ where: { id: req.params.id } });

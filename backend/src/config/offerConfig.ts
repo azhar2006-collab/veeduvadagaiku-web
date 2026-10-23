@@ -25,38 +25,38 @@ export interface PromotionalOffer {
 
 export const PROMOTIONAL_OFFERS: PromotionalOffer[] = [
   {
-    id: 'navaratri_free_posting_2026',
-    planId: 'plan_navaratri_free',
-    name: 'Navaratri Special – Free Property Posting',
-    planName: 'Navaratri Free Posting Plan',
-    badge: 'Limited-Time Festive Offer',
-    tagline: '🎉 NAVARATRI SPECIAL OFFER 🎉',
-    subheading: 'Grab the Opportunity!',
-    headline: 'Post your property for FREE during this Navaratri season!',
+    id: 'deepavali_free_posting_2026',
+    planId: 'plan_deepavali_free',
+    name: 'Deepavali Special – Free Property & Services Listing',
+    planName: 'Deepavali Free Listing',
+    badge: 'Live now • till Deepavali',
+    tagline: '🪔 DEEPAVALI SPECIAL OFFER 🪔',
+    subheading: 'தீபாவளி வரை உங்கள் சொத்தையும் சேவைகளையும் இலவசமாக பதிவு செய்யுங்கள்',
+    headline: 'List your property & services free till Deepavali',
     price: 0,
-    originalPrice: 222,
-    commercialOriginalPrice: 555,
+    originalPrice: 99,
+    commercialOriginalPrice: 1000,
     currency: 'INR',
-    startDate: process.env.OFFER_NAVARATRI_START_DATE || '2026-10-10T00:00:00+05:30',
-    endDate: process.env.OFFER_NAVARATRI_END_DATE || '2026-10-25T23:59:59+05:30',
-    expiryDisplay: 'End of Navaratri (October 25, 2026)',
-    isActive: process.env.OFFER_NAVARATRI_IS_ACTIVE !== 'false',
-    durationDays: 30,
-    description: 'Post your property without any posting fee during the promotional period.',
-    ctaText: 'Post Your Property for FREE',
+    startDate: process.env.OFFER_DEEPAVALI_START_DATE || '2026-10-01T00:00:00+05:30',
+    endDate: process.env.OFFER_DEEPAVALI_END_DATE || '2026-11-08T23:59:59+05:30',
+    expiryDisplay: 'Deepavali, 8 Nov 2026',
+    isActive: process.env.OFFER_DEEPAVALI_IS_ACTIVE !== 'false',
+    durationDays: 60,
+    description: 'Put your house, shop, hall or home service in front of Chennai across every pincode. No listing fee on anything posted on or before Deepavali.',
+    ctaText: 'Post my free listing',
     ctaLink: '/owner/properties/add',
     bulletPoints: [
-      '₹0 Posting Fee',
-      'No Payment Required to Post a Property',
-      'Limited-Time Festive Offer',
+      'Houses, flats, shops, halls and home services',
+      'Listed across all Chennai pincodes',
+      'Post on or before 8 Nov 2026',
     ],
     features: [
-      '100% Free Property Listing (₹0 Posting Fee)',
-      '30 Days Active Listing across Chennai',
-      'Direct Tenant Phone Calls & WhatsApp Messages',
-      'Up to 10 HD Photos with Cloud Hosting',
-      'Priority Admin Review & Listing Verification',
-      'Valid for Residential Houses, Flats & Commercial Shops',
+      'Houses, flats, shops, halls and home services',
+      'Listed across all Chennai pincodes',
+      'Post on or before 8 Nov 2026',
+      'Direct tenant phone calls & WhatsApp enquiries',
+      'Up to 10 HD photos with cloud hosting',
+      'Verified listing badge upon admin review',
     ],
   },
 ];
@@ -69,6 +69,11 @@ export function isOfferActive(offer: PromotionalOffer): boolean {
   return now >= start && now <= end;
 }
 
+export function getDeepavaliOffer(): PromotionalOffer {
+  return PROMOTIONAL_OFFERS[0];
+}
+
+// Backward-compatibility alias
 export function getNavaratriOffer(): PromotionalOffer {
   return PROMOTIONAL_OFFERS[0];
 }
@@ -76,3 +81,4 @@ export function getNavaratriOffer(): PromotionalOffer {
 export function getActiveOffers(): PromotionalOffer[] {
   return PROMOTIONAL_OFFERS.filter(isOfferActive);
 }
+

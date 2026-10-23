@@ -30,9 +30,9 @@ import { useProperties, useLocalities } from '../../hooks/useProperties';
 import { PropertyCard } from '../../components/property/PropertyCard';
 import { SEOHead } from '../../components/common/SEOHead';
 import { useLanguage } from '../../context/LanguageContext';
-import { COMMERCIAL_SUBTYPES, HOSTEL_GENDERS, MARRIAGE_HALL_CAPACITIES, MARRIAGE_HALL_DINING, MARRIAGE_HALL_AC_TYPES, FURNISHING_OPTIONS } from '../../utils/categoryUtils';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 import { NavaratriPromotionalPopup } from '../../components/common/NavaratriPromotionalPopup';
+import { DeepavaliPlansShowcase } from '../../components/plans/DeepavaliPlansShowcase';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -236,6 +236,38 @@ export const HomePage: React.FC = () => {
                 <p className="text-[10px] sm:text-[11px] text-gray-500 mt-0.5 leading-snug">{t('hero.instantConnectDesc')}</p>
               </div>
             </div>
+          </div>
+
+          {/* Deepavali 2026 Festive Offer Banner */}
+          <div className="max-w-4xl mx-auto px-2">
+            <Link
+              to="/plans"
+              className="group flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#1b0610] via-[#240a15] to-[#2d0c1b] text-white border border-[#f59e0b]/40 shadow-lg shadow-amber-950/20 hover:brightness-105 transition active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <div className="w-10 h-10 rounded-xl bg-[#391121] border border-[#5a1b34] flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-[#f59e0b]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
+                    <span className="text-xs sm:text-sm font-black text-white">
+                      🪔 Deepavali Special Offer: List Properties &amp; Services <span className="text-[#f59e0b]">FREE</span>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#f59e0b] text-[#1b0610] text-[10px] font-black uppercase">
+                      Till 8 Nov
+                    </span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-[#edd8de] mt-0.5">
+                    தீபாவளி வரை உங்கள் சொத்தை இலவசமாக பதிவு செய்யுங்கள் • Zero Listing Fee
+                  </p>
+                </div>
+              </div>
+
+              <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#f59e0b] text-[#1b0610] text-xs font-black tracking-wide shrink-0 shadow-sm group-hover:bg-[#eab308] transition">
+                <span>View Plans &amp; Pricing</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </div>
+            </Link>
           </div>
 
           {/* Quick Categories Bar */}
@@ -1430,40 +1462,12 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* For Property Owners CTA */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-[#FAF4E6] via-[#F8F1E0] to-[#F4E8D0] rounded-3xl p-8 sm:p-12 text-gray-900 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#E5DAC4]">
-          <div className="space-y-4 max-w-xl text-center lg:text-left">
-            <span className="inline-block px-3.5 py-1 bg-white border border-[#E8DFC8] text-[#9A7818] rounded-full text-xs font-bold uppercase tracking-wider shadow-2xs">
-              Landlords & Commercial Space Owners
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight leading-tight text-gray-900">
-              Have a House or Shop to Rent Out in Chennai?
-            </h2>
-            <p className="text-sm sm:text-base text-gray-700 font-normal">
-              Get thousands of verified tenant views every month. Manage multiple properties from one single owner dashboard.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <Link
-              to="/owner/properties/add"
-              className="px-6 py-3.5 bg-gradient-to-r from-[#D4AF37] via-[#C5A059] to-[#B8860B] hover:brightness-105 text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#D4AF37]/25 text-center transition active:scale-95 flex items-center justify-center gap-2"
-            >
-              <span>Post Your Property</span>
-              <ArrowRight className="w-4 h-4 text-white" />
-            </Link>
-            <Link
-              to="/owner/listing-plans"
-              className="px-6 py-3.5 bg-white hover:bg-[#FAF7F0] border border-[#E8DFC8] text-gray-800 font-bold text-sm rounded-2xl text-center transition shadow-xs"
-            >
-              View Listing Plans
-            </Link>
-          </div>
-        </div>
+      {/* Deepavali Owner Advertising Plans Section */}
+      <section className="-mx-4 sm:-mx-6 lg:-mx-8">
+        <DeepavaliPlansShowcase hideHeroBrandBar={true} />
       </section>
 
-      {/* Navaratri Promotional Festive Offer Popup */}
+      {/* Navaratri/Deepavali Promotional Festive Offer Popup */}
       <NavaratriPromotionalPopup />
     </div>
   );

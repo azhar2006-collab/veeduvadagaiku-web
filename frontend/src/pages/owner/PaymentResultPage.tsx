@@ -91,7 +91,7 @@ export const PaymentResultPage: React.FC = () => {
               <span className={`text-xs font-black uppercase tracking-widest ${
                 isFreeOffer ? 'text-amber-600' : 'text-emerald-600'
               }`}>
-                {isFreeOffer ? '🎉 Navaratri Special Offer — Request Received!' : 'Payment Confirmed'}
+                {isFreeOffer ? '🪔 Deepavali Special Offer — Request Received!' : 'Payment Confirmed'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
                 {isFreeOffer
@@ -101,7 +101,7 @@ export const PaymentResultPage: React.FC = () => {
               <p className="text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">
                 {isFreeOffer ? (
                   <>
-                    Thank you! Your property listing has been submitted <strong className="text-amber-700">100% FREE</strong> under the <strong>Navaratri Special Offer</strong> (₹0 posting fee). Our team will review and post it shortly.
+                    Thank you! Your property listing has been submitted <strong className="text-amber-700">100% FREE</strong> under the <strong>Deepavali Special Offer</strong> (₹0 posting fee). Our team will review and post it shortly.
                   </>
                 ) : (
                   <>

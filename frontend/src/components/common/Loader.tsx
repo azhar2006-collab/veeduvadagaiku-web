@@ -26,9 +26,9 @@ export const Loader: React.FC<LoaderProps> = ({ size = 'md', fullScreen = false,
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
         <img
-          src="/logo.png"
+          src="/logo-circle.png"
           alt="Loading..."
-          className="w-48 sm:w-60 max-w-[80vw] h-auto object-contain rounded-2xl drop-shadow-xl animate-pulse"
+          className="w-32 h-32 sm:w-40 sm:h-40 max-w-[70vw] object-contain rounded-full drop-shadow-xl animate-pulse"
         />
         {text && <p className="mt-4 text-xs font-medium text-gray-500 tracking-wide">{text}</p>}
       </div>

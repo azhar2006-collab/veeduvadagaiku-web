@@ -23,16 +23,19 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo & City Selector */}
           <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-            <Link to="/" className="flex items-center group py-1 shrink-0">
+            <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1 shrink-0">
               <img
-                src="/logo.png"
-                alt="வீடு வாடகைக்கு சென்னை - Veedu Vadagaikku Chennai"
-                className="h-10 sm:h-12 md:h-14 w-auto object-contain rounded-xl drop-shadow-sm group-hover:scale-[1.02] transition-transform"
+                src="/logo-circle.png"
+                alt="veeduvadagaikkuchennai"
+                className="h-12 sm:h-16 w-12 sm:w-16 object-contain rounded-full group-hover:scale-[1.05] transition-transform drop-shadow-sm"
               />
+              <span className="hidden xl:inline font-bold text-xl sm:text-2xl tracking-tight text-[#0B3B60] leading-none lowercase">
+                veeduvadagaikku<span className="text-[#C5A059]">chennai</span>
+              </span>
             </Link>
 
             {/* City Indicator */}
-            <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
+            <div className="hidden 2xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF7F0] border border-[#E8DFC8] text-xs font-semibold text-gray-700 shadow-2xs">
               <MapPin className="w-3.5 h-3.5 text-[#C5A059]" />
               <span>Chennai</span>
             </div>
@@ -51,6 +54,16 @@ export const Navbar: React.FC = () => {
               className="text-sm font-medium text-gray-700 hover:text-[#9A7818] transition-colors whitespace-nowrap"
             >
               {t('nav.contact')}
+            </Link>
+            <Link
+              to="/plans"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#240a15] to-[#391121] text-[#f59e0b] border border-[#f59e0b]/50 text-xs font-bold hover:brightness-110 hover:scale-[1.02] transition-all shadow-xs whitespace-nowrap"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#f59e0b]" />
+              <span>Listing Plans</span>
+              <span className="px-1.5 py-0.5 bg-[#f59e0b] text-[#1b0610] text-[10px] font-black rounded-full leading-none">
+                Diwali Free ₹0
+              </span>
             </Link>
 
             <div className="h-6 w-px bg-[#E8DFC8]"></div>
@@ -122,6 +135,14 @@ export const Navbar: React.FC = () => {
                           className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#FAF7F0] font-medium"
                         >
                           Profile
+                        </Link>
+                        <Link
+                          to="/owner/listing-plans"
+                          onClick={() => setUserDropdown(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-[#92400e] hover:bg-[#FAF7F0] font-bold"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-[#f59e0b]" />
+                          Plans &amp; Offers
                         </Link>
                       </>
                     ) : (
@@ -268,16 +289,16 @@ export const Navbar: React.FC = () => {
             {t('nav.homeServices')}
           </Link>
           <Link
-            to="/offers"
+            to="/plans"
             onClick={() => setIsOpen(false)}
-            className="flex items-center justify-between px-3 py-3 text-sm font-bold text-[#9A7818] hover:bg-[#FAF6ED] rounded-xl"
+            className="flex items-center justify-between px-3.5 py-3 text-sm font-bold text-[#240a15] hover:bg-[#FAF6ED] rounded-xl bg-[#fff5e6] border border-[#fde2b8]"
           >
             <div className="flex items-center gap-3">
-              <Gift className="w-4 h-4 text-[#D4AF37]" />
-              <span>{t('nav.offers')}</span>
+              <Sparkles className="w-4 h-4 text-[#f59e0b]" />
+              <span>🪔 Diwali Offer &amp; Plans</span>
             </div>
-            <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[10px] font-black rounded-full uppercase tracking-wider">
-              Free Offer
+            <span className="px-2 py-0.5 bg-[#f59e0b] text-[#1b0610] text-[10px] font-black rounded-full uppercase tracking-wider">
+              Free ₹0
             </span>
           </Link>
           <Link
