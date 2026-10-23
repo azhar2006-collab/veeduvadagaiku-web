@@ -13,9 +13,9 @@ export const Preloader: React.FC<PreloaderProps> = ({ fadeOut = false }) => {
     >
       <div className="flex flex-col items-center justify-center p-6">
         <img
-          src="/logo-circle.png"
+          src="/logo.png"
           alt="Veedu Vadagaikku Chennai"
-          className="w-36 h-36 sm:w-44 sm:h-44 max-w-[70vw] object-contain rounded-full drop-shadow-xl animate-pulse"
+          className="w-64 sm:w-80 max-w-[85vw] h-auto object-contain rounded-2xl drop-shadow-2xl animate-pulse"
         />
       </div>
     </div>
