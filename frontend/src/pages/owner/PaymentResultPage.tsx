@@ -65,7 +65,7 @@ export const PaymentResultPage: React.FC = () => {
 
   return (
     <div className="max-w-xl mx-auto py-12 px-4 space-y-8">
-      <SEOHead title={isSuccess ? (isFreeOffer ? '🎉 Request Received!' : 'Payment Successful') : 'Payment Failed'} />
+      <SEOHead title={isSuccess ? (isFreeOffer ? 'Request Received!' : 'Payment Successful') : 'Payment Failed'} />
 
       <div className="bg-white rounded-3xl p-8 sm:p-10 border border-gray-100 shadow-xl text-center space-y-6">
         {verifying ? (
@@ -91,7 +91,7 @@ export const PaymentResultPage: React.FC = () => {
               <span className={`text-xs font-black uppercase tracking-widest ${
                 isFreeOffer ? 'text-amber-600' : 'text-emerald-600'
               }`}>
-                {isFreeOffer ? '🪔 Deepavali Special Offer — Request Received!' : 'Payment Confirmed'}
+                {isFreeOffer ? 'Deepavali Special Offer — Request Received!' : 'Payment Confirmed'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
                 {isFreeOffer
@@ -118,7 +118,7 @@ export const PaymentResultPage: React.FC = () => {
                 {/* 24hr badge */}
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1 bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
-                    ⏱ Within 24 Hours
+                    Within 24 Hours
                   </span>
                   <span className="text-xs text-amber-700 font-semibold">Our team will review your listing</span>
                 </div>
@@ -148,7 +148,7 @@ export const PaymentResultPage: React.FC = () => {
                   ? 'bg-amber-50 border-amber-200 text-amber-900'
                   : 'bg-emerald-50 border-emerald-100 text-emerald-950'
               }`}>
-                🏠 {propTitle}
+                {propTitle}
               </div>
             )}
 

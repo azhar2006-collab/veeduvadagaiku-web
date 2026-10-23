@@ -53,7 +53,7 @@ export const MyPropertiesPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
       queryClient.invalidateQueries({ queryKey: ['ownerDashboard'] });
-      toast.success('🎉 Property submitted for admin review! It will be published once approved.');
+      toast.success('Property submitted for admin review! It will be published once approved.');
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.message || 'Failed to submit. Please ensure at least one photo is uploaded.');

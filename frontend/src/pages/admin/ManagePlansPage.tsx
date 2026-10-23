@@ -210,11 +210,11 @@ export const ManagePlansPage: React.FC = () => {
                 <div className="flex items-center justify-between gap-2">
                   {isFreeOffer ? (
                     <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#f59e0b] text-[#1b0610] shadow-2xs">
-                      🪔 DEEPAVALI OFFER (100% FREE)
+                      DEEPAVALI OFFER (100% FREE)
                     </span>
                   ) : isPremiumHall ? (
                     <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#391121] text-[#f59e0b] border border-[#5a1b34]">
-                      ⭐ PREMIUM VENUE
+                      PREMIUM VENUE
                     </span>
                   ) : (
                     <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-[#92400e] border border-amber-200">

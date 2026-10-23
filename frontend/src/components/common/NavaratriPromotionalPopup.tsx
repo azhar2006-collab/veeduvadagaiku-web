@@ -69,7 +69,7 @@ export const DeepavaliPromotionalPopup: React.FC = () => {
         <div className="absolute -top-16 -right-16 w-44 h-44 bg-gradient-to-br from-amber-400/20 to-orange-500/20 rounded-full blur-2xl pointer-events-none" />
         <div className="absolute -bottom-16 -left-16 w-44 h-44 bg-gradient-to-tr from-rose-500/20 to-amber-400/20 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Close Button (✕) */}
+        {/* Close Button */}
         <button
           onClick={handleDismiss}
           type="button"
@@ -83,7 +83,7 @@ export const DeepavaliPromotionalPopup: React.FC = () => {
           {/* Festive Badge */}
           <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#391121] border border-[#5a1b34] text-[#fcd34d] font-black text-xs uppercase tracking-wider shadow-md">
             <Flame className="w-3.5 h-3.5 text-[#f59e0b]" />
-            <span>🪔 DEEPAVALI SPECIAL OFFER 🪔</span>
+            <span>DEEPAVALI SPECIAL OFFER</span>
           </div>
 
           {/* Heading & Subtitle */}

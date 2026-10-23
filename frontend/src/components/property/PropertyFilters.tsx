@@ -108,10 +108,10 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
               <option value="">{lang === 'ta' ? 'அனைத்து வீடுகள் (All Residential)' : 'All Residential (Houses & Flats)'}</option>
-              <option value="HOUSE">{lang === 'ta' ? '🏢 தனி வீடு (Individual / Independent House)' : '🏢 Individual / Independent House'}</option>
-              <option value="APARTMENT">{lang === 'ta' ? '🏢 அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : '🏢 Apartment / Flat'}</option>
-              <option value="VILLA">{lang === 'ta' ? '🏡 தனி வில்லா (Independent Villa)' : '🏡 Independent Villa'}</option>
-              <option value="BUILDER_FLOOR">{lang === 'ta' ? '🏠 பில்டர் புளோர் (Builder Floor)' : '🏠 Builder / Independent Floor'}</option>
+              <option value="HOUSE">{lang === 'ta' ? 'தனி வீடு (Individual / Independent House)' : 'Individual / Independent House'}</option>
+              <option value="APARTMENT">{lang === 'ta' ? 'அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : 'Apartment / Flat'}</option>
+              <option value="VILLA">{lang === 'ta' ? 'தனி வில்லா (Independent Villa)' : 'Independent Villa'}</option>
+              <option value="BUILDER_FLOOR">{lang === 'ta' ? 'பில்டர் புளோர் (Builder Floor)' : 'Builder / Independent Floor'}</option>
             </select>
           )}
 
@@ -154,12 +154,12 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
               <option value="">{lang === 'ta' ? 'அனைத்து வணிக வசதிகள் & கடைகள்' : 'All Commercial Facilities & Shops'}</option>
-              <option value="RETAIL_SHOP">{lang === 'ta' ? '🏪 சில்லறை கடை (Retail Shop / Store)' : '🏪 Retail Shop / Store'}</option>
-              <option value="COMMERCIAL_BUILDING">{lang === 'ta' ? '🏢 வணிக கட்டிடம் (Commercial Building / Complex)' : '🏢 Commercial Building / Complex'}</option>
-              <option value="OFFICE_SPACE">{lang === 'ta' ? '💼 அலுவலக இடம் (Office Space / IT)' : '💼 Office Space / Corporate'}</option>
-              <option value="SHOWROOM">{lang === 'ta' ? '✨ ஷோரூம் (Commercial Showroom)' : '✨ Commercial Showroom'}</option>
-              <option value="GODOWN">{lang === 'ta' ? '📦 கிடங்கு (Godown / Warehouse)' : '📦 Godown / Warehouse'}</option>
-              <option value="INDUSTRIAL_SHED">{lang === 'ta' ? '🏭 தொழிற்சாலை / தொழிலக ஷெட் (Industrial)' : '🏭 Industrial Shed / Building'}</option>
+              <option value="RETAIL_SHOP">{lang === 'ta' ? 'சில்லறை கடை (Retail Shop / Store)' : 'Retail Shop / Store'}</option>
+              <option value="COMMERCIAL_BUILDING">{lang === 'ta' ? 'வணிக கட்டிடம் (Commercial Building / Complex)' : 'Commercial Building / Complex'}</option>
+              <option value="OFFICE_SPACE">{lang === 'ta' ? 'அலுவலக இடம் (Office Space / IT)' : 'Office Space / Corporate'}</option>
+              <option value="SHOWROOM">{lang === 'ta' ? 'ஷோரூம் (Commercial Showroom)' : 'Commercial Showroom'}</option>
+              <option value="GODOWN">{lang === 'ta' ? 'கிடங்கு (Godown / Warehouse)' : 'Godown / Warehouse'}</option>
+              <option value="INDUSTRIAL_SHED">{lang === 'ta' ? 'தொழிற்சாலை / தொழிலக ஷெட் (Industrial)' : 'Industrial Shed / Building'}</option>
             </select>
           )}
 
@@ -234,12 +234,12 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
             >
               <option value="">{lang === 'ta' ? 'அனைத்து சொத்து பிரிவுகள்' : 'All Property Categories'}</option>
-              <option value="HOUSE">{lang === 'ta' ? '🏢 தனி வீடு / வில்லா (House / Villa)' : '🏢 Independent House / Villa'}</option>
-              <option value="APARTMENT">{lang === 'ta' ? '🏢 அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : '🏢 Apartment / Flat'}</option>
-              <option value="SHOP">{lang === 'ta' ? '🏪 வணிக கடை (Retail Shop)' : '🏪 Commercial Shop'}</option>
-              <option value="COMMERCIAL_BUILDING">{lang === 'ta' ? '🏢 வணிக கட்டிடம் (Commercial Building)' : '🏢 Commercial Building'}</option>
-              <option value="HOSTEL">{lang === 'ta' ? '👥 விடுதிகள் & PG Accommodation' : '👥 Hostels & PG Accommodation'}</option>
-              <option value="MARRIAGE_HALL">{lang === 'ta' ? '🎉 கல்யாண மண்டபம் (Marriage Hall)' : '🎉 Marriage Hall / Mandapam'}</option>
+              <option value="HOUSE">{lang === 'ta' ? 'தனி வீடு / வில்லா (House / Villa)' : 'Independent House / Villa'}</option>
+              <option value="APARTMENT">{lang === 'ta' ? 'அபார்ட்மெண்ட் / பிளாட் (Apartment / Flat)' : 'Apartment / Flat'}</option>
+              <option value="SHOP">{lang === 'ta' ? 'வணிக கடை (Retail Shop)' : 'Commercial Shop'}</option>
+              <option value="COMMERCIAL_BUILDING">{lang === 'ta' ? 'வணிக கட்டிடம் (Commercial Building)' : 'Commercial Building'}</option>
+              <option value="HOSTEL">{lang === 'ta' ? 'விடுதிகள் & PG Accommodation' : 'Hostels & PG Accommodation'}</option>
+              <option value="MARRIAGE_HALL">{lang === 'ta' ? 'கல்யாண மண்டபம் (Marriage Hall)' : 'Marriage Hall / Mandapam'}</option>
             </select>
           )}
         </div>
@@ -618,8 +618,8 @@ export const PropertyFilters: React.FC<PropertyFiltersProps> = ({
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 focus:border-[#C5A059] transition cursor-pointer"
           >
             <option value="">{t('filter.allParking', 'All Parking')}</option>
-            <option value="car">🚗 {t('filter.carParking', 'Car Parking')}</option>
-            <option value="bike">🛵 {t('filter.bikeParking', 'Bike Parking')}</option>
+            <option value="car">{t('filter.carParking', 'Car Parking')}</option>
+            <option value="bike">{t('filter.bikeParking', 'Bike Parking')}</option>
           </select>
         </div>
 

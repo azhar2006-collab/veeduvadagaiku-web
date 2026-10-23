@@ -96,7 +96,7 @@ export const App: React.FC = () => {
           if (response.success && response.data) {
             const { user, token } = response.data;
             setUser(user, token);
-            toast.success(`Welcome, ${user.name || 'back'}! 🎉`);
+            toast.success(`Welcome, ${user.name || 'back'}!`);
 
             const dest =
               savedRedirect ||

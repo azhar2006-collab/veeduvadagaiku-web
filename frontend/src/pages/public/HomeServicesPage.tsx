@@ -565,7 +565,7 @@ export const HomeServicesPage: React.FC = () => {
         ) : services.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-3xl border border-[#EFE8D8] p-8 shadow-xs max-w-2xl mx-auto">
             <div className="w-16 h-16 rounded-2xl bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] flex items-center justify-center font-bold text-2xl mx-auto mb-4">
-              🔧
+              <Wrench className="w-8 h-8 text-[#9A7818]" />
             </div>
             <h3 className="font-bold text-gray-900 text-lg mb-2">
               {lang === 'ta' ? 'சேவைகள் எதுவும் கிடைக்கவில்லை' : 'No service providers found'}

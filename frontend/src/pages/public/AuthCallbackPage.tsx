@@ -71,7 +71,7 @@ export const AuthCallbackPage: React.FC = () => {
         setUser(user, token);
 
         if (!cancelled) {
-          toast.success(`Welcome, ${user.name || 'back'}! 🎉`);
+          toast.success(`Welcome, ${user.name || 'back'}!`);
 
           // Navigate to role-appropriate dashboard
           if (savedRedirect) {
@@ -107,7 +107,7 @@ export const AuthCallbackPage: React.FC = () => {
   if (status === 'error') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 gap-4">
-        <div className="text-5xl">😕</div>
+        <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-2xl">!</div>
         <h2 className="text-lg font-bold text-gray-800">Sign-in failed</h2>
         <p className="text-sm text-gray-500 text-center max-w-xs">{errorMsg}</p>
         <button

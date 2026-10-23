@@ -292,7 +292,7 @@ export const Navbar: React.FC = () => {
           >
             <div className="flex items-center gap-3">
               <Sparkles className="w-4 h-4 text-[#f59e0b]" />
-              <span>🪔 Diwali Offer &amp; Plans</span>
+              <span>Diwali Offer &amp; Plans</span>
             </div>
             <span className="px-2 py-0.5 bg-[#f59e0b] text-[#1b0610] text-[10px] font-black rounded-full uppercase tracking-wider">
               Free ₹0

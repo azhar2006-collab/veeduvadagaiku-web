@@ -311,8 +311,8 @@ export const MARRIAGE_HALL_DINING = [
  * Marriage Hall Air Conditioning Types
  */
 export const MARRIAGE_HALL_AC_TYPES = [
-  { id: 'AC', label: '❄️ Centralized AC Hall', labelTa: '❄️ முழு ஏசி அரங்கம் (AC Hall)' },
-  { id: 'NON_AC', label: '🍃 Non-AC Hall', labelTa: '🍃 ஏசி அல்லாதது (Non-AC)' },
+  { id: 'AC', label: 'Centralized AC Hall', labelTa: 'முழு ஏசி அரங்கம் (AC Hall)' },
+  { id: 'NON_AC', label: 'Non-AC Hall', labelTa: 'ஏசி அல்லாதது (Non-AC)' },
 ] as const;
 
 /**
@@ -700,8 +700,7 @@ export function filterByParking(properties: Property[], parking: string | boolea
         text.includes('motorcycle') ||
         text.includes('scooter') ||
         text.includes('இருசக்கர') ||
-        text.includes('பைக்') ||
-        text.includes('🛵')
+        text.includes('பைக்')
       );
     }
     if (pStr === 'car' || pStr === 'true' || pStr === 'yes') {
@@ -710,8 +709,7 @@ export function filterByParking(properties: Property[], parking: string | boolea
         text.includes('car park') ||
         text.includes('four wheeler') ||
         text.includes('covered parking') ||
-        text.includes('car') ||
-        text.includes('🚗')
+        text.includes('car')
       );
     }
     return text.includes('parking');

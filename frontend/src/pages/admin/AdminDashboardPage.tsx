@@ -124,7 +124,7 @@ export const AdminDashboardPage: React.FC = () => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f59e0b]/15 border border-[#f59e0b]/30 text-[#fcd34d] text-[11px] font-bold uppercase tracking-widest">
               <Flame className="w-3 h-3 text-[#f59e0b]" />
-              <span>🪔 Deepavali 2026 Live Offer Dashboard</span>
+              <span>Deepavali 2026 Live Offer Dashboard</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               Platform Analytics &amp;{' '}
@@ -162,7 +162,9 @@ export const AdminDashboardPage: React.FC = () => {
       {/* ── DEEPAVALI OFFER STATUS STRIP ── */}
       <div className="bg-gradient-to-r from-amber-50 via-[#fff8ed] to-amber-50 border border-amber-200 rounded-2xl px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-xl">🪔</span>
+          <div className="w-9 h-9 rounded-xl bg-amber-100 text-[#92400e] flex items-center justify-center shrink-0">
+            <Sparkles className="w-5 h-5 text-amber-600" />
+          </div>
           <div>
             <p className="text-xs font-black text-[#92400e] uppercase tracking-wider">
               Deepavali 2026 Free Listing Offer — Currently Active

@@ -250,7 +250,7 @@ export const HomePage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2 flex-wrap justify-center sm:justify-start">
                     <span className="text-xs sm:text-sm font-black text-white">
-                      🪔 Deepavali Special Offer: List Properties &amp; Services <span className="text-[#f59e0b]">FREE</span>
+                      Deepavali Special Offer: List Properties &amp; Services <span className="text-[#f59e0b]">FREE</span>
                     </span>
                     <span className="px-2 py-0.5 rounded-full bg-[#f59e0b] text-[#1b0610] text-[10px] font-black uppercase">
                       Till 8 Nov
@@ -750,8 +750,8 @@ export const HomePage: React.FC = () => {
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
                     {[
                       { id: '', label: lang === 'ta' ? 'அனைத்தும் (All)' : 'All Parking' },
-                      { id: 'car', label: lang === 'ta' ? '🚗 கார் பார்க்கிங்' : '🚗 Car Parking' },
-                      { id: 'bike', label: lang === 'ta' ? '🛵 பைக் பார்க்கிங்' : '🛵 Bike Parking' },
+                      { id: 'car', label: lang === 'ta' ? 'கார் பார்க்கிங்' : 'Car Parking' },
+                      { id: 'bike', label: lang === 'ta' ? 'பைக் பார்க்கிங்' : 'Bike Parking' },
                     ].map((item) => {
                       const isSelected = selectedParking === item.id;
                       return (

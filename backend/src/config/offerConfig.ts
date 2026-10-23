@@ -30,7 +30,7 @@ export const PROMOTIONAL_OFFERS: PromotionalOffer[] = [
     name: 'Deepavali Special – Free Property & Services Listing',
     planName: 'Deepavali Free Listing',
     badge: 'Live now • till Deepavali',
-    tagline: '🪔 DEEPAVALI SPECIAL OFFER 🪔',
+    tagline: 'DEEPAVALI SPECIAL OFFER',
     subheading: 'தீபாவளி வரை உங்கள் சொத்தையும் சேவைகளையும் இலவசமாக பதிவு செய்யுங்கள்',
     headline: 'List your property & services free till Deepavali',
     price: 0,

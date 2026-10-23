@@ -176,14 +176,14 @@ export const AddPropertyPage: React.FC = () => {
 
           if (foundLocality) {
             setLocality(foundLocality);
-            toast.success(`📍 Mapped to Chennai locality: ${foundLocality}`);
+            toast.success(`Mapped to Chennai locality: ${foundLocality}`);
           } else if (detectedCandidates.length > 0) {
-            toast.success(`📍 Area detected: ${detectedCandidates[0]}. Select matching locality below.`);
+            toast.success(`Area detected: ${detectedCandidates[0]}. Select matching locality below.`);
           } else {
-            toast.success('📍 Current location GPS coordinates mapped!');
+            toast.success('Current location GPS coordinates mapped!');
           }
         } catch {
-          toast.success('📍 Current location GPS coordinates mapped!');
+          toast.success('Current location GPS coordinates mapped!');
         } finally {
           setIsLocating(false);
         }
@@ -422,7 +422,7 @@ export const AddPropertyPage: React.FC = () => {
       }
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
-      toast.success('🎉 Property submitted for admin review! Our team will verify and publish it within 24 hours.');
+      toast.success('Property submitted for admin review! Our team will verify and publish it within 24 hours.');
 
       // Step 4: Redirect directly to My Properties
       navigate('/owner/properties');
@@ -457,7 +457,7 @@ export const AddPropertyPage: React.FC = () => {
             </div>
             <div>
               <p className="font-black text-sm sm:text-base">
-                🎉 Navaratri Special Offer Active: Post This Property 100% FREE!
+                Deepavali Special Offer Active: Post This Property 100% FREE!
               </p>
               <p className="text-xs text-amber-100 font-medium">
                 ₹0 posting fee with the Navaratri Free Posting Plan. No credit card or payment required.
@@ -495,7 +495,7 @@ export const AddPropertyPage: React.FC = () => {
                   : 'border-gray-200 hover:border-gray-300 text-gray-600'
               }`}
             >
-              <span className="text-2xl">🇬🇧</span>
+              <span className="text-xs font-black px-2.5 py-1.5 bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] rounded-xl">EN</span>
               <div className="text-left">
                 <div className="text-sm font-bold">English</div>
                 <div className="text-[11px] text-gray-500">Post details in English</div>
@@ -514,7 +514,7 @@ export const AddPropertyPage: React.FC = () => {
                   : 'border-gray-200 hover:border-gray-300 text-gray-600'
               }`}
             >
-              <span className="text-2xl">🇮🇳</span>
+              <span className="text-xs font-black px-2.5 py-1.5 bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] rounded-xl">தமிழ்</span>
               <div className="text-left">
                 <div className="text-sm font-bold">தமிழ் (Tamil)</div>
                 <div className="text-[11px] text-gray-500">தமிழில் பதிவேற்றுக</div>
@@ -1079,7 +1079,7 @@ export const AddPropertyPage: React.FC = () => {
                   onChange={(e) => setParkingBike(e.target.checked)}
                   className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                 />
-                <span className="text-xs">🏍️ Bike Parking (Two Wheeler)</span>
+                <span className="text-xs font-medium">Bike Parking (Two Wheeler)</span>
               </label>
 
               <label
@@ -1095,7 +1095,7 @@ export const AddPropertyPage: React.FC = () => {
                   onChange={(e) => setParkingCar(e.target.checked)}
                   className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                 />
-                <span className="text-xs">🚗 Car Parking (Four Wheeler)</span>
+                <span className="text-xs font-medium">Car Parking (Four Wheeler)</span>
               </label>
 
             </div>
@@ -1121,7 +1121,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setPetFriendly(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">🐾 Pet Friendly (Pets Allowed)</span>
+                  <span className="text-xs font-medium">Pet Friendly (Pets Allowed)</span>
                 </label>
 
                 <label
@@ -1137,7 +1137,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setBachelorsAllowed(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">👨‍💼 Bachelors Allowed</span>
+                  <span className="text-xs font-medium">Bachelors Allowed</span>
                 </label>
 
                 <label
@@ -1153,7 +1153,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setFamilyOnly(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">👨‍👩‍👧 Family Preferred</span>
+                  <span className="text-xs font-medium">Family Preferred</span>
                 </label>
 
                 <label
@@ -1169,7 +1169,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setVegetarianOnly(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">🥗 Vegetarians Only</span>
+                  <span className="text-xs font-medium">Vegetarians Only</span>
                 </label>
 
                 <label
@@ -1185,7 +1185,7 @@ export const AddPropertyPage: React.FC = () => {
                     onChange={(e) => setNonVegAllowed(e.target.checked)}
                     className="w-4 h-4 text-[#C5A059] rounded focus:ring-[#C5A059]"
                   />
-                  <span className="text-xs">🍗 Non-Veg Allowed</span>
+                  <span className="text-xs font-medium">Non-Veg Allowed</span>
                 </label>
               </div>
             </div>
@@ -1198,24 +1198,24 @@ export const AddPropertyPage: React.FC = () => {
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: '🏋️ Gym / Fitness Centre', checked: gym, setter: setGym },
-                { label: '🛗 Lift / Elevator', checked: lift, setter: setLift },
-                { label: '⚡ 100% Power Backup', checked: powerBackup, setter: setPowerBackup },
-                { label: '💧 24/7 Metro Water', checked: waterMetro, setter: setWaterMetro },
-                { label: '🚰 Borewell Water', checked: waterBorewell, setter: setWaterBorewell },
-                { label: '👮 Security Guard & CCTV', checked: securityCCTV, setter: setSecurityCCTV },
-                { label: '🚪 Gated Community', checked: gatedCommunity, setter: setGatedCommunity },
-                { label: '🏊 Swimming Pool', checked: swimmingPool, setter: setSwimmingPool },
-                { label: '❄️ Air Conditioner (AC)', checked: ac, setter: setAc },
-                { label: '🍽️ Modular Kitchen', checked: modularKitchen, setter: setModularKitchen },
-                { label: '☀️ Geyser / Water Heater', checked: geyser, setter: setGeyser },
-                { label: '🧺 Utility / Washing Area', checked: washingArea, setter: setWashingArea },
-                { label: '📶 High-Speed WiFi Ready', checked: wifi, setter: setWifi },
-                { label: '🔥 Piped Gas Connection', checked: pipedGas, setter: setPipedGas },
-                { label: '🧘 Clubhouse / Hall', checked: clubhouse, setter: setClubhouse },
-                { label: '🌿 Private Terrace / Garden', checked: privateTerrace, setter: setPrivateTerrace },
-                { label: '🚆 Near Metro Station', checked: nearMetro, setter: setNearMetro },
-                { label: '🚌 Near Bus Stand', checked: nearBusStand, setter: setNearBusStand },
+                { label: 'Gym / Fitness Centre', checked: gym, setter: setGym },
+                { label: 'Lift / Elevator', checked: lift, setter: setLift },
+                { label: '100% Power Backup', checked: powerBackup, setter: setPowerBackup },
+                { label: '24/7 Metro Water', checked: waterMetro, setter: setWaterMetro },
+                { label: 'Borewell Water', checked: waterBorewell, setter: setWaterBorewell },
+                { label: 'Security Guard & CCTV', checked: securityCCTV, setter: setSecurityCCTV },
+                { label: 'Gated Community', checked: gatedCommunity, setter: setGatedCommunity },
+                { label: 'Swimming Pool', checked: swimmingPool, setter: setSwimmingPool },
+                { label: 'Air Conditioner (AC)', checked: ac, setter: setAc },
+                { label: 'Modular Kitchen', checked: modularKitchen, setter: setModularKitchen },
+                { label: 'Geyser / Water Heater', checked: geyser, setter: setGeyser },
+                { label: 'Utility / Washing Area', checked: washingArea, setter: setWashingArea },
+                { label: 'High-Speed WiFi Ready', checked: wifi, setter: setWifi },
+                { label: 'Piped Gas Connection', checked: pipedGas, setter: setPipedGas },
+                { label: 'Clubhouse / Hall', checked: clubhouse, setter: setClubhouse },
+                { label: 'Private Terrace / Garden', checked: privateTerrace, setter: setPrivateTerrace },
+                { label: 'Near Metro Station', checked: nearMetro, setter: setNearMetro },
+                { label: 'Near Bus Stand', checked: nearBusStand, setter: setNearBusStand },
               ].map((item, idx) => (
                 <label
                   key={idx}

@@ -248,7 +248,7 @@ export const PaymentPage: React.FC = () => {
             {/* Heading */}
             <div className="space-y-2">
               <span className="text-xs font-black uppercase tracking-widest text-[#9A7818]">
-                🎉 Listing Submitted Successfully!
+                Listing Submitted Successfully!
               </span>
               <h2 className="text-2xl font-black text-gray-900 tracking-tight">
                 Your Request Has Been Received

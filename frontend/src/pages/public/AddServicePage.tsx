@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Truck,
@@ -193,7 +193,7 @@ export const AddServicePage: React.FC = () => {
       });
 
       setSubmitted(true);
-      toast.success('🎉 Service submitted for admin review!');
+      toast.success('Service submitted for admin review!');
     } catch (e: any) {
       console.error('Home service submission error:', e);
       const msg =
@@ -756,7 +756,7 @@ export const AddServicePage: React.FC = () => {
             </div>
 
             <div className="bg-[#FAF4E6] border border-[#E8DFC8] rounded-2xl p-4 text-xs text-[#9A7818]">
-              <p className="font-bold mb-1">📋 {lang === 'ta' ? 'பாதுகாப்பு & தனியுரிமை' : 'Verified Direct Connect'}</p>
+              <p className="font-bold mb-1">{lang === 'ta' ? 'பாதுகாப்பு & தனியுரிமை' : 'Verified Direct Connect'}</p>
               <p>
                 {lang === 'ta'
                   ? 'உங்கள் தொலைபேசி மற்றும் வாட்ஸ்அப் எண்கள் வாடிக்கையாளர்களுக்கு நேரடியாக காண்பிக்கப்படும்.'
@@ -883,7 +883,7 @@ export const AddServicePage: React.FC = () => {
               disabled={submitting}
               className="px-6 py-2.5 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold rounded-xl text-sm disabled:opacity-50 hover:brightness-105 transition shadow-md"
             >
-              {submitting ? '⏳ Submitting...' : lang === 'ta' ? '✓ சமர்ப்பிக்க' : '✓ Submit Listing'}
+              {submitting ? 'Submitting...' : lang === 'ta' ? '✓ சமர்ப்பிக்க' : '✓ Submit Listing'}
             </button>
           )}
         </div>

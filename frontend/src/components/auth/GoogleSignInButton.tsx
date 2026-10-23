@@ -63,7 +63,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       if (response.success && response.data) {
         const { user, token } = response.data;
         setUser(user, token);
-        toast.success(`Welcome, ${user.name || 'back'}! 🎉`);
+        toast.success(`Welcome, ${user.name || 'back'}!`);
 
         if (onSuccess) {
           onSuccess();
