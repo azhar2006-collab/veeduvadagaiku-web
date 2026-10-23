@@ -49,6 +49,12 @@ export const AdminLayout: React.FC = () => {
                 src="/logo-circle.png"
                 alt="Veedu Vadagaikku Chennai"
                 className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full drop-shadow-sm hover:scale-105 transition"
+                onError={(e) => {
+                  const img = e.currentTarget;
+                  if (img.src !== window.location.origin + '/logo.png') {
+                    img.src = '/logo.png';
+                  }
+                }}
               />
             </Link>
             <span className="text-slate-700">|</span>
