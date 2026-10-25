@@ -239,17 +239,15 @@ export const MyPropertiesPage: React.FC = () => {
                       </button>
                     )}
 
-                    {/* Submit for Review button (DRAFT / REJECTED) */}
-                    {canSubmit && (
-                      <button
-                        type="button"
-                        disabled={submitMutation.isPending}
-                        onClick={() => submitMutation.mutate(prop.id)}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-xs transition hover:brightness-105 whitespace-nowrap disabled:opacity-60"
+                    {/* Choose Plan & Pay / Upgrade button */}
+                    {(canSubmit || prop.status === 'PENDING_APPROVAL') && (
+                      <Link
+                        to={`/owner/payment?propertyId=${prop.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-white font-bold text-xs rounded-xl shadow-xs transition hover:brightness-105 whitespace-nowrap"
                       >
-                        <SendHorizonal className="w-3.5 h-3.5" />
-                        <span>Submit for Review</span>
-                      </button>
+                        <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                        <span>{prop.status === 'PENDING_APPROVAL' ? 'Upgrade Plan' : 'Select Plan & Pay'}</span>
+                      </Link>
                     )}
 
                     {/* View Live (if published and not expired) */}

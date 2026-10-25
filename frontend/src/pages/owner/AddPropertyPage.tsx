@@ -414,18 +414,11 @@ export const AddPropertyPage: React.FC = () => {
         await propertyService.uploadImages(newPropertyId, files);
       }
 
-      // Step 3: Automatically submit for admin review (100% Free Listing)
-      try {
-        await propertyService.submitForReview(newPropertyId);
-      } catch (submitErr) {
-        console.warn('Auto-submit review notice:', submitErr);
-      }
-
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
-      toast.success('Property submitted for admin review! Our team will verify and publish it within 24 hours.');
+      toast.success('Property details saved! Please choose your listing plan to proceed.');
 
-      // Step 4: Redirect directly to My Properties
-      navigate('/owner/properties');
+      // Step 3: Redirect to Listing Plans & Payment page
+      navigate(`/owner/payment?propertyId=${newPropertyId}`);
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Failed to create property. Please try again.');
@@ -1324,7 +1317,7 @@ export const AddPropertyPage: React.FC = () => {
           <div className="flex items-center gap-3">
             <Info className="w-5 h-5 text-[#C5A059] shrink-0" />
             <p className="text-xs text-gray-700 leading-relaxed font-medium">
-              After clicking Save, you will be directed to select a Listing Plan (Residential ₹222 / Commercial ₹555 for 30 days) to activate and submit your property for admin review.
+              After clicking Save, you will be directed to select a Listing Plan (Deepavali Free Offer ₹0 / Residential ₹99 / Commercial ₹555) to activate and submit your property for admin review.
             </p>
           </div>
 
