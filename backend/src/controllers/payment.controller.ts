@@ -165,18 +165,22 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
     if (customerPhone.length > 10) customerPhone = customerPhone.slice(-10);
     if (customerPhone.length < 10) customerPhone = '9999999999';
 
-    // Return URL must be HTTPS in production
-    let returnUrl = `${process.env.FRONTEND_URL || 'https://veeduvadagaikkuchennai.com'}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
-    if (!returnUrl.startsWith('https://')) {
-      returnUrl = `https://veeduvadagaikkuchennai.com/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
-    }
+    // Return URL MUST be HTTPS — Cashfree strictly rejects localhost and http://
+    // If FRONTEND_URL is localhost or not HTTPS, always use the live production URL
+    const PROD_FRONTEND = 'https://veeduvadagaikkuchennai.com';
+    const rawFrontendUrl = (process.env.FRONTEND_URL || '').trim();
+    const safeFrontendUrl =
+      rawFrontendUrl.startsWith('https://') && !rawFrontendUrl.includes('localhost')
+        ? rawFrontendUrl
+        : PROD_FRONTEND;
+    const returnUrl = `${safeFrontendUrl}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
 
     // Cashfree rejects notify_url if it doesn't start with https://
     const orderMeta: any = {
       return_url: returnUrl,
     };
-    const backendUrl = process.env.BACKEND_URL;
-    if (backendUrl && backendUrl.startsWith('https://')) {
+    const backendUrl = (process.env.BACKEND_URL || '').trim();
+    if (backendUrl.startsWith('https://') && !backendUrl.includes('localhost')) {
       orderMeta.notify_url = `${backendUrl}/api/payments/webhook`;
     }
 
