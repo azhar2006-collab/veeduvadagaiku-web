@@ -8,6 +8,7 @@ export interface CashfreeOrderResponse {
   cf_order_id?: string;
   amount: number;
   currency: string;
+  environment?: 'production' | 'sandbox';
   paymentId?: string;
   message?: string;
   isFree?: boolean;

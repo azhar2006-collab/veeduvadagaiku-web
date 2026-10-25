@@ -41,16 +41,24 @@ export const CashfreeCheckoutButton: React.FC<CashfreeCheckoutButtonProps> = ({
 
       console.log('[Cashfree] Session ID received:', orderRes.payment_session_id ? 'present' : 'MISSING');
 
-      // 2. Initialize SDK in production mode
-      const cashfree = await getCashfree();
+      const sdkMode: 'production' | 'sandbox' =
+        orderRes.environment === 'sandbox' ? 'sandbox' : 'production';
+
+      console.log('[Cashfree] Order session created:', {
+        sessionIdPrefix: orderRes.payment_session_id?.substring(0, 15),
+        mode: sdkMode,
+      });
+
+      // 2. Initialize SDK in the exact matching mode returned by backend
+      const cashfree = await getCashfree(sdkMode);
 
       // 3. Redirect to Cashfree payment page (return_url brings user back to /payment-result)
-      // Using '_self' — more reliable than '_modal' and avoids payment_session_id_invalid errors
       const checkoutOptions = {
         paymentSessionId: orderRes.payment_session_id,
+        mode: sdkMode,
         redirectTarget: '_self' as const,
       };
-      console.log('[Cashfree] Starting checkout with session:', orderRes.payment_session_id?.substring(0, 20) + '...');
+      console.log('[Cashfree] Starting checkout redirect with mode:', sdkMode);
       const result = await cashfree.checkout(checkoutOptions);
 
       if (result?.error) {

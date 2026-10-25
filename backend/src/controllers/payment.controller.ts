@@ -238,6 +238,7 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
       payment_session_id: cfData.payment_session_id,
       amount: planAmount,
       currency,
+      environment: process.env.CASHFREE_ENV === 'sandbox' ? 'sandbox' : 'production',
       message: 'Cashfree order created successfully',
     });
   } catch (error: any) {
