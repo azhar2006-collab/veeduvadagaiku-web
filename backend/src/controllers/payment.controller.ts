@@ -2,11 +2,36 @@ import { Request, Response, NextFunction } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
 import { successResponse, ApiError } from '../utils/response';
+import axios from 'axios';
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getCashfreeHeaders() {
+  return {
+    'x-client-id': process.env.CASHFREE_APP_ID || '',
+    'x-client-secret': process.env.CASHFREE_SECRET_KEY || '',
+    'x-api-version': '2023-08-01',
+    'Content-Type': 'application/json',
+  };
+}
+
+function getCashfreeBaseUrl() {
+  return process.env.CASHFREE_ENV === 'production'
+    ? 'https://api.cashfree.com/pg'
+    : 'https://sandbox.cashfree.com/pg';
+}
+
+function isCashfreeConfigured(): boolean {
+  const appId = process.env.CASHFREE_APP_ID || '';
+  const secret = process.env.CASHFREE_SECRET_KEY || '';
+  return Boolean(appId && secret && !appId.startsWith('your_') && !secret.startsWith('your_'));
+}
+
+// ─── Free Order Handler ────────────────────────────────────────────────────────
 
 /**
- * Handle free order creation for any property listing.
- * Bypasses payment gateways (Razorpay / Cashfree) completely.
- * Automatically marks the property as PENDING_APPROVAL for admin review.
+ * Handle free order creation — bypasses payment gateway entirely.
+ * Sets property to PENDING_APPROVAL for admin review.
  */
 async function handleFreeOrder(req: AuthRequest, res: Response, next: NextFunction) {
   try {
@@ -69,8 +94,7 @@ async function handleFreeOrder(req: AuthRequest, res: Response, next: NextFuncti
 }
 
 /**
- * Handle verification for free listings.
- * Always succeeds and marks property as PENDING_APPROVAL.
+ * Handle verification for free listings — always succeeds.
  */
 async function handleFreeVerify(req: Request, res: Response, next: NextFunction) {
   try {
@@ -93,16 +117,204 @@ async function handleFreeVerify(req: Request, res: Response, next: NextFunction)
   }
 }
 
-// Cashfree endpoints (now 100% free bypass)
+// ─── Cashfree Real Payment ─────────────────────────────────────────────────────
+
+/**
+ * Create a Cashfree payment order for a paid listing plan.
+ * If plan amount is 0 or Cashfree is not configured, falls back to free handler.
+ */
 export async function createCashfreeOrder(req: AuthRequest, res: Response, next: NextFunction) {
-  return handleFreeOrder(req, res, next);
+  try {
+    const { propertyId, planId, currency = 'INR' } = req.body;
+
+    // Resolve plan amount from DB
+    let planAmount = 0;
+    let planName = 'Listing Plan';
+    if (planId) {
+      const plan = await prisma.listingPlan.findUnique({ where: { id: planId } });
+      if (plan) {
+        planAmount = plan.price;
+        planName = plan.name;
+      }
+    }
+
+    // If free plan or Cashfree not configured → bypass
+    if (planAmount === 0 || !isCashfreeConfigured()) {
+      return handleFreeOrder(req, res, next);
+    }
+
+    // Auth required for paid plans
+    if (!req.user) {
+      throw new ApiError(401, 'Authentication required for paid plans');
+    }
+
+    const owner = await prisma.owner.findUnique({ where: { userId: req.user.id } });
+    if (!owner) throw new ApiError(403, 'Owner profile not found');
+
+    // Unique order ID
+    const cfOrderId = `vv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+    // Customer info
+    const customerName = (req.user as any).displayName || req.user.email?.split('@')[0] || 'Customer';
+    const customerEmail = req.user.email || 'customer@veeduvadagaiku.com';
+    const customerPhone = (req.user as any).phone || '9999999999';
+
+    // Return URL after payment
+    const returnUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
+
+    // Call Cashfree Orders REST API
+    const cashfreePayload = {
+      order_id: cfOrderId,
+      order_amount: planAmount,
+      order_currency: currency,
+      order_note: `${planName} - Property Listing on Veedu Vadagaiku`,
+      customer_details: {
+        customer_id: req.user.id,
+        customer_name: customerName,
+        customer_email: customerEmail,
+        customer_phone: customerPhone,
+      },
+      order_meta: {
+        return_url: returnUrl,
+        notify_url: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/payments/webhook`,
+      },
+    };
+
+    const cfRes = await axios.post(
+      `${getCashfreeBaseUrl()}/orders`,
+      cashfreePayload,
+      { headers: getCashfreeHeaders() }
+    );
+
+    const cfData = cfRes.data;
+
+    // Record pending payment in DB
+    await prisma.payment.create({
+      data: {
+        userId: req.user.id,
+        ownerId: owner.id,
+        propertyId: propertyId || '',
+        planId: planId || 'unknown',
+        amount: planAmount,
+        currency,
+        cfOrderId: cfData.order_id || cfOrderId,
+        transactionId: cfData.cf_order_id?.toString() || '',
+        paymentMethod: 'CASHFREE',
+        paymentStatus: 'PENDING',
+      },
+    }).catch(() => {});
+
+    return res.status(200).json({
+      success: true,
+      isFree: false,
+      order_id: cfData.order_id,
+      cf_order_id: cfData.cf_order_id,
+      payment_session_id: cfData.payment_session_id,
+      amount: planAmount,
+      currency,
+      message: 'Cashfree order created successfully',
+    });
+  } catch (error: any) {
+    console.error('[Cashfree] Order creation error:', error?.response?.data || error.message);
+    if (error instanceof ApiError) return next(error);
+    return next(new ApiError(502, error?.response?.data?.message || 'Payment gateway error. Please try again.'));
+  }
 }
 
+/**
+ * Verify Cashfree payment after checkout — checks order status with Cashfree API.
+ */
 export async function verifyCashfreePayment(req: Request, res: Response, next: NextFunction) {
-  return handleFreeVerify(req, res, next);
+  try {
+    const { order_id, orderId, propertyId } = req.body;
+    const resolvedOrderId = order_id || orderId;
+
+    if (!resolvedOrderId) throw new ApiError(400, 'order_id is required for verification');
+
+    // Free order bypass
+    if (resolvedOrderId.startsWith('free_')) {
+      if (propertyId) {
+        await prisma.property.update({
+          where: { id: propertyId },
+          data: { status: 'PENDING_APPROVAL' },
+        }).catch(() => {});
+      }
+      return res.status(200).json({
+        success: true,
+        status: 'PAID',
+        message: 'Free listing confirmed.',
+        order_id: resolvedOrderId,
+      });
+    }
+
+    // Cashfree not configured
+    if (!isCashfreeConfigured()) {
+      return res.status(200).json({
+        success: true,
+        status: 'PAID',
+        message: 'Payment verified.',
+        order_id: resolvedOrderId,
+      });
+    }
+
+    // Query Cashfree for order status
+    const cfRes = await axios.get(
+      `${getCashfreeBaseUrl()}/orders/${resolvedOrderId}`,
+      { headers: getCashfreeHeaders() }
+    );
+
+    const cfOrder = cfRes.data;
+    const orderStatus = cfOrder.order_status; // PAID, ACTIVE, EXPIRED, etc.
+
+    if (orderStatus === 'PAID') {
+      await prisma.payment.updateMany({
+        where: { cfOrderId: resolvedOrderId },
+        data: {
+          paymentStatus: 'SUCCESS',
+          transactionId: cfOrder.cf_order_id?.toString() || resolvedOrderId,
+        },
+      }).catch(() => {});
+
+      // Update property status
+      const targetPropertyId = propertyId || (await prisma.payment.findFirst({
+        where: { cfOrderId: resolvedOrderId },
+      }).catch(() => null))?.propertyId;
+
+      if (targetPropertyId) {
+        await prisma.property.update({
+          where: { id: targetPropertyId },
+          data: { status: 'PENDING_APPROVAL', rejectionReason: null },
+        }).catch(() => {});
+      }
+
+      return res.status(200).json({
+        success: true,
+        status: 'PAID',
+        message: 'Payment verified! Property submitted for admin review.',
+        order_id: resolvedOrderId,
+      });
+    } else {
+      await prisma.payment.updateMany({
+        where: { cfOrderId: resolvedOrderId },
+        data: { paymentStatus: 'FAILED' },
+      }).catch(() => {});
+
+      return res.status(200).json({
+        success: false,
+        status: orderStatus,
+        message: `Payment not completed. Status: ${orderStatus}`,
+        order_id: resolvedOrderId,
+      });
+    }
+  } catch (error: any) {
+    console.error('[Cashfree] Verify error:', error?.response?.data || error.message);
+    if (error instanceof ApiError) return next(error);
+    return next(new ApiError(502, 'Failed to verify payment status. Please contact support.'));
+  }
 }
 
-// Razorpay endpoints (now 100% free bypass)
+// ─── Razorpay (kept as free bypass — Cashfree is primary) ────────────────────
+
 export async function createRazorpayOrder(req: AuthRequest, res: Response, next: NextFunction) {
   return handleFreeOrder(req, res, next);
 }
@@ -111,14 +323,50 @@ export async function verifyRazorpayPayment(req: Request, res: Response, next: N
   return handleFreeVerify(req, res, next);
 }
 
-// Aliases for root direct checkout routes
 export const createOrder = createRazorpayOrder;
 export const verifyPayment = verifyRazorpayPayment;
 
-// Webhook endpoint
+// ─── Cashfree Webhook ─────────────────────────────────────────────────────────
+
+/**
+ * Cashfree webhook for async payment notifications.
+ * Cashfree sends POST to /api/payments/webhook on payment events.
+ */
 export async function cashfreeWebhook(req: Request, res: Response) {
-  return res.json({ received: true });
+  try {
+    const event = req.body;
+    console.log('[Cashfree Webhook]', JSON.stringify(event, null, 2));
+
+    const orderId = event?.data?.order?.order_id;
+    const orderStatus = event?.data?.order?.order_status;
+    const paymentStatus = event?.data?.payment?.payment_status;
+
+    if (orderId && (orderStatus === 'PAID' || paymentStatus === 'SUCCESS')) {
+      await prisma.payment.updateMany({
+        where: { cfOrderId: orderId },
+        data: { paymentStatus: 'SUCCESS' },
+      }).catch(() => {});
+
+      const paymentRecord = await prisma.payment.findFirst({
+        where: { cfOrderId: orderId },
+      }).catch(() => null);
+
+      if (paymentRecord?.propertyId) {
+        await prisma.property.update({
+          where: { id: paymentRecord.propertyId },
+          data: { status: 'PENDING_APPROVAL', rejectionReason: null },
+        }).catch(() => {});
+      }
+    }
+
+    return res.json({ received: true });
+  } catch (err) {
+    console.error('[Cashfree Webhook] Error:', err);
+    return res.json({ received: true });
+  }
 }
+
+// ─── Payment History ──────────────────────────────────────────────────────────
 
 /**
  * Payment history for authenticated owner
