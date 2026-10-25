@@ -177,6 +177,9 @@ export const App: React.FC = () => {
         <Route path="/privacy" element={<PrivacyPage />} />
       </Route>
 
+      {/* ─── Top-level Payment Result (Cashfree return_url lands here) ─── */}
+      <Route path="/payment-result" element={<PaymentResultPage />} />
+
       {/* ─── Auth Callback (Firebase redirect result handler) ─── */}
       {/* This route is intentionally OUTSIDE PublicLayout so no Navbar/Footer shows during processing */}
       <Route path="/auth/callback" element={<AuthCallbackPage />} />

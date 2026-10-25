@@ -31,10 +31,17 @@ export const PaymentResultPage: React.FC = () => {
     }
 
     // If Cashfree or Razorpay redirected back with orderId, verify order status with backend
+    // If status=success already set (modal flow verified inline), skip re-verification
+    if (isSuccessParam && !orderId?.startsWith('vv_')) {
+      setVerifiedSuccess(true);
+      return;
+    }
+
+    // If Cashfree redirected back with a real order_id (starts with vv_), verify with backend
     if (orderId && verifiedSuccess === null) {
       setVerifying(true);
       paymentService
-        .verifyPayment({ order_id: orderId, orderId, paymentId })
+        .verifyCashfreePayment(orderId)
         .then((res) => {
           if (res.success || res.status === 'PAID') {
             setVerifiedSuccess(true);

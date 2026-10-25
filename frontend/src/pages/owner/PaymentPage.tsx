@@ -113,10 +113,11 @@ export const PaymentPage: React.FC = () => {
     }
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = (verifyRes?: any) => {
     queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
     queryClient.invalidateQueries({ queryKey: ['property', propertyId] });
-    navigate(`/payment-result?status=success&propertyId=${propertyId}`);
+    const orderId = verifyRes?.order_id || '';
+    navigate(`/payment-result?status=success&propertyId=${propertyId}${orderId ? `&order_id=${orderId}` : ''}`);
   };
 
   if (loadingProp || loadingPlans) {

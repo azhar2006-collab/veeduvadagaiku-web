@@ -56,8 +56,8 @@ export const CashfreeCheckoutButton: React.FC<CashfreeCheckoutButtonProps> = ({
       }
 
       if (result?.paymentDetails) {
-        // Verify with backend
-        const verifyRes = await paymentService.verifyPayment({ order_id: orderRes.order_id });
+        // Verify with Cashfree-specific endpoint
+        const verifyRes = await paymentService.verifyCashfreePayment(orderRes.order_id);
         setLoading(false);
         if (verifyRes.success || verifyRes.status === 'PAID') {
           toast.success('Payment verified successfully!');
@@ -67,7 +67,10 @@ export const CashfreeCheckoutButton: React.FC<CashfreeCheckoutButtonProps> = ({
           onError?.(verifyRes);
         }
       } else {
+        // Modal closed without payment completion
         setLoading(false);
+        toast.error('Payment was not completed. Please try again.');
+        onError?.({ message: 'Payment not completed' });
       }
     } catch (err: any) {
       setLoading(false);
