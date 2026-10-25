@@ -25,7 +25,11 @@ export const getCashfree = async () => {
     throw new Error('Cashfree SDK could not be loaded. Please check your network connection.');
   }
 
-  const isProduction = import.meta.env.VITE_CASHFREE_ENV === 'production';
+  // Default to production in production builds unless explicitly overridden to sandbox
+  const envVal = (import.meta.env.VITE_CASHFREE_ENV || '').toLowerCase();
+  const isSandbox = envVal === 'sandbox';
+  const isProduction = envVal === 'production' || (import.meta.env.PROD && !isSandbox);
+
   return (window as any).Cashfree({
     mode: isProduction ? 'production' : 'sandbox',
   });
