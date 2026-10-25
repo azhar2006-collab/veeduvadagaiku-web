@@ -32,13 +32,8 @@ export const CashfreeCheckoutButton: React.FC<CashfreeCheckoutButtonProps> = ({
     try {
       setLoading(true);
 
-      // 1. Create order on backend
-      let orderRes: any;
-      if (propertyId && planId) {
-        orderRes = await paymentService.createOrder(propertyId, planId);
-      } else {
-        orderRes = await paymentService.createCashfreeOrder(propertyId || '', planId || '');
-      }
+      // 1. Create Cashfree order on backend to obtain payment_session_id
+      const orderRes: any = await paymentService.createCashfreeOrder(propertyId || '', planId || '');
 
       if (!orderRes || !orderRes.payment_session_id) {
         throw new Error(orderRes?.message || 'Failed to initialize Cashfree payment session');

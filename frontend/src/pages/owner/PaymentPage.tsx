@@ -134,13 +134,13 @@ export const PaymentPage: React.FC = () => {
       <div className="text-center space-y-2">
         <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#9A7818] bg-[#FAF4E6] border border-[#E8DFC8] px-3.5 py-1 rounded-full">
           <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
-          Deepavali Special Offers â€” Choose Your Plan
+          Deepavali Special Offers — Choose Your Plan
         </span>
         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
           Select a Listing Plan
         </h1>
         <p className="text-sm text-gray-500 max-w-lg mx-auto">
-          Choose the plan that fits your property type. Free listing available â€” paid plans get priority placement and longer durations.
+          Choose the plan that fits your property type. Free listing available — paid plans get priority placement and longer durations.
         </p>
       </div>
 
@@ -163,7 +163,7 @@ export const PaymentPage: React.FC = () => {
             <div className="text-right shrink-0">
               <span className="text-xs text-gray-400 block font-medium">Rent</span>
               <span className="text-xl font-black text-[#0B3B60]">
-                â‚¹{property.rent?.toLocaleString('en-IN') || 'â€”'}
+                ₹{property.rent?.toLocaleString('en-IN') || '—'}
                 <span className="text-xs font-normal text-gray-500">/mo</span>
               </span>
             </div>
@@ -285,7 +285,7 @@ export const PaymentPage: React.FC = () => {
             </div>
             <div className="text-right">
               <span className="text-2xl font-black text-[#0B3B60]">
-                {selectedPlan.price === 0 ? 'â‚¹0' : `â‚¹${selectedPlan.price.toLocaleString('en-IN')}`}
+                {selectedPlan.price === 0 ? '₹0' : `₹${selectedPlan.price.toLocaleString('en-IN')}`}
               </span>
               {selectedPlan.price === 0 && (
                 <p className="text-xs text-emerald-600 font-semibold">100% Free</p>
@@ -398,12 +398,12 @@ export const PaymentPage: React.FC = () => {
                 <p className="text-xs text-emerald-700 font-semibold">100% Free Forever</p>
               </div>
             </div>
-            <span className="text-2xl font-black text-emerald-600">â‚¹0</span>
+            <span className="text-2xl font-black text-emerald-600">₹0</span>
           </div>
           <ul className="space-y-3 text-xs sm:text-sm text-gray-700 font-medium">
             {[
               'Free property listing across Chennai for 30+ days',
-              'Direct tenant inquiries via Phone Call & WhatsApp â€” Zero Brokerage',
+              'Direct tenant inquiries via Phone Call & WhatsApp — Zero Brokerage',
               'Admin quality verification within 24 hours',
               'Visible to all Chennai visitors, even non-registered users',
               'High-resolution photo gallery & locality search prominence',
@@ -476,7 +476,7 @@ export const PaymentPage: React.FC = () => {
                 onClick={() => navigate('/owner/properties')}
                 className="w-full py-3.5 px-6 bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:brightness-105 text-white font-black text-sm rounded-xl shadow-lg transition active:scale-[0.98]"
               >
-                Go to My Properties â†’
+                Go to My Properties →
               </button>
               <Link to="/" className="block text-xs text-gray-400 font-bold hover:text-gray-600 transition pt-1">
                 Return to Home

@@ -148,19 +148,23 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
       throw new ApiError(401, 'Authentication required for paid plans');
     }
 
-    const owner = await prisma.owner.findUnique({ where: { userId: req.user.id } });
-    if (!owner) throw new ApiError(403, 'Owner profile not found');
+    let owner = await prisma.owner.findUnique({ where: { userId: req.user.id } });
+    if (!owner) {
+      owner = await prisma.owner.create({ data: { userId: req.user.id } });
+    }
 
     // Unique order ID
     const cfOrderId = `vv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    // Customer info
-    const customerName = (req.user as any).displayName || req.user.email?.split('@')[0] || 'Customer';
+    // Customer info sanitized for Cashfree PG
+    const customerName = (req.user as any).name || (req.user as any).displayName || req.user.email?.split('@')[0] || 'Customer';
     const customerEmail = req.user.email || 'customer@veeduvadagaiku.com';
-    const customerPhone = (req.user as any).phone || '9999999999';
+    let customerPhone = ((req.user as any).mobile || (req.user as any).phone || '').toString().replace(/\D/g, '');
+    if (customerPhone.length > 10) customerPhone = customerPhone.slice(-10);
+    if (customerPhone.length < 10) customerPhone = '9999999999';
 
     // Return URL after payment
-    const returnUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
+    const returnUrl = `${process.env.FRONTEND_URL || 'https://veeduvadagaikkuchennai.com'}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
 
     // Call Cashfree Orders REST API
     const cashfreePayload = {

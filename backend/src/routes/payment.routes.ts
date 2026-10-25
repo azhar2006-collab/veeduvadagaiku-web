@@ -12,18 +12,18 @@ import {
 
 const router = Router();
 
-// Primary Razorpay endpoints
-router.post('/create-order', optionalAuth, createRazorpayOrder);
-router.post('/verify', verifyRazorpayPayment);
-router.post('/verify-payment', verifyRazorpayPayment);
+// Primary payment endpoints (Cashfree active)
+router.post('/create-order', optionalAuth, createCashfreeOrder);
+router.post('/verify', verifyCashfreePayment);
+router.post('/verify-payment', verifyCashfreePayment);
 
-// Explicit Razorpay endpoints
-router.post('/razorpay/create-order', optionalAuth, createRazorpayOrder);
-router.post('/razorpay/verify', verifyRazorpayPayment);
-
-// Cashfree endpoints (falls back to Razorpay if Cashfree unconfigured)
+// Explicit Cashfree endpoints
 router.post('/cashfree/create-order', optionalAuth, createCashfreeOrder);
 router.post('/cashfree/verify', verifyCashfreePayment);
+
+// Explicit Razorpay endpoints (legacy fallback)
+router.post('/razorpay/create-order', optionalAuth, createRazorpayOrder);
+router.post('/razorpay/verify', verifyRazorpayPayment);
 
 // Payment history
 router.get('/history', authenticate, requireOwner, getPaymentHistory);
