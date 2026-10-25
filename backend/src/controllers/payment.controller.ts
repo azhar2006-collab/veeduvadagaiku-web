@@ -153,35 +153,48 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
       owner = await prisma.owner.create({ data: { userId: req.user.id } });
     }
 
-    // Unique order ID
+    // Unique order ID (alphanumeric + underscore/hyphen, max 45 chars)
     const cfOrderId = `vv_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    // Customer info sanitized for Cashfree PG
-    const customerName = (req.user as any).name || (req.user as any).displayName || req.user.email?.split('@')[0] || 'Customer';
-    const customerEmail = req.user.email || 'customer@veeduvadagaiku.com';
+    // Customer info strictly validated for Cashfree PG
+    const customerId = (req.user.id || `cust_${Date.now()}`).toString().replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 50);
+    const rawName = (req.user as any).name || (req.user as any).displayName || req.user.email?.split('@')[0] || 'Customer';
+    const customerName = rawName.replace(/[^a-zA-Z0-9 ]/g, '').trim().substring(0, 50) || 'Customer';
+    const customerEmail = req.user.email && req.user.email.includes('@') ? req.user.email : 'customer@veeduvadagaikkuchennai.com';
     let customerPhone = ((req.user as any).mobile || (req.user as any).phone || '').toString().replace(/\D/g, '');
     if (customerPhone.length > 10) customerPhone = customerPhone.slice(-10);
     if (customerPhone.length < 10) customerPhone = '9999999999';
 
-    // Return URL after payment
-    const returnUrl = `${process.env.FRONTEND_URL || 'https://veeduvadagaikkuchennai.com'}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
+    // Return URL must be HTTPS in production
+    let returnUrl = `${process.env.FRONTEND_URL || 'https://veeduvadagaikkuchennai.com'}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
+    if (!returnUrl.startsWith('https://')) {
+      returnUrl = `https://veeduvadagaikkuchennai.com/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
+    }
+
+    // Cashfree rejects notify_url if it doesn't start with https://
+    const orderMeta: any = {
+      return_url: returnUrl,
+    };
+    const backendUrl = process.env.BACKEND_URL;
+    if (backendUrl && backendUrl.startsWith('https://')) {
+      orderMeta.notify_url = `${backendUrl}/api/payments/webhook`;
+    }
+
+    const safeNote = `${planName.replace(/[^a-zA-Z0-9 ]/g, '')} - Listing on Veedu Vadagaiku`.substring(0, 50);
 
     // Call Cashfree Orders REST API
     const cashfreePayload = {
       order_id: cfOrderId,
       order_amount: planAmount,
       order_currency: currency,
-      order_note: `${planName} - Property Listing on Veedu Vadagaiku`,
+      order_note: safeNote,
       customer_details: {
-        customer_id: req.user.id,
+        customer_id: customerId,
         customer_name: customerName,
         customer_email: customerEmail,
         customer_phone: customerPhone,
       },
-      order_meta: {
-        return_url: returnUrl,
-        notify_url: `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/payments/webhook`,
-      },
+      order_meta: orderMeta,
     };
 
     const cfRes = await axios.post(
