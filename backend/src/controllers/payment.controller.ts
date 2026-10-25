@@ -165,26 +165,31 @@ export async function createCashfreeOrder(req: AuthRequest, res: Response, next:
     if (customerPhone.length > 10) customerPhone = customerPhone.slice(-10);
     if (customerPhone.length < 10) customerPhone = '9999999999';
 
-    // Return URL MUST be HTTPS — Cashfree strictly rejects localhost and http://
-    // If FRONTEND_URL is localhost or not HTTPS, always use the live production URL
-    const PROD_FRONTEND = 'https://veeduvadagaikkuchennai.com';
-    const rawFrontendUrl = (process.env.FRONTEND_URL || '').trim();
-    const safeFrontendUrl =
-      rawFrontendUrl.startsWith('https://') && !rawFrontendUrl.includes('localhost')
-        ? rawFrontendUrl
-        : PROD_FRONTEND;
-    const returnUrl = `${safeFrontendUrl}/payment-result?order_id={order_id}&propertyId=${propertyId || ''}`;
+    // ─── return_url: ALWAYS use the hardcoded production frontend URL ──────────
+    // NEVER read FRONTEND_URL from environment — it may be set to localhost.
+    // Cashfree PG strictly requires HTTPS and rejects any localhost/http URL.
+    const CASHFREE_RETURN_URL =
+      `https://www.veeduvadagaikkuchennai.com/payment-result` +
+      `?order_id={order_id}&propertyId=${propertyId || ''}`;
 
-    // Cashfree rejects notify_url if it doesn't start with https://
+    // notify_url: only send if BACKEND_URL is a real HTTPS production URL
     const orderMeta: any = {
-      return_url: returnUrl,
+      return_url: CASHFREE_RETURN_URL,
     };
-    const backendUrl = (process.env.BACKEND_URL || '').trim();
-    if (backendUrl.startsWith('https://') && !backendUrl.includes('localhost')) {
-      orderMeta.notify_url = `${backendUrl}/api/payments/webhook`;
+    const rawBackendUrl = (process.env.BACKEND_URL || '').trim();
+    if (rawBackendUrl.startsWith('https://') && !rawBackendUrl.includes('localhost')) {
+      orderMeta.notify_url = `${rawBackendUrl}/api/payments/webhook`;
     }
 
     const safeNote = `${planName.replace(/[^a-zA-Z0-9 ]/g, '')} - Listing on Veedu Vadagaiku`.substring(0, 50);
+
+    // ── Pre-request log (no secrets) — confirms exact URL sent to Cashfree ──
+    console.log('[Cashfree] Creating order:', {
+      order_id: cfOrderId,
+      amount: planAmount,
+      return_url: CASHFREE_RETURN_URL,
+      notify_url: orderMeta.notify_url || '(not set)',
+    });
 
     // Call Cashfree Orders REST API
     const cashfreePayload = {
