@@ -21,7 +21,6 @@ async function main() {
         '₹222 for 30 Days',
         'Up to 10 HD Photos',
         'Direct Calls & WhatsApp from Tenants',
-        'Verified Listing Badge upon Approval',
       ],
       isActive: true,
       sortOrder: 1,
@@ -73,6 +72,23 @@ async function main() {
       ],
       isActive: true,
       sortOrder: 4,
+    },
+    {
+      id: 'plan_kalyana_mandapam',
+      name: 'Kalyana Mandapam & Halls',
+      price: 2500,
+      durationDays: 60,
+      description: 'Premium venue listing for Marriage Halls, Convention Centers, Mini Halls & Party Venues for 60 days.',
+      features: [
+        'All 8 Premium Platform Features Included',
+        '60-Day Premium Venue Listing',
+        'Post-Offer Regular Price ₹2,500',
+        'Dedicated Owner Support Manager',
+        'Homepage Featured Placement',
+        'Direct Booking & Event Enquiries via Phone & WhatsApp',
+      ],
+      isActive: true,
+      sortOrder: 5,
     },
     // Legacy plans - kept inactive for historical references
     {

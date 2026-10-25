@@ -89,5 +89,10 @@ export const propertyService = {
       throw err;
     }
   },
+
+  renewProperty: async (propertyId: string, planId?: string) => {
+    const res = await api.post<ApiResponse<Property>>(`/api/properties/${propertyId}/renew`, { planId });
+    return res.data;
+  },
 };
 

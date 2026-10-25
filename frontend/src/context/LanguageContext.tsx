@@ -34,9 +34,9 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.switchLang': 'தமிழ்',
 
     // Hero Section
-    'hero.badge': 'Direct Owner Connect',
+    'hero.badge': '',
     'hero.title1': "Chennai's Exclusive",
-    'hero.titleHouse': 'One-Stop Property Rent Webapp',
+    'hero.titleHouse': 'One-Stop Property Rental Webapp',
     'hero.titleOr': '',
     'hero.titleShop': '',
     'hero.titleEnd': '',
@@ -51,7 +51,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.marriageHall': 'Marriage & Party Halls for Rent',
     'hero.maxBudget': 'Budget',
     'hero.searchBtn': 'Search Rent / Lease',
-    'hero.zeroBrokerage': 'Direct Owner Connect',
+    'hero.zeroBrokerage': 'Zero Brokerage',
     'hero.zeroBrokerageDesc': 'Connect directly with property owners',
     'hero.instantConnect': 'Direct Phone & WhatsApp',
     'hero.instantConnectDesc': 'Direct conversation with owners',
@@ -240,7 +240,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'nav.switchLang': 'English',
 
     // Hero Section
-    'hero.badge': 'நேரடி உரிமையாளர் தொடர்பு',
+    'hero.badge': '',
     'hero.title1': 'சென்னையின் பிரத்யேக',
     'hero.titleHouse': 'ஒரே இட வாடகை இணையதளம்',
     'hero.titleOr': '',
@@ -257,7 +257,7 @@ export const translations: Record<Language, Record<string, string>> = {
     'hero.marriageHall': 'கல்யாண மண்டபம் / திருமண மண்டபம்',
     'hero.maxBudget': 'பட்ஜெட்',
     'hero.searchBtn': 'வாடகை / குத்தகை தேடு',
-    'hero.zeroBrokerage': 'நேரடி உரிமையாளர் தொடர்பு',
+    'hero.zeroBrokerage': 'தரகர் கட்டணம் இல்லை (Zero Brokerage)',
     'hero.zeroBrokerageDesc': 'சரிபார்க்கப்பட்ட உரிமையாளர்களுடன் நேரடி தொடர்பு',
     'hero.verifiedListings': 'சரிபார்க்கப்பட்ட உரிமையாளர்கள்',
     'hero.verifiedListingsDesc': 'உண்மையான மற்றும் சரிபார்க்கப்பட்ட உரிமையாளர்கள்',

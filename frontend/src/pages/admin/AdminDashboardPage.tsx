@@ -153,7 +153,7 @@ export const AdminDashboardPage: React.FC = () => {
               Deepavali 2026 Free Listing Offer — Currently Active
             </p>
             <p className="text-[11px] text-amber-700 font-medium mt-0.5">
-              All listings posted on or before 8 Nov 2026 are being accepted at ₹0. Post-offer pricing: Residential ₹99 · Commercial ₹555 · Hall ₹1,000 · Service ₹444
+              All listings posted on or before 8 Nov 2026 are being accepted at ₹0. Post-offer pricing: Residential ₹99 · Commercial ₹555 · Hall ₹2,500 · Service ₹444
             </p>
           </div>
         </div>

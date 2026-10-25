@@ -4,6 +4,7 @@ import { prisma } from '../config/database';
 import { successResponse, paginatedResponse, ApiError } from '../utils/response';
 import { rejectPropertySchema } from '../utils/validators';
 import { parsePaginationParams } from '../utils/helpers';
+import { resolvePlanValidityDays, calculateExpiryDate } from '../services/validity.service';
 
 export async function getDashboardStats(req: AuthRequest, res: Response, next: NextFunction) {
   try {
@@ -195,13 +196,19 @@ export async function adminApproveProperty(req: AuthRequest, res: Response, next
       throw new ApiError(400, 'Only properties pending approval can be approved');
     }
 
-    const durationDays = property.plan?.durationDays || 30;
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + durationDays);
+    const durationDays = resolvePlanValidityDays(property.plan, property.propertyType);
+    const now = new Date();
+    const expiresAt = calculateExpiryDate(now, durationDays);
 
     await prisma.property.update({
       where: { id: req.params.id },
-      data: { status: 'PUBLISHED', rejectionReason: null, expiresAt },
+      data: {
+        status: 'PUBLISHED',
+        publishedAt: now,
+        validityDays: durationDays,
+        expiresAt,
+        rejectionReason: null,
+      },
     });
     res.json(successResponse(null, 'Property approved and published'));
   } catch (error) {

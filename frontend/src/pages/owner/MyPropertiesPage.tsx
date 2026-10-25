@@ -19,6 +19,8 @@ import {
   Clock,
   CheckCircle2,
   Sparkles,
+  RefreshCw,
+  Calendar,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUrl';
@@ -26,6 +28,7 @@ import { getImageUrl } from '../../utils/imageUrl';
 export const MyPropertiesPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [renewingId, setRenewingId] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['ownerProperties'],
@@ -57,6 +60,20 @@ export const MyPropertiesPage: React.FC = () => {
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.message || 'Failed to submit. Please ensure at least one photo is uploaded.');
+    },
+  });
+
+  const renewMutation = useMutation({
+    mutationFn: (id: string) => propertyService.renewProperty(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });
+      queryClient.invalidateQueries({ queryKey: ['ownerDashboard'] });
+      toast.success('Property listing renewed successfully! Validity period extended.');
+      setRenewingId(null);
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to renew listing');
+      setRenewingId(null);
     },
   });
 
@@ -115,12 +132,21 @@ export const MyPropertiesPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {properties.map((prop) => {
-            const primaryImg = getImageUrl(
-              prop.images?.find((img) => img.isPrimary)?.imageUrl || prop.images?.[0]?.imageUrl
-            );
+            const primaryImg =
+              prop.images?.[0]?.imageUrl
+                ? getImageUrl(prop.images[0].imageUrl)
+                : '/properties/property-1.png';
 
-            const canEdit = ['DRAFT', 'REJECTED', 'PENDING_APPROVAL'].includes(prop.status);
+            const canEdit = prop.status !== 'REMOVED';
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
+
+            const isPublished = prop.status === 'PUBLISHED';
+            const nowMs = Date.now();
+            const expiresMs = prop.expiresAt ? new Date(prop.expiresAt).getTime() : null;
+            const isExpired = prop.status === 'EXPIRED' || (isPublished && expiresMs !== null && expiresMs <= nowMs);
+            const diffDays = expiresMs !== null ? Math.ceil((expiresMs - nowMs) / (1000 * 60 * 60 * 24)) : null;
+            const isExpiringSoon = isPublished && !isExpired && diffDays !== null && diffDays <= 7;
+            const canRenew = isExpired || isExpiringSoon;
 
             return (
               <div
@@ -145,9 +171,12 @@ export const MyPropertiesPage: React.FC = () => {
                   {/* Center: Info */}
                   <div className="flex-1 min-w-0 space-y-1.5">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <PropertyStatusBadge status={prop.status} />
+                      <PropertyStatusBadge status={prop.status} expiresAt={prop.expiresAt} />
                       <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-0.5 rounded-full">
                         {prop.propertyType === 'HOUSE' ? 'House' : 'Commercial'}
+                      </span>
+                      <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                        {prop.plan?.name || (prop.validityDays ? `${prop.validityDays} Days Plan` : 'Deepavali Free Listing')}
                       </span>
                     </div>
 
@@ -167,10 +196,48 @@ export const MyPropertiesPage: React.FC = () => {
                         Deposit: ₹{prop.deposit.toLocaleString('en-IN')}
                       </span>
                     </div>
+
+                    {prop.expiresAt && (
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 pt-1">
+                        <Calendar className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                        <span>
+                          {isExpired ? (
+                            <span className="text-purple-700 font-semibold">
+                              Expired on {new Date(prop.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                          ) : isExpiringSoon ? (
+                            <span className="text-amber-700 font-bold">
+                              Expires in {diffDays} {diffDays === 1 ? 'day' : 'days'} ({new Date(prop.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })})
+                            </span>
+                          ) : (
+                            <span>
+                              Valid until {new Date(prop.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} ({diffDays} days left)
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Right: Actions */}
                   <div className="flex flex-row sm:flex-col items-center gap-2 sm:shrink-0 sm:pt-1 border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
+
+                    {/* Renew button for Expired or Expiring Soon */}
+                    {canRenew && (
+                      <button
+                        type="button"
+                        disabled={renewMutation.isPending && renewingId === prop.id}
+                        onClick={() => {
+                          setRenewingId(prop.id);
+                          renewMutation.mutate(prop.id);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition whitespace-nowrap disabled:opacity-60"
+                        title="Renew listing validity"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${renewMutation.isPending && renewingId === prop.id ? 'animate-spin' : ''}`} />
+                        <span>Renew Listing</span>
+                      </button>
+                    )}
 
                     {/* Submit for Review button (DRAFT / REJECTED) */}
                     {canSubmit && (
@@ -185,8 +252,8 @@ export const MyPropertiesPage: React.FC = () => {
                       </button>
                     )}
 
-                    {/* View Live (if published) */}
-                    {prop.status === 'PUBLISHED' && (
+                    {/* View Live (if published and not expired) */}
+                    {prop.status === 'PUBLISHED' && !isExpired && (
                       <Link
                         to={`/property/${prop.id}`}
                         target="_blank"
@@ -219,6 +286,57 @@ export const MyPropertiesPage: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* EXPIRED Banner */}
+                {isExpired && (
+                  <div className="mx-4 mb-4 p-3.5 bg-purple-50 rounded-xl border border-purple-200 flex items-center justify-between gap-3 text-xs text-purple-900 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-purple-600 shrink-0" />
+                      <div>
+                        <span className="font-bold block">Listing Expired</span>
+                        <span className="text-purple-700">
+                          This property is hidden from public seekers. Click Renew Listing to reactivate it immediately!
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={renewMutation.isPending && renewingId === prop.id}
+                      onClick={() => {
+                        setRenewingId(prop.id);
+                        renewMutation.mutate(prop.id);
+                      }}
+                      className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-105 text-white font-bold rounded-lg transition text-xs shadow-xs disabled:opacity-60 flex items-center gap-1.5 whitespace-nowrap"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${renewMutation.isPending && renewingId === prop.id ? 'animate-spin' : ''}`} />
+                      <span>Renew Listing Now →</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* EXPIRING SOON Banner */}
+                {isExpiringSoon && (
+                  <div className="mx-4 mb-4 p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between gap-3 text-xs text-amber-900 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>
+                        Listing expires in <strong>{diffDays} {diffDays === 1 ? 'day' : 'days'}</strong> ({new Date(prop.expiresAt!).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}). Renew now to keep your listing active without interruption.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      disabled={renewMutation.isPending && renewingId === prop.id}
+                      onClick={() => {
+                        setRenewingId(prop.id);
+                        renewMutation.mutate(prop.id);
+                      }}
+                      className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition text-xs shadow-xs disabled:opacity-60 flex items-center gap-1.5 whitespace-nowrap"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${renewMutation.isPending && renewingId === prop.id ? 'animate-spin' : ''}`} />
+                      <span>Renew Early</span>
+                    </button>
+                  </div>
+                )}
 
                 {/* DRAFT Banner — needs to be submitted */}
                 {prop.status === 'DRAFT' && (
@@ -255,12 +373,19 @@ export const MyPropertiesPage: React.FC = () => {
                 )}
 
                 {/* PUBLISHED Banner */}
-                {prop.status === 'PUBLISHED' && (
+                {prop.status === 'PUBLISHED' && !isExpired && !isExpiringSoon && (
                   <div className="mx-4 mb-4 p-3 bg-green-50 rounded-xl border border-green-200 flex items-start gap-2.5 text-xs text-green-800">
                     <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-green-600" />
-                    <span className="font-semibold">
-                      Live & Visible to all users including non-registered visitors across Chennai.
-                    </span>
+                    <div>
+                      <span className="font-semibold block">
+                        Live & Visible to all users including non-registered visitors across Chennai.
+                      </span>
+                      {prop.expiresAt && (
+                        <span className="text-green-700 block mt-0.5">
+                          Active validity: {diffDays} days remaining (expires on {new Date(prop.expiresAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}).
+                        </span>
+                      )}
+                    </div>
                   </div>
                 )}
 

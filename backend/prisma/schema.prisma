@@ -119,6 +119,8 @@ model Property {
   viewCount       Int              @default(0)
   planId          String?
   plan            ListingPlan?     @relation(fields: [planId], references: [id])
+  publishedAt     DateTime?
+  validityDays    Int?
   expiresAt       DateTime?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -127,6 +129,9 @@ model Property {
   payments   Payment[]
   enquiries  Enquiry[]
   favourites Favourite[]
+
+  @@index([status, expiresAt])
+  @@index([expiresAt])
 }
 
 model PropertyImage {

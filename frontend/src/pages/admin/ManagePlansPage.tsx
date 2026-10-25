@@ -249,7 +249,7 @@ export const ManagePlansPage: React.FC = () => {
                   <div className="pt-2 flex items-baseline gap-2">
                     {isFreeOffer && (
                       <span className={`text-xs line-through font-semibold ${isPremiumHall ? 'text-gray-400' : 'text-gray-400'}`}>
-                        ₹99-₹1,000
+                        ₹99-₹2,500
                       </span>
                     )}
                     <span className={`text-4xl font-black tracking-tight ${isPremiumHall ? 'text-[#f59e0b]' : isFreeOffer ? 'text-[#92400e]' : 'text-gray-900'}`}>

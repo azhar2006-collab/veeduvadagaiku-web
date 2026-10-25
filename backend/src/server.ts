@@ -1,9 +1,10 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 
 import app from './app';
 import { prisma } from './config/database';
 import { initFirebase } from './config/firebase';
+import { startExpiryScheduler } from './services/validity.service';
 
 const PORT = parseInt(process.env.PORT || '5000', 10);
 
@@ -13,6 +14,8 @@ async function startServer() {
     try {
       await prisma.$connect();
       console.log('[Database] Connected successfully');
+      // Initialize automatic property validity & expiry scheduler
+      startExpiryScheduler();
     } catch (dbError) {
       console.warn('[Database] PostgreSQL Database is not reachable at DATABASE_URL.');
       console.warn('[Database] Update backend/.env with your PostgreSQL credentials (local or hosted like Neon/Supabase) to enable database operations.');

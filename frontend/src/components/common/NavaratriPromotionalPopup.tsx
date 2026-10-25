@@ -94,9 +94,14 @@ export const DeepavaliPromotionalPopup: React.FC = () => {
             >
               List your property &amp; services <span className="text-[#f59e0b]">free</span> till Deepavali
             </h2>
-            <p className="text-xs sm:text-sm text-[#edd8de] font-medium max-w-md mx-auto">
-              தீபாவளி வரை உங்கள் சொத்தையும் சேவைகளையும் இலவசமாக பதிவு செய்யுங்கள்
-            </p>
+            <div className="text-xs sm:text-sm font-medium max-w-md mx-auto space-y-1 leading-relaxed">
+              <p className="text-[#fcd34d] font-bold">
+                தீபாவளி வரை உங்கள் வீடு, கடை, மண்டபம் அனைத்தையும் கட்டணமின்றி பதிவு செய்யுங்கள்!
+              </p>
+              <p className="text-[#edd8de]">
+                இந்த தீபாவளிக்கு உங்கள் சொத்து சென்னை முழுவதும் தெரியட்டும் – பதிவு முற்றிலும் இலவசம்!
+              </p>
+            </div>
           </div>
 
           {/* Highlight Cards / Bullet Points */}
@@ -124,7 +129,7 @@ export const DeepavaliPromotionalPopup: React.FC = () => {
                 <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
               </div>
               <span className="text-xs sm:text-sm font-bold text-white">
-                Valid Across All Chennai Pincodes for Full 60 Days
+                Valid in All Chennai Pincodes for Full 60 Days
               </span>
             </div>
           </div>
@@ -143,7 +148,7 @@ export const DeepavaliPromotionalPopup: React.FC = () => {
               className="w-full py-3.5 px-6 rounded-full bg-[#f59e0b] hover:bg-[#eab308] active:scale-[0.98] text-[#1b0610] font-black text-sm sm:text-base shadow-xl shadow-amber-500/30 transition-all flex items-center justify-center gap-2 group"
             >
               <Sparkles className="w-4 h-4 text-[#1b0610]" />
-              <span>Post My Free Listing Now</span>
+              <span>Post your property for free</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
 

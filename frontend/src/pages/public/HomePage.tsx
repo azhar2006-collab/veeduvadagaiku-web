@@ -199,11 +199,6 @@ export const HomePage: React.FC = () => {
         <div className="relative max-w-7xl mx-auto space-y-4 sm:space-y-6">
           {/* Top Tagline */}
           <div className="text-center space-y-2 max-w-3xl mx-auto px-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FAF4E6] border border-[#E8DFC8] text-[#9A7818] text-[10px] sm:text-xs font-bold tracking-wide shadow-2xs max-w-[95vw] flex-wrap justify-center">
-              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#C5A059] shrink-0" />
-              <span className="text-center leading-snug">{t('hero.badge')}</span>
-            </div>
-
             <h1 className="text-xl sm:text-3xl lg:text-[2.25rem] font-bold sm:font-extrabold tracking-tight leading-snug sm:leading-tight text-[#1E2329]">
               <span className="text-[#C5A059]">{t('hero.title1')}</span>{' '}
               <span className="text-[#C5A059]">{t('hero.titleHouse')}</span>

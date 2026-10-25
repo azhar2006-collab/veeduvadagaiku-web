@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { ownerService } from '../../services/owner.service';
@@ -27,10 +27,11 @@ export const OwnerDashboardPage: React.FC = () => {
   const publishedCount = stats['PUBLISHED'] || 0;
   const pendingCount = stats['PENDING_APPROVAL'] || 0;
   const paymentPendingCount = stats['PAYMENT_PENDING'] || 0;
+  const expiredCount = stats['EXPIRED'] || 0;
   const draftCount = stats['DRAFT'] || 0;
   const rejectedCount = stats['REJECTED'] || 0;
   const totalProperties =
-    publishedCount + pendingCount + paymentPendingCount + draftCount + rejectedCount;
+    publishedCount + pendingCount + paymentPendingCount + draftCount + rejectedCount + expiredCount;
 
   return (
     <div className="space-y-8">
@@ -88,6 +89,31 @@ export const OwnerDashboardPage: React.FC = () => {
               color="red"
             />
           </div>
+
+          {/* Expired Properties Alert */}
+          {expiredCount > 0 && (
+            <div className="bg-purple-50 border border-purple-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-purple-100 text-purple-700 rounded-xl shrink-0">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-purple-900">
+                    {expiredCount} {expiredCount === 1 ? 'Property Listing Has Expired' : 'Property Listings Have Expired'}
+                  </h4>
+                  <p className="text-xs text-purple-700">
+                    Expired properties are hidden from Chennai seekers. Renew now to restore public visibility and inquiries.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/owner/properties"
+                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-105 text-white font-bold text-xs rounded-xl shadow-xs transition whitespace-nowrap"
+              >
+                View & Renew Properties →
+              </Link>
+            </div>
+          )}
 
           {/* Quick Management Links */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

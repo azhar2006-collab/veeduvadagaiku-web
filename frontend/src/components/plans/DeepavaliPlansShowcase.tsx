@@ -12,7 +12,6 @@ import {
   Phone,
   CalendarDays,
   ImageIcon,
-  BadgeCheck,
   TrendingUp,
   Megaphone,
   Headphones,
@@ -25,12 +24,11 @@ interface DeepavaliPlansShowcaseProps {
 }
 
 const PLAN_FEATURES = [
-  { icon: MapPin, label: "Listed Across All Chennai Pincodes", sub: "150+ areas covered" },
+  { icon: MapPin, label: "Listed in All Chennai Pincodes", sub: "150+ areas covered" },
   { icon: Phone, label: "Direct Phone & WhatsApp Leads", sub: "Zero intermediary" },
   { icon: CalendarDays, label: "60-Day Listing Validity", sub: "Full 2 months live" },
   { icon: Layers, label: "All Property Categories", sub: "Houses, shops, halls & services" },
   { icon: ImageIcon, label: "Up to 10 HD Photos", sub: "Showcase your space" },
-  { icon: BadgeCheck, label: "Verified Property Badge", sub: "Build trust with seekers" },
   { icon: TrendingUp, label: "Priority Search Visibility", sub: "5x more views on searches" },
   { icon: Megaphone, label: "Property Promotion on Website", sub: "Featured homepage placement" },
   { icon: Headphones, label: "Dedicated Owner Support", sub: "Priority assistance team" },
@@ -44,9 +42,9 @@ const PLANS = [
     name: "Deepavali Free",
     nameTamil: "தீபாவளி இலவசம்",
     price: "₹0",
-    strikePrice: "₹99-₹1,000",
+    strikePrice: "₹99-₹2,500",
     period: "per listing · 60 days",
-    ctaLabel: "Start Free Listing",
+    ctaLabel: "Post your property for free",
     ctaLink: "/owner/properties/add",
     enabledCount: 5,
     isOffer: true,
@@ -57,13 +55,13 @@ const PLANS = [
     badge: "RESIDENTIAL",
     badgeCls: "bg-amber-50 text-[#92400e] border border-amber-200",
     name: "Residential",
-    nameTamil: "வீட்டு வசதி",
+    nameTamil: "வீடு",
     price: "₹99",
     strikePrice: null,
-    period: "per listing · 60 days",
+    period: "per listing · 30 days",
     ctaLabel: "List a Home",
     ctaLink: "/owner/properties/add?type=HOUSE",
-    enabledCount: 6,
+    enabledCount: 5,
     isOffer: false,
     isPremium: false,
   },
@@ -78,7 +76,7 @@ const PLANS = [
     period: "per listing · 60 days",
     ctaLabel: "Advertise a Service",
     ctaLink: "/home-services/list",
-    enabledCount: 7,
+    enabledCount: 6,
     isOffer: false,
     isPremium: false,
   },
@@ -93,7 +91,7 @@ const PLANS = [
     period: "per listing · 60 days",
     ctaLabel: "List a Shop",
     ctaLink: "/owner/properties/add?type=SHOP",
-    enabledCount: 8,
+    enabledCount: 7,
     isOffer: false,
     isPremium: false,
   },
@@ -103,12 +101,12 @@ const PLANS = [
     badgeCls: "bg-[#240a15] text-[#f59e0b]",
     name: "Kalyana Mandapam",
     nameTamil: "கல்யாண மண்டபம்",
-    price: "₹1,000",
+    price: "₹2,500",
     strikePrice: null,
-    period: "per listing · 31 days",
+    period: "per listing · 60 days",
     ctaLabel: "List a Hall",
     ctaLink: "/owner/properties/add?type=MARRIAGE_HALL",
-    enabledCount: 9,
+    enabledCount: 8,
     isOffer: false,
     isPremium: true,
   },
@@ -151,11 +149,11 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
     },
     {
       q: "How long will my free listing remain active?",
-      a: "Any property posted during the Deepavali promotional period will remain live and visible to home seekers across all Chennai pincodes for full 60 days (31 days for Kalyana Mandapams) at ₹0.",
+      a: "Any property posted during the Deepavali promotional period will remain live and visible to home seekers in all Chennai pincodes for full 60 days at ₹0.",
     },
     {
       q: "What prices will apply after the offer ends?",
-      a: "After the Deepavali offer concludes on 8 Nov 2026: ₹99 for Residential (60 days), ₹555 for Commercial & Shops (60 days), ₹1,000 for Kalyana Mandapams (31 days), and ₹444 for Home Services (60 days).",
+      a: "After the Deepavali offer concludes on 8 Nov 2026: ₹99 for Residential (30 days), ₹555 for Commercial & Shops (60 days), ₹2,500 for Kalyana Mandapams (60 days), and ₹444 for Home Services (60 days).",
     },
     {
       q: "How will tenants get in touch with me?",
@@ -202,9 +200,14 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
                 </span>{" "}
                 till Deepavali
               </h1>
-              <p className="text-base sm:text-xl font-medium text-[#edd8de] leading-relaxed">
-                தீபாவளி வரை உங்கள் சொத்தையும் சேவைகளையும் இலவசமாக பதிவு செய்யுங்கள்
-              </p>
+              <div className="space-y-1.5">
+                <p className="text-base sm:text-xl font-bold text-[#fcd34d] leading-relaxed">
+                  தீபாவளி வரை உங்கள் வீடு, கடை, மண்டபம் அனைத்தையும் கட்டணமின்றி பதிவு செய்யுங்கள்!
+                </p>
+                <p className="text-sm sm:text-lg font-medium text-[#edd8de] leading-relaxed">
+                  இந்த தீபாவளிக்கு உங்கள் சொத்து சென்னை முழுவதும் தெரியட்டும் – பதிவு முற்றிலும் இலவசம்!
+                </p>
+              </div>
               <p className="text-sm sm:text-base text-[#d4bac6] max-w-xl font-normal leading-relaxed">
                 Put your house, shop, hall or home service in front of Chennai across every pincode. No listing fee on anything posted on or before Deepavali.
               </p>
@@ -214,7 +217,7 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
                   className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#f59e0b] hover:bg-[#eab308] text-[#1b0610] text-sm sm:text-base font-black shadow-xl shadow-amber-500/25 transition-all active:scale-95 group"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>Post my free listing</span>
+                  <span>Post your property for free</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-[#edd8de] font-semibold">
@@ -250,12 +253,12 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
                   <span className="text-[11px] font-black uppercase tracking-widest text-[#92400e] block">DEEPAVALI OFFER</span>
                   <div className="flex items-baseline gap-3">
                     <span className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tight">₹0</span>
-                    <span className="text-xs sm:text-sm text-gray-400 line-through font-semibold">Instead of ₹99 to ₹1,000</span>
+                    <span className="text-xs sm:text-sm text-gray-400 line-through font-semibold">Instead of ₹99 to ₹2,500</span>
                   </div>
                   <h3 className="text-base sm:text-lg font-black text-gray-900 leading-snug">Listing fee for properties and home services</h3>
                   <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">Applies to every listing posted on or before Deepavali, 8 Nov 2026.</p>
                   <div className="pt-3 border-t border-gray-100 space-y-2.5">
-                    {["Valid across all 150+ Chennai pincodes", "Full 60-day validity at zero extra cost", "Direct phone calls & WhatsApp tenant leads"].map((f) => (
+                    {["Valid in all 150+ Chennai pincodes", "Full 60-day validity at zero extra cost", "Direct phone calls & WhatsApp tenant leads"].map((f) => (
                       <div key={f} className="flex items-center gap-2 text-xs text-gray-700 font-medium">
                         <span className="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 text-[10px] font-black">V</span>
                         <span>{f}</span>
@@ -264,7 +267,7 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
                   </div>
                   <div className="pt-2">
                     <Link to="/owner/properties/add" className="w-full py-3 px-4 rounded-full bg-[#240a15] hover:bg-[#320e1e] text-[#f59e0b] font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition shadow-md">
-                      <span>Claim ₹0 Free Listing</span>
+                      <span>Post your property for free</span>
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
@@ -432,7 +435,7 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
         <div className="bg-[#fff5e6] rounded-3xl p-6 sm:p-8 border border-[#fde2b8] space-y-2">
           <h3 className="text-base font-black text-[#240a15]">Offer details</h3>
           <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
-            All listings posted on or before Deepavali, 8 Nov 2026 carry no listing fee. Post-offer pricing: ₹99 per residential listing (60 days), ₹555 per shop or commercial (60 days), ₹1,000 per kalyana mandapam or convention hall (31 days), and ₹444 per home service (60 days).
+            All listings posted on or before Deepavali, 8 Nov 2026 carry no listing fee. Post-offer pricing: ₹99 per residential listing (30 days), ₹555 per shop or commercial (60 days), ₹2,500 per kalyana mandapam or convention hall (60 days), and ₹444 per home service (60 days).
           </p>
         </div>
 
@@ -505,7 +508,7 @@ export const DeepavaliPlansShowcase: React.FC<DeepavaliPlansShowcaseProps> = ({
               className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#f59e0b] hover:bg-[#eab308] text-[#1b0610] font-black text-sm shadow-lg shadow-amber-500/25 active:scale-95 transition"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Post My Free Listing Now</span>
+              <span>Post your property for free</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

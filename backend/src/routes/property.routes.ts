@@ -7,7 +7,7 @@ import {
   listProperties, getProperty, getLocalities,
   createProperty, updateProperty, deleteProperty,
   getOwnerProperties, uploadImages, deleteImage, reorderImages,
-  submitForReview,
+  submitForReview, renewProperty,
 } from '../controllers/property.controller';
 
 const router = Router();
@@ -22,6 +22,7 @@ router.get('/:id', optionalAuth, getProperty);
 router.post('/', authenticate, requireOwner, createProperty);
 router.put('/:id', authenticate, requireOwner, updateProperty);
 router.delete('/:id', authenticate, requireOwner, deleteProperty);
+router.post('/:id/renew', authenticate, requireOwner, renewProperty);
 router.post('/:id/submit-for-review', authenticate, requireOwner, submitForReview);
 router.put('/:id/submit-for-review', authenticate, requireOwner, submitForReview);
 router.post('/:id/for-review', authenticate, requireOwner, submitForReview);

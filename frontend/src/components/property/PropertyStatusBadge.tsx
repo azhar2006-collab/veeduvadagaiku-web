@@ -3,9 +3,24 @@ import { PropertyStatus } from '../../types';
 
 interface PropertyStatusBadgeProps {
   status: PropertyStatus;
+  expiresAt?: string | null;
 }
 
-export const PropertyStatusBadge: React.FC<PropertyStatusBadgeProps> = ({ status }) => {
+export const PropertyStatusBadge: React.FC<PropertyStatusBadgeProps> = ({ status, expiresAt }) => {
+  let isExpiringSoon = false;
+  let isPastExpiry = false;
+  let daysRemaining: number | null = null;
+
+  if (status === 'PUBLISHED' && expiresAt) {
+    const diff = new Date(expiresAt).getTime() - Date.now();
+    daysRemaining = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    if (daysRemaining <= 0) {
+      isPastExpiry = true;
+    } else if (daysRemaining <= 7) {
+      isExpiringSoon = true;
+    }
+  }
+
   const configs: Record<PropertyStatus, { label: string; bg: string; text: string; dot: string }> = {
     DRAFT: {
       label: 'Draft',
@@ -25,12 +40,26 @@ export const PropertyStatusBadge: React.FC<PropertyStatusBadgeProps> = ({ status
       text: 'text-blue-700 border border-blue-200',
       dot: 'bg-blue-500 animate-pulse',
     },
-    PUBLISHED: {
-      label: 'Published',
-      bg: 'bg-emerald-50',
-      text: 'text-emerald-700 border border-emerald-200',
-      dot: 'bg-emerald-500',
-    },
+    PUBLISHED: isPastExpiry
+      ? {
+          label: 'Expired',
+          bg: 'bg-purple-50',
+          text: 'text-purple-700 border border-purple-200',
+          dot: 'bg-purple-500',
+        }
+      : isExpiringSoon
+      ? {
+          label: `Expiring Soon (${daysRemaining}d left)`,
+          bg: 'bg-amber-50',
+          text: 'text-amber-800 border border-amber-300 font-bold',
+          dot: 'bg-amber-500 animate-ping',
+        }
+      : {
+          label: 'Active Listing',
+          bg: 'bg-emerald-50',
+          text: 'text-emerald-700 border border-emerald-200',
+          dot: 'bg-emerald-500',
+        },
     REJECTED: {
       label: 'Rejected',
       bg: 'bg-red-50',

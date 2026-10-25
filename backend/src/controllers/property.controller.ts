@@ -9,6 +9,7 @@ import streamifier from 'streamifier';
 import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { renewPropertyListing } from '../services/validity.service';
 
 // ─── Public Endpoints ───────────────────────────────────────────────
 
@@ -23,7 +24,18 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
 
     const { page, limit, skip } = parsePaginationParams(req.query as Record<string, unknown>);
 
-    const where: Record<string, unknown> = { status: 'PUBLISHED' };
+    const now = new Date();
+    const where: Record<string, unknown> = {
+      status: 'PUBLISHED',
+      AND: [
+        {
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: now } },
+          ],
+        },
+      ],
+    };
     if (propertyType) where.propertyType = propertyType;
     if (category) {
       const cat = String(category).toUpperCase();
@@ -512,17 +524,25 @@ export async function getProperty(req: Request, res: Response, next: NextFunctio
   try {
     const { id } = req.params;
     const user = (req as AuthRequest).user;
+    const now = new Date();
 
     const property = await prisma.property.findFirst({
       where: {
         id,
         OR: [
-          { status: 'PUBLISHED' },
+          {
+            status: 'PUBLISHED',
+            OR: [
+              { expiresAt: null },
+              { expiresAt: { gt: now } },
+            ],
+          },
           ...(user ? [{ owner: { userId: user.id } }, ...(user.role === 'ADMIN' ? [{}] : [])] : []),
         ],
       },
       include: {
         images: { orderBy: { displayOrder: 'asc' } },
+        plan: true,
         owner: {
           include: {
             user: { select: { id: true, name: true, mobile: true, email: true, profileImage: true } },
@@ -530,7 +550,7 @@ export async function getProperty(req: Request, res: Response, next: NextFunctio
         },
       },
     });
-    if (!property) throw new ApiError(404, 'Property not found');
+    if (!property) throw new ApiError(404, 'Property listing not found or has expired');
 
     // Increment view count
     await prisma.property.update({ where: { id }, data: { viewCount: { increment: 1 } } });
@@ -651,11 +671,32 @@ export async function getOwnerProperties(req: AuthRequest, res: Response, next: 
       where: { ownerId: owner.id, status: { not: 'REMOVED' } },
       include: {
         images: { where: { isPrimary: true }, take: 1 },
+        plan: true,
         _count: { select: { enquiries: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
     res.json(successResponse(properties));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function renewProperty(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const { id } = req.params;
+    const { planId } = req.body;
+    const owner = await prisma.owner.findUnique({ where: { userId: req.user!.id } });
+    if (!owner) throw new ApiError(403, 'Owner profile not found');
+
+    const updated = await renewPropertyListing({
+      propertyId: id,
+      ownerId: owner.id,
+      userId: req.user!.id,
+      planId,
+    });
+
+    res.json(successResponse(updated, 'Property listing renewed successfully'));
   } catch (error) {
     next(error);
   }

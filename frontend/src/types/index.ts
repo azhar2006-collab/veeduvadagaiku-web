@@ -76,7 +76,16 @@ export interface Property {
   rejectionReason?: string | null;
   viewCount: number;
   planId?: string | null;
+  publishedAt?: string | null;
+  validityDays?: number | null;
   expiresAt?: string | null;
+  plan?: {
+    id: string;
+    name: string;
+    price: number;
+    durationDays: number;
+    description?: string;
+  } | null;
   createdAt: string;
   updatedAt: string;
   images: PropertyImage[];

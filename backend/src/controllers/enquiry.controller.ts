@@ -7,11 +7,19 @@ import { createEnquirySchema } from '../utils/validators';
 export async function createEnquiry(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const data = createEnquirySchema.parse(req.body);
+    const now = new Date();
     const property = await prisma.property.findFirst({
-      where: { id: data.propertyId, status: 'PUBLISHED' },
+      where: {
+        id: data.propertyId,
+        status: 'PUBLISHED',
+        OR: [
+          { expiresAt: null },
+          { expiresAt: { gt: now } },
+        ],
+      },
       include: { owner: true },
     });
-    if (!property) throw new ApiError(404, 'Property not found');
+    if (!property) throw new ApiError(404, 'Property not found or listing has expired');
 
     // Prevent duplicate enquiries from same user on same property
     const existing = await prisma.enquiry.findFirst({
