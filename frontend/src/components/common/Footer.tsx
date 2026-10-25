@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, Phone, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
+import { Home, Mail, MapPin, ShieldCheck, Heart } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export const Footer: React.FC = () => {
@@ -101,11 +101,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#C5A059] shrink-0 mt-0.5" />
-                <span>Anna Salai, Mount Road, Chennai, Tamil Nadu - 600002</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-[#C5A059] shrink-0" />
-                <span>+91 98400 12345</span>
+                <span>Choolaimedu, Chennai - 600094</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#C5A059] shrink-0" />
