@@ -17,7 +17,9 @@ export const loadCashfreeScript = (): Promise<boolean> => {
 };
 
 /**
- * Returns an initialized Cashfree instance configured for sandbox/production.
+ * Returns an initialized Cashfree instance.
+ * ALWAYS uses 'production' mode because we use live Production API keys.
+ * Using 'sandbox' with production keys (or vice versa) causes payment_session_id_invalid.
  */
 export const getCashfree = async () => {
   const loaded = await loadCashfreeScript();
@@ -25,12 +27,12 @@ export const getCashfree = async () => {
     throw new Error('Cashfree SDK could not be loaded. Please check your network connection.');
   }
 
-  // Default to production in production builds unless explicitly overridden to sandbox
-  const envVal = (import.meta.env.VITE_CASHFREE_ENV || '').toLowerCase();
-  const isSandbox = envVal === 'sandbox';
-  const isProduction = envVal === 'production' || (import.meta.env.PROD && !isSandbox);
+  // Check env var — default to 'production' because the backend uses production API keys.
+  // Only use sandbox if EXPLICITLY set to 'sandbox'.
+  const envVal = (import.meta.env.VITE_CASHFREE_ENV || 'production').toLowerCase().trim();
+  const mode = envVal === 'sandbox' ? 'sandbox' : 'production';
 
-  return (window as any).Cashfree({
-    mode: isProduction ? 'production' : 'sandbox',
-  });
+  console.log('[Cashfree SDK] Initializing with mode:', mode);
+
+  return (window as any).Cashfree({ mode });
 };

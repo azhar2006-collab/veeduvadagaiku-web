@@ -24,20 +24,13 @@ export const PaymentResultPage: React.FC = () => {
     statusParam?.toLowerCase() === 'success' || statusParam?.toLowerCase() === 'completed';
 
   useEffect(() => {
-    // If it's a free promotional listing, mark success directly
+    // Free listing — always success, no verification needed
     if (isFreeOffer) {
       setVerifiedSuccess(true);
       return;
     }
 
-    // If Cashfree or Razorpay redirected back with orderId, verify order status with backend
-    // If status=success already set (modal flow verified inline), skip re-verification
-    if (isSuccessParam && !orderId?.startsWith('vv_')) {
-      setVerifiedSuccess(true);
-      return;
-    }
-
-    // If Cashfree redirected back with a real order_id (starts with vv_), verify with backend
+    // If Cashfree redirected back with a real order_id (vv_ prefix), verify with backend
     if (orderId && verifiedSuccess === null) {
       setVerifying(true);
       paymentService
@@ -62,8 +55,9 @@ export const PaymentResultPage: React.FC = () => {
           setVerifying(false);
         });
     } else if (isSuccessParam && !orderId) {
+      // Manual/free success redirect (no order_id in URL)
       setVerifiedSuccess(true);
-    } else if (statusParam && !isSuccessParam) {
+    } else if (statusParam && !isSuccessParam && !orderId) {
       setVerifiedSuccess(false);
     }
   }, [orderId, isSuccessParam, paymentId, statusParam, verifiedSuccess, isFreeOffer]);

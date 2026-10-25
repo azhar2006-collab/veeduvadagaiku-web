@@ -39,14 +39,19 @@ export const CashfreeCheckoutButton: React.FC<CashfreeCheckoutButtonProps> = ({
         throw new Error(orderRes?.message || 'Failed to initialize Cashfree payment session');
       }
 
-      // 2. Initialize SDK
+      console.log('[Cashfree] Session ID received:', orderRes.payment_session_id ? 'present' : 'MISSING');
+
+      // 2. Initialize SDK in production mode
       const cashfree = await getCashfree();
 
-      // 3. Open Modal Checkout
-      const result = await cashfree.checkout({
+      // 3. Redirect to Cashfree payment page (return_url brings user back to /payment-result)
+      // Using '_self' — more reliable than '_modal' and avoids payment_session_id_invalid errors
+      const checkoutOptions = {
         paymentSessionId: orderRes.payment_session_id,
-        redirectTarget: '_modal',
-      });
+        redirectTarget: '_self' as const,
+      };
+      console.log('[Cashfree] Starting checkout with session:', orderRes.payment_session_id?.substring(0, 20) + '...');
+      const result = await cashfree.checkout(checkoutOptions);
 
       if (result?.error) {
         setLoading(false);
