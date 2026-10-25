@@ -20,7 +20,7 @@ async function main() {
   const updatedPlans = [
     {
       id: 'plan_deepavali_free',
-      name: 'Deepavali Free Listing',
+      name: 'Deepavali Free Offer',
       price: 0,
       durationDays: 60,
       description: '100% Free property & services listing across Chennai till Deepavali, 8 Nov 2026. Zero posting fee.',
@@ -36,7 +36,7 @@ async function main() {
     },
     {
       id: 'plan_navaratri_free',
-      name: 'Deepavali Free Listing (Offer Alias)',
+      name: 'Deepavali Free Offer (Offer Alias)',
       price: 0,
       durationDays: 60,
       description: '100% Free property & services listing across Chennai till Deepavali, 8 Nov 2026.',

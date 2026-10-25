@@ -28,7 +28,7 @@ export const PROMOTIONAL_OFFERS: PromotionalOffer[] = [
     id: 'deepavali_free_posting_2026',
     planId: 'plan_deepavali_free',
     name: 'Deepavali Special – Free Property & Services Listing',
-    planName: 'Deepavali Free Listing',
+    planName: 'Deepavali Free Offer',
     badge: 'Live now • till Deepavali',
     tagline: 'DEEPAVALI SPECIAL OFFER',
     subheading: 'தீபாவளி வரை உங்கள் வீடு, கடை, மண்டபம் அனைத்தையும் கட்டணமின்றி பதிவு செய்யுங்கள்!\nஇந்த தீபாவளிக்கு உங்கள் சொத்து சென்னை முழுவதும் தெரியட்டும் – பதிவு முற்றிலும் இலவசம்!',

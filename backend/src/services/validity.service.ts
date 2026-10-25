@@ -19,7 +19,7 @@ export const PLAN_VALIDITY_DAYS: Record<string, number> = {
 /**
  * Authoritative resolver for property listing validity in days.
  * Rules:
- * - Deepavali Free: 60 days
+ * - Deepavali Free Offer: 60 days
  * - Residential: 30 days
  * - Home Services: 60 days
  * - Commercial: 60 days

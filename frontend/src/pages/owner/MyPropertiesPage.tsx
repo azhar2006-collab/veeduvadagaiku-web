@@ -176,7 +176,7 @@ export const MyPropertiesPage: React.FC = () => {
                         {prop.propertyType === 'HOUSE' ? 'House' : 'Commercial'}
                       </span>
                       <span className="text-[10px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                        {prop.plan?.name || (prop.validityDays ? `${prop.validityDays} Days Plan` : 'Deepavali Free Listing')}
+                        {prop.plan?.name || (prop.validityDays ? `${prop.validityDays} Days Plan` : 'Deepavali Free Offer')}
                       </span>
                     </div>
 

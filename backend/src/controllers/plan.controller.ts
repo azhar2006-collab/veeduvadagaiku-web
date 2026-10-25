@@ -82,7 +82,7 @@ export async function getPlan(req: Request, res: Response, next: NextFunction) {
     if (req.params.id === 'plan_navaratri_free' || req.params.id === 'plan_deepavali_free') {
       const offer = getNavaratriOffer();
       if (!isOfferActive(offer)) {
-        throw new ApiError(404, 'Deepavali Free Listing Plan has expired');
+        throw new ApiError(404, 'Deepavali Free Offer Plan has expired');
       }
     }
     const plan = await prisma.listingPlan.findUnique({ where: { id: req.params.id } });

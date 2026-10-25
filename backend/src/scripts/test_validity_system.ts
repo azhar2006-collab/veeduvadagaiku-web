@@ -14,7 +14,7 @@ async function runTests() {
 
   // Test 1: Plan Validity Rules Verification
   console.log('[Test 1] Verifying exact plan validity rules:');
-  console.assert(PLAN_VALIDITY_DAYS.DEEPAVALI_FREE === 60, 'Deepavali Free must be 60 days');
+  console.assert(PLAN_VALIDITY_DAYS.DEEPAVALI_FREE === 60, 'Deepavali Free Offer must be 60 days');
   console.assert(PLAN_VALIDITY_DAYS.RESIDENTIAL === 30, 'Residential must be 30 days');
   console.assert(PLAN_VALIDITY_DAYS.HOME_SERVICES === 60, 'Home Services must be 60 days');
   console.assert(PLAN_VALIDITY_DAYS.COMMERCIAL === 60, 'Commercial must be 60 days');
@@ -35,7 +35,7 @@ async function runTests() {
   console.log('  ✔ Residential resolves to 30 days.');
   console.log('  ✔ Commercial resolves to 60 days.');
   console.log('  ✔ Kalyana Mandapam resolves to 60 days.');
-  console.log('  ✔ Deepavali Free resolves to 60 days.\n');
+  console.log('  ✔ Deepavali Free Offer resolves to 60 days.\n');
 
   // Test 3: Date Arithmetic
   console.log('[Test 3] Testing exact calendar day calculation:');
