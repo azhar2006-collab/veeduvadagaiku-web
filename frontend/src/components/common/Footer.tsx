@@ -81,11 +81,6 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/owner/dashboard" className="hover:text-[#B08B40] transition">
-                  {t('footer.ownerPortal')}
-                </Link>
-              </li>
-              <li>
                 <Link to="/about" className="hover:text-[#B08B40] transition">
                   {t('footer.howItWorks')}
                 </Link>
