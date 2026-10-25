@@ -14,6 +14,10 @@ node_modules/
 *firebase-adminsdk*.json
 *.json.key
 
+# API Key exports / sensitive CSVs
+*.csv
+APIKey*
+
 # Build outputs
 dist/
 */dist/
@@ -33,3 +37,4 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
