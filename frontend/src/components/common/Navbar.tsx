@@ -58,9 +58,6 @@ export const Navbar: React.FC = () => {
             >
               <Sparkles className="w-3.5 h-3.5 text-[#f59e0b]" />
               <span>Listing Plans</span>
-              <span className="px-1.5 py-0.5 bg-[#f59e0b] text-[#1b0610] text-[10px] font-black rounded-full leading-none">
-                Diwali Free ₹0
-              </span>
             </Link>
 
             <div className="h-6 w-px bg-[#E8DFC8]"></div>
@@ -288,15 +285,10 @@ export const Navbar: React.FC = () => {
           <Link
             to="/plans"
             onClick={() => setIsOpen(false)}
-            className="flex items-center justify-between px-3.5 py-3 text-sm font-bold text-[#240a15] hover:bg-[#FAF6ED] rounded-xl bg-[#fff5e6] border border-[#fde2b8]"
+            className="flex items-center gap-3 px-3.5 py-3 text-sm font-bold text-[#240a15] hover:bg-[#FAF6ED] rounded-xl bg-[#fff5e6] border border-[#fde2b8]"
           >
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-4 h-4 text-[#f59e0b]" />
-              <span>Diwali Offer &amp; Plans</span>
-            </div>
-            <span className="px-2 py-0.5 bg-[#f59e0b] text-[#1b0610] text-[10px] font-black rounded-full uppercase tracking-wider">
-              Free ₹0
-            </span>
+            <Sparkles className="w-4 h-4 text-[#f59e0b]" />
+            <span>Listing Plans</span>
           </Link>
           <Link
             to="/about"
