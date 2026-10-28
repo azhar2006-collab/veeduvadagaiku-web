@@ -67,11 +67,10 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
   const nextProperty = deck[1];
   const thirdProperty = deck[2];
 
-  // Current property photos with fallback
-  const currentFallback = getPropertyFallbackImage(currentProperty?.propertyType, currentProperty?.id);
-  const currentImages = currentProperty?.images && currentProperty.images.length > 0
-    ? currentProperty.images.map((img) => getImageUrl(img.imageUrl, currentFallback)).filter(Boolean)
-    : [currentFallback];
+  // Current property photos — only real uploaded images, filter out fake stock photos
+  const currentImages = (currentProperty?.images || [])
+    .map((img) => getImageUrl(img.imageUrl))
+    .filter((url) => Boolean(url) && !url.includes('indian-properties'));
 
   // Handle Swipe logic
   const handleSwipe = useCallback(
@@ -345,19 +344,13 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 className="absolute inset-0 rounded-3xl bg-gray-900 border border-gray-800 shadow-lg pointer-events-none transform translate-y-6 scale-[0.90] opacity-50 overflow-hidden"
                 style={{ zIndex: 1 }}
               >
-                <img
-                  src={getImageUrl(
-                    thirdProperty.images?.[0]?.imageUrl,
-                    getPropertyFallbackImage(thirdProperty.propertyType, thirdProperty.id)
-                  )}
-                  alt={thirdProperty.title}
-                  className="w-full h-full object-cover blur-sm brightness-50"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    const fb = getPropertyFallbackImage(thirdProperty.propertyType, thirdProperty.id);
-                    if (!target.src.includes('indian-properties')) target.src = fb;
-                  }}
-                />
+                {thirdProperty.images?.[0]?.imageUrl && !thirdProperty.images[0].imageUrl.includes('indian-properties') && (
+                  <img
+                    src={getImageUrl(thirdProperty.images[0].imageUrl)}
+                    alt={thirdProperty.title}
+                    className="w-full h-full object-cover blur-sm brightness-50"
+                  />
+                )}
               </div>
             )}
 
@@ -376,19 +369,13 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                   opacity: isDragging ? Math.min(0.85 + Math.abs(dragOffset.x) * 0.001, 1) : 0.85,
                 }}
               >
-                <img
-                  src={getImageUrl(
-                    nextProperty.images?.[0]?.imageUrl,
-                    getPropertyFallbackImage(nextProperty.propertyType, nextProperty.id)
-                  )}
-                  alt={nextProperty.title}
-                  className="w-full h-full object-cover brightness-75"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    const fb = getPropertyFallbackImage(nextProperty.propertyType, nextProperty.id);
-                    if (!target.src.includes('indian-properties')) target.src = fb;
-                  }}
-                />
+                {nextProperty.images?.[0]?.imageUrl && !nextProperty.images[0].imageUrl.includes('indian-properties') && (
+                  <img
+                    src={getImageUrl(nextProperty.images[0].imageUrl)}
+                    alt={nextProperty.title}
+                    className="w-full h-full object-cover brightness-75"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
                   <div className="text-xl font-black">₹{nextProperty.rent.toLocaleString('en-IN')}/mo</div>
@@ -426,7 +413,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                         className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none select-none"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          if (!target.src.includes('indian-properties')) target.src = currentFallback;
+                          target.style.display = 'none';
                         }}
                       />
                       {/* Full uncropped image fitted in the allocated space */}
@@ -437,7 +424,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                         className="relative z-1 w-full h-full object-contain p-1 transition-all duration-300 select-none"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          if (!target.src.includes('indian-properties')) target.src = currentFallback;
+                          target.style.display = 'none';
                         }}
                       />
                     </>

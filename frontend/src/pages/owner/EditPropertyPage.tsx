@@ -104,6 +104,27 @@ export const EditPropertyPage: React.FC = () => {
       });
 
       if (files.length > 0) {
+        // Cache uploaded photo in browser for owner view
+        try {
+          await new Promise<void>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              if (reader.result && typeof reader.result === 'string') {
+                try {
+                  localStorage.setItem(`owner_prop_img_${id}`, reader.result);
+                } catch {
+                  // Ignore storage quota
+                }
+              }
+              resolve();
+            };
+            reader.onerror = () => resolve();
+            reader.readAsDataURL(files[0]);
+          });
+        } catch {
+          // Ignore
+        }
+
         await propertyService.uploadImages(id, files);
       }
 

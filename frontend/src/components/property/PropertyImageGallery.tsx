@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PropertyImage } from '../../types';
-import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
-import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
+import { ChevronLeft, ChevronRight, Image as ImageIcon, Building2 } from 'lucide-react';
+import { getImageUrl } from '../../utils/imageUrl';
 
 interface PropertyImageGalleryProps {
   images: PropertyImage[];
@@ -17,30 +17,31 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
   propertyId,
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const fallbackUrl = getPropertyFallbackImage(propertyType, propertyId);
 
-  if (!images || images.length === 0) {
+  // Filter out any default stock photos — only show real uploaded images
+  const validImages = (images || []).filter(
+    (img) => img.imageUrl && !img.imageUrl.includes('indian-properties')
+  );
+
+  if (validImages.length === 0) {
     return (
-      <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] border border-[#E8DFC8] flex items-center justify-center">
-        <img
-          src={fallbackUrl}
-          alt={title}
-          className="w-full h-full object-contain p-2"
-        />
+      <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] border border-[#E8DFC8] flex flex-col items-center justify-center text-gray-400 p-6 text-center">
+        <Building2 className="w-12 h-12 text-[#C5A059]/40 mb-2" />
+        <span className="text-sm font-bold text-[#8C7647]">Verified Listing</span>
+        <span className="text-xs text-gray-400 mt-1">{title}</span>
       </div>
     );
   }
 
   const handlePrev = () => {
-    setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setSelectedIndex((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    setSelectedIndex((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
   };
 
-  const rawActiveUrl = getImageUrl(images[selectedIndex]?.imageUrl);
-  const activeUrl = rawActiveUrl || fallbackUrl;
+  const activeUrl = getImageUrl(validImages[selectedIndex]?.imageUrl);
 
   return (
     <div className="space-y-4">
@@ -61,9 +62,7 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
           className="relative z-10 w-full h-full object-contain p-2 max-h-[560px] transition-all duration-300"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            if (!target.src.includes('indian-properties')) {
-              target.src = fallbackUrl;
-            }
+            target.style.display = 'none';
           }}
         />
 
@@ -115,9 +114,7 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
                     className="w-full h-full object-contain p-0.5"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      if (!target.src.includes('indian-properties')) {
-                        target.src = fallbackUrl;
-                      }
+                      target.style.display = 'none';
                     }}
                   />
                 </div>

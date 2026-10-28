@@ -51,10 +51,14 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
     return trimmed;
   }
 
+  // Filter out and reject fake stock photos — never treat them as real property images
+  if (trimmed.startsWith('/indian-properties/') || trimmed.includes('indian-properties')) {
+    return '';
+  }
+
   // Static assets located in the frontend public directory
   if (
     trimmed.startsWith('/properties/') ||
-    trimmed.startsWith('/indian-properties/') ||
     trimmed.startsWith('/logo') ||
     trimmed.startsWith('/favicon')
   ) {
@@ -67,40 +71,9 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
 };
 
 /**
- * Returns a high-quality, local Chennai property photo based on property category & ID.
- * Used as a deterministic fallback whenever an image URL is missing, invalid, or 404s.
+ * Never return fake stock house photos as fallbacks.
+ * Returns empty string so components render their clean native placeholder icons.
  */
-export const getPropertyFallbackImage = (propertyType?: string, id?: string): string => {
-  const houseImages = [
-    '/indian-properties/house1.jpg',
-    '/indian-properties/house2.jpg',
-    '/indian-properties/house3.jpg',
-    '/indian-properties/house4.jpg',
-    '/indian-properties/house5.jpg',
-    '/indian-properties/house6.jpg',
-  ];
-  const shopImages = [
-    '/indian-properties/shop1.jpg',
-    '/indian-properties/shop2.jpg',
-    '/indian-properties/shop3.jpg',
-    '/indian-properties/shop4.jpg',
-  ];
-
-  const type = (propertyType || '').toUpperCase();
-  const isCommercial =
-    type === 'SHOP' ||
-    type === 'COMMERCIAL' ||
-    type === 'OFFICE' ||
-    type.includes('COMMERCIAL') ||
-    type.includes('SHOP');
-
-  const pool = isCommercial ? shopImages : houseImages;
-  if (!id) return pool[0];
-
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash << 5) - hash + id.charCodeAt(i);
-    hash |= 0;
-  }
-  return pool[Math.abs(hash) % pool.length];
+export const getPropertyFallbackImage = (_propertyType?: string, _id?: string): string => {
+  return '';
 };

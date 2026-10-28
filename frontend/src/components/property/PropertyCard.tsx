@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, MapPin, Bed, Maximize2, Sofa, Building2, Store, MessageCircle } from 'lucide-react';
 import { Property } from '../../types';
@@ -16,6 +16,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const { isFavourite, toggleFavourite, isPending } = useFavourites();
   const { lang, t } = useLanguage();
   const favorited = isFavourite(property.id);
+  const [imgFailed, setImgFailed] = useState(false);
 
   // Check if listing was posted in Tamil
   const isTamil =
@@ -36,13 +37,16 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     maximumFractionDigits: 0,
   }).format(property.deposit);
 
-  // Primary image with smart deterministic fallback
-  const fallbackImg = getPropertyFallbackImage(property.propertyType, property.id);
-  const primaryImg = getImageUrl(
+  // Primary image — only show real uploaded images, never fake stock photos
+  const rawImg =
     property.images?.find((img) => img.isPrimary)?.imageUrl ||
-    property.images?.[0]?.imageUrl,
-    fallbackImg
-  );
+    property.images?.[0]?.imageUrl;
+
+  const isStockPhoto =
+    rawImg &&
+    (rawImg.startsWith('/indian-properties/') || rawImg.includes('indian-properties'));
+
+  const primaryImg = rawImg && !isStockPhoto ? getImageUrl(rawImg) : '';
 
   const furnishingLabel: Record<string, string> = {
     FURNISHED: t('card.furnished'),
@@ -54,7 +58,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     <div className="group bg-white rounded-2xl border border-[#EBE3D0] hover:border-[#C5A059] shadow-xs hover:shadow-xl hover:shadow-[#D4AF37]/12 transition-all duration-300 flex flex-col overflow-hidden relative">
       {/* Image container */}
       <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] flex items-center justify-center">
-        {primaryImg ? (
+        {primaryImg && !imgFailed ? (
           <>
             {/* Ambient blurred backdrop so the container is richly filled without awkward borders */}
             <img
@@ -62,6 +66,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
+              onError={() => setImgFailed(true)}
             />
             {/* Uncropped, proportional foreground image */}
             <img
@@ -70,12 +75,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               loading="lazy"
               decoding="async"
               className="relative z-1 w-full h-full object-contain group-hover:scale-102 transition-transform duration-500 p-0.5"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                if (!target.src.includes('indian-properties')) {
-                  target.src = fallbackImg;
-                }
-              }}
+              onError={() => setImgFailed(true)}
             />
           </>
         ) : (

@@ -47,12 +47,13 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [failedUrls, setFailedUrls] = useState<Record<string, boolean>>({});
 
-  const fallbackUrl = getPropertyFallbackImage(propertyType, propertyId);
-  const validImages = images.filter((img) => img.imageUrl && img.imageUrl.trim());
+  const validImages = images.filter(
+    (img) => img.imageUrl && img.imageUrl.trim() && !img.imageUrl.includes('indian-properties')
+  );
   const currentImg = validImages[selectedIdx] || validImages[0];
   const rawCurrentUrl = currentImg ? getImageUrl(currentImg.imageUrl) : '';
   const isCurrentFailed = !rawCurrentUrl || !!failedUrls[rawCurrentUrl];
-  const currentUrl = isCurrentFailed ? fallbackUrl : rawCurrentUrl;
+  const currentUrl = isCurrentFailed ? '' : rawCurrentUrl;
 
   const handleImageError = (url: string) => {
     if (url && !failedUrls[url]) {
@@ -60,23 +61,12 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
     }
   };
 
-  if (validImages.length === 0) {
+  if (validImages.length === 0 || !currentUrl) {
     return (
-      <div className="space-y-2">
-        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] border border-[#E8DFC8] shadow-sm flex items-center justify-center group">
-          <img
-            src={fallbackUrl}
-            alt={title}
-            className="w-full h-full object-contain p-1"
-          />
-          <div className="absolute top-2 left-2 px-2 py-0.5 bg-amber-600/90 text-white text-[10px] font-bold rounded-md shadow-xs flex items-center gap-1">
-            <Building2 className="w-3 h-3" />
-            <span>Category Default Preview</span>
-          </div>
-          <div className="absolute bottom-2 left-2 right-2 text-center bg-black/60 backdrop-blur-xs text-white text-[10px] py-1 px-2 rounded-lg font-medium">
-            Owner has not uploaded custom photos yet
-          </div>
-        </div>
+      <div className="w-full aspect-[4/3] rounded-2xl bg-gray-50 border border-gray-200 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+        <Building2 className="w-10 h-10 text-gray-300 mb-2" />
+        <span className="text-xs font-bold text-gray-500">No Photo Uploaded</span>
+        <span className="text-[10px] text-gray-400 mt-0.5">Owner did not upload custom photos</span>
       </div>
     );
   }
@@ -161,7 +151,6 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
           {validImages.map((img, idx) => {
             const rawThumb = getImageUrl(img.imageUrl);
             const isThumbFailed = !rawThumb || !!failedUrls[rawThumb];
-            const thumbUrl = isThumbFailed ? fallbackUrl : rawThumb;
             return (
               <button
                 key={img.id || idx}
@@ -173,12 +162,18 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
                     : 'border-transparent opacity-60 hover:opacity-100 bg-gray-900/10'
                 }`}
               >
-                <img
-                  src={thumbUrl}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  onError={() => handleImageError(rawThumb)}
-                />
+                {isThumbFailed ? (
+                  <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                    <Building2 className="w-4 h-4 text-gray-300" />
+                  </div>
+                ) : (
+                  <img
+                    src={rawThumb}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    onError={() => handleImageError(rawThumb)}
+                  />
+                )}
               </button>
             );
           })}

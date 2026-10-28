@@ -23,14 +23,13 @@ import {
   Calendar,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
+import { getImageUrl } from '../../utils/imageUrl';
 
-/** Small thumbnail component that tracks image load errors and shows a fallback icon on failure. */
+/** Small thumbnail component that displays the owner's uploaded photo or a neutral placeholder. */
 const PropertyThumbnail: React.FC<{
-  src: string;
+  src?: string | null;
   alt: string;
-  fallbackSrc: string;
-}> = ({ src, alt, fallbackSrc }) => {
+}> = ({ src, alt }) => {
   const [imgSrc, setImgSrc] = useState(src);
   const [failed, setFailed] = useState(false);
 
@@ -40,18 +39,12 @@ const PropertyThumbnail: React.FC<{
   }, [src]);
 
   const handleError = () => {
-    if (!failed && imgSrc !== fallbackSrc) {
-      // First error: try the fallback static image
-      setImgSrc(fallbackSrc);
-    } else {
-      // Fallback also failed — show icon placeholder
-      setFailed(true);
-    }
+    setFailed(true);
   };
 
-  if (failed) {
+  if (!imgSrc || failed) {
     return (
-      <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center w-full h-full">
+      <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center w-full h-full bg-gray-50">
         <Building2 className="w-6 h-6 text-gray-300" />
         <span className="text-[10px] font-semibold mt-1">No photo</span>
       </div>
@@ -186,13 +179,29 @@ export const MyPropertiesPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {properties.map((prop) => {
-            const fallbackImg = getPropertyFallbackImage(prop.propertyType, prop.id);
-            const rawImg =
+            // 1. Check if owner uploaded photo on this browser/device
+            const localImg =
+              typeof window !== 'undefined'
+                ? localStorage.getItem(`owner_prop_img_${prop.id}`)
+                : null;
+
+            // 2. Check server-stored image, excluding any stock photos
+            const rawServerImg =
               prop.images?.find((img) => img.isPrimary)?.imageUrl ||
               prop.images?.[0]?.imageUrl;
-            const primaryImg = rawImg
-              ? getImageUrl(rawImg, fallbackImg)
-              : fallbackImg;
+
+            const isStockPhoto =
+              rawServerImg &&
+              (rawServerImg.startsWith('/indian-properties/') ||
+               rawServerImg.includes('indian-properties'));
+
+            const serverImg =
+              rawServerImg && !isStockPhoto
+                ? getImageUrl(rawServerImg)
+                : null;
+
+            // Prefer server image if valid, otherwise local image from owner's upload
+            const primaryImg = serverImg || localImg || null;
 
             const canEdit = prop.status !== 'REMOVED';
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
@@ -214,9 +223,8 @@ export const MyPropertiesPage: React.FC = () => {
                   {/* Left: Thumbnail */}
                   <div className="shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-900/5 border border-gray-200 relative flex items-center justify-center">
                     <PropertyThumbnail
-                      src={primaryImg || fallbackImg}
+                      src={primaryImg}
                       alt={prop.title}
-                      fallbackSrc={fallbackImg}
                     />
                   </div>
 
