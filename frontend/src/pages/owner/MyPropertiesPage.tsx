@@ -23,7 +23,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyPrimaryImage } from '../../utils/imageUrl';
 
 /** Small thumbnail component that displays the owner's uploaded photo or a neutral placeholder. */
 const PropertyThumbnail: React.FC<{
@@ -179,29 +179,8 @@ export const MyPropertiesPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {properties.map((prop) => {
-            // 1. Check if owner uploaded photo on this browser/device
-            const localImg =
-              typeof window !== 'undefined'
-                ? localStorage.getItem(`owner_prop_img_${prop.id}`)
-                : null;
-
-            // 2. Check server-stored image, excluding any stock photos
-            const rawServerImg =
-              prop.images?.find((img) => img.isPrimary)?.imageUrl ||
-              prop.images?.[0]?.imageUrl;
-
-            const isStockPhoto =
-              rawServerImg &&
-              (rawServerImg.startsWith('/indian-properties/') ||
-               rawServerImg.includes('indian-properties'));
-
-            const serverImg =
-              rawServerImg && !isStockPhoto
-                ? getImageUrl(rawServerImg)
-                : null;
-
-            // Prefer server image if valid, otherwise local image from owner's upload
-            const primaryImg = serverImg || localImg || null;
+            // Resolve primary image from localStorage, PostgreSQL amenities base64, or server images
+            const primaryImg = getPropertyPrimaryImage(prop);
 
             const canEdit = prop.status !== 'REMOVED';
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';

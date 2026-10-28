@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
 import { useLocalities } from '../../hooks/useProperties';
 import { ImageUploader } from '../../components/property/ImageUploader';
+import { compressImageToBase64 } from '../../utils/imageCompression';
 import { SEOHead } from '../../components/common/SEOHead';
 import {
   Building2,
@@ -383,7 +384,20 @@ export const AddPropertyPage: React.FC = () => {
       // Add any category specific amenities
       selectedAmenities.forEach((a) => compiledAmenities.add(a));
 
+      // Compress primary photo into a clean Base64 JPEG (~100KB) to persist directly in PostgreSQL
+      let primaryPhotoBase64 = '';
+      if (files.length > 0) {
+        try {
+          primaryPhotoBase64 = await compressImageToBase64(files[0]);
+        } catch {
+          // Ignore
+        }
+      }
+
       const finalAmenities = Array.from(compiledAmenities);
+      if (primaryPhotoBase64) {
+        finalAmenities.push(`[IMG_PRIMARY:${primaryPhotoBase64}]`);
+      }
 
       // Step 1: Create draft property
       const res = await propertyService.createProperty({
@@ -409,30 +423,21 @@ export const AddPropertyPage: React.FC = () => {
 
       const newPropertyId = res.data.id;
 
-      // Step 2: Upload images
+      // Step 2: Upload images and cache locally
       if (files.length > 0) {
-        // Save uploaded photo in browser cache so owner always sees their exact uploaded photo immediately
-        try {
-          await new Promise<void>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-              if (reader.result && typeof reader.result === 'string') {
-                try {
-                  localStorage.setItem(`owner_prop_img_${newPropertyId}`, reader.result);
-                } catch {
-                  // Ignore storage quota
-                }
-              }
-              resolve();
-            };
-            reader.onerror = () => resolve();
-            reader.readAsDataURL(files[0]);
-          });
-        } catch {
-          // Ignore
+        if (primaryPhotoBase64) {
+          try {
+            localStorage.setItem(`owner_prop_img_${newPropertyId}`, primaryPhotoBase64);
+          } catch {
+            // Ignore quota
+          }
         }
 
-        await propertyService.uploadImages(newPropertyId, files);
+        try {
+          await propertyService.uploadImages(newPropertyId, files);
+        } catch {
+          // Non-fatal: base64 is already safely stored in PostgreSQL amenities array
+        }
       }
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });

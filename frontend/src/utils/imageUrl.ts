@@ -81,3 +81,49 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
 export const getPropertyFallbackImage = (_propertyType?: string, _id?: string): string => {
   return '';
 };
+
+/**
+ * Resilient multi-tier resolver for a property's primary photo.
+ * 1. Checks device localStorage (if uploaded in this browser).
+ * 2. Checks PostgreSQL database amenities array ([IMG_PRIMARY:data:image/...]).
+ * 3. Checks server images array (filtering out fake stock photos).
+ */
+export const getPropertyPrimaryImage = (property?: {
+  id?: string;
+  images?: Array<{ imageUrl?: string; isPrimary?: boolean }>;
+  amenities?: string[];
+}): string => {
+  if (!property) return '';
+
+  // 1. Check local storage if owner uploaded photo in this browser
+  if (typeof window !== 'undefined' && property.id) {
+    try {
+      const local = localStorage.getItem(`owner_prop_img_${property.id}`);
+      if (local && local.startsWith('data:image/')) return local;
+    } catch {}
+  }
+
+  // 2. Check embedded base64 in amenities (persisted directly in PostgreSQL database)
+  if (property.amenities && Array.isArray(property.amenities)) {
+    const embedded = property.amenities.find(
+      (a) => a.startsWith('[IMG_PRIMARY:') && a.endsWith(']')
+    );
+    if (embedded) {
+      const b64 = embedded.slice('[IMG_PRIMARY:'.length, -1);
+      if (b64.startsWith('data:image/')) return b64;
+    }
+  }
+
+  // 3. Check server-stored images table
+  if (property.images && Array.isArray(property.images)) {
+    const raw =
+      property.images.find((img) => img.isPrimary)?.imageUrl ||
+      property.images[0]?.imageUrl;
+    if (raw && !raw.includes('indian-properties')) {
+      if (raw.startsWith('data:image/')) return raw;
+      return getImageUrl(raw);
+    }
+  }
+
+  return '';
+};

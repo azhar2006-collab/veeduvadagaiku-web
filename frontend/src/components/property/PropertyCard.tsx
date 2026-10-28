@@ -6,7 +6,7 @@ import { useFavourites } from '../../hooks/useFavourites';
 import { useLanguage } from '../../context/LanguageContext';
 import { getWhatsAppShareUrl } from '../../utils/shareUtils';
 import { getPropertyCategory, getCategoryBadgeInfo } from '../../utils/categoryUtils';
-import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyPrimaryImage } from '../../utils/imageUrl';
 
 interface PropertyCardProps {
   property: Property;
@@ -37,16 +37,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     maximumFractionDigits: 0,
   }).format(property.deposit);
 
-  // Primary image — only show real uploaded images, never fake stock photos
-  const rawImg =
-    property.images?.find((img) => img.isPrimary)?.imageUrl ||
-    property.images?.[0]?.imageUrl;
-
-  const isStockPhoto =
-    rawImg &&
-    (rawImg.startsWith('/indian-properties/') || rawImg.includes('indian-properties'));
-
-  const primaryImg = rawImg && !isStockPhoto ? getImageUrl(rawImg) : '';
+  // Primary image — resolves from localStorage, database amenities base64, or server images
+  const primaryImg = getPropertyPrimaryImage(property);
 
   const furnishingLabel: Record<string, string> = {
     FURNISHED: t('card.furnished'),

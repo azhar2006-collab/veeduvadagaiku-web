@@ -5,6 +5,7 @@ import { propertyService } from '../../services/property.service';
 import { useLocalities } from '../../hooks/useProperties';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 import { ImageUploader } from '../../components/property/ImageUploader';
+import { compressImageToBase64 } from '../../utils/imageCompression';
 import { Loader } from '../../components/common/Loader';
 import { SEOHead } from '../../components/common/SEOHead';
 import { Check, ArrowLeft } from 'lucide-react';
@@ -91,6 +92,23 @@ export const EditPropertyPage: React.FC = () => {
 
     try {
       setIsSubmitting(true);
+
+      let primaryPhotoBase64 = '';
+      if (files.length > 0) {
+        try {
+          primaryPhotoBase64 = await compressImageToBase64(files[0]);
+        } catch {
+          // Ignore
+        }
+      }
+
+      let updatedAmenities = (property?.amenities || []).filter(
+        (a) => !a.startsWith('[IMG_PRIMARY:')
+      );
+      if (primaryPhotoBase64) {
+        updatedAmenities.push(`[IMG_PRIMARY:${primaryPhotoBase64}]`);
+      }
+
       await propertyService.updateProperty(id, {
         title: title.trim(),
         description: description.trim(),
@@ -101,31 +119,23 @@ export const EditPropertyPage: React.FC = () => {
         propertySize: parseFloat(propertySize),
         bedrooms: property?.propertyType === 'HOUSE' ? parseInt(bedrooms) : null,
         furnishing,
+        amenities: updatedAmenities,
       });
 
       if (files.length > 0) {
-        // Cache uploaded photo in browser for owner view
-        try {
-          await new Promise<void>((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-              if (reader.result && typeof reader.result === 'string') {
-                try {
-                  localStorage.setItem(`owner_prop_img_${id}`, reader.result);
-                } catch {
-                  // Ignore storage quota
-                }
-              }
-              resolve();
-            };
-            reader.onerror = () => resolve();
-            reader.readAsDataURL(files[0]);
-          });
-        } catch {
-          // Ignore
+        if (primaryPhotoBase64) {
+          try {
+            localStorage.setItem(`owner_prop_img_${id}`, primaryPhotoBase64);
+          } catch {
+            // Ignore quota
+          }
         }
 
-        await propertyService.uploadImages(id, files);
+        try {
+          await propertyService.uploadImages(id, files);
+        } catch {
+          // Non-fatal: base64 is already persisted in PostgreSQL amenities array
+        }
       }
 
       queryClient.invalidateQueries({ queryKey: ['ownerProperties'] });

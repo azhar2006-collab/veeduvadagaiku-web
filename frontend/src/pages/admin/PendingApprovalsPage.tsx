@@ -35,6 +35,7 @@ interface AdminPropertyImagesViewerProps {
   title: string;
   propertyType?: string;
   propertyId?: string;
+  amenities?: string[];
 }
 
 const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
@@ -42,18 +43,45 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
   title,
   propertyType,
   propertyId,
+  amenities = [],
 }) => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [failedUrls, setFailedUrls] = useState<Record<string, boolean>>({});
 
-  const validImages = images.filter(
-    (img) => img.imageUrl && img.imageUrl.trim() && !img.imageUrl.includes('indian-properties')
-  );
-  const currentImg = validImages[selectedIdx] || validImages[0];
-  const rawCurrentUrl = currentImg ? getImageUrl(currentImg.imageUrl) : '';
-  const isCurrentFailed = !rawCurrentUrl || !!failedUrls[rawCurrentUrl];
-  const currentUrl = isCurrentFailed ? '' : rawCurrentUrl;
+  // 1. Check local storage if uploaded on this device/browser
+  const localImg =
+    typeof window !== 'undefined' && propertyId
+      ? localStorage.getItem(`owner_prop_img_${propertyId}`)
+      : null;
+
+  // 2. Check embedded base64 in amenities
+  const amenityImg = amenities.find(
+    (a) => a.startsWith('[IMG_PRIMARY:') && a.endsWith(']')
+  )?.slice('[IMG_PRIMARY:'.length, -1);
+
+  // 3. Filter valid server images (rejecting default stock photos)
+  const serverImages = images
+    .map((img) => img.imageUrl)
+    .filter((url): url is string => Boolean(url && url.trim() && !url.includes('indian-properties')));
+
+  // Combined candidates
+  const allCandidates: string[] = [];
+  if (localImg && localImg.startsWith('data:image/')) {
+    allCandidates.push(localImg);
+  }
+  if (amenityImg && amenityImg.startsWith('data:image/') && !allCandidates.includes(amenityImg)) {
+    allCandidates.push(amenityImg);
+  }
+  for (const s of serverImages) {
+    if (!allCandidates.includes(s)) allCandidates.push(s);
+  }
+
+  // Filter out any that errored on load
+  const activeCandidates = allCandidates.filter((u) => !failedUrls[u]);
+
+  const rawCurrentUrl = activeCandidates[selectedIdx] || activeCandidates[0] || '';
+  const currentUrl = rawCurrentUrl.startsWith('data:') ? rawCurrentUrl : getImageUrl(rawCurrentUrl);
 
   const handleImageError = (url: string) => {
     if (url && !failedUrls[url]) {
@@ -61,7 +89,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
     }
   };
 
-  if (validImages.length === 0 || !currentUrl) {
+  if (!currentUrl || activeCandidates.length === 0) {
     return (
       <div className="w-full aspect-[4/3] rounded-2xl bg-gray-50 border border-gray-200 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
         <Building2 className="w-10 h-10 text-gray-300 mb-2" />
@@ -97,33 +125,26 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
         />
 
         {/* Primary badge */}
-        {currentImg?.isPrimary && (
+        {selectedIdx === 0 && (
           <span className="absolute top-2 left-2 z-20 px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded-md shadow-sm">
             ★ Primary
           </span>
         )}
 
-        {/* Fallback badge if original file is missing/404 */}
-        {isCurrentFailed && (
-          <span className="absolute top-2 right-2 z-20 px-2 py-0.5 bg-amber-500 text-black text-[10px] font-black rounded-md shadow-sm">
-            Fallback Photo
-          </span>
-        )}
-
         {/* Counter Badge & Fullscreen Hint */}
         <div className="absolute bottom-2 right-2 z-20 px-2.5 py-1 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold rounded-lg flex items-center gap-1.5 shadow-sm">
-          <span>{selectedIdx + 1} / {validImages.length}</span>
+          <span>{selectedIdx + 1} / {activeCandidates.length}</span>
           <Maximize2 className="w-3 h-3 text-gray-300" />
         </div>
 
         {/* Prev / Next buttons if multiple */}
-        {validImages.length > 1 && (
+        {activeCandidates.length > 1 && (
           <>
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedIdx((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
+                setSelectedIdx((prev) => (prev === 0 ? activeCandidates.length - 1 : prev - 1));
               }}
               className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover:opacity-100 transition shadow"
               title="Previous photo"
@@ -134,7 +155,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedIdx((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
+                setSelectedIdx((prev) => (prev === activeCandidates.length - 1 ? 0 : prev + 1));
               }}
               className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover:opacity-100 transition shadow"
               title="Next photo"
@@ -146,14 +167,13 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
       </div>
 
       {/* Thumbnails row */}
-      {validImages.length > 1 && (
+      {activeCandidates.length > 1 && (
         <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {validImages.map((img, idx) => {
-            const rawThumb = getImageUrl(img.imageUrl);
-            const isThumbFailed = !rawThumb || !!failedUrls[rawThumb];
+          {activeCandidates.map((thumbUrl, idx) => {
+            const displayThumb = thumbUrl.startsWith('data:') ? thumbUrl : getImageUrl(thumbUrl);
             return (
               <button
-                key={img.id || idx}
+                key={idx}
                 type="button"
                 onClick={() => setSelectedIdx(idx)}
                 className={`relative shrink-0 w-12 h-10 rounded-lg overflow-hidden border-2 transition ${
@@ -162,18 +182,12 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
                     : 'border-transparent opacity-60 hover:opacity-100 bg-gray-900/10'
                 }`}
               >
-                {isThumbFailed ? (
-                  <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                    <Building2 className="w-4 h-4 text-gray-300" />
-                  </div>
-                ) : (
-                  <img
-                    src={rawThumb}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={() => handleImageError(rawThumb)}
-                  />
-                )}
+                <img
+                  src={displayThumb}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  onError={() => handleImageError(thumbUrl)}
+                />
               </button>
             );
           })}
@@ -203,7 +217,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
             />
             <div className="mt-4 flex items-center justify-between w-full text-white text-xs px-2">
               <span className="font-bold truncate max-w-md">{title}</span>
-              <span>Photo {selectedIdx + 1} of {validImages.length}</span>
+              <span>Photo {selectedIdx + 1} of {activeCandidates.length}</span>
             </div>
           </div>
         </div>
@@ -437,6 +451,7 @@ export const PendingApprovalsPage: React.FC = () => {
                     title={prop.title}
                     propertyType={prop.propertyType}
                     propertyId={prop.id}
+                    amenities={prop.amenities}
                   />
 
                   {/* Property Specs */}
