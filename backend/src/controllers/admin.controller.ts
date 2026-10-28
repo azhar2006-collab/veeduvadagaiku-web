@@ -19,7 +19,7 @@ export async function getDashboardStats(req: AuthRequest, res: Response, next: N
       prisma.payment.aggregate({ where: { paymentStatus: 'SUCCESS' }, _sum: { amount: true } }),
       prisma.property.findMany({
         take: 5, orderBy: { createdAt: 'desc' },
-        include: { images: { where: { isPrimary: true }, take: 1 }, owner: { include: { user: { select: { name: true } } } } },
+        include: { images: { orderBy: { displayOrder: 'asc' } }, owner: { include: { user: { select: { name: true } } } } },
       }),
       prisma.payment.findMany({
         take: 5, orderBy: { createdAt: 'desc' },
@@ -155,7 +155,7 @@ export async function adminListProperties(req: AuthRequest, res: Response, next:
       prisma.property.findMany({
         where, skip, take: limit, orderBy: { createdAt: 'desc' },
         include: {
-          images: { where: { isPrimary: true }, take: 1 },
+          images: { orderBy: { displayOrder: 'asc' } },
           owner: { include: { user: { select: { name: true, mobile: true } } } },
           plan: { select: { name: true } },
         },

@@ -31,6 +31,7 @@ export const ManagePlansPage: React.FC = () => {
   const [durationDays, setDurationDays] = useState('60');
   const [description, setDescription] = useState('');
   const [featuresStr, setFeaturesStr] = useState('');
+  const [isActive, setIsActive] = useState(true);
 
   const { data, isLoading } = useQuery({
     queryKey: ['adminPlans'],
@@ -48,6 +49,7 @@ export const ManagePlansPage: React.FC = () => {
     setDurationDays('60');
     setDescription('');
     setFeaturesStr('');
+    setIsActive(true);
     setModalOpen(true);
   };
 
@@ -58,16 +60,18 @@ export const ManagePlansPage: React.FC = () => {
     setDurationDays(String(plan.durationDays));
     setDescription(plan.description);
     setFeaturesStr(plan.features?.join('\n') || '');
+    setIsActive(plan.isActive);
     setModalOpen(true);
   };
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const payload = {
+      const payload: Partial<ListingPlan> = {
         name: name.trim(),
         price: parseFloat(price) || 0,
         durationDays: parseInt(durationDays) || 60,
         description: description.trim(),
+        isActive,
         features: featuresStr
           .split('\n')
           .map((f) => f.trim())
@@ -83,6 +87,7 @@ export const ManagePlansPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminPlans'] });
       queryClient.invalidateQueries({ queryKey: ['listingPlans'] });
+      queryClient.invalidateQueries({ queryKey: ['subscriptionPlans'] });
       toast.success(editingPlan ? 'Plan updated successfully' : 'Plan created successfully');
       setModalOpen(false);
     },
@@ -91,11 +96,24 @@ export const ManagePlansPage: React.FC = () => {
     },
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+      adminService.updatePlan(id, { isActive: active }),
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ['adminPlans'] });
+      queryClient.invalidateQueries({ queryKey: ['listingPlans'] });
+      queryClient.invalidateQueries({ queryKey: ['subscriptionPlans'] });
+      toast.success(vars.active ? 'Plan activated' : 'Plan deactivated');
+    },
+    onError: () => toast.error('Failed to update plan status'),
+  });
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminService.deletePlan(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminPlans'] });
       queryClient.invalidateQueries({ queryKey: ['listingPlans'] });
+      queryClient.invalidateQueries({ queryKey: ['subscriptionPlans'] });
       toast.success('Plan deactivated');
     },
     onError: () => toast.error('Failed to deactivate plan'),
@@ -304,14 +322,24 @@ export const ManagePlansPage: React.FC = () => {
                       <span>Edit</span>
                     </button>
 
-                    {plan.isActive && (
+                    {plan.isActive ? (
                       <button
                         type="button"
-                        onClick={() => deleteMutation.mutate(plan.id)}
+                        onClick={() => toggleActiveMutation.mutate({ id: plan.id, active: false })}
                         className="p-1.5 text-red-500 hover:bg-red-50 rounded-xl transition"
                         title="Deactivate plan"
                       >
                         <Trash2 className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => toggleActiveMutation.mutate({ id: plan.id, active: true })}
+                        className="px-2.5 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl transition flex items-center gap-1"
+                        title="Activate plan"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Activate</span>
                       </button>
                     )}
                   </div>
@@ -407,6 +435,19 @@ export const ManagePlansPage: React.FC = () => {
                   onChange={(e) => setFeaturesStr(e.target.value)}
                   className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#f59e0b] font-mono leading-relaxed"
                 />
+              </div>
+
+              <div className="flex items-center gap-2 pt-1 pb-1">
+                <input
+                  type="checkbox"
+                  id="plan-active"
+                  checked={isActive}
+                  onChange={(e) => setIsActive(e.target.checked)}
+                  className="w-4 h-4 text-[#f59e0b] rounded border-gray-300 focus:ring-[#f59e0b] cursor-pointer"
+                />
+                <label htmlFor="plan-active" className="text-xs font-bold text-gray-700 cursor-pointer select-none">
+                  Plan is Active (visible to users on checkout & listing pages)
+                </label>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">

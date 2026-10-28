@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -63,9 +63,31 @@ export const EditPropertyPage: React.FC = () => {
     }
   };
 
+  const handleSetPrimaryImage = async (imageId: string) => {
+    if (!id || !property?.images) return;
+    try {
+      const reordered = property.images.map((img) => ({
+        id: img.id,
+        displayOrder: img.id === imageId ? 0 : 1,
+        isPrimary: img.id === imageId,
+      }));
+      await propertyService.reorderImages(id, reordered);
+      queryClient.invalidateQueries({ queryKey: ['property', id] });
+      toast.success('Primary photo updated');
+    } catch {
+      toast.error('Failed to set primary photo');
+    }
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id) return;
+
+    const remainingImages = property?.images?.length || 0;
+    if (remainingImages === 0 && files.length === 0) {
+      toast.error('Please upload at least 1 photo of your property');
+      return;
+    }
 
     try {
       setIsSubmitting(true);
@@ -242,6 +264,7 @@ export const EditPropertyPage: React.FC = () => {
             newFiles={files}
             onFilesChange={setFiles}
             onDeleteExisting={handleDeleteImage}
+            onSetPrimaryExisting={handleSetPrimaryImage}
           />
         </div>
 

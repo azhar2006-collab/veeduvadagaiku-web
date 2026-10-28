@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
 import { homeServiceApi, HomeServiceItem } from '../../services/homeService.service';
-import { Property } from '../../types';
+import { Property, PropertyImage } from '../../types';
 import { Loader } from '../../components/common/Loader';
 import { EmptyState } from '../../components/common/EmptyState';
 import { SEOHead } from '../../components/common/SEOHead';
@@ -22,9 +22,159 @@ import {
   Mail,
   Trash2,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl } from '../../utils/imageUrl';
+
+interface AdminPropertyImagesViewerProps {
+  images?: PropertyImage[];
+  title: string;
+}
+
+const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ images = [], title }) => {
+  const [selectedIdx, setSelectedIdx] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const validImages = images.filter((img) => img.imageUrl && img.imageUrl.trim());
+  const currentImg = validImages[selectedIdx] || validImages[0];
+  const currentUrl = currentImg ? getImageUrl(currentImg.imageUrl) : '';
+
+  if (validImages.length === 0) {
+    return (
+      <div className="w-full aspect-[4/3] rounded-2xl bg-gray-50 border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+        <Building2 className="w-8 h-8 text-gray-300 mb-1" />
+        <span className="text-xs font-bold text-gray-500">No Owner Photos</span>
+        <span className="text-[10px] text-gray-400">Waiting for owner upload</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {/* Main Image Container with Ambient Backdrop & Contain */}
+      <div
+        onClick={() => setIsModalOpen(true)}
+        className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gray-950 border border-gray-200 shadow-sm cursor-zoom-in group flex items-center justify-center"
+        title="Click to view full photo"
+      >
+        {/* Ambient Blur */}
+        <img
+          src={currentUrl}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none select-none"
+        />
+
+        {/* Uncropped foreground image */}
+        <img
+          src={currentUrl}
+          alt={`${title} - Photo ${selectedIdx + 1}`}
+          className="relative z-10 w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-102"
+        />
+
+        {/* Primary badge */}
+        {currentImg.isPrimary && (
+          <span className="absolute top-2 left-2 z-20 px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded-md shadow-sm">
+            ★ Primary
+          </span>
+        )}
+
+        {/* Counter Badge & Fullscreen Hint */}
+        <div className="absolute bottom-2 right-2 z-20 px-2.5 py-1 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold rounded-lg flex items-center gap-1.5 shadow-sm">
+          <span>{selectedIdx + 1} / {validImages.length}</span>
+          <Maximize2 className="w-3 h-3 text-gray-300" />
+        </div>
+
+        {/* Prev / Next buttons if multiple */}
+        {validImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIdx((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
+              }}
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover:opacity-100 transition shadow"
+              title="Previous photo"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIdx((prev) => (prev === validImages.length - 1 ? 0 : prev + 1));
+              }}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 p-1.5 rounded-full bg-black/60 hover:bg-black/90 text-white opacity-0 group-hover:opacity-100 transition shadow"
+              title="Next photo"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Thumbnails row */}
+      {validImages.length > 1 && (
+        <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          {validImages.map((img, idx) => {
+            const thumbUrl = getImageUrl(img.imageUrl);
+            return (
+              <button
+                key={img.id || idx}
+                type="button"
+                onClick={() => setSelectedIdx(idx)}
+                className={`relative shrink-0 w-12 h-10 rounded-lg overflow-hidden border-2 transition ${
+                  selectedIdx === idx
+                    ? 'border-orange-500 shadow-sm scale-95'
+                    : 'border-transparent opacity-60 hover:opacity-100 bg-gray-900/10'
+                }`}
+              >
+                <img
+                  src={thumbUrl}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Fullscreen Lightbox Modal */}
+      {isModalOpen && (
+        <div
+          onClick={() => setIsModalOpen(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4"
+        >
+          <div className="relative max-w-5xl w-full max-h-[85vh] flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="absolute -top-10 right-0 p-2 text-white/80 hover:text-white rounded-full bg-white/10 hover:bg-white/20 transition cursor-pointer"
+              title="Close full view"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={currentUrl}
+              alt={title}
+              className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl bg-black/50"
+            />
+            <div className="mt-4 flex items-center justify-between w-full text-white text-xs px-2">
+              <span className="font-bold truncate max-w-md">{title}</span>
+              <span>Photo {selectedIdx + 1} of {validImages.length}</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const PendingApprovalsPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -199,16 +349,11 @@ export const PendingApprovalsPage: React.FC = () => {
         />
       ) : (
         <div className="space-y-6">
-          {properties.map((prop) => {
-            const primaryImg = getImageUrl(
-              prop.images?.find((img) => img.isPrimary)?.imageUrl || prop.images?.[0]?.imageUrl
-            );
-
-            return (
-              <div
-                key={prop.id}
-                className="bg-white rounded-3xl p-6 sm:p-8 border border-orange-200 shadow-lg space-y-6"
-              >
+          {properties.map((prop) => (
+            <div
+              key={prop.id}
+              className="bg-white rounded-3xl p-6 sm:p-8 border border-orange-200 shadow-lg space-y-6"
+            >
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-gray-100">
                   <div className="flex items-center gap-3">
                     <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-black rounded-lg">
@@ -250,21 +395,8 @@ export const PendingApprovalsPage: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Photo Thumbnail */}
-                  <div className="space-y-2">
-                    <img
-                      src={primaryImg}
-                      alt={prop.title}
-                      loading="lazy"
-                      className="w-full aspect-[4/3] rounded-2xl object-cover bg-gray-100 shadow-sm"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/properties/property-1.png';
-                      }}
-                    />
-                    <p className="text-[11px] text-gray-400 text-center">
-                      {prop.images?.length || 1} photo(s) uploaded
-                    </p>
-                  </div>
+                  {/* Photo Review Carousel / Gallery */}
+                  <AdminPropertyImagesViewer images={prop.images} title={prop.title} />
 
                   {/* Property Specs */}
                   <div className="md:col-span-2 space-y-3 text-xs text-gray-600">
@@ -330,8 +462,7 @@ export const PendingApprovalsPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-            );
-          })}
+          ))}
         </div>
       )
     )}

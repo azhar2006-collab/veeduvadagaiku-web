@@ -4,15 +4,39 @@
  * Handles existing full URLs (Cloudinary, external CDNs) without modification.
  * Returns a fallback placeholder if no image URL is provided.
  */
-export const getImageUrl = (url?: string | null, fallback = '/properties/property-1.png'): string => {
+export const getImageUrl = (url?: string | null, fallback = ''): string => {
   if (!url || typeof url !== 'string' || !url.trim()) {
     return fallback;
   }
 
-  const trimmed = url.trim();
+  // Strip all leading/trailing whitespace, tabs, and newlines
+  const trimmed = url.trim().replace(/^[\t\r\n]+/, '').replace(/[\t\r\n]+$/, '');
+  if (!trimmed) {
+    return fallback;
+  }
+
+  // Data URLs (e.g. data:image/png;base64,...)
+  if (trimmed.startsWith('data:image/')) {
+    return trimmed;
+  }
+
+  // Resolve backend base URL
+  const backendBase = (
+    import.meta.env.VITE_API_URL ||
+    'https://veeduvadagaiku-web-production.up.railway.app'
+  ).replace(/\/$/, '');
 
   // Already an absolute HTTP/HTTPS URL
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    // If it points to localhost and we are NOT in a local browser environment, remap to production backend
+    if (
+      trimmed.includes('localhost:5000') &&
+      typeof window !== 'undefined' &&
+      window.location.hostname !== 'localhost' &&
+      window.location.hostname !== '127.0.0.1'
+    ) {
+      return trimmed.replace(/http:\/\/localhost:5000/, backendBase);
+    }
     return trimmed;
   }
 
@@ -27,11 +51,6 @@ export const getImageUrl = (url?: string | null, fallback = '/properties/propert
   }
 
   // Uploaded media files hosted on the backend server (e.g. /uploads/...)
-  const backendBase = (
-    import.meta.env.VITE_API_URL ||
-    'https://veeduvadagaiku-web-production.up.railway.app'
-  ).replace(/\/$/, '');
-
   const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
   return `${backendBase}${cleanPath}`;
 };

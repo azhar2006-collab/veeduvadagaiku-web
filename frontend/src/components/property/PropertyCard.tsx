@@ -51,17 +51,35 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   return (
     <div className="group bg-white rounded-2xl border border-[#EBE3D0] hover:border-[#C5A059] shadow-xs hover:shadow-xl hover:shadow-[#D4AF37]/12 transition-all duration-300 flex flex-col overflow-hidden relative">
       {/* Image container */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-[#FAF7F0]">
-        <img
-          src={primaryImg}
-          alt={property.title}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/properties/property-1.png';
-          }}
-        />
+      <div className="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] flex items-center justify-center">
+        {primaryImg ? (
+          <>
+            {/* Ambient blurred backdrop so the container is richly filled without awkward borders */}
+            <img
+              src={primaryImg}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
+            />
+            {/* Uncropped, proportional foreground image */}
+            <img
+              src={primaryImg}
+              alt={property.title}
+              loading="lazy"
+              decoding="async"
+              className="relative z-1 w-full h-full object-contain group-hover:scale-102 transition-transform duration-500 p-0.5"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.opacity = '0.3';
+              }}
+            />
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+            <Building2 className="w-10 h-10 text-[#C5A059]/40 mb-1" />
+            <span className="text-xs font-semibold text-[#8C7647]">Verified Listing</span>
+            <span className="text-[10px] text-gray-400">{property.locality}, Chennai</span>
+          </div>
+        )}
 
         {/* Badges container */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">

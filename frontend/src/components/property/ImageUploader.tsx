@@ -84,56 +84,69 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         </div>
       )}
 
-      {/* Existing Images Grid */}
+      {/* Images Grid */}
       {(existingImages.length > 0 || newFiles.length > 0) && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 pt-2">
-          {existingImages.map((img) => (
-            <div
-              key={img.id}
-              className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group bg-gray-100"
-            >
-              <img
-                src={getImageUrl(img.imageUrl)}
-                alt=""
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/properties/property-1.png';
-                }}
-              />
+          {existingImages.map((img) => {
+            const url = getImageUrl(img.imageUrl);
+            return (
+              <div
+                key={img.id}
+                className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group bg-gray-900/5 flex items-center justify-center shadow-xs"
+              >
+                {/* Ambient blurred backdrop */}
+                {url && (
+                  <img
+                    src={url}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
+                  />
+                )}
+                {/* Full uncropped image fitted in the allocated space */}
+                <img
+                  src={url}
+                  alt="Property"
+                  className="relative z-10 w-full h-full object-contain p-1 group-hover:scale-102 transition-transform duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.opacity = '0.4';
+                  }}
+                />
 
-              {/* Primary badge */}
-              {img.isPrimary && (
-                <div className="absolute top-2 left-2 px-2 py-0.5 bg-orange-600 text-white text-[10px] font-bold rounded-md flex items-center gap-1 shadow-sm">
-                  <Star className="w-3 h-3 fill-current" />
-                  Primary
+                {/* Primary badge */}
+                {img.isPrimary && (
+                  <div className="absolute top-2 left-2 z-20 px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded-md flex items-center gap-1 shadow-sm">
+                    <Star className="w-3 h-3 fill-current" />
+                    Primary
+                  </div>
+                )}
+
+                {/* Overlay controls */}
+                <div className="absolute inset-0 z-20 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                  {!img.isPrimary && onSetPrimaryExisting && (
+                    <button
+                      type="button"
+                      onClick={() => onSetPrimaryExisting(img.id)}
+                      className="p-2 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow text-xs font-semibold"
+                      title="Set as primary"
+                    >
+                      <Star className="w-4 h-4 text-amber-500" />
+                    </button>
+                  )}
+                  {onDeleteExisting && (
+                    <button
+                      type="button"
+                      onClick={() => onDeleteExisting(img.id)}
+                      className="p-2 bg-white/90 hover:bg-red-600 hover:text-white text-red-600 rounded-full shadow text-xs"
+                      title="Delete image"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-              )}
-
-              {/* Overlay controls */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                {!img.isPrimary && onSetPrimaryExisting && (
-                  <button
-                    type="button"
-                    onClick={() => onSetPrimaryExisting(img.id)}
-                    className="p-2 bg-white/90 hover:bg-white text-gray-800 rounded-full shadow text-xs font-semibold"
-                    title="Set as primary"
-                  >
-                    <Star className="w-4 h-4 text-amber-500" />
-                  </button>
-                )}
-                {onDeleteExisting && (
-                  <button
-                    type="button"
-                    onClick={() => onDeleteExisting(img.id)}
-                    className="p-2 bg-white/90 hover:bg-red-600 hover:text-white text-red-600 rounded-full shadow text-xs"
-                    title="Delete image"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* New files preview */}
           {newFiles.map((file, idx) => {
@@ -141,16 +154,28 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             return (
               <div
                 key={idx}
-                className="relative aspect-square rounded-2xl overflow-hidden border border-orange-200 bg-gray-100 group shadow-sm"
+                className="relative aspect-square rounded-2xl overflow-hidden border border-orange-300 bg-gray-900/5 group shadow-sm flex items-center justify-center"
               >
-                <img src={previewUrl} alt="" className="w-full h-full object-cover" />
-                <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 text-white text-[10px] font-semibold rounded backdrop-blur-sm">
+                {/* Ambient blur backdrop */}
+                <img
+                  src={previewUrl}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
+                />
+                {/* Full uncropped image fitted in the allocated space */}
+                <img
+                  src={previewUrl}
+                  alt="Ready to upload"
+                  className="relative z-10 w-full h-full object-contain p-1 group-hover:scale-102 transition-transform duration-300"
+                />
+                <span className="absolute bottom-2 left-2 z-20 px-2 py-0.5 bg-black/70 text-white text-[10px] font-semibold rounded backdrop-blur-sm">
                   Ready to upload
                 </span>
                 <button
                   type="button"
                   onClick={() => removeNewFile(idx)}
-                  className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full shadow hover:bg-red-700 transition"
+                  className="absolute top-2 right-2 z-20 p-1.5 bg-red-600 text-white rounded-full shadow hover:bg-red-700 transition"
                   title="Remove"
                 >
                   <X className="w-3.5 h-3.5" />

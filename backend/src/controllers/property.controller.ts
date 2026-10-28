@@ -762,18 +762,32 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
         const ext = path.extname(file.originalname) || '.jpg';
         const fileName = `${id}_${Date.now()}_${i}${ext}`;
         const filePath = path.join(uploadsDir, fileName);
-        const host =
-          process.env.BACKEND_URL ||
-          (req.get('host') ? `${req.protocol}://${req.get('host')}` : 'https://veeduvadagaiku-web-production.up.railway.app');
-        const cleanHost = host.replace(/\/$/, '');
-        imageUrl = `${cleanHost}/uploads/${fileName}`;
+
+        // Write the uploaded file binary buffer to disk
+        fs.writeFileSync(filePath, file.buffer);
+
+        // Also duplicate to frontend public directory if available during development
+        try {
+          const frontendPublicUploads = path.resolve(process.cwd(), '../frontend/public/uploads');
+          if (fs.existsSync(path.resolve(process.cwd(), '../frontend/public'))) {
+            if (!fs.existsSync(frontendPublicUploads)) {
+              fs.mkdirSync(frontendPublicUploads, { recursive: true });
+            }
+            fs.writeFileSync(path.join(frontendPublicUploads, fileName), file.buffer);
+          }
+        } catch {
+          // Ignore non-fatal frontend sync errors
+        }
+
+        imageUrl = `/uploads/${fileName}`;
       }
 
       const isPrimary = existingCount === 0 && i === 0;
+      const cleanImageUrl = imageUrl.trim();
       const img = await prisma.propertyImage.create({
         data: {
           propertyId: id,
-          imageUrl,
+          imageUrl: cleanImageUrl,
           publicId,
           isPrimary,
           displayOrder: existingCount + i,

@@ -17,6 +17,7 @@ import {
   ChevronRight,
   ArrowRight,
   SlidersHorizontal,
+  Building2,
 } from 'lucide-react';
 import { Property } from '../../types';
 import { useFavourites } from '../../hooks/useFavourites';
@@ -68,8 +69,8 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
 
   // Current property photos
   const currentImages = currentProperty?.images && currentProperty.images.length > 0
-    ? currentProperty.images.map((img) => getImageUrl(img.imageUrl))
-    : ['/properties/property-1.png'];
+    ? currentProperty.images.map((img) => getImageUrl(img.imageUrl)).filter(Boolean)
+    : [];
 
   // Handle Swipe logic
   const handleSwipe = useCallback(
@@ -348,7 +349,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                   alt={thirdProperty.title}
                   className="w-full h-full object-cover blur-sm brightness-50"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                    (e.target as HTMLImageElement).style.opacity = '0.2';
                   }}
                 />
               </div>
@@ -374,7 +375,7 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                   alt={nextProperty.title}
                   className="w-full h-full object-cover brightness-75"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/properties/property-1.png';
+                    (e.target as HTMLImageElement).style.opacity = '0.2';
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
@@ -403,16 +404,33 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 }}
               >
                 {/* Background Image Carousel */}
-                <div className="relative w-full h-full bg-gray-900">
-                  <img
-                    src={currentImages[photoIndex] || currentImages[0]}
-                    alt={currentProperty.title}
-                    draggable={false}
-                    className="w-full h-full object-cover transition-all duration-300"
-                  />
+                <div className="relative w-full h-full bg-gray-950 flex items-center justify-center">
+                  {(currentImages[photoIndex] || currentImages[0]) ? (
+                    <>
+                      {/* Ambient blur backdrop */}
+                      <img
+                        src={currentImages[photoIndex] || currentImages[0]}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none select-none"
+                      />
+                      {/* Full uncropped image fitted in the allocated space */}
+                      <img
+                        src={currentImages[photoIndex] || currentImages[0]}
+                        alt={currentProperty.title}
+                        draggable={false}
+                        className="relative z-1 w-full h-full object-contain p-1 transition-all duration-300 select-none"
+                      />
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-gray-500">
+                      <Building2 className="w-12 h-12 text-gray-600 mb-2" />
+                      <span className="text-sm font-semibold">{currentProperty.locality}, Chennai</span>
+                    </div>
+                  )}
 
                   {/* Gradient overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#060D1E] via-[#060D1E]/40 to-black/50 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#060D1E] via-[#060D1E]/40 to-black/50 pointer-events-none z-10" />
 
                   {/* Photo Pagination Bar (Stories Style) */}
                   {currentImages.length > 1 && (

@@ -28,21 +28,32 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
     setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  const activeUrl = getImageUrl(images[selectedIndex]?.imageUrl);
+
   return (
     <div className="space-y-4">
       {/* Main Large Image */}
-      <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden bg-gray-900 shadow-lg group">
+      <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden bg-gray-950 shadow-lg group flex items-center justify-center">
+        {/* Ambient Blur Backdrop */}
+        {activeUrl && (
+          <img
+            src={activeUrl}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none select-none"
+          />
+        )}
         <img
-          src={getImageUrl(images[selectedIndex]?.imageUrl)}
+          src={activeUrl}
           alt={`${title} - Photo ${selectedIndex + 1}`}
-          className="w-full h-full object-cover transition-all duration-300"
+          className="relative z-10 w-full h-full object-contain p-2 max-h-[560px] transition-all duration-300"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = '/properties/property-1.png';
+            (e.target as HTMLImageElement).style.opacity = '0.3';
           }}
         />
 
         {/* Counter Badge */}
-        <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/70 backdrop-blur-md text-white text-xs font-semibold rounded-full">
+        <div className="absolute bottom-4 right-4 z-20 px-3 py-1 bg-black/70 backdrop-blur-md text-white text-xs font-semibold rounded-full">
           {selectedIndex + 1} / {images.length}
         </div>
 
@@ -51,14 +62,14 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
           <>
             <button
               onClick={handlePrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-900 flex items-center justify-center shadow-md transition opacity-90 group-hover:opacity-100"
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-900 flex items-center justify-center shadow-md transition opacity-90 group-hover:opacity-100"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={handleNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-900 flex items-center justify-center shadow-md transition opacity-90 group-hover:opacity-100"
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-gray-900 flex items-center justify-center shadow-md transition opacity-90 group-hover:opacity-100"
               aria-label="Next image"
             >
               <ChevronRight className="w-5 h-5" />
@@ -70,26 +81,31 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
       {/* Thumbnails strip */}
       {images.length > 1 && (
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-          {images.map((img, idx) => (
-            <button
-              key={img.id || idx}
-              onClick={() => setSelectedIndex(idx)}
-              className={`relative flex-shrink-0 w-24 h-16 rounded-xl overflow-hidden border-2 transition ${
-                selectedIndex === idx
-                  ? 'border-orange-600 scale-95 shadow-md'
-                  : 'border-transparent opacity-60 hover:opacity-100'
-              }`}
-            >
-              <img
-                src={getImageUrl(img.imageUrl)}
-                alt=""
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/properties/property-1.png';
-                }}
-              />
-            </button>
-          ))}
+          {images.map((img, idx) => {
+            const thumbUrl = getImageUrl(img.imageUrl);
+            return (
+              <button
+                key={img.id || idx}
+                onClick={() => setSelectedIndex(idx)}
+                className={`relative flex-shrink-0 w-24 h-16 rounded-xl overflow-hidden border-2 transition ${
+                  selectedIndex === idx
+                    ? 'border-orange-600 scale-95 shadow-md'
+                    : 'border-transparent opacity-60 hover:opacity-100'
+                }`}
+              >
+                <div className="relative w-full h-full bg-gray-950 flex items-center justify-center">
+                  <img
+                    src={thumbUrl}
+                    alt=""
+                    className="w-full h-full object-contain p-0.5"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.opacity = '0.3';
+                    }}
+                  />
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

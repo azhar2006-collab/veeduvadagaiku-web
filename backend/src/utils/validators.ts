@@ -53,7 +53,7 @@ export const updateProfileSchema = z.object({
 
 export const createPlanSchema = z.object({
   name: z.string().min(1),
-  price: z.number().positive(),
+  price: z.number().min(0),
   durationDays: z.number().int().positive(),
   description: z.string().min(1),
   features: z.array(z.string()).optional(),

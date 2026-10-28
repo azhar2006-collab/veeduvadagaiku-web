@@ -135,7 +135,7 @@ export const MyPropertiesPage: React.FC = () => {
             const primaryImg =
               prop.images?.[0]?.imageUrl
                 ? getImageUrl(prop.images[0].imageUrl)
-                : '/properties/property-1.png';
+                : '';
 
             const canEdit = prop.status !== 'REMOVED';
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
@@ -155,17 +155,32 @@ export const MyPropertiesPage: React.FC = () => {
               >
                 <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4">
                   {/* Left: Thumbnail */}
-                  <div className="shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
-                    <img
-                      src={primaryImg}
-                      alt={prop.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/properties/property-1.png';
-                      }}
-                    />
+                  <div className="shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-900/5 border border-gray-200 relative flex items-center justify-center">
+                    {primaryImg ? (
+                      <>
+                        <img
+                          src={primaryImg}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
+                        />
+                        <img
+                          src={primaryImg}
+                          alt={prop.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="relative z-10 w-full h-full object-contain p-1"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.opacity = '0.3';
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center">
+                        <Building2 className="w-6 h-6 text-gray-300" />
+                        <span className="text-[10px] font-semibold mt-1">No photo</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Center: Info */}
