@@ -60,8 +60,11 @@ app.use(cors({
     if (process.env.NODE_ENV !== 'production' && /^http:\/\/localhost:\d+$/.test(origin)) {
       return callback(null, true);
     }
-    // Allow any Vercel deployment URL for this project
-    if (/^https:\/\/veeduvadagaiku-web.*\.vercel\.app$/.test(cleanOrigin)) {
+    // Allow any Vercel deployment URL for this project (production, preview, branch deploys)
+    if (
+      cleanOrigin.endsWith('.vercel.app') &&
+      cleanOrigin.includes('veeduvadagaiku')
+    ) {
       return callback(null, true);
     }
     callback(new Error(`CORS blocked: ${origin}`));
