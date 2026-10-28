@@ -6,6 +6,14 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "https://veeduvadagaiku-web-production.up.railway.app/api/$1"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "https://veeduvadagaiku-web-production.up.railway.app/uploads/$1"
+    },
+    {
       "source": "/__/auth/(.*)",
       "destination": "https://veeduvadagaiku-66d6a.firebaseapp.com/__/auth/$1"
     },

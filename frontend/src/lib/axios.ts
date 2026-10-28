@@ -5,10 +5,14 @@ import { useAuthStore } from '../store/authStore';
 const getApiBaseUrl = () => {
   let url = import.meta.env.VITE_API_URL;
   if (!url) {
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ) {
       return 'http://localhost:5000';
     }
-    return 'https://veeduvadagaiku-web-production.up.railway.app';
+    // In production, use same-origin relative URLs so Vercel proxies /api requests to Railway server-to-server with ZERO CORS issues!
+    return '';
   }
   url = url.trim();
   if (!url.startsWith('http://') && !url.startsWith('https://')) {

@@ -20,10 +20,14 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
     return trimmed;
   }
 
-  // Resolve backend base URL
+  // Resolve backend base URL — in production on Vercel, use relative paths so Vercel proxies with zero CORS!
   const backendBase = (
     import.meta.env.VITE_API_URL ||
-    'https://veeduvadagaiku-web-production.up.railway.app'
+    (typeof window !== 'undefined' &&
+     window.location.hostname !== 'localhost' &&
+     window.location.hostname !== '127.0.0.1'
+      ? ''
+      : 'https://veeduvadagaiku-web-production.up.railway.app')
   ).replace(/\/$/, '');
 
   // Missing https:// protocol on domain strings (e.g. veeduvadagaiku-web-production.up.railway.app/uploads/...)
