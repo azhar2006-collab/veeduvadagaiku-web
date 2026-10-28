@@ -23,7 +23,7 @@ import {
   Calendar,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
 
 export const MyPropertiesPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -132,10 +132,11 @@ export const MyPropertiesPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {properties.map((prop) => {
+            const fallbackImg = getPropertyFallbackImage(prop.propertyType, prop.id);
             const primaryImg =
               prop.images?.[0]?.imageUrl
-                ? getImageUrl(prop.images[0].imageUrl)
-                : '';
+                ? getImageUrl(prop.images[0].imageUrl, fallbackImg)
+                : fallbackImg;
 
             const canEdit = prop.status !== 'REMOVED';
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
@@ -171,7 +172,10 @@ export const MyPropertiesPage: React.FC = () => {
                           decoding="async"
                           className="relative z-10 w-full h-full object-contain p-1"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).style.opacity = '0.3';
+                            const target = e.target as HTMLImageElement;
+                            if (!target.src.includes('indian-properties')) {
+                              target.src = fallbackImg;
+                            }
                           }}
                         />
                       </>

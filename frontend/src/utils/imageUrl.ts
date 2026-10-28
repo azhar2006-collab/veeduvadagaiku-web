@@ -26,6 +26,17 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
     'https://veeduvadagaiku-web-production.up.railway.app'
   ).replace(/\/$/, '');
 
+  // Missing https:// protocol on domain strings (e.g. veeduvadagaiku-web-production.up.railway.app/uploads/...)
+  if (
+    trimmed.startsWith('veeduvadagaiku-') ||
+    trimmed.includes('.railway.app') ||
+    /^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+\/(uploads|properties)/.test(trimmed)
+  ) {
+    if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+      return `https://${trimmed.replace(/^\/+/, '')}`;
+    }
+  }
+
   // Already an absolute HTTP/HTTPS URL
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     // If it points to localhost and we are NOT in a local browser environment, remap to production backend
@@ -53,4 +64,43 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
   // Uploaded media files hosted on the backend server (e.g. /uploads/...)
   const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
   return `${backendBase}${cleanPath}`;
+};
+
+/**
+ * Returns a high-quality, local Chennai property photo based on property category & ID.
+ * Used as a deterministic fallback whenever an image URL is missing, invalid, or 404s.
+ */
+export const getPropertyFallbackImage = (propertyType?: string, id?: string): string => {
+  const houseImages = [
+    '/indian-properties/house1.jpg',
+    '/indian-properties/house2.jpg',
+    '/indian-properties/house3.jpg',
+    '/indian-properties/house4.jpg',
+    '/indian-properties/house5.jpg',
+    '/indian-properties/house6.jpg',
+  ];
+  const shopImages = [
+    '/indian-properties/shop1.jpg',
+    '/indian-properties/shop2.jpg',
+    '/indian-properties/shop3.jpg',
+    '/indian-properties/shop4.jpg',
+  ];
+
+  const type = (propertyType || '').toUpperCase();
+  const isCommercial =
+    type === 'SHOP' ||
+    type === 'COMMERCIAL' ||
+    type === 'OFFICE' ||
+    type.includes('COMMERCIAL') ||
+    type.includes('SHOP');
+
+  const pool = isCommercial ? shopImages : houseImages;
+  if (!id) return pool[0];
+
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash << 5) - hash + id.charCodeAt(i);
+    hash |= 0;
+  }
+  return pool[Math.abs(hash) % pool.length];
 };

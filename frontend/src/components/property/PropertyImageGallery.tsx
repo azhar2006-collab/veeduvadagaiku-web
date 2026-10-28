@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import { PropertyImage } from '../../types';
 import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
 
 interface PropertyImageGalleryProps {
   images: PropertyImage[];
   title: string;
+  propertyType?: string;
+  propertyId?: string;
 }
 
-export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ images, title }) => {
+export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
+  images,
+  title,
+  propertyType,
+  propertyId,
+}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const fallbackUrl = getPropertyFallbackImage(propertyType, propertyId);
 
   if (!images || images.length === 0) {
     return (
-      <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-gray-100 rounded-3xl flex flex-col items-center justify-center text-gray-400">
-        <ImageIcon className="w-12 h-12 mb-2" />
-        <p className="text-sm font-medium">No images uploaded for this property</p>
+      <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] border border-[#E8DFC8] flex items-center justify-center">
+        <img
+          src={fallbackUrl}
+          alt={title}
+          className="w-full h-full object-contain p-2"
+        />
       </div>
     );
   }
@@ -28,7 +39,8 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
     setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const activeUrl = getImageUrl(images[selectedIndex]?.imageUrl);
+  const rawActiveUrl = getImageUrl(images[selectedIndex]?.imageUrl);
+  const activeUrl = rawActiveUrl || fallbackUrl;
 
   return (
     <div className="space-y-4">
@@ -48,7 +60,10 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
           alt={`${title} - Photo ${selectedIndex + 1}`}
           className="relative z-10 w-full h-full object-contain p-2 max-h-[560px] transition-all duration-300"
           onError={(e) => {
-            (e.target as HTMLImageElement).style.opacity = '0.3';
+            const target = e.target as HTMLImageElement;
+            if (!target.src.includes('indian-properties')) {
+              target.src = fallbackUrl;
+            }
           }}
         />
 
@@ -99,7 +114,10 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({ imag
                     alt=""
                     className="w-full h-full object-contain p-0.5"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).style.opacity = '0.3';
+                      const target = e.target as HTMLImageElement;
+                      if (!target.src.includes('indian-properties')) {
+                        target.src = fallbackUrl;
+                      }
                     }}
                   />
                 </div>

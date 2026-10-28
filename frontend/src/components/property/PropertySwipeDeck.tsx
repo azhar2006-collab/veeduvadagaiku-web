@@ -22,7 +22,7 @@ import {
 import { Property } from '../../types';
 import { useFavourites } from '../../hooks/useFavourites';
 import toast from 'react-hot-toast';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
 
 interface PropertySwipeDeckProps {
   properties: Property[];
@@ -67,10 +67,11 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
   const nextProperty = deck[1];
   const thirdProperty = deck[2];
 
-  // Current property photos
+  // Current property photos with fallback
+  const currentFallback = getPropertyFallbackImage(currentProperty?.propertyType, currentProperty?.id);
   const currentImages = currentProperty?.images && currentProperty.images.length > 0
-    ? currentProperty.images.map((img) => getImageUrl(img.imageUrl)).filter(Boolean)
-    : [];
+    ? currentProperty.images.map((img) => getImageUrl(img.imageUrl, currentFallback)).filter(Boolean)
+    : [currentFallback];
 
   // Handle Swipe logic
   const handleSwipe = useCallback(
@@ -345,11 +346,16 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 style={{ zIndex: 1 }}
               >
                 <img
-                  src={getImageUrl(thirdProperty.images?.[0]?.imageUrl)}
+                  src={getImageUrl(
+                    thirdProperty.images?.[0]?.imageUrl,
+                    getPropertyFallbackImage(thirdProperty.propertyType, thirdProperty.id)
+                  )}
                   alt={thirdProperty.title}
                   className="w-full h-full object-cover blur-sm brightness-50"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).style.opacity = '0.2';
+                    const target = e.target as HTMLImageElement;
+                    const fb = getPropertyFallbackImage(thirdProperty.propertyType, thirdProperty.id);
+                    if (!target.src.includes('indian-properties')) target.src = fb;
                   }}
                 />
               </div>
@@ -371,11 +377,16 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                 }}
               >
                 <img
-                  src={getImageUrl(nextProperty.images?.[0]?.imageUrl)}
+                  src={getImageUrl(
+                    nextProperty.images?.[0]?.imageUrl,
+                    getPropertyFallbackImage(nextProperty.propertyType, nextProperty.id)
+                  )}
                   alt={nextProperty.title}
                   className="w-full h-full object-cover brightness-75"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).style.opacity = '0.2';
+                    const target = e.target as HTMLImageElement;
+                    const fb = getPropertyFallbackImage(nextProperty.propertyType, nextProperty.id);
+                    if (!target.src.includes('indian-properties')) target.src = fb;
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
@@ -413,6 +424,10 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                         alt=""
                         aria-hidden="true"
                         className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none select-none"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.includes('indian-properties')) target.src = currentFallback;
+                        }}
                       />
                       {/* Full uncropped image fitted in the allocated space */}
                       <img
@@ -420,6 +435,10 @@ export const PropertySwipeDeck: React.FC<PropertySwipeDeckProps> = ({
                         alt={currentProperty.title}
                         draggable={false}
                         className="relative z-1 w-full h-full object-contain p-1 transition-all duration-300 select-none"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          if (!target.src.includes('indian-properties')) target.src = currentFallback;
+                        }}
                       />
                     </>
                   ) : (

@@ -28,27 +28,55 @@ import {
   X,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
 
 interface AdminPropertyImagesViewerProps {
   images?: PropertyImage[];
   title: string;
+  propertyType?: string;
+  propertyId?: string;
 }
 
-const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ images = [], title }) => {
+const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
+  images = [],
+  title,
+  propertyType,
+  propertyId,
+}) => {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [failedUrls, setFailedUrls] = useState<Record<string, boolean>>({});
 
+  const fallbackUrl = getPropertyFallbackImage(propertyType, propertyId);
   const validImages = images.filter((img) => img.imageUrl && img.imageUrl.trim());
   const currentImg = validImages[selectedIdx] || validImages[0];
-  const currentUrl = currentImg ? getImageUrl(currentImg.imageUrl) : '';
+  const rawCurrentUrl = currentImg ? getImageUrl(currentImg.imageUrl) : '';
+  const isCurrentFailed = !rawCurrentUrl || !!failedUrls[rawCurrentUrl];
+  const currentUrl = isCurrentFailed ? fallbackUrl : rawCurrentUrl;
+
+  const handleImageError = (url: string) => {
+    if (url && !failedUrls[url]) {
+      setFailedUrls((prev) => ({ ...prev, [url]: true }));
+    }
+  };
 
   if (validImages.length === 0) {
     return (
-      <div className="w-full aspect-[4/3] rounded-2xl bg-gray-50 border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
-        <Building2 className="w-8 h-8 text-gray-300 mb-1" />
-        <span className="text-xs font-bold text-gray-500">No Owner Photos</span>
-        <span className="text-[10px] text-gray-400">Waiting for owner upload</span>
+      <div className="space-y-2">
+        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[#FAF7F0] to-[#EFE8D8] border border-[#E8DFC8] shadow-sm flex items-center justify-center group">
+          <img
+            src={fallbackUrl}
+            alt={title}
+            className="w-full h-full object-contain p-1"
+          />
+          <div className="absolute top-2 left-2 px-2 py-0.5 bg-amber-600/90 text-white text-[10px] font-bold rounded-md shadow-xs flex items-center gap-1">
+            <Building2 className="w-3 h-3" />
+            <span>Category Default Preview</span>
+          </div>
+          <div className="absolute bottom-2 left-2 right-2 text-center bg-black/60 backdrop-blur-xs text-white text-[10px] py-1 px-2 rounded-lg font-medium">
+            Owner has not uploaded custom photos yet
+          </div>
+        </div>
       </div>
     );
   }
@@ -58,7 +86,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
       {/* Main Image Container with Ambient Backdrop & Contain */}
       <div
         onClick={() => setIsModalOpen(true)}
-        className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gray-950 border border-gray-200 shadow-sm cursor-zoom-in group flex items-center justify-center"
+        className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[#1b0610] via-[#240a15] to-[#12040b] border border-amber-900/40 shadow-sm cursor-zoom-in group flex items-center justify-center"
         title="Click to view full photo"
       >
         {/* Ambient Blur */}
@@ -66,7 +94,8 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
           src={currentUrl}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110 pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none select-none"
+          onError={() => handleImageError(rawCurrentUrl)}
         />
 
         {/* Uncropped foreground image */}
@@ -74,12 +103,20 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
           src={currentUrl}
           alt={`${title} - Photo ${selectedIdx + 1}`}
           className="relative z-10 w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-102"
+          onError={() => handleImageError(rawCurrentUrl)}
         />
 
         {/* Primary badge */}
-        {currentImg.isPrimary && (
+        {currentImg?.isPrimary && (
           <span className="absolute top-2 left-2 z-20 px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold rounded-md shadow-sm">
             ★ Primary
+          </span>
+        )}
+
+        {/* Fallback badge if original file is missing/404 */}
+        {isCurrentFailed && (
+          <span className="absolute top-2 right-2 z-20 px-2 py-0.5 bg-amber-500 text-black text-[10px] font-black rounded-md shadow-sm">
+            Fallback Photo
           </span>
         )}
 
@@ -122,7 +159,9 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
       {validImages.length > 1 && (
         <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {validImages.map((img, idx) => {
-            const thumbUrl = getImageUrl(img.imageUrl);
+            const rawThumb = getImageUrl(img.imageUrl);
+            const isThumbFailed = !rawThumb || !!failedUrls[rawThumb];
+            const thumbUrl = isThumbFailed ? fallbackUrl : rawThumb;
             return (
               <button
                 key={img.id || idx}
@@ -130,7 +169,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
                 onClick={() => setSelectedIdx(idx)}
                 className={`relative shrink-0 w-12 h-10 rounded-lg overflow-hidden border-2 transition ${
                   selectedIdx === idx
-                    ? 'border-orange-500 shadow-sm scale-95'
+                    ? 'border-amber-500 shadow-sm scale-95'
                     : 'border-transparent opacity-60 hover:opacity-100 bg-gray-900/10'
                 }`}
               >
@@ -138,6 +177,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
                   src={thumbUrl}
                   alt=""
                   className="w-full h-full object-cover"
+                  onError={() => handleImageError(rawThumb)}
                 />
               </button>
             );
@@ -164,6 +204,7 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({ i
               src={currentUrl}
               alt={title}
               className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl bg-black/50"
+              onError={() => handleImageError(rawCurrentUrl)}
             />
             <div className="mt-4 flex items-center justify-between w-full text-white text-xs px-2">
               <span className="font-bold truncate max-w-md">{title}</span>
@@ -396,7 +437,12 @@ export const PendingApprovalsPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Photo Review Carousel / Gallery */}
-                  <AdminPropertyImagesViewer images={prop.images} title={prop.title} />
+                  <AdminPropertyImagesViewer
+                    images={prop.images}
+                    title={prop.title}
+                    propertyType={prop.propertyType}
+                    propertyId={prop.id}
+                  />
 
                   {/* Property Specs */}
                   <div className="md:col-span-2 space-y-3 text-xs text-gray-600">

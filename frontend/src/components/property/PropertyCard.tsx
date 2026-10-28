@@ -6,7 +6,7 @@ import { useFavourites } from '../../hooks/useFavourites';
 import { useLanguage } from '../../context/LanguageContext';
 import { getWhatsAppShareUrl } from '../../utils/shareUtils';
 import { getPropertyCategory, getCategoryBadgeInfo } from '../../utils/categoryUtils';
-import { getImageUrl } from '../../utils/imageUrl';
+import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
 
 interface PropertyCardProps {
   property: Property;
@@ -36,10 +36,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     maximumFractionDigits: 0,
   }).format(property.deposit);
 
-  // Primary image or first image or placeholder
+  // Primary image with smart deterministic fallback
+  const fallbackImg = getPropertyFallbackImage(property.propertyType, property.id);
   const primaryImg = getImageUrl(
     property.images?.find((img) => img.isPrimary)?.imageUrl ||
-    property.images?.[0]?.imageUrl
+    property.images?.[0]?.imageUrl,
+    fallbackImg
   );
 
   const furnishingLabel: Record<string, string> = {
@@ -69,7 +71,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               decoding="async"
               className="relative z-1 w-full h-full object-contain group-hover:scale-102 transition-transform duration-500 p-0.5"
               onError={(e) => {
-                (e.target as HTMLImageElement).style.opacity = '0.3';
+                const target = e.target as HTMLImageElement;
+                if (!target.src.includes('indian-properties')) {
+                  target.src = fallbackImg;
+                }
               }}
             />
           </>
