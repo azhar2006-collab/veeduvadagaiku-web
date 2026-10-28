@@ -125,7 +125,14 @@ export async function adminGetOwner(req: AuthRequest, res: Response, next: NextF
       where: { id: req.params.id },
       include: {
         user: true,
-        properties: { include: { images: { where: { isPrimary: true }, take: 1 } } },
+        properties: {
+          include: {
+            images: {
+              orderBy: [{ isPrimary: 'desc' }, { displayOrder: 'asc' }],
+              take: 1,
+            },
+          },
+        },
         payments: { include: { plan: true, property: { select: { title: true } } } },
       },
     });

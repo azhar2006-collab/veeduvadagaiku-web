@@ -40,7 +40,12 @@ export async function getUserFavourites(req: AuthRequest, res: Response, next: N
       where: { userId: req.user!.id },
       include: {
         property: {
-          include: { images: { where: { isPrimary: true }, take: 1 } },
+          include: {
+            images: {
+              orderBy: [{ isPrimary: 'desc' }, { displayOrder: 'asc' }],
+              take: 1,
+            },
+          },
         },
       },
       orderBy: { createdAt: 'desc' },
@@ -60,7 +65,16 @@ export async function getUserEnquiries(req: AuthRequest, res: Response, next: Ne
       where: { userId: req.user!.id },
       include: {
         property: {
-          select: { id: true, title: true, locality: true, rent: true, images: { where: { isPrimary: true }, take: 1 } },
+          select: {
+            id: true,
+            title: true,
+            locality: true,
+            rent: true,
+            images: {
+              orderBy: [{ isPrimary: 'desc' }, { displayOrder: 'asc' }],
+              take: 1,
+            },
+          },
         },
       },
       orderBy: { createdAt: 'desc' },

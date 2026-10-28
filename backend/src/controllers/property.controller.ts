@@ -507,7 +507,10 @@ export async function listProperties(req: Request, res: Response, next: NextFunc
         take: limit,
         orderBy,
         include: {
-          images: { where: { isPrimary: true }, take: 1 },
+          images: {
+            orderBy: [{ isPrimary: 'desc' }, { displayOrder: 'asc' }],
+            take: 1,
+          },
           _count: { select: { enquiries: true } },
         },
       }),
@@ -670,7 +673,10 @@ export async function getOwnerProperties(req: AuthRequest, res: Response, next: 
     const properties = await prisma.property.findMany({
       where: { ownerId: owner.id, status: { not: 'REMOVED' } },
       include: {
-        images: { where: { isPrimary: true }, take: 1 },
+        images: {
+          orderBy: [{ isPrimary: 'desc' }, { displayOrder: 'asc' }],
+          take: 1,
+        },
         plan: true,
         _count: { select: { enquiries: true } },
       },
@@ -753,21 +759,25 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
         }
       }
 
-      // If Cloudinary wasn't configured or failed, save locally
+      // If Cloudinary wasn't configured or failed, save permanently as Base64 data URI
+      // so images are persisted directly in PostgreSQL (Supabase) and NEVER lost on Railway container restarts!
       if (!imageUrl) {
-        const uploadsDir = path.join(process.cwd(), 'uploads');
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true });
-        }
-        const ext = path.extname(file.originalname) || '.jpg';
-        const fileName = `${id}_${Date.now()}_${i}${ext}`;
-        const filePath = path.join(uploadsDir, fileName);
+        const mime = file.mimetype || 'image/jpeg';
+        const base64Data = `data:${mime};base64,${file.buffer.toString('base64')}`;
+        imageUrl = base64Data;
 
-        // Write the uploaded file binary buffer to disk
-        fs.writeFileSync(filePath, file.buffer);
-
-        // Also duplicate to frontend public directory if available during development
+        // Also write to local uploads directory as a local file cache
         try {
+          const uploadsDir = path.join(process.cwd(), 'uploads');
+          if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+          }
+          const ext = path.extname(file.originalname) || '.jpg';
+          const fileName = `${id}_${Date.now()}_${i}${ext}`;
+          const filePath = path.join(uploadsDir, fileName);
+          fs.writeFileSync(filePath, file.buffer);
+
+          // Also duplicate to frontend public directory if available during development
           const frontendPublicUploads = path.resolve(process.cwd(), '../frontend/public/uploads');
           if (fs.existsSync(path.resolve(process.cwd(), '../frontend/public'))) {
             if (!fs.existsSync(frontendPublicUploads)) {
@@ -776,10 +786,8 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
             fs.writeFileSync(path.join(frontendPublicUploads, fileName), file.buffer);
           }
         } catch {
-          // Ignore non-fatal frontend sync errors
+          // Ignore non-fatal local file write errors
         }
-
-        imageUrl = `/uploads/${fileName}`;
       }
 
       const isPrimary = existingCount === 0 && i === 0;

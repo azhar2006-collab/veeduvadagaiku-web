@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { propertyService } from '../../services/property.service';
@@ -24,6 +24,60 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getImageUrl, getPropertyFallbackImage } from '../../utils/imageUrl';
+
+/** Small thumbnail component that tracks image load errors and shows a fallback icon on failure. */
+const PropertyThumbnail: React.FC<{
+  src: string;
+  alt: string;
+  fallbackSrc: string;
+}> = ({ src, alt, fallbackSrc }) => {
+  const [imgSrc, setImgSrc] = useState(src);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setImgSrc(src);
+    setFailed(false);
+  }, [src]);
+
+  const handleError = () => {
+    if (!failed && imgSrc !== fallbackSrc) {
+      // First error: try the fallback static image
+      setImgSrc(fallbackSrc);
+    } else {
+      // Fallback also failed — show icon placeholder
+      setFailed(true);
+    }
+  };
+
+  if (failed) {
+    return (
+      <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center w-full h-full">
+        <Building2 className="w-6 h-6 text-gray-300" />
+        <span className="text-[10px] font-semibold mt-1">No photo</span>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <img
+        src={imgSrc}
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
+        onError={handleError}
+      />
+      <img
+        src={imgSrc}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="relative z-10 w-full h-full object-contain p-1"
+        onError={handleError}
+      />
+    </>
+  );
+};
 
 export const MyPropertiesPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -133,10 +187,12 @@ export const MyPropertiesPage: React.FC = () => {
         <div className="space-y-4">
           {properties.map((prop) => {
             const fallbackImg = getPropertyFallbackImage(prop.propertyType, prop.id);
-            const primaryImg =
-              prop.images?.[0]?.imageUrl
-                ? getImageUrl(prop.images[0].imageUrl, fallbackImg)
-                : fallbackImg;
+            const rawImg =
+              prop.images?.find((img) => img.isPrimary)?.imageUrl ||
+              prop.images?.[0]?.imageUrl;
+            const primaryImg = rawImg
+              ? getImageUrl(rawImg, fallbackImg)
+              : fallbackImg;
 
             const canEdit = prop.status !== 'REMOVED';
             const canSubmit = prop.status === 'DRAFT' || prop.status === 'REJECTED';
@@ -157,34 +213,11 @@ export const MyPropertiesPage: React.FC = () => {
                 <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start gap-4">
                   {/* Left: Thumbnail */}
                   <div className="shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-900/5 border border-gray-200 relative flex items-center justify-center">
-                    {primaryImg ? (
-                      <>
-                        <img
-                          src={primaryImg}
-                          alt=""
-                          aria-hidden="true"
-                          className="absolute inset-0 w-full h-full object-cover blur-md opacity-25 scale-110 pointer-events-none select-none"
-                        />
-                        <img
-                          src={primaryImg}
-                          alt={prop.title}
-                          loading="lazy"
-                          decoding="async"
-                          className="relative z-10 w-full h-full object-contain p-1"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            if (!target.src.includes('indian-properties')) {
-                              target.src = fallbackImg;
-                            }
-                          }}
-                        />
-                      </>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center text-gray-400 p-2 text-center">
-                        <Building2 className="w-6 h-6 text-gray-300" />
-                        <span className="text-[10px] font-semibold mt-1">No photo</span>
-                      </div>
-                    )}
+                    <PropertyThumbnail
+                      src={primaryImg || fallbackImg}
+                      alt={prop.title}
+                      fallbackSrc={fallbackImg}
+                    />
                   </div>
 
                   {/* Center: Info */}
