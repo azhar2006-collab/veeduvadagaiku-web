@@ -384,19 +384,23 @@ export const AddPropertyPage: React.FC = () => {
       // Add any category specific amenities
       selectedAmenities.forEach((a) => compiledAmenities.add(a));
 
-      // Compress primary photo into a clean Base64 JPEG (~100KB) to persist directly in PostgreSQL
-      let primaryPhotoBase64 = '';
-      if (files.length > 0) {
+      // Compress uploaded photos into clean Base64 JPEGs (~100KB) to persist directly in PostgreSQL
+      const base64Photos: string[] = [];
+      for (let i = 0; i < Math.min(files.length, 5); i++) {
         try {
-          primaryPhotoBase64 = await compressImageToBase64(files[0]);
+          const b64 = await compressImageToBase64(files[i]);
+          if (b64) base64Photos.push(b64);
         } catch {
           // Ignore
         }
       }
 
       const finalAmenities = Array.from(compiledAmenities);
-      if (primaryPhotoBase64) {
-        finalAmenities.push(`[IMG_PRIMARY:${primaryPhotoBase64}]`);
+      if (base64Photos[0]) {
+        finalAmenities.push(`[IMG_PRIMARY:${base64Photos[0]}]`);
+      }
+      for (let i = 1; i < base64Photos.length; i++) {
+        finalAmenities.push(`[IMG_EXTRA:${base64Photos[i]}]`);
       }
 
       // Step 1: Create draft property
@@ -425,9 +429,9 @@ export const AddPropertyPage: React.FC = () => {
 
       // Step 2: Upload images and cache locally
       if (files.length > 0) {
-        if (primaryPhotoBase64) {
+        if (base64Photos[0]) {
           try {
-            localStorage.setItem(`owner_prop_img_${newPropertyId}`, primaryPhotoBase64);
+            localStorage.setItem(`owner_prop_img_${newPropertyId}`, base64Photos[0]);
           } catch {
             // Ignore quota
           }

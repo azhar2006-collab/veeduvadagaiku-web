@@ -93,20 +93,24 @@ export const EditPropertyPage: React.FC = () => {
     try {
       setIsSubmitting(true);
 
-      let primaryPhotoBase64 = '';
-      if (files.length > 0) {
+      const base64Photos: string[] = [];
+      for (let i = 0; i < Math.min(files.length, 5); i++) {
         try {
-          primaryPhotoBase64 = await compressImageToBase64(files[0]);
+          const b64 = await compressImageToBase64(files[i]);
+          if (b64) base64Photos.push(b64);
         } catch {
           // Ignore
         }
       }
 
       let updatedAmenities = (property?.amenities || []).filter(
-        (a) => !a.startsWith('[IMG_PRIMARY:')
+        (a) => !a.startsWith('[IMG_PRIMARY:') && !a.startsWith('[IMG_EXTRA:')
       );
-      if (primaryPhotoBase64) {
-        updatedAmenities.push(`[IMG_PRIMARY:${primaryPhotoBase64}]`);
+      if (base64Photos[0]) {
+        updatedAmenities.push(`[IMG_PRIMARY:${base64Photos[0]}]`);
+      }
+      for (let i = 1; i < base64Photos.length; i++) {
+        updatedAmenities.push(`[IMG_EXTRA:${base64Photos[i]}]`);
       }
 
       await propertyService.updateProperty(id, {
@@ -123,9 +127,9 @@ export const EditPropertyPage: React.FC = () => {
       });
 
       if (files.length > 0) {
-        if (primaryPhotoBase64) {
+        if (base64Photos[0]) {
           try {
-            localStorage.setItem(`owner_prop_img_${id}`, primaryPhotoBase64);
+            localStorage.setItem(`owner_prop_img_${id}`, base64Photos[0]);
           } catch {
             // Ignore quota
           }

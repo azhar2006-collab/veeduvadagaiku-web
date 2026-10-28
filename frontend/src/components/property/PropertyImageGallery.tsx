@@ -8,6 +8,7 @@ interface PropertyImageGalleryProps {
   title: string;
   propertyType?: string;
   propertyId?: string;
+  amenities?: string[];
 }
 
 export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
@@ -15,13 +16,33 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
   title,
   propertyType,
   propertyId,
+  amenities = [],
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Filter out any default stock photos — only show real uploaded images
-  const validImages = (images || []).filter(
-    (img) => img.imageUrl && !img.imageUrl.includes('indian-properties')
-  );
+  // 1. Gather any Base64 images from amenities
+  const amenityImages: PropertyImage[] = (amenities || [])
+    .filter((a) => (a.startsWith('[IMG_PRIMARY:') || a.startsWith('[IMG_EXTRA:')) && a.endsWith(']'))
+    .map((a, idx) => ({
+      id: `amenity_img_${idx}`,
+      propertyId: propertyId || '',
+      imageUrl: a.replace(/^\[IMG_[A-Z]+:/, '').slice(0, -1),
+      publicId: `b64_${idx}`,
+      isPrimary: a.startsWith('[IMG_PRIMARY:'),
+      displayOrder: idx,
+      createdAt: new Date().toISOString(),
+    }));
+
+  // 2. Filter out any default stock photos — only show real uploaded images
+  const validImages = [
+    ...amenityImages,
+    ...(images || []).filter(
+      (img) =>
+        img.imageUrl &&
+        !img.imageUrl.includes('indian-properties') &&
+        !amenityImages.some((ai) => ai.imageUrl === img.imageUrl)
+    ),
+  ];
 
   if (validImages.length === 0) {
     return (

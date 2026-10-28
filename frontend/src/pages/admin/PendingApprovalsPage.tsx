@@ -56,9 +56,9 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
       : null;
 
   // 2. Check embedded base64 in amenities
-  const amenityImg = amenities.find(
-    (a) => a.startsWith('[IMG_PRIMARY:') && a.endsWith(']')
-  )?.slice('[IMG_PRIMARY:'.length, -1);
+  const amenityImages = amenities
+    .filter((a) => (a.startsWith('[IMG_PRIMARY:') || a.startsWith('[IMG_EXTRA:')) && a.endsWith(']'))
+    .map((a) => a.replace(/^\[IMG_[A-Z]+:/, '').slice(0, -1));
 
   // 3. Filter valid server images (rejecting default stock photos)
   const serverImages = images
@@ -70,8 +70,10 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
   if (localImg && localImg.startsWith('data:image/')) {
     allCandidates.push(localImg);
   }
-  if (amenityImg && amenityImg.startsWith('data:image/') && !allCandidates.includes(amenityImg)) {
-    allCandidates.push(amenityImg);
+  for (const a of amenityImages) {
+    if (a.startsWith('data:image/') && !allCandidates.includes(a)) {
+      allCandidates.push(a);
+    }
   }
   for (const s of serverImages) {
     if (!allCandidates.includes(s)) allCandidates.push(s);

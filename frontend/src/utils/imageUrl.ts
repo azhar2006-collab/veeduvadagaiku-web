@@ -105,11 +105,18 @@ export const getPropertyPrimaryImage = (property?: {
 
   // 2. Check embedded base64 in amenities (persisted directly in PostgreSQL database)
   if (property.amenities && Array.isArray(property.amenities)) {
-    const embedded = property.amenities.find(
+    const primary = property.amenities.find(
       (a) => a.startsWith('[IMG_PRIMARY:') && a.endsWith(']')
     );
-    if (embedded) {
-      const b64 = embedded.slice('[IMG_PRIMARY:'.length, -1);
+    if (primary) {
+      const b64 = primary.slice('[IMG_PRIMARY:'.length, -1);
+      if (b64.startsWith('data:image/')) return b64;
+    }
+    const extra = property.amenities.find(
+      (a) => a.startsWith('[IMG_EXTRA:') && a.endsWith(']')
+    );
+    if (extra) {
+      const b64 = extra.slice('[IMG_EXTRA:'.length, -1);
       if (b64.startsWith('data:image/')) return b64;
     }
   }

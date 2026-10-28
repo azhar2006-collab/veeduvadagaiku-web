@@ -207,7 +207,13 @@ export const PropertyDetailPage: React.FC = () => {
       </div>
 
       {/* Main Images Gallery */}
-      <PropertyImageGallery images={property.images} title={property.title} />
+      <PropertyImageGallery
+        images={property.images}
+        title={property.title}
+        propertyType={property.propertyType}
+        propertyId={property.id}
+        amenities={property.amenities}
+      />
 
       {/* Main 2-Column Info Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
