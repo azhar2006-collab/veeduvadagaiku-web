@@ -14,8 +14,15 @@ if (!process.env.DIRECT_URL) {
 try {
   console.log('[generate-client] Generating Prisma Client inside backend...');
   const fs = require('fs');
+  const prismaIndex = path.join(backendDir, 'node_modules', 'prisma', 'build', 'index.js');
   const prismaBin = path.join(backendDir, 'node_modules', '.bin', process.platform === 'win32' ? 'prisma.cmd' : 'prisma');
-  const cmd = fs.existsSync(prismaBin) ? `"${prismaBin}" generate` : 'npx prisma generate';
+  
+  let cmd = 'npx prisma generate';
+  if (fs.existsSync(prismaIndex)) {
+    cmd = `node "${prismaIndex}" generate`;
+  } else if (fs.existsSync(prismaBin)) {
+    cmd = `"${prismaBin}" generate`;
+  }
   
   execSync(cmd, {
     cwd: backendDir,

@@ -89,7 +89,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), service: 'Veedu Vadagaikku Chennai API' });
+  res.json({
+    status: 'ok',
+    version: '2.0.0-base64-images',
+    timestamp: new Date().toISOString(),
+    service: 'Veedu Vadagaikku Chennai API',
+  });
 });
 
 // API routes

@@ -717,12 +717,22 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
     const property = await prisma.property.findFirst({ where: { id, ownerId: owner.id } });
     if (!property) throw new ApiError(404, 'Property not found or not authorized');
 
-    const files = req.files as Express.Multer.File[];
-    if (!files || files.length === 0) throw new ApiError(400, 'No images provided');
+    const files = (req.files as Express.Multer.File[]) || [];
+    let base64Images: string[] = [];
+    if (req.body?.images) {
+      if (Array.isArray(req.body.images)) {
+        base64Images = req.body.images.filter((img: any) => typeof img === 'string' && img.startsWith('data:image/'));
+      } else if (typeof req.body.images === 'string' && req.body.images.startsWith('data:image/')) {
+        base64Images = [req.body.images];
+      }
+    }
+
+    const totalNew = files.length + base64Images.length;
+    if (totalNew === 0) throw new ApiError(400, 'No images provided');
 
     // Check existing image count
     const existingCount = await prisma.propertyImage.count({ where: { propertyId: id } });
-    if (existingCount + files.length > 10) {
+    if (existingCount + totalNew > 10) {
       throw new ApiError(400, `Cannot upload more than 10 images. Currently have ${existingCount}.`);
     }
 
@@ -732,6 +742,7 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
       process.env.CLOUDINARY_API_KEY !== 'your_cloudinary_api_key' &&
       process.env.CLOUDINARY_CLOUD_NAME !== 'your_cloud_name';
 
+    // 1. Process multipart files
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       let imageUrl = '';
@@ -765,29 +776,6 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
         const mime = file.mimetype || 'image/jpeg';
         const base64Data = `data:${mime};base64,${file.buffer.toString('base64')}`;
         imageUrl = base64Data;
-
-        // Also write to local uploads directory as a local file cache
-        try {
-          const uploadsDir = path.join(process.cwd(), 'uploads');
-          if (!fs.existsSync(uploadsDir)) {
-            fs.mkdirSync(uploadsDir, { recursive: true });
-          }
-          const ext = path.extname(file.originalname) || '.jpg';
-          const fileName = `${id}_${Date.now()}_${i}${ext}`;
-          const filePath = path.join(uploadsDir, fileName);
-          fs.writeFileSync(filePath, file.buffer);
-
-          // Also duplicate to frontend public directory if available during development
-          const frontendPublicUploads = path.resolve(process.cwd(), '../frontend/public/uploads');
-          if (fs.existsSync(path.resolve(process.cwd(), '../frontend/public'))) {
-            if (!fs.existsSync(frontendPublicUploads)) {
-              fs.mkdirSync(frontendPublicUploads, { recursive: true });
-            }
-            fs.writeFileSync(path.join(frontendPublicUploads, fileName), file.buffer);
-          }
-        } catch {
-          // Ignore non-fatal local file write errors
-        }
       }
 
       const isPrimary = existingCount === 0 && i === 0;
@@ -799,6 +787,22 @@ export async function uploadImages(req: AuthRequest, res: Response, next: NextFu
           publicId,
           isPrimary,
           displayOrder: existingCount + i,
+        },
+      });
+      uploadedImages.push(img);
+    }
+
+    // 2. Process any direct base64 image strings
+    for (let j = 0; j < base64Images.length; j++) {
+      const b64 = base64Images[j];
+      const isPrimary = existingCount === 0 && files.length === 0 && j === 0;
+      const img = await prisma.propertyImage.create({
+        data: {
+          propertyId: id,
+          imageUrl: b64.trim(),
+          publicId: `img_${uuidv4()}`,
+          isPrimary,
+          displayOrder: existingCount + files.length + j,
         },
       });
       uploadedImages.push(img);

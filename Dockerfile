@@ -22,7 +22,6 @@ COPY backend/tsconfig.json ./
 COPY backend/src ./src
 
 # Generate Prisma client and compile TypeScript
-RUN node ./scripts/generate-client.js
 RUN npm run build
 
 # Default environment
