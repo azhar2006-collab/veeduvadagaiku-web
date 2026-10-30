@@ -313,14 +313,11 @@ export const HomePage: React.FC = () => {
               </Link>
 
               <Link
-                to="/offers"
-                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#D4AF37] bg-[#FFFDF5] hover:bg-[#FAF4E6] hover:border-[#C5A059] text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
+                to="/wanted-spaces/specify"
+                className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
-                <Gift className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#D4AF37] shrink-0" strokeWidth={2} />
-                <span>{lang === 'ta' ? 'சலுகைகள்' : 'Offers'}</span>
-                <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-red-500 text-white text-[9px] font-bold rounded-full uppercase tracking-wider animate-pulse">
-                  Free
-                </span>
+                <Search className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />
+                <span>Wanted Spaces</span>
               </Link>
             </div>
           </div>
@@ -1118,22 +1115,6 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-
-
-      {/* --- Wanted Spaces CTA Banner --- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-[#2D0A18] rounded-3xl px-6 py-7 flex flex-col md:flex-row items-center justify-between gap-5">
-          <div>
-            <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">???? � REQUIREMENTS</p>
-            <h2 className="text-white text-xl md:text-2xl font-bold mb-1">Looking for a space to rent?</h2>
-            <p className="text-white/60 text-sm">Post your requirement and let property owners reach you directly.</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <a href="/wanted-spaces/specify" className="bg-amber-500 hover:bg-amber-400 text-white font-semibold rounded-full px-5 py-2.5 text-sm text-center transition-colors whitespace-nowrap">Post Requirement � ?99</a>
-            <a href="/wanted-spaces" className="border border-white/30 text-white hover:bg-white/10 font-medium rounded-full px-5 py-2.5 text-sm text-center transition-colors whitespace-nowrap">Browse Requirements</a>
-          </div>
-        </div>
-      </section>
 
       {/* Featured Properties Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
