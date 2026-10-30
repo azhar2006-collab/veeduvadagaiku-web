@@ -4,7 +4,7 @@ import { Navbar } from '../components/common/Navbar';
 import { Footer } from '../components/common/Footer';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
 import { useAuth } from '../hooks/useAuth';
-import { LayoutDashboard, Heart, MessageSquare, User } from 'lucide-react';
+import { LayoutDashboard, Heart, MessageSquare, User, Search } from 'lucide-react';
 
 export const UserLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -17,6 +17,7 @@ export const UserLayout: React.FC = () => {
     { label: 'Overview', href: '/user/dashboard', icon: LayoutDashboard },
     { label: 'Saved Properties', href: '/user/favourites', icon: Heart },
     { label: 'My Enquiries', href: '/user/enquiries', icon: MessageSquare },
+    { label: 'My Requirements', href: '/user/wanted-spaces', icon: Search },
     { label: 'My Profile', href: '/user/profile', icon: User },
   ];
 

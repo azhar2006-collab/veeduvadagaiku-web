@@ -72,10 +72,11 @@ model User {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
-  owner      Owner?
-  favourites Favourite[]
-  enquiries  Enquiry[]   @relation("UserEnquiries")
-  payments   Payment[]
+  owner        Owner?
+  favourites   Favourite[]
+  enquiries    Enquiry[]    @relation("UserEnquiries")
+  payments     Payment[]
+  wantedSpaces WantedSpace[]
 }
 
 model Owner {
@@ -210,6 +211,108 @@ model Favourite {
   createdAt  DateTime @default(now())
 
   @@unique([userId, propertyId])
+}
+
+// ─── Wanted Spaces ────────────────────────────────────────────────────────────
+
+enum WantedSpaceCategory {
+  RESIDENTIAL
+  ROOMS_ACCOMMODATION
+  OFFICES
+  SHOPS_RETAIL
+  INDUSTRIAL
+  COMMERCIAL_BUILDINGS
+  INSTITUTIONAL
+  HOSPITALITY
+  PARKING_STORAGE
+  LAND_PLOTS
+  OTHER
+}
+
+enum WantedSpaceStatus {
+  DRAFT
+  PAYMENT_PENDING
+  PENDING_APPROVAL
+  PUBLISHED
+  FULFILLED
+  EXPIRED
+  REMOVED
+  REJECTED
+}
+
+enum WantedRequirementType {
+  RENT
+  LEASE
+  EITHER
+}
+
+enum WantedFurnishingPreference {
+  FULLY_FURNISHED
+  SEMI_FURNISHED
+  UNFURNISHED
+  ANY
+}
+
+enum WantedPaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model WantedSpace {
+  id                   String                    @id @default(cuid())
+  userId               String
+  user                 User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Core requirement fields
+  title                String
+  category             WantedSpaceCategory
+  subcategory          String?
+  preferredCity        String
+  preferredLocality    String?
+  minArea              Float?
+  maxArea              Float?
+  maxRentBudget        Float?
+  maxLeaseBudget       Float?
+  requirementType      WantedRequirementType     @default(RENT)
+  occupantsCount       Int?
+  amenities            String[]                  @default([])
+  furnishingPreference WantedFurnishingPreference @default(ANY)
+  expectedMoveIn       DateTime?
+  additionalNotes      String?                   @db.Text
+
+  // Contact Info
+  contactName          String
+  contactMethod        String                    @default("phone")
+  contactPhone         String?
+  contactEmail         String?
+  contactWhatsapp      String?
+  showContact          Boolean                   @default(false)
+
+  // Category-specific extras stored as JSON string
+  categoryExtras       String?                   @db.Text
+
+  // Status & admin
+  status               WantedSpaceStatus         @default(DRAFT)
+  rejectionReason      String?
+  viewCount            Int                       @default(0)
+
+  // Payment
+  paymentStatus        WantedPaymentStatus       @default(PENDING)
+  paymentAmount        Float                     @default(99)
+  cfOrderId            String?                   @unique
+  transactionId        String?                   @unique
+
+  // Validity
+  publishedAt          DateTime?
+  expiresAt            DateTime?
+  validityDays         Int                       @default(30)
+
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+
+  @@index([status, expiresAt])
+  @@index([category, status])
 }
 
 enum HomeServiceCategory {

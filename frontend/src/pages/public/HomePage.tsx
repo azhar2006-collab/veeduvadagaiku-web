@@ -1120,6 +1120,21 @@ export const HomePage: React.FC = () => {
 
 
 
+      {/* --- Wanted Spaces CTA Banner --- */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-[#2D0A18] rounded-3xl px-6 py-7 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div>
+            <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">???? · REQUIREMENTS</p>
+            <h2 className="text-white text-xl md:text-2xl font-bold mb-1">Looking for a space to rent?</h2>
+            <p className="text-white/60 text-sm">Post your requirement and let property owners reach you directly.</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <a href="/wanted-spaces/specify" className="bg-amber-500 hover:bg-amber-400 text-white font-semibold rounded-full px-5 py-2.5 text-sm text-center transition-colors whitespace-nowrap">Post Requirement · ?99</a>
+            <a href="/wanted-spaces" className="border border-white/30 text-white hover:bg-white/10 font-medium rounded-full px-5 py-2.5 text-sm text-center transition-colors whitespace-nowrap">Browse Requirements</a>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Properties Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">

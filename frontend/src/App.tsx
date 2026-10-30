@@ -31,6 +31,14 @@ import { AddServicePage } from './pages/public/AddServicePage';
 import { AuthCallbackPage } from './pages/public/AuthCallbackPage';
 import { OffersPage } from './pages/public/OffersPage';
 
+// Wanted Spaces Pages
+import WantedSpecifyPage from './pages/public/WantedSpecifyPage';
+import WantedSpacesDirectoryPage from './pages/public/WantedSpacesDirectoryPage';
+import WantedSpaceDetailPage from './pages/public/WantedSpaceDetailPage';
+import WantedSpacePaymentPage from './pages/user/WantedSpacePaymentPage';
+import WantedSpacePaymentResultPage from './pages/user/WantedSpacePaymentResultPage';
+import MyWantedSpacesPage from './pages/user/MyWantedSpacesPage';
+
 // Tenant / User Pages
 import { UserDashboardPage } from './pages/user/UserDashboardPage';
 import { UserProfilePage } from './pages/user/UserProfilePage';
@@ -175,10 +183,15 @@ export const App: React.FC = () => {
         <Route path="/plans" element={<OffersPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        {/* ─── Wanted Spaces (public) ─── */}
+        <Route path="/wanted-spaces" element={<WantedSpacesDirectoryPage />} />
+        <Route path="/wanted-spaces/specify" element={<WantedSpecifyPage />} />
+        <Route path="/wanted-spaces/:id" element={<WantedSpaceDetailPage />} />
       </Route>
 
       {/* ─── Top-level Payment Result (Cashfree return_url lands here) ─── */}
       <Route path="/payment-result" element={<PaymentResultPage />} />
+      <Route path="/wanted-spaces/payment-result" element={<WantedSpacePaymentResultPage />} />
 
       {/* ─── Auth Callback (Firebase redirect result handler) ─── */}
       {/* This route is intentionally OUTSIDE PublicLayout so no Navbar/Footer shows during processing */}
@@ -191,6 +204,9 @@ export const App: React.FC = () => {
         <Route path="profile" element={<UserProfilePage />} />
         <Route path="favourites" element={<FavouritesPage />} />
         <Route path="enquiries" element={<UserEnquiriesPage />} />
+        {/* ─── Wanted Spaces (user) ─── */}
+        <Route path="wanted-spaces" element={<MyWantedSpacesPage />} />
+        <Route path="wanted-spaces/payment" element={<WantedSpacePaymentPage />} />
       </Route>
 
       {/* ─── Property Owner Portal ─── */}

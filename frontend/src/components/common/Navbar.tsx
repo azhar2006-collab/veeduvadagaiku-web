@@ -283,6 +283,14 @@ export const Navbar: React.FC = () => {
             {t('nav.homeServices')}
           </Link>
           <Link
+            to="/wanted-spaces"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
+          >
+            <Search className="w-4 h-4 text-[#C5A059]" />
+            Wanted Spaces
+          </Link>
+          <Link
             to="/plans"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-3.5 py-3 text-sm font-bold text-[#240a15] hover:bg-[#FAF6ED] rounded-xl bg-[#fff5e6] border border-[#fde2b8]"
