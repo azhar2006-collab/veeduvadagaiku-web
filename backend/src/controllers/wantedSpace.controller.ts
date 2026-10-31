@@ -195,13 +195,14 @@ export async function createWantedSpace(req: AuthRequest, res: Response, next: N
         contactWhatsapp: contactWhatsapp || null,
         showContact: Boolean(showContact),
         categoryExtras: categoryExtras ? JSON.stringify(categoryExtras) : null,
-        status: 'DRAFT',
+        status: 'PENDING_APPROVAL',
+        paymentStatus: 'SUCCESS',
         paymentAmount: resolvedAmount,
         validityDays: WANTED_VALIDITY_DAYS,
       },
     });
 
-    res.status(201).json(successResponse(space, 'Requirement created. Please proceed to payment.'));
+    res.status(201).json(successResponse(space, 'Requirement submitted successfully! Our team will review and publish it.'));
   } catch (error) {
     next(error);
   }
