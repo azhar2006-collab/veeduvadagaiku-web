@@ -79,23 +79,6 @@ const QUICK_DESCRIPTION_CHIPS = [
   'Ground floor preferred',
 ];
 
-// ─── Amenities List ────────────────────────────────────────────────────────────
-
-const AMENITY_OPTIONS = [
-  'Lift',
-  '24x7 Security',
-  'Water Supply',
-  'Power Backup',
-  'Car Parking',
-  'Bike Parking',
-  'Near Metro or Bus Stand',
-  'Pet Friendly',
-  'Road Facing',
-  'Loading / Unloading Area',
-  'Air Conditioning',
-  'CCTV Surveillance',
-];
-
 export default function WantedSpecifyPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -111,15 +94,6 @@ export default function WantedSpecifyPage() {
   const [minBudget, setMinBudget] = useState<string>('');
   const [maxBudget, setMaxBudget] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-
-  // Additional Preferences
-  const [furnishing, setFurnishing] = useState<string>('Any');
-  const [parking, setParking] = useState<string>('Required');
-  const [occupants, setOccupants] = useState<string>('3');
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([
-    'Water Supply',
-    'Car Parking',
-  ]);
 
   // Contact Information
   const [contactName, setContactName] = useState<string>(user?.name || '');
@@ -191,13 +165,6 @@ export default function WantedSpecifyPage() {
 
   const isLand = propertyType === 'Land / Plot';
 
-  // Toggle amenities
-  const toggleAmenity = (amenity: string) => {
-    setSelectedAmenities((prev) =>
-      prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
-    );
-  };
-
   // Add chip to textarea
   const appendChipToDescription = (chipText: string) => {
     setDescription((prev) => {
@@ -258,10 +225,6 @@ export default function WantedSpecifyPage() {
             minBudget,
             maxBudget,
             description,
-            furnishing,
-            parking,
-            occupants,
-            selectedAmenities,
             contactName,
             mobileNumber,
             whatsappNumber,
@@ -279,14 +242,6 @@ export default function WantedSpecifyPage() {
       title.trim() ||
       `${propertyType} Required in ${localityFinal.split('-')[0].trim()}`;
 
-    // Map furnishing
-    const furnishingMap: Record<string, string> = {
-      Furnished: 'FULLY_FURNISHED',
-      'Semi-Furnished': 'SEMI_FURNISHED',
-      Unfurnished: 'UNFURNISHED',
-      Any: 'ANY',
-    };
-
     const payload = {
       title: computedTitle,
       category: currentPropTypeObj.category,
@@ -297,9 +252,6 @@ export default function WantedSpecifyPage() {
       maxArea: maxArea ? parseFloat(maxArea) : undefined,
       maxRentBudget: maxBudget ? parseFloat(maxBudget) : undefined,
       minRentBudget: minBudget ? parseFloat(minBudget) : undefined,
-      occupantsCount: isResidentialType && occupants ? parseInt(occupants) : undefined,
-      amenities: selectedAmenities,
-      furnishingPreference: furnishingMap[furnishing] || 'ANY',
       additionalNotes: description.trim() || undefined,
       contactName: contactName.trim(),
       contactPhone: mobileNumber.trim(),
@@ -309,7 +261,6 @@ export default function WantedSpecifyPage() {
       categoryExtras: {
         propertyType,
         preferredFloor: isLand ? 'Not Applicable' : preferredFloor,
-        parkingRequired: parking,
         minBudget: minBudget ? parseFloat(minBudget) : undefined,
         maxBudget: maxBudget ? parseFloat(maxBudget) : undefined,
         cityArea: cityArea.trim(),
@@ -586,12 +537,12 @@ export default function WantedSpecifyPage() {
             </div>
           </div>
 
-          {/* ── BLOCK 3: Budget & Preferences ── */}
+          {/* ── BLOCK 3: Budget Details ── */}
           <div className="bg-white border border-[#E8DFC8] rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
             <div className="flex items-center gap-2 border-b border-[#F0E9DA] pb-3.5">
               <IndianRupee className="w-5 h-5 text-[#C5A059]" />
               <h2 className="text-base font-bold text-gray-900">
-                3. Budget & Additional Preferences · பட்ஜெட் & விருப்பங்கள்
+                3. Expected Monthly Budget · மாத வாடகை பட்ஜெட்
               </h2>
             </div>
 
@@ -626,106 +577,6 @@ export default function WantedSpecifyPage() {
                     className="w-full bg-[#FAF8F5] border border-[#D5C9B1] text-gray-900 placeholder-gray-400 rounded-xl pl-7 pr-3 py-2.5 text-sm focus:outline-none focus:border-[#C5A059] focus:bg-white"
                   />
                 </div>
-              </div>
-            </div>
-
-            {/* Number of People (Shown for residential/rooms/PG/shared) */}
-            {isResidentialType && (
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                  Number of People / Occupants · நபர்கள் எண்ணிக்கை
-                </label>
-                <div className="flex gap-2">
-                  {['1', '2', '3', '4', '5+'].map((num) => (
-                    <button
-                      key={num}
-                      type="button"
-                      onClick={() => setOccupants(num)}
-                      className={`w-12 h-10 rounded-xl font-bold text-xs border transition-all ${
-                        occupants === num
-                          ? 'bg-[#D4AF37] border-[#C5A059] text-gray-950 shadow-xs'
-                          : 'border-[#E2D7C3] bg-[#FAF8F5] text-gray-700 hover:border-[#C5A059] hover:bg-white'
-                      }`}
-                    >
-                      {num}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Furnishing Preference */}
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                Furnishing Preference · வசதிகள்
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {['Furnished', 'Semi-Furnished', 'Unfurnished', 'Any'].map((f) => (
-                  <button
-                    key={f}
-                    type="button"
-                    onClick={() => setFurnishing(f)}
-                    className={`text-xs px-3.5 py-2 rounded-xl font-medium border transition-all ${
-                      furnishing === f
-                        ? 'bg-[#D4AF37] border-[#C5A059] text-gray-950 font-bold shadow-xs'
-                        : 'border-[#E2D7C3] bg-[#FAF8F5] text-gray-700 hover:border-[#C5A059] hover:bg-white'
-                    }`}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Parking */}
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                Parking · பார்க்கிங்
-              </label>
-              <div className="flex gap-3">
-                {['Required', 'Not Required'].map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => setParking(p)}
-                    className={`text-xs px-4 py-2 rounded-xl font-medium border transition-all ${
-                      parking === p
-                        ? 'bg-[#D4AF37] border-[#C5A059] text-gray-950 font-bold shadow-xs'
-                        : 'border-[#E2D7C3] bg-[#FAF8F5] text-gray-700 hover:border-[#C5A059] hover:bg-white'
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Amenities Checklist */}
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                Preferred Amenities (Select all that apply)
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {AMENITY_OPTIONS.map((amenity) => {
-                  const active = selectedAmenities.includes(amenity);
-                  return (
-                    <button
-                      key={amenity}
-                      type="button"
-                      onClick={() => toggleAmenity(amenity)}
-                      className={`text-xs px-3.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all ${
-                        active
-                          ? 'bg-[#FAF4E6] border-[#C5A059] text-[#8C6D15] font-bold shadow-2xs'
-                          : 'border-[#E2D7C3] bg-[#FAF8F5] text-gray-600 hover:border-[#C5A059] hover:bg-white'
-                      }`}
-                    >
-                      <CheckCircle2
-                        className={`w-3.5 h-3.5 ${active ? 'text-[#8C6D15]' : 'text-gray-300'}`}
-                      />
-                      <span>{amenity}</span>
-                    </button>
-                  );
-                })}
               </div>
             </div>
           </div>
