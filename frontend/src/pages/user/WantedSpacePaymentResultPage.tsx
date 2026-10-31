@@ -77,7 +77,7 @@ export default function WantedSpacePaymentResultPage() {
                 to="/wanted-spaces"
                 className="border border-gray-200 text-gray-600 font-medium rounded-2xl py-3 text-sm hover:bg-gray-50 transition-colors"
               >
-                Browse Wanted Spaces
+                Browse Wanted Specify
               </Link>
             </div>
           </>

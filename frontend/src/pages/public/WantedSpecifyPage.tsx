@@ -785,7 +785,7 @@ export default function WantedSpecifyPage() {
                 to="/wanted-spaces"
                 className="w-full border border-gray-200 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl py-2.5 text-sm transition-colors text-center"
               >
-                Browse All Wanted Spaces
+                Browse All Wanted Specify
               </Link>
               <button
                 type="button"

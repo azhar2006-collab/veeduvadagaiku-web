@@ -51,7 +51,7 @@ export default function WantedSpacesDirectoryPage() {
       <div className="bg-[#0B3B60] text-white py-10 px-4">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Spaces</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
           <p className="text-white/60 text-sm mb-6">Browse requirements posted by people looking for spaces to rent or lease.</p>
           {/* Search */}
           <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2 max-w-xl">

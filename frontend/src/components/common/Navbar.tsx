@@ -288,7 +288,7 @@ export const Navbar: React.FC = () => {
             className="flex items-center gap-3 px-3 py-3 text-sm font-semibold text-gray-800 hover:bg-[#FAF6ED] rounded-xl"
           >
             <Search className="w-4 h-4 text-[#C5A059]" />
-            Wanted Spaces
+            Wanted Specify
           </Link>
           <Link
             to="/plans"
