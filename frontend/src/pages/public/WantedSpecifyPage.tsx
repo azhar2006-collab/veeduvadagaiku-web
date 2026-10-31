@@ -146,10 +146,12 @@ export default function WantedSpecifyPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter localities
-  const filteredLocalities = CHENNAI_LOCALITIES.filter((loc) =>
-    loc.toLowerCase().includes(localityQuery.toLowerCase())
-  ).slice(0, 15);
+  // Filter all Chennai localities by name or 6-digit pin code
+  const filteredLocalities = CHENNAI_LOCALITIES.filter((loc) => {
+    const q = localityQuery.trim().toLowerCase();
+    if (!q) return true;
+    return loc.toLowerCase().includes(q);
+  });
 
   const currentPropTypeObj =
     PROPERTY_TYPES.find((pt) => pt.value === propertyType) || PROPERTY_TYPES[0];
@@ -428,28 +430,50 @@ export default function WantedSpecifyPage() {
                   <p className="text-red-600 text-xs mt-1.5">{errors.preferredLocality}</p>
                 )}
 
-                {/* Locality Autocomplete Dropdown */}
+                {/* Locality Autocomplete Dropdown with All PIN Codes */}
                 {showLocalityDropdown && (
-                  <div className="absolute z-30 left-0 right-0 mt-1.5 bg-white border border-[#D5C9B1] rounded-2xl shadow-xl max-h-56 overflow-y-auto divide-y divide-[#F0E9DA]">
+                  <div className="absolute z-30 left-0 right-0 mt-1.5 bg-white border border-[#D5C9B1] rounded-2xl shadow-xl max-h-72 overflow-y-auto divide-y divide-[#F0E9DA]">
+                    <div className="sticky top-0 z-10 px-3.5 py-2 bg-[#FAF8F5] border-b border-[#F0E9DA] flex items-center justify-between text-[11px] text-gray-500 font-medium">
+                      <span>Chennai Localities & Postal PIN Codes</span>
+                      <span className="text-[#8C6D15] font-bold bg-[#FAF4E6] px-2 py-0.5 rounded-full border border-[#E8DFC8]">
+                        {filteredLocalities.length} Areas
+                      </span>
+                    </div>
+
                     {filteredLocalities.length > 0 ? (
-                      filteredLocalities.map((loc) => (
-                        <button
-                          key={loc}
-                          type="button"
-                          onClick={() => {
-                            setPreferredLocality(loc);
-                            setLocalityQuery('');
-                            setShowLocalityDropdown(false);
-                          }}
-                          className="w-full text-left px-4 py-2.5 text-xs text-gray-800 hover:bg-[#FAF4E6] hover:text-[#8C6D15] transition-colors flex items-center justify-between"
-                        >
-                          <span className="font-medium">{loc}</span>
-                          <span className="text-[10px] text-gray-400">Chennai</span>
-                        </button>
-                      ))
+                      filteredLocalities.map((loc) => {
+                        const [areaName, pinCode] = loc.includes(' - ') ? loc.split(' - ') : [loc, ''];
+                        return (
+                          <button
+                            key={loc}
+                            type="button"
+                            onClick={() => {
+                              setPreferredLocality(loc);
+                              setLocalityQuery('');
+                              setShowLocalityDropdown(false);
+                            }}
+                            className="w-full text-left px-3.5 py-2.5 text-xs text-gray-800 hover:bg-[#FAF4E6] hover:text-[#8C6D15] transition-colors flex items-center justify-between group"
+                          >
+                            <div className="flex items-center gap-2 min-w-0 pr-2">
+                              <MapPin className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                              <span className="font-semibold text-gray-900 truncate group-hover:text-[#8C6D15]">
+                                {areaName}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              {pinCode && (
+                                <span className="bg-[#FAF8F5] border border-[#E2D7C3] text-[#8C6D15] font-mono font-bold text-[11px] px-2 py-0.5 rounded-md group-hover:bg-[#C5A059] group-hover:text-white group-hover:border-[#C5A059] transition-colors">
+                                  {pinCode}
+                                </span>
+                              )}
+                              <span className="text-[10px] text-gray-400">Chennai</span>
+                            </div>
+                          </button>
+                        );
+                      })
                     ) : (
                       <div className="px-4 py-3 text-xs text-gray-600">
-                        <p>No exact match in common list.</p>
+                        <p>No matching Chennai locality or pin code found.</p>
                         <button
                           type="button"
                           onClick={() => setShowLocalityDropdown(false)}
