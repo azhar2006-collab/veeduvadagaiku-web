@@ -14,7 +14,7 @@ import {
 const STATUS_BADGE: Record<string, { label: string; cls: string }> = {
   DRAFT:            { label: 'Draft',           cls: 'bg-gray-100 text-gray-600' },
   PAYMENT_PENDING:  { label: 'Payment Pending',  cls: 'bg-yellow-100 text-yellow-700' },
-  PENDING_APPROVAL: { label: 'Under Review',     cls: 'bg-blue-100 text-blue-700' },
+  PENDING_APPROVAL: { label: 'Published',        cls: 'bg-green-100 text-green-700' },
   PUBLISHED:        { label: 'Published',        cls: 'bg-green-100 text-green-700' },
   FULFILLED:        { label: 'Fulfilled',        cls: 'bg-purple-100 text-purple-700' },
   EXPIRED:          { label: 'Expired',          cls: 'bg-red-100 text-red-600' },
@@ -63,7 +63,7 @@ export default function MyWantedSpacesPage() {
     onSuccess: (data, id) => {
       if (data.isFree) {
         qc.invalidateQueries({ queryKey: ['my-wanted-spaces'] });
-        toast.success('Submitted for review!');
+        toast.success('Requirement is now live in Wanted Specify!');
         return;
       }
       navigate(`/user/wanted-spaces/payment?wantedSpaceId=${id}&session=${data.payment_session_id}&orderId=${data.order_id}&amount=${data.amount}`);
@@ -101,9 +101,9 @@ export default function MyWantedSpacesPage() {
         <div className="space-y-4">
           {spaces.map((s) => {
             const badge = STATUS_BADGE[s.status] || { label: s.status, cls: 'bg-gray-100 text-gray-600' };
-            const isActive = s.status === 'PUBLISHED';
+            const isActive = s.status === 'PUBLISHED' || s.status === 'PENDING_APPROVAL';
             const canPay = s.status === 'DRAFT' || s.status === 'REJECTED';
-            const canFulfill = s.status === 'PUBLISHED';
+            const canFulfill = s.status === 'PUBLISHED' || s.status === 'PENDING_APPROVAL';
             const canRenew = s.status === 'EXPIRED';
             const canDelete = ['DRAFT', 'REJECTED', 'FULFILLED', 'EXPIRED', 'REMOVED'].includes(s.status);
             const daysLeft = s.expiresAt
