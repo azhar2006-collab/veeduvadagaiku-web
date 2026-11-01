@@ -50,9 +50,19 @@ export default function WantedSpacesDirectoryPage() {
       {/* Hero */}
       <div className="bg-[#0B3B60] text-white py-10 px-4">
         <div className="max-w-5xl mx-auto">
-          <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
-          <p className="text-white/60 text-sm mb-6">Browse requirements posted by people looking for spaces to rent or lease.</p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div>
+              <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
+              <p className="text-white/60 text-sm">Browse requirements posted by people looking for spaces to rent or lease.</p>
+            </div>
+            <Link
+              to="/wanted-spaces/specify"
+              className="inline-flex items-center justify-center gap-2 self-start sm:self-auto bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-3 rounded-xl transition-colors whitespace-nowrap shadow-sm"
+            >
+              + Post Wanted Specify
+            </Link>
+          </div>
           {/* Search */}
           <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2 max-w-xl">
             <Search className="w-4 h-4 text-gray-400" />
@@ -100,12 +110,6 @@ export default function WantedSpacesDirectoryPage() {
             <option value="EITHER">Either</option>
           </select>
 
-          <Link
-            to="/wanted-spaces/specify"
-            className="ml-auto bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-1.5 rounded-full transition-colors"
-          >
-            + Post Requirement
-          </Link>
         </div>
       </div>
 
