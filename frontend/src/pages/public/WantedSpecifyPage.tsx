@@ -48,26 +48,156 @@ export const PROPERTY_TYPES: PropertyTypeOption[] = [
   { value: 'Other', label: 'Other', category: 'OTHER', subcategory: 'Other', group: 'Others' },
 ];
 
-// ─── Rotating Textarea Placeholders ───────────────────────────────────────────
+// ─── Per-Property-Type Textarea Placeholders ───────────────────────────────────
 
-const ROTATING_PLACEHOLDERS = [
-  'Looking for a 2BHK independent house with parking facilities...',
-  'Need a bachelor-friendly room for 3 working professionals...',
-  'Looking for a 300 sq. ft. shop with road-facing access...',
-  'Need an office space with 10–15 workstations...',
-  'Looking for a warehouse with loading and unloading facilities...',
-  'Prefer a furnished property with lift and parking...',
+const PROPERTY_PLACEHOLDERS: Record<string, string[]> = {
+  'Independent House': [
+    'Looking for a 3BHK independent house with car parking and garden space...',
+    'Need a gated independent house for a family of 5, preferably with 2 bathrooms...',
+    'Looking for a house with 24/7 water supply, car parking, and a separate entrance...',
+    'Prefer a house close to school and hospital, semi-furnished preferred...',
+  ],
+  'Apartment / Flat': [
+    'Looking for a 2BHK apartment with lift and covered parking in a gated complex...',
+    'Need a 3BHK flat near metro, fully furnished preferred, for a family of 4...',
+    'Looking for a flat with power backup, security, and water supply...',
+    'Need an affordable 1BHK near OMR for a working couple, semi-furnished is OK...',
+  ],
+  'Commercial Shop': [
+    'Looking for a 300-500 sq. ft. road-facing shop for a clothing business...',
+    'Need a ground-floor shop with good footfall area for a grocery store...',
+    'Looking for a shop near a bus stand or market area, with water and power connection...',
+    'Need a shop space suitable for a mobile accessories or stationery business...',
+  ],
+  'Showroom': [
+    'Looking for a 1000+ sq. ft. showroom space on a main road for a furniture business...',
+    'Need a glass-front showroom suitable for jewellery or electronics display...',
+    'Looking for a showroom with ample parking, preferably ground floor on a commercial road...',
+    'Need a wide showroom space for an automobile or lifestyle brand...',
+  ],
+  'Office Space': [
+    'Looking for a 500-800 sq. ft. office space for a team of 10-15 people...',
+    'Need a co-working or private office with high-speed internet and AC facility...',
+    'Looking for an office near IT corridor with parking and lift...',
+    'Need a furnished office space for a startup, conference room access preferred...',
+  ],
+  'Building for Rent': [
+    'Looking for a multi-floor commercial building suitable for a school or institution...',
+    'Need an entire building for a co-working hub or business centre setup...',
+    'Looking for a 3-4 floor building near a main road, suitable for retail or office use...',
+    'Need a standalone building with basement parking for a corporate office...',
+  ],
+  'Bachelor Room': [
+    'Need a bachelor-friendly room for 2-3 working professionals near OMR...',
+    'Looking for a single room with attached bathroom, cooking allowed preferred...',
+    'Need a room with WiFi and 24hr water supply near Guindy or T. Nagar...',
+    'Looking for an affordable bachelor room close to metro or bus stand...',
+  ],
+  'PG Accommodation': [
+    'Looking for a PG for working men/women with meals, laundry, and WiFi...',
+    'Need a PG with AC rooms, 24hr security, and power backup near Velachery...',
+    'Looking for a girls PG with curfew-free policy and shared or private room...',
+    'Need an affordable PG close to college with homely food and clean rooms...',
+  ],
+  'Shared Room': [
+    'Looking for a flatmate in a 2BHK flat, seeking 1 or 2 professionals to share...',
+    'Need a shared room in Anna Nagar or Adyar, split rent preferred below Rs.6000...',
+    'Looking to share a 3BHK apartment near Sholinganallur for IT professionals...',
+    'Need shared accommodation with a friendly flatmate, vegetarian household preferred...',
+  ],
+  'Other': [
+    'Describe what type of space or property you are looking for...',
+    'Mention any specific requirements such as location, size, usage, or budget...',
+    'Type your requirements in your own words, we will match you with the right property...',
+  ],
+};
+
+const DEFAULT_PLACEHOLDERS: string[] = [
+  'Describe your requirement in detail...',
+  'Mention size, location preference, budget range, or any special needs...',
+  'Type anything, our team will match you with the right property...',
 ];
 
-const QUICK_DESCRIPTION_CHIPS = [
+const PROPERTY_CHIPS: Record<string, string[]> = {
+  'Independent House': [
+    'Car parking required',
+    'Gated community preferred',
+    '24hr water supply needed',
+    'Family with school-going kids',
+    'Pet friendly',
+    'Near school or hospital',
+  ],
+  'Apartment / Flat': [
+    'Lift is a must',
+    'Car parking required',
+    'Power backup needed',
+    'Gated community preferred',
+    'Near metro station',
+    '24hr security needed',
+  ],
+  'Commercial Shop': [
+    'Road-facing preferred',
+    'Ground floor only',
+    'Good footfall area',
+    'Water and power connection needed',
+    'Near bus stand or market',
+    'Need signage space',
+  ],
+  'Showroom': [
+    'Main road frontage required',
+    'Glass front / display area',
+    'Ample parking needed',
+    'Ground floor preferred',
+    'High ceiling required',
+    'Power backup needed',
+  ],
+  'Office Space': [
+    'High-speed internet needed',
+    'AC facility required',
+    'Conference room access',
+    'Near metro or bus stop',
+    'Lift access required',
+    'Suitable for IT company',
+  ],
+  'Building for Rent': [
+    'Multi-floor building needed',
+    'Basement parking required',
+    'Suitable for institution',
+    'Lift access required',
+    'Main road facing',
+    'Independent building preferred',
+  ],
+  'Bachelor Room': [
+    'Cooking allowed',
+    'Attached bathroom',
+    'WiFi needed',
+    'Near bus stand or metro',
+    '24hr water supply',
+    'Looking for immediate move-in',
+  ],
+  'PG Accommodation': [
+    'Meals included',
+    'AC room needed',
+    'Laundry facility needed',
+    '24hr security required',
+    'Power backup needed',
+    'Near college or office',
+  ],
+  'Shared Room': [
+    'Vegetarian flatmate preferred',
+    'Working professionals only',
+    'Immediate availability',
+    'Cooking allowed',
+    'Near IT park',
+    'Split rent equally',
+  ],
+};
+
+const DEFAULT_CHIPS: string[] = [
   'Looking for immediate move-in',
   'Car parking is essential',
   'Need lift access',
-  'Family with school-going kids',
-  'Bachelor-friendly',
-  'Road-facing shop preferred',
   'Good water supply required',
-  'Ground floor preferred',
 ];
 
 export default function WantedSpecifyPage() {
@@ -97,6 +227,7 @@ export default function WantedSpecifyPage() {
   const [localityQuery, setLocalityQuery] = useState<string>('');
   const [showLocalityDropdown, setShowLocalityDropdown] = useState<boolean>(false);
   const [placeholderIndex, setPlaceholderIndex] = useState<number>(0);
+  const [activePlaceholder, setActivePlaceholder] = useState<string>('');
   const [submittedSpace, setSubmittedSpace] = useState<any>(null);
 
   const localityDropdownRef = useRef<HTMLDivElement>(null);
@@ -110,13 +241,20 @@ export default function WantedSpecifyPage() {
     }
   }, [user]);
 
-  // Rotate textarea placeholder smoothly
+  // Rotate textarea placeholder based on selected property type
   useEffect(() => {
+    const placeholders = PROPERTY_PLACEHOLDERS[propertyType] ?? DEFAULT_PLACEHOLDERS;
+    setPlaceholderIndex(0);
+    setActivePlaceholder(placeholders[0]);
     const timer = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % ROTATING_PLACEHOLDERS.length);
+      setPlaceholderIndex((prev) => {
+        const next = (prev + 1) % placeholders.length;
+        setActivePlaceholder(placeholders[next]);
+        return next;
+      });
     }, 4500);
     return () => clearInterval(timer);
-  }, []);
+  }, [propertyType]);
 
   // Sync WhatsApp number when "sameAsMobile" is checked
   useEffect(() => {
@@ -584,7 +722,7 @@ export default function WantedSpecifyPage() {
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder={ROTATING_PLACEHOLDERS[placeholderIndex]}
+                placeholder={activePlaceholder}
                 className="w-full bg-[#FAF8F5] border border-[#D5C9B1] text-gray-900 placeholder-gray-400 rounded-2xl p-4 text-sm focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all"
               />
             </div>
@@ -595,7 +733,7 @@ export default function WantedSpecifyPage() {
                 Click to quickly append common requirements:
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {QUICK_DESCRIPTION_CHIPS.map((chip) => (
+                {(PROPERTY_CHIPS[propertyType] ?? DEFAULT_CHIPS).map((chip) => (
                   <button
                     key={chip}
                     type="button"
