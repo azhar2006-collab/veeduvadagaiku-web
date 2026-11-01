@@ -38,7 +38,7 @@ export default function WantedSpacesDirectoryPage() {
         page,
         limit: 12,
       }),
-    staleTime: 30_000,
+    staleTime: 0,
   });
 
   const spaces: WantedSpace[] = data?.data || [];
