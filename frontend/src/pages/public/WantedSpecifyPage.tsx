@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { createWantedSpace } from '../../services/wantedSpace.service';
+import { createWantedSpace, initiateWantedSpacePayment } from '../../services/wantedSpace.service';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
 import toast from 'react-hot-toast';
 import {
@@ -331,12 +331,27 @@ export default function WantedSpecifyPage() {
     setSubmitting(true);
     try {
       const created = await createWantedSpace(payload as any);
-      toast.success('Requirement saved! Proceeding to payment...');
       try {
         localStorage.removeItem('vv_temp_wanted_req');
       } catch (_) {}
-      // Redirect to payment page with the created WantedSpace ID
-      navigate(`/wanted-spaces/pay?wantedSpaceId=${created.id}`);
+
+      try {
+        const payment = await initiateWantedSpacePayment(created.id);
+        if (payment.isFree) {
+          toast.success('Requirement submitted for review. No payment was taken.');
+          navigate('/user/wanted-spaces');
+          return;
+        }
+
+        toast.success('Requirement saved! Proceeding to payment...');
+        navigate(`/wanted-spaces/pay?wantedSpaceId=${created.id}`);
+      } catch (paymentError: any) {
+        toast.error(
+          paymentError?.response?.data?.message ||
+            'Requirement saved, but payment could not start. You can retry from My Requirements.'
+        );
+        navigate('/user/wanted-spaces');
+      }
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || 'Failed to submit requirement. Please try again.'
@@ -754,14 +769,14 @@ export default function WantedSpecifyPage() {
                 <span>Saving requirement...</span>
               ) : (
                 <>
-                  <span>Proceed to Pay ₹99 · கட்டணம் செலுத்தி பதிவு செய்க</span>
+                  <span>Submit Requirement · தேவையை பதிவு செய்க</span>
                   <ArrowRight className="w-5 h-5 text-gray-950" />
                 </>
               )}
             </button>
 
             <p className="text-xs text-gray-500 text-center mt-3">
-              Listing fee is ₹99 (valid for 30 days). Your requirement will be verified and connected with matching space owners once payment is completed.
+              The ₹99 listing fee applies when checkout is enabled. Your requirement will appear in My Requirements and go to review after submission.
             </p>
           </div>
         </form>
