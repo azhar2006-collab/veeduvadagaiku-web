@@ -46,15 +46,15 @@ export default function WantedSpacesDirectoryPage() {
   const totalPages = Math.ceil(total / 12);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FBF8F2]">
       {/* Hero */}
-      <div className="bg-[#0B3B60] text-white py-10 px-4">
+      <div className="bg-[#FBF8F2] text-slate-900 py-10 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
             <div>
-              <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
+              <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
               <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
-              <p className="text-white/60 text-sm">Browse requirements posted by people looking for spaces to rent or lease.</p>
+              <p className="text-slate-600 text-sm">Browse requirements posted by people looking for spaces to rent or lease.</p>
             </div>
             <Link
               to="/wanted-spaces/specify"
@@ -227,4 +227,3 @@ function WantedCard({ space }: { space: WantedSpace }) {
     </Link>
   );
 }
-
