@@ -99,32 +99,32 @@ export interface CreateWantedSpaceData {
 // ─── API Calls ────────────────────────────────────────────────────────────────
 
 export async function listWantedSpaces(params: WantedSpaceListParams = {}) {
-  const { data } = await api.get('/wanted-spaces', { params });
+  const { data } = await api.get('/api/wanted-spaces', { params });
   return data;
 }
 
 export async function getWantedSpace(id: string) {
-  const { data } = await api.get(`/wanted-spaces/${id}`);
+  const { data } = await api.get(`/api/wanted-spaces/${id}`);
   return data.data as WantedSpace;
 }
 
 export async function createWantedSpace(payload: CreateWantedSpaceData) {
-  const { data } = await api.post('/wanted-spaces', payload);
+  const { data } = await api.post('/api/wanted-spaces', payload);
   return data.data as WantedSpace;
 }
 
 export async function updateWantedSpace(id: string, payload: Partial<CreateWantedSpaceData>) {
-  const { data } = await api.put(`/wanted-spaces/${id}`, payload);
+  const { data } = await api.put(`/api/wanted-spaces/${id}`, payload);
   return data.data as WantedSpace;
 }
 
 export async function initiateWantedSpacePayment(id: string) {
-  const { data } = await api.post(`/wanted-spaces/${id}/payment/initiate`);
+  const { data } = await api.post(`/api/wanted-spaces/${id}/payment/initiate`);
   return data;
 }
 
 export async function verifyWantedSpacePayment(orderId: string, wantedSpaceId?: string) {
-  const { data } = await api.post('/wanted-spaces/payment/verify', {
+  const { data } = await api.post('/api/wanted-spaces/payment/verify', {
     order_id: orderId,
     wantedSpaceId,
   });
@@ -132,42 +132,42 @@ export async function verifyWantedSpacePayment(orderId: string, wantedSpaceId?: 
 }
 
 export async function myWantedSpaces(params: WantedSpaceListParams = {}) {
-  const { data } = await api.get('/wanted-spaces/my/requirements', { params });
+  const { data } = await api.get('/api/wanted-spaces/my/requirements', { params });
   return data;
 }
 
 export async function markWantedSpaceFulfilled(id: string) {
-  const { data } = await api.patch(`/wanted-spaces/${id}/fulfill`);
+  const { data } = await api.patch(`/api/wanted-spaces/${id}/fulfill`);
   return data;
 }
 
 export async function deleteWantedSpace(id: string) {
-  const { data } = await api.delete(`/wanted-spaces/${id}`);
+  const { data } = await api.delete(`/api/wanted-spaces/${id}`);
   return data;
 }
 
 export async function renewWantedSpace(id: string) {
-  const { data } = await api.post(`/wanted-spaces/${id}/renew`);
+  const { data } = await api.post(`/api/wanted-spaces/${id}/renew`);
   return data;
 }
 
 // Admin
 export async function adminListWantedSpaces(params: WantedSpaceListParams = {}) {
-  const { data } = await api.get('/wanted-spaces/admin/all', { params });
+  const { data } = await api.get('/api/wanted-spaces/admin/all', { params });
   return data;
 }
 
 export async function adminApproveWantedSpace(id: string) {
-  const { data } = await api.patch(`/wanted-spaces/admin/${id}/approve`);
+  const { data } = await api.patch(`/api/wanted-spaces/admin/${id}/approve`);
   return data;
 }
 
 export async function adminRejectWantedSpace(id: string, reason: string) {
-  const { data } = await api.patch(`/wanted-spaces/admin/${id}/reject`, { reason });
+  const { data } = await api.patch(`/api/wanted-spaces/admin/${id}/reject`, { reason });
   return data;
 }
 
 export async function adminRemoveWantedSpace(id: string) {
-  const { data } = await api.delete(`/wanted-spaces/admin/${id}`);
+  const { data } = await api.delete(`/api/wanted-spaces/admin/${id}`);
   return data;
 }

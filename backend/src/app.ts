@@ -8,6 +8,7 @@ import fs from 'fs';
 import { generalLimiter } from './middleware/rateLimiter';
 import { errorHandler } from './middleware/errorHandler';
 import routes from './routes';
+import wantedSpaceRoutes from './routes/wantedSpace.routes';
 
 const app = express();
 
@@ -99,6 +100,7 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api', routes);
+app.use('/wanted-spaces', wantedSpaceRoutes);
 
 // 404 handler
 app.use((req, res) => {
