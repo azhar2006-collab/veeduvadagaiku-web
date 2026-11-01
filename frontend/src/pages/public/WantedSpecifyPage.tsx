@@ -354,9 +354,6 @@ export default function WantedSpecifyPage() {
           <span className="text-xs font-bold text-[#8C6D15] uppercase tracking-wider bg-[#FAF4E6] border border-[#E8DFC8] px-3 py-1 rounded-full">
             தேவை · REQUIREMENTS
           </span>
-          <span className="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-semibold">
-            ₹99 to Post · Cashfree Secured
-          </span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
           Wanted – Specify
