@@ -58,7 +58,7 @@ export default function WantedSpacesDirectoryPage() {
             </div>
             <Link
               to="/wanted-spaces/specify"
-              className="inline-flex items-center justify-center gap-2 self-start sm:self-auto bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-3 rounded-xl transition-colors whitespace-nowrap shadow-sm"
+              className="inline-flex items-center justify-center gap-2 self-start sm:self-auto bg-white hover:bg-[#FBF8F2] text-slate-900 text-sm font-semibold px-4 py-2.5 rounded-xl border border-[#E9DCC7] transition-colors whitespace-nowrap"
             >
               + Post Wanted Specify
             </Link>
