@@ -26,35 +26,26 @@ export interface PropertyTypeOption {
   label: string;
   category: string;
   subcategory: string;
-  group: 'Residential' | 'Rooms & Hostels' | 'Commercial & Retail' | 'Offices & Corporate' | 'Industrial & Land';
+  group: 'Residential Properties' | 'Shops' | 'Office' | 'Commercial Building' | 'Room Sharing' | 'Others';
 }
 
 export const PROPERTY_TYPES: PropertyTypeOption[] = [
-  { value: 'Independent House', label: 'Independent House', category: 'RESIDENTIAL', subcategory: 'Independent house', group: 'Residential' },
-  { value: 'Apartment / Flat', label: 'Apartment / Flat', category: 'RESIDENTIAL', subcategory: 'Apartment / Flat', group: 'Residential' },
-  { value: 'Bachelor Room', label: 'Bachelor Room', category: 'ROOMS_ACCOMMODATION', subcategory: 'Single room', group: 'Rooms & Hostels' },
-  { value: 'PG Accommodation', label: 'PG Accommodation', category: 'ROOMS_ACCOMMODATION', subcategory: 'Hostel', group: 'Rooms & Hostels' },
-  { value: 'Shared Room', label: 'Shared Room', category: 'ROOMS_ACCOMMODATION', subcategory: 'Shared room', group: 'Rooms & Hostels' },
-  { value: 'Commercial Shop', label: 'Commercial Shop', category: 'SHOPS_RETAIL', subcategory: 'Shop', group: 'Commercial & Retail' },
-  { value: 'Office Space', label: 'Office Space', category: 'OFFICES', subcategory: 'Office space', group: 'Offices & Corporate' },
-  { value: 'Warehouse / Godown', label: 'Warehouse / Godown', category: 'INDUSTRIAL', subcategory: 'Godown', group: 'Industrial & Land' },
-  { value: 'Showroom', label: 'Showroom', category: 'SHOPS_RETAIL', subcategory: 'Showroom', group: 'Commercial & Retail' },
-  { value: 'Industrial Space', label: 'Industrial Space', category: 'INDUSTRIAL', subcategory: 'Factory shed', group: 'Industrial & Land' },
-  { value: 'Land / Plot', label: 'Land / Plot', category: 'LAND_PLOTS', subcategory: 'Open plot', group: 'Industrial & Land' },
-  { value: 'Building for Rent', label: 'Building for Rent', category: 'COMMERCIAL_BUILDINGS', subcategory: 'Commercial Buildings', group: 'Commercial & Retail' },
-  { value: 'Other', label: 'Other', category: 'OTHER', subcategory: 'Other', group: 'Industrial & Land' },
-];
-
-// ─── Floor Options ─────────────────────────────────────────────────────────────
-
-const FLOOR_OPTIONS = [
-  'Ground Floor',
-  '1st Floor',
-  '2nd Floor',
-  '3rd Floor',
-  '4th Floor',
-  '5th Floor or Above',
-  'Any Floor',
+  // Residential Properties
+  { value: 'Independent House', label: 'Independent House', category: 'RESIDENTIAL', subcategory: 'Independent house', group: 'Residential Properties' },
+  { value: 'Apartment / Flat', label: 'Apartment / Flat', category: 'RESIDENTIAL', subcategory: 'Apartment / Flat', group: 'Residential Properties' },
+  // Shops
+  { value: 'Commercial Shop', label: 'Commercial Shop', category: 'SHOPS_RETAIL', subcategory: 'Shop', group: 'Shops' },
+  { value: 'Showroom', label: 'Showroom', category: 'SHOPS_RETAIL', subcategory: 'Showroom', group: 'Shops' },
+  // Office
+  { value: 'Office Space', label: 'Office Space', category: 'OFFICES', subcategory: 'Office space', group: 'Office' },
+  // Commercial Building
+  { value: 'Building for Rent', label: 'Building for Rent', category: 'COMMERCIAL_BUILDINGS', subcategory: 'Commercial Buildings', group: 'Commercial Building' },
+  // Room Sharing
+  { value: 'Bachelor Room', label: 'Bachelor Room', category: 'ROOMS_ACCOMMODATION', subcategory: 'Single room', group: 'Room Sharing' },
+  { value: 'PG Accommodation', label: 'PG Accommodation', category: 'ROOMS_ACCOMMODATION', subcategory: 'Hostel', group: 'Room Sharing' },
+  { value: 'Shared Room', label: 'Shared Room', category: 'ROOMS_ACCOMMODATION', subcategory: 'Shared room', group: 'Room Sharing' },
+  // Others
+  { value: 'Other', label: 'Other', category: 'OTHER', subcategory: 'Other', group: 'Others' },
 ];
 
 // ─── Rotating Textarea Placeholders ───────────────────────────────────────────
@@ -88,7 +79,6 @@ export default function WantedSpecifyPage() {
   const [title, setTitle] = useState<string>('');
   const [preferredLocality, setPreferredLocality] = useState<string>('');
   const [cityArea, setCityArea] = useState<string>('Chennai');
-  const [preferredFloor, setPreferredFloor] = useState<string>('Any Floor');
   const [minArea, setMinArea] = useState<string>('');
   const [maxArea, setMaxArea] = useState<string>('');
   const [minBudget, setMinBudget] = useState<string>('');
@@ -165,8 +155,6 @@ export default function WantedSpecifyPage() {
     'Shared Room',
   ].includes(propertyType);
 
-  const isLand = propertyType === 'Land / Plot';
-
   // Add chip to textarea
   const appendChipToDescription = (chipText: string) => {
     setDescription((prev) => {
@@ -221,7 +209,6 @@ export default function WantedSpecifyPage() {
             title,
             preferredLocality: preferredLocality || localityQuery.trim(),
             cityArea,
-            preferredFloor,
             minArea,
             maxArea,
             minBudget,
@@ -262,7 +249,6 @@ export default function WantedSpecifyPage() {
       showContact: true,
       categoryExtras: {
         propertyType,
-        preferredFloor: isLand ? 'Not Applicable' : preferredFloor,
         minBudget: minBudget ? parseFloat(minBudget) : undefined,
         maxBudget: maxBudget ? parseFloat(maxBudget) : undefined,
         cityArea: cityArea.trim(),
@@ -337,21 +323,22 @@ export default function WantedSpecifyPage() {
                       <option value="Independent House">Independent House</option>
                       <option value="Apartment / Flat">Apartment / Flat</option>
                     </optgroup>
-                    <optgroup label="Rooms & Hostels">
+                    <optgroup label="Shops">
+                      <option value="Commercial Shop">Commercial Shop</option>
+                      <option value="Showroom">Showroom</option>
+                    </optgroup>
+                    <optgroup label="Office">
+                      <option value="Office Space">Office Space</option>
+                    </optgroup>
+                    <optgroup label="Commercial Building">
+                      <option value="Building for Rent">Building for Rent</option>
+                    </optgroup>
+                    <optgroup label="Room Sharing">
                       <option value="Bachelor Room">Bachelor Room</option>
                       <option value="PG Accommodation">PG Accommodation</option>
                       <option value="Shared Room">Shared Room</option>
                     </optgroup>
-                    <optgroup label="Commercial & Retail">
-                      <option value="Commercial Shop">Commercial Shop</option>
-                      <option value="Office Space">Office Space</option>
-                      <option value="Showroom">Showroom</option>
-                      <option value="Building for Rent">Building for Rent</option>
-                    </optgroup>
-                    <optgroup label="Industrial & Land">
-                      <option value="Warehouse / Godown">Warehouse / Godown</option>
-                      <option value="Industrial Space">Industrial Space</option>
-                      <option value="Land / Plot">Land / Plot</option>
+                    <optgroup label="Others">
                       <option value="Other">Other</option>
                     </optgroup>
                   </select>
@@ -501,31 +488,6 @@ export default function WantedSpecifyPage() {
                 />
               </div>
             </div>
-
-            {/* Preferred Floor (Hidden if Land / Plot) */}
-            {!isLand && (
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-2">
-                  Preferred Floor · விருப்பமான தளம்
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {FLOOR_OPTIONS.map((floor) => (
-                    <button
-                      key={floor}
-                      type="button"
-                      onClick={() => setPreferredFloor(floor)}
-                      className={`text-xs px-3.5 py-2 rounded-xl font-medium border transition-all ${
-                        preferredFloor === floor
-                          ? 'bg-[#D4AF37] border-[#C5A059] text-gray-950 font-bold shadow-xs'
-                          : 'border-[#E2D7C3] bg-[#FAF8F5] text-gray-700 hover:border-[#C5A059] hover:bg-white'
-                      }`}
-                    >
-                      {floor}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Required Area (Min & Max Sq. Ft.) */}
             <div>
