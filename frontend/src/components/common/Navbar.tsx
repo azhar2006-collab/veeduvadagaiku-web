@@ -53,6 +53,12 @@ export const Navbar: React.FC = () => {
               {t('nav.contact')}
             </Link>
             <Link
+              to="/wanted-spaces"
+              className="text-sm font-medium text-gray-700 hover:text-[#9A7818] transition-colors whitespace-nowrap"
+            >
+              Wanted Specify
+            </Link>
+            <Link
               to="/plans"
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#240a15] to-[#391121] text-[#f59e0b] border border-[#f59e0b]/50 text-xs font-bold hover:brightness-110 hover:scale-[1.02] transition-all shadow-xs whitespace-nowrap"
             >
