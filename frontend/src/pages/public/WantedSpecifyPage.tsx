@@ -437,7 +437,7 @@ export default function WantedSpecifyPage() {
           {/* ── BLOCK 0: Requirement Title (first, prominent) ── */}
           <div className="bg-white border border-[#E8DFC8] rounded-3xl p-6 sm:p-7 shadow-sm">
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
-              Give Your Requirement a Title
+              Give Your Requirement a Title · தேவையின் தலைப்பு
             </label>
             <input
               type="text"
@@ -447,7 +447,7 @@ export default function WantedSpecifyPage() {
               className="w-full bg-[#FAF8F5] border border-[#D5C9B1] text-gray-900 placeholder-gray-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all"
             />
             <p className="text-gray-500 text-[11px] mt-1.5">
-              Optional: If left blank, we'll auto-name it from your chosen property &amp; location.
+              Optional · விரும்பினால் உள்ளிடுங்கள்: If left blank, we'll auto-name it from your property &amp; location.
             </p>
           </div>
 
@@ -463,7 +463,7 @@ export default function WantedSpecifyPage() {
             {/* Property Type Dropdown */}
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
-                Select Property Type <span className="text-red-500">*</span>
+                Select Property Type · சொத்து வகை <span className="text-red-500">*</span>
               </label>
               <div className="relative sm:max-w-sm">
                 <select
