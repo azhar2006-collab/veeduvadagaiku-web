@@ -18,7 +18,7 @@ export default function WantedSpacePaymentResultPage() {
     // If status param already set by the checkout handler, skip verification
     if (statusParam === 'success') {
       setState('success');
-      setMessage('Payment verified. Your requirement has been submitted for review.');
+      setMessage('Payment verified. Your requirement is now live in Wanted Specify.');
       return;
     }
     if (statusParam === 'failed') {
@@ -38,7 +38,7 @@ export default function WantedSpacePaymentResultPage() {
       .then((res) => {
         if (res.status === 'PAID' || res.success) {
           setState('success');
-          setMessage('Payment verified. Your requirement has been submitted for review.');
+          setMessage('Payment verified. Your requirement is now live in Wanted Specify.');
         } else {
           setState('failed');
           setMessage('Payment could not be verified. If money was deducted, please contact support.');
