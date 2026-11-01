@@ -338,8 +338,8 @@ export default function WantedSpecifyPage() {
       try {
         const payment = await initiateWantedSpacePayment(created.id);
         if (payment.isFree) {
-          toast.success('Requirement submitted for review. No payment was taken.');
-          navigate('/user/wanted-spaces');
+          toast.success('Requirement is live in Wanted Specify. No payment was taken.');
+          navigate('/wanted-spaces');
           return;
         }
 
