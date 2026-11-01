@@ -30,82 +30,49 @@ export interface PropertyTypeOption {
 }
 
 export const PROPERTY_TYPES: PropertyTypeOption[] = [
-  // Residential Properties
-  { value: 'Independent House', label: 'Independent House', category: 'RESIDENTIAL', subcategory: 'Independent house', group: 'Residential Properties' },
-  { value: 'Apartment / Flat', label: 'Apartment / Flat', category: 'RESIDENTIAL', subcategory: 'Apartment / Flat', group: 'Residential Properties' },
-  // Shops
-  { value: 'Commercial Shop', label: 'Commercial Shop', category: 'SHOPS_RETAIL', subcategory: 'Shop', group: 'Shops' },
-  { value: 'Showroom', label: 'Showroom', category: 'SHOPS_RETAIL', subcategory: 'Showroom', group: 'Shops' },
-  // Office
-  { value: 'Office Space', label: 'Office Space', category: 'OFFICES', subcategory: 'Office space', group: 'Office' },
-  // Commercial Building
-  { value: 'Building for Rent', label: 'Building for Rent', category: 'COMMERCIAL_BUILDINGS', subcategory: 'Commercial Buildings', group: 'Commercial Building' },
-  // Room Sharing
-  { value: 'Bachelor Room', label: 'Bachelor Room', category: 'ROOMS_ACCOMMODATION', subcategory: 'Single room', group: 'Room Sharing' },
-  { value: 'PG Accommodation', label: 'PG Accommodation', category: 'ROOMS_ACCOMMODATION', subcategory: 'Hostel', group: 'Room Sharing' },
-  { value: 'Shared Room', label: 'Shared Room', category: 'ROOMS_ACCOMMODATION', subcategory: 'Shared room', group: 'Room Sharing' },
-  // Others
-  { value: 'Other', label: 'Other', category: 'OTHER', subcategory: 'Other', group: 'Others' },
+  { value: 'Residential Properties', label: 'Residential Properties', category: 'RESIDENTIAL', subcategory: 'Residential', group: 'Residential Properties' },
+  { value: 'Shop', label: 'Shop', category: 'SHOPS_RETAIL', subcategory: 'Shop', group: 'Shops' },
+  { value: 'Office', label: 'Office', category: 'OFFICES', subcategory: 'Office space', group: 'Office' },
+  { value: 'Commercial Buildings', label: 'Commercial Buildings', category: 'COMMERCIAL_BUILDINGS', subcategory: 'Commercial Buildings', group: 'Commercial Building' },
+  { value: 'Room Sharing', label: 'Room Sharing', category: 'ROOMS_ACCOMMODATION', subcategory: 'Shared room', group: 'Room Sharing' },
+  { value: 'Others', label: 'Others', category: 'OTHER', subcategory: 'Other', group: 'Others' },
 ];
 
 // ─── Per-Property-Type Textarea Placeholders ───────────────────────────────────
 
 const PROPERTY_PLACEHOLDERS: Record<string, string[]> = {
-  'Independent House': [
-    'Looking for a 3BHK independent house with car parking and garden space...',
-    'Need a gated independent house for a family of 5, preferably with 2 bathrooms...',
-    'Looking for a house with 24/7 water supply, car parking, and a separate entrance...',
-    'Prefer a house close to school and hospital, semi-furnished preferred...',
+  'Residential Properties': [
+    'Looking for a 2BHK or 3BHK house / flat with car parking in a gated community...',
+    'Need an independent house for a family of 5, preferably with 2 bathrooms and garden...',
+    'Looking for an apartment with lift, power backup, security, and good water supply...',
+    'Need an affordable 1BHK flat near OMR or metro, semi-furnished is OK...',
   ],
-  'Apartment / Flat': [
-    'Looking for a 2BHK apartment with lift and covered parking in a gated complex...',
-    'Need a 3BHK flat near metro, fully furnished preferred, for a family of 4...',
-    'Looking for a flat with power backup, security, and water supply...',
-    'Need an affordable 1BHK near OMR for a working couple, semi-furnished is OK...',
-  ],
-  'Commercial Shop': [
+  'Shop': [
     'Looking for a 300-500 sq. ft. road-facing shop for a clothing business...',
     'Need a ground-floor shop with good footfall area for a grocery store...',
     'Looking for a shop near a bus stand or market area, with water and power connection...',
     'Need a shop space suitable for a mobile accessories or stationery business...',
   ],
-  'Showroom': [
-    'Looking for a 1000+ sq. ft. showroom space on a main road for a furniture business...',
-    'Need a glass-front showroom suitable for jewellery or electronics display...',
-    'Looking for a showroom with ample parking, preferably ground floor on a commercial road...',
-    'Need a wide showroom space for an automobile or lifestyle brand...',
-  ],
-  'Office Space': [
+
+  'Office': [
     'Looking for a 500-800 sq. ft. office space for a team of 10-15 people...',
     'Need a co-working or private office with high-speed internet and AC facility...',
     'Looking for an office near IT corridor with parking and lift...',
     'Need a furnished office space for a startup, conference room access preferred...',
   ],
-  'Building for Rent': [
+  'Commercial Buildings': [
     'Looking for a multi-floor commercial building suitable for a school or institution...',
     'Need an entire building for a co-working hub or business centre setup...',
     'Looking for a 3-4 floor building near a main road, suitable for retail or office use...',
     'Need a standalone building with basement parking for a corporate office...',
   ],
-  'Bachelor Room': [
-    'Need a bachelor-friendly room for 2-3 working professionals near OMR...',
-    'Looking for a single room with attached bathroom, cooking allowed preferred...',
-    'Need a room with WiFi and 24hr water supply near Guindy or T. Nagar...',
-    'Looking for an affordable bachelor room close to metro or bus stand...',
-  ],
-  'PG Accommodation': [
-    'Looking for a PG for working men/women with meals, laundry, and WiFi...',
-    'Need a PG with AC rooms, 24hr security, and power backup near Velachery...',
-    'Looking for a girls PG with curfew-free policy and shared or private room...',
-    'Need an affordable PG close to college with homely food and clean rooms...',
-  ],
-  'Shared Room': [
-    'Looking for a flatmate in a 2BHK flat, seeking 1 or 2 professionals to share...',
-    'Need a shared room in Anna Nagar or Adyar, split rent preferred below Rs.6000...',
+  'Room Sharing': [
+    'Need a bachelor-friendly room or PG for 2-3 working professionals near OMR...',
+    'Looking for a shared room or flatmate in Anna Nagar or Adyar below Rs.6000 rent...',
+    'Need a PG with AC, meals, laundry, and 24hr security near Velachery...',
     'Looking to share a 3BHK apartment near Sholinganallur for IT professionals...',
-    'Need shared accommodation with a friendly flatmate, vegetarian household preferred...',
   ],
-  'Other': [
+  'Others': [
     'Describe what type of space or property you are looking for...',
     'Mention any specific requirements such as location, size, usage, or budget...',
     'Type your requirements in your own words, we will match you with the right property...',
@@ -119,39 +86,23 @@ const DEFAULT_PLACEHOLDERS: string[] = [
 ];
 
 const PROPERTY_CHIPS: Record<string, string[]> = {
-  'Independent House': [
+  'Residential Properties': [
     'Car parking required',
+    'Lift is a must',
     'Gated community preferred',
     '24hr water supply needed',
-    'Family with school-going kids',
-    'Pet friendly',
-    'Near school or hospital',
-  ],
-  'Apartment / Flat': [
-    'Lift is a must',
-    'Car parking required',
+    'Near metro or school',
     'Power backup needed',
-    'Gated community preferred',
-    'Near metro station',
-    '24hr security needed',
   ],
-  'Commercial Shop': [
+  'Shop': [
     'Road-facing preferred',
     'Ground floor only',
     'Good footfall area',
-    'Water and power connection needed',
     'Near bus stand or market',
+    'High ceiling required',
     'Need signage space',
   ],
-  'Showroom': [
-    'Main road frontage required',
-    'Glass front / display area',
-    'Ample parking needed',
-    'Ground floor preferred',
-    'High ceiling required',
-    'Power backup needed',
-  ],
-  'Office Space': [
+  'Office': [
     'High-speed internet needed',
     'AC facility required',
     'Conference room access',
@@ -159,7 +110,7 @@ const PROPERTY_CHIPS: Record<string, string[]> = {
     'Lift access required',
     'Suitable for IT company',
   ],
-  'Building for Rent': [
+  'Commercial Buildings': [
     'Multi-floor building needed',
     'Basement parking required',
     'Suitable for institution',
@@ -167,29 +118,13 @@ const PROPERTY_CHIPS: Record<string, string[]> = {
     'Main road facing',
     'Independent building preferred',
   ],
-  'Bachelor Room': [
+  'Room Sharing': [
     'Cooking allowed',
     'Attached bathroom',
     'WiFi needed',
-    'Near bus stand or metro',
-    '24hr water supply',
-    'Looking for immediate move-in',
-  ],
-  'PG Accommodation': [
     'Meals included',
-    'AC room needed',
-    'Laundry facility needed',
-    '24hr security required',
-    'Power backup needed',
-    'Near college or office',
-  ],
-  'Shared Room': [
-    'Vegetarian flatmate preferred',
-    'Working professionals only',
+    'Near IT park or metro',
     'Immediate availability',
-    'Cooking allowed',
-    'Near IT park',
-    'Split rent equally',
   ],
 };
 
@@ -205,7 +140,7 @@ export default function WantedSpecifyPage() {
   const { user } = useAuth();
 
   // Core Form State
-  const [propertyType, setPropertyType] = useState<string>('Apartment / Flat');
+  const [propertyType, setPropertyType] = useState<string>('Residential Properties');
   const [title, setTitle] = useState<string>('');
   const [preferredLocality, setPreferredLocality] = useState<string>('');
   const [cityArea, setCityArea] = useState<string>('Chennai');
@@ -472,28 +407,12 @@ export default function WantedSpecifyPage() {
                     errors.propertyType ? 'border-red-400' : 'border-[#D5C9B1]'
                   } text-gray-900 rounded-xl px-4 py-3 text-sm appearance-none focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all pr-10`}
                 >
-                  <optgroup label="Residential Properties">
-                    <option value="Independent House">Independent House</option>
-                    <option value="Apartment / Flat">Apartment / Flat</option>
-                  </optgroup>
-                  <optgroup label="Shops">
-                    <option value="Commercial Shop">Commercial Shop</option>
-                    <option value="Showroom">Showroom</option>
-                  </optgroup>
-                  <optgroup label="Office">
-                    <option value="Office Space">Office Space</option>
-                  </optgroup>
-                  <optgroup label="Commercial Building">
-                    <option value="Building for Rent">Building for Rent</option>
-                  </optgroup>
-                  <optgroup label="Room Sharing">
-                    <option value="Bachelor Room">Bachelor Room</option>
-                    <option value="PG Accommodation">PG Accommodation</option>
-                    <option value="Shared Room">Shared Room</option>
-                  </optgroup>
-                  <optgroup label="Others">
-                    <option value="Other">Other</option>
-                  </optgroup>
+                  <option value="Residential Properties">Residential Properties</option>
+                  <option value="Shop">Shop</option>
+                  <option value="Office">Office</option>
+                  <option value="Commercial Buildings">Commercial Buildings</option>
+                  <option value="Room Sharing">Room Sharing</option>
+                  <option value="Others">Others</option>
                 </select>
                 <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
