@@ -279,22 +279,29 @@ export async function initiateWantedSpacePayment(req: AuthRequest, res: Response
     // Mark as payment pending
     await prisma.wantedSpace.update({ where: { id }, data: { status: 'PAYMENT_PENDING' } });
 
-    // If Cashfree not configured — bypass payment
-    if (!isCashfreeConfigured()) {
+    const isTestPaymentBypassEnabled = process.env.WANTED_SPACE_PAYMENT_BYPASS === 'true';
+
+    // This switch applies only to Wanted Space requirements. Keep test submissions
+    // unpaid while sending them through the normal review workflow.
+    if (isTestPaymentBypassEnabled || !isCashfreeConfigured()) {
       await prisma.wantedSpace.update({
         where: { id },
         data: {
           status: 'PENDING_APPROVAL',
-          paymentStatus: 'SUCCESS',
-          cfOrderId: `free_ws_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-          transactionId: `free_ws_${Date.now()}`,
+          paymentStatus: isTestPaymentBypassEnabled ? 'PENDING' : 'SUCCESS',
+          cfOrderId: isTestPaymentBypassEnabled
+            ? null
+            : `free_ws_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          transactionId: isTestPaymentBypassEnabled ? null : `free_ws_${Date.now()}`,
         },
       });
       return res.json({
         success: true,
         isFree: true,
-        status: 'PAID',
-        message: 'Requirement submitted for review.',
+        status: 'PENDING_APPROVAL',
+        message: isTestPaymentBypassEnabled
+          ? 'Payment bypassed for testing. Requirement submitted for review.'
+          : 'Requirement submitted for review.',
       });
     }
 
