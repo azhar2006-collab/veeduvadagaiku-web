@@ -426,8 +426,7 @@ export default function WantedSpecifyPage() {
           Wanted – Specify
         </h1>
         <p className="text-gray-600 text-sm sm:text-base max-w-2xl">
-          Tell us what kind of house, room, shop, office, or space you are looking for in Chennai.
-          Property owners with matching spaces will contact you directly.
+          Specify what you are looking for in Chennai in detail. Services or Property owners with matching details will contact you directly.
         </p>
       </div>
 
@@ -456,7 +455,7 @@ export default function WantedSpecifyPage() {
             <div className="flex items-center gap-2 border-b border-[#F0E9DA] pb-3.5">
               <Building2 className="w-5 h-5 text-[#C5A059]" />
               <h2 className="text-base font-bold text-gray-900">
-                1. What are you looking for? · எந்த இடம் தேவை?
+                1. What are you looking for? · உங்களுடைய தேவை என்ன பதிவிடுங்கள்?
               </h2>
             </div>
 
