@@ -53,7 +53,7 @@ export async function listWantedSpaces(req: AuthRequest, res: Response, next: Ne
     const { category, city, locality, minBudget, maxBudget, requirementType, minArea, maxArea, search } = req.query;
 
     const where: any = {
-      status: 'PUBLISHED',
+      status: { in: ['PUBLISHED', 'PENDING_APPROVAL'] },
       OR: [
         { expiresAt: null },
         { expiresAt: { gt: new Date() } },
@@ -130,7 +130,7 @@ export async function getWantedSpace(req: AuthRequest, res: Response, next: Next
   try {
     const { id } = req.params;
     const space = await prisma.wantedSpace.findUnique({ where: { id } });
-    if (!space || space.status !== 'PUBLISHED') {
+    if (!space || !['PUBLISHED', 'PENDING_APPROVAL'].includes(space.status)) {
       throw new ApiError(404, 'Requirement not found');
     }
 
