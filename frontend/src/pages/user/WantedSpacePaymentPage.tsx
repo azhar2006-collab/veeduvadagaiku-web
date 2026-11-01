@@ -40,8 +40,8 @@ export default function WantedSpacePaymentPage() {
       const orderData = await initiateWantedSpacePayment(wantedSpaceId);
 
       if (orderData.isFree) {
-        toast.success('Submitted for review!');
-        navigate('/user/wanted-spaces');
+        toast.success('Requirement is live in Wanted Specify.');
+        navigate('/wanted-spaces');
         return;
       }
 
@@ -62,7 +62,7 @@ export default function WantedSpacePaymentPage() {
           try {
             await verifyWantedSpacePayment(orderData.order_id, wantedSpaceId);
             setDone(true);
-            toast.success('Payment successful! Requirement submitted for review.');
+            toast.success('Payment successful! Requirement is now live in Wanted Specify.');
             navigate(`/wanted-spaces/payment-result?order_id=${orderData.order_id}&wantedSpaceId=${wantedSpaceId}&status=success`);
           } catch {
             navigate(`/wanted-spaces/payment-result?order_id=${orderData.order_id}&wantedSpaceId=${wantedSpaceId}`);
@@ -149,7 +149,7 @@ export default function WantedSpacePaymentPage() {
               <span className="font-bold text-gray-900 text-lg">₹{space?.paymentAmount || 99}</span>
             </div>
             <p className="text-xs text-gray-400 mt-2">
-              Your requirement will be reviewed by our team and published within 24 hours.
+              Your requirement will be published as soon as payment is confirmed.
             </p>
           </div>
 
