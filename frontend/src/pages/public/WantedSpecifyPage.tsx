@@ -434,7 +434,24 @@ export default function WantedSpecifyPage() {
       {/* ── Requirement Form (Beige / Warm Ivory Theme) ── */}
       <div className="max-w-4xl mx-auto px-4">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* ── BLOCK 1: Property Type & Title ── */}
+          {/* ── BLOCK 0: Requirement Title (first, prominent) ── */}
+          <div className="bg-white border border-[#E8DFC8] rounded-3xl p-6 sm:p-7 shadow-sm">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
+              Give Your Requirement a Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g., 2BHK House Required in Anna Nagar"
+              className="w-full bg-[#FAF8F5] border border-[#D5C9B1] text-gray-900 placeholder-gray-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all"
+            />
+            <p className="text-gray-500 text-[11px] mt-1.5">
+              Optional: If left blank, we'll auto-name it from your chosen property &amp; location.
+            </p>
+          </div>
+
+          {/* ── BLOCK 1: Property Type ── */}
           <div className="bg-white border border-[#E8DFC8] rounded-3xl p-6 sm:p-7 shadow-sm space-y-5">
             <div className="flex items-center gap-2 border-b border-[#F0E9DA] pb-3.5">
               <Building2 className="w-5 h-5 text-[#C5A059]" />
@@ -443,66 +460,47 @@ export default function WantedSpecifyPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {/* Property Type Dropdown */}
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
-                  Select Property Type <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <select
-                    value={propertyType}
-                    onChange={(e) => setPropertyType(e.target.value)}
-                    className={`w-full bg-[#FAF8F5] border ${
-                      errors.propertyType ? 'border-red-400' : 'border-[#D5C9B1]'
-                    } text-gray-900 rounded-xl px-4 py-3 text-sm appearance-none focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all pr-10`}
-                  >
-                    <optgroup label="Residential Properties">
-                      <option value="Independent House">Independent House</option>
-                      <option value="Apartment / Flat">Apartment / Flat</option>
-                    </optgroup>
-                    <optgroup label="Shops">
-                      <option value="Commercial Shop">Commercial Shop</option>
-                      <option value="Showroom">Showroom</option>
-                    </optgroup>
-                    <optgroup label="Office">
-                      <option value="Office Space">Office Space</option>
-                    </optgroup>
-                    <optgroup label="Commercial Building">
-                      <option value="Building for Rent">Building for Rent</option>
-                    </optgroup>
-                    <optgroup label="Room Sharing">
-                      <option value="Bachelor Room">Bachelor Room</option>
-                      <option value="PG Accommodation">PG Accommodation</option>
-                      <option value="Shared Room">Shared Room</option>
-                    </optgroup>
-                    <optgroup label="Others">
-                      <option value="Other">Other</option>
-                    </optgroup>
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-                {errors.propertyType && (
-                  <p className="text-red-600 text-xs mt-1.5">{errors.propertyType}</p>
-                )}
+            {/* Property Type Dropdown */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
+                Select Property Type <span className="text-red-500">*</span>
+              </label>
+              <div className="relative sm:max-w-sm">
+                <select
+                  value={propertyType}
+                  onChange={(e) => setPropertyType(e.target.value)}
+                  className={`w-full bg-[#FAF8F5] border ${
+                    errors.propertyType ? 'border-red-400' : 'border-[#D5C9B1]'
+                  } text-gray-900 rounded-xl px-4 py-3 text-sm appearance-none focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all pr-10`}
+                >
+                  <optgroup label="Residential Properties">
+                    <option value="Independent House">Independent House</option>
+                    <option value="Apartment / Flat">Apartment / Flat</option>
+                  </optgroup>
+                  <optgroup label="Shops">
+                    <option value="Commercial Shop">Commercial Shop</option>
+                    <option value="Showroom">Showroom</option>
+                  </optgroup>
+                  <optgroup label="Office">
+                    <option value="Office Space">Office Space</option>
+                  </optgroup>
+                  <optgroup label="Commercial Building">
+                    <option value="Building for Rent">Building for Rent</option>
+                  </optgroup>
+                  <optgroup label="Room Sharing">
+                    <option value="Bachelor Room">Bachelor Room</option>
+                    <option value="PG Accommodation">PG Accommodation</option>
+                    <option value="Shared Room">Shared Room</option>
+                  </optgroup>
+                  <optgroup label="Others">
+                    <option value="Other">Other</option>
+                  </optgroup>
+                </select>
+                <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
-
-              {/* Requirement Title */}
-              <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
-                  Give Your Requirement a Title
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., 2BHK House Required in Anna Nagar"
-                  className="w-full bg-[#FAF8F5] border border-[#D5C9B1] text-gray-900 placeholder-gray-400 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#C5A059] focus:bg-white focus:ring-1 focus:ring-[#C5A059] transition-all"
-                />
-                <p className="text-gray-500 text-[11px] mt-1">
-                  Optional: If left blank, we'll auto-name it from your chosen property & location.
-                </p>
-              </div>
+              {errors.propertyType && (
+                <p className="text-red-600 text-xs mt-1.5">{errors.propertyType}</p>
+              )}
             </div>
           </div>
 
