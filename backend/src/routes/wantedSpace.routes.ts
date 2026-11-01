@@ -32,7 +32,7 @@ router.post('/webhook', wantedSpaceWebhook);
 router.post('/', authenticate, createWantedSpace);
 router.put('/:id', authenticate, updateWantedSpace);
 router.post('/:id/payment/initiate', authenticate, initiateWantedSpacePayment);
-router.post('/payment/verify', authenticate, verifyWantedSpacePayment);
+router.post('/payment/verify', optionalAuth, verifyWantedSpacePayment);
 router.get('/my/requirements', authenticate, myWantedSpaces);
 router.patch('/:id/fulfill', authenticate, markWantedSpaceFulfilled);
 router.delete('/:id', authenticate, deleteWantedSpace);
