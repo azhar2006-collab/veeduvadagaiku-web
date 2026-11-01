@@ -72,23 +72,23 @@ export default function WantedSpaceDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-[#0B3B60] text-white py-6 px-4">
+    <div className="min-h-screen bg-[#FAF7F2]">
+      {/* Header */>
+      <div className="bg-[#FAF7F2] text-gray-900 py-6 px-4 border-b border-[#E8DFC8]">
         <div className="max-w-3xl mx-auto">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-white/70 hover:text-white text-sm mb-4">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-600 hover:text-[#9A7818] text-sm mb-4">
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-400/30 rounded-full px-2.5 py-0.5 font-medium">
+            <span className="text-xs bg-[#FAF4E6] text-[#9A7818] border border-[#E8DFC8] rounded-full px-2.5 py-0.5 font-medium">
               {catLabel}
             </span>
             {space.subcategory && (
-              <span className="text-xs text-white/50">{space.subcategory}</span>
+              <span className="text-xs text-gray-500">{space.subcategory}</span>
             )}
           </div>
           <h1 className="text-xl md:text-2xl font-bold">{space.title}</h1>
-          <div className="flex items-center gap-1.5 mt-2 text-white/60 text-sm">
+          <div className="flex items-center gap-1.5 mt-2 text-gray-500 text-sm">
             <Eye className="w-3.5 h-3.5" />
             <span>{space.viewCount} views</span>
             <span className="mx-2">·</span>
