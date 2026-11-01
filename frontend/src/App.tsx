@@ -186,6 +186,7 @@ export const App: React.FC = () => {
         {/* ─── Wanted Spaces (public) ─── */}
         <Route path="/wanted-spaces" element={<WantedSpacesDirectoryPage />} />
         <Route path="/wanted-spaces/specify" element={<WantedSpecifyPage />} />
+        <Route path="/wanted-spaces/pay" element={<WantedSpacePaymentPage />} />
         <Route path="/wanted-spaces/:id" element={<WantedSpaceDetailPage />} />
       </Route>
 

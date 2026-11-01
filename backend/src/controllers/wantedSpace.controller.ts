@@ -195,8 +195,8 @@ export async function createWantedSpace(req: AuthRequest, res: Response, next: N
         contactWhatsapp: contactWhatsapp || null,
         showContact: Boolean(showContact),
         categoryExtras: categoryExtras ? JSON.stringify(categoryExtras) : null,
-        status: 'PENDING_APPROVAL',
-        paymentStatus: 'SUCCESS',
+        status: 'DRAFT',
+        paymentStatus: 'PENDING',
         paymentAmount: resolvedAmount,
         validityDays: WANTED_VALIDITY_DAYS,
       },
@@ -272,7 +272,7 @@ export async function initiateWantedSpacePayment(req: AuthRequest, res: Response
 
     const space = await prisma.wantedSpace.findFirst({ where: { id, userId: req.user.id } });
     if (!space) throw new ApiError(404, 'Requirement not found');
-    if (!['DRAFT', 'REJECTED', 'EXPIRED'].includes(space.status)) {
+    if (!['DRAFT', 'PAYMENT_PENDING', 'REJECTED', 'EXPIRED'].includes(space.status)) {
       throw new ApiError(400, 'Payment not applicable for this requirement');
     }
 

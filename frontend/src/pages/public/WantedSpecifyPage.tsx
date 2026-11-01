@@ -331,11 +331,12 @@ export default function WantedSpecifyPage() {
     setSubmitting(true);
     try {
       const created = await createWantedSpace(payload as any);
-      setSubmittedSpace(created);
-      toast.success('Your requirement has been posted successfully!');
+      toast.success('Requirement saved! Proceeding to payment...');
       try {
         localStorage.removeItem('vv_temp_wanted_req');
       } catch (_) {}
+      // Redirect to payment page with the created WantedSpace ID
+      navigate(`/wanted-spaces/pay?wantedSpaceId=${created.id}`);
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || 'Failed to submit requirement. Please try again.'
@@ -354,7 +355,7 @@ export default function WantedSpecifyPage() {
             தேவை · REQUIREMENTS
           </span>
           <span className="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-semibold">
-            Zero Brokerage · Free to Post
+            ₹99 to Post · Cashfree Secured
           </span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight mb-2">
@@ -753,18 +754,17 @@ export default function WantedSpecifyPage() {
               className="w-full bg-gradient-to-r from-[#D4AF37] to-[#C5A059] hover:from-[#C5A059] hover:to-[#B38E42] text-gray-950 font-black rounded-2xl py-4 px-8 text-base shadow-lg shadow-amber-900/10 active:scale-[0.99] transition-all disabled:opacity-60 flex items-center justify-center gap-3 cursor-pointer"
             >
               {submitting ? (
-                <span>Submitting your requirement...</span>
+                <span>Saving requirement...</span>
               ) : (
                 <>
-                  <span>Post Requirement · இலவசமாக பதிவு செய்க</span>
+                  <span>Proceed to Pay ₹99 · கட்டணம் செலுத்தி பதிவு செய்க</span>
                   <ArrowRight className="w-5 h-5 text-gray-950" />
                 </>
               )}
             </button>
 
             <p className="text-xs text-gray-500 text-center mt-3">
-              No listing fee required. Your requirement will be verified and connected with matching
-              space owners across Chennai.
+              Listing fee is ₹99 (valid for 30 days). Your requirement will be verified and connected with matching space owners once payment is completed.
             </p>
           </div>
         </form>
