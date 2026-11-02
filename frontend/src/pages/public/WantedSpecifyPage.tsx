@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { createWantedSpace, initiateWantedSpacePayment } from '../../services/wantedSpace.service';
 import { CHENNAI_LOCALITIES } from '../../utils/chennaiLocalities';
@@ -360,6 +360,10 @@ export default function WantedSpecifyPage() {
       setSubmitting(false);
     }
   };
+
+  if (user && user.role !== 'USER') {
+    return <Navigate to="/wanted-spaces" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-gray-900 pb-16">
