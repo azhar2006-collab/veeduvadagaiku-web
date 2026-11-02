@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { Search, MapPin, IndianRupee, Maximize2, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { listWantedSpaces, WantedSpace } from '../../services/wantedSpace.service';
@@ -21,6 +22,8 @@ const CATEGORY_LABELS: Record<string, string> = {
 const CATEGORIES = Object.entries(CATEGORY_LABELS).map(([key, label]) => ({ key, label }));
 
 export default function WantedSpacesDirectoryPage() {
+  const { user } = useAuth();
+  const canPostRequirement = !user || user.role === 'USER';
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [city, setCity] = useState('');
@@ -56,12 +59,12 @@ export default function WantedSpacesDirectoryPage() {
               <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
               <p className="text-slate-600 text-sm">Browse requirements posted by people looking for spaces to rent or lease.</p>
             </div>
-            <Link
+            {canPostRequirement && <Link
               to="/wanted-spaces/specify"
               className="inline-flex items-center justify-center gap-2 self-start sm:self-auto bg-white hover:bg-[#FAF4E6] text-slate-900 text-sm font-semibold px-4 py-2.5 rounded-xl border border-[#C5A059] transition-colors whitespace-nowrap"
             >
               + Post Wanted Specify
-            </Link>
+            </Link>}
           </div>
           {/* Search */}
           <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2 max-w-xl">
@@ -124,9 +127,9 @@ export default function WantedSpacesDirectoryPage() {
         ) : spaces.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 text-lg">No requirements found.</p>
-            <Link to="/wanted-spaces/specify" className="mt-4 inline-block text-amber-600 font-semibold underline">
+            {canPostRequirement && <Link to="/wanted-spaces/specify" className="mt-4 inline-block text-amber-600 font-semibold underline">
               Post the first requirement
-            </Link>
+            </Link>}
           </div>
         ) : (
           <>
