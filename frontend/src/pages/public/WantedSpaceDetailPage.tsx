@@ -73,7 +73,7 @@ export default function WantedSpaceDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-      {/* Header */>
+      {/* Header */}
       <div className="bg-[#FAF7F2] text-gray-900 py-6 px-4 border-b border-[#E8DFC8]">
         <div className="max-w-3xl mx-auto">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-600 hover:text-[#9A7818] text-sm mb-4">
