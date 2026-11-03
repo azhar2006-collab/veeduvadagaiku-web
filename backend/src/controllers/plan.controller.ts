@@ -1,0 +1,124 @@
+import { Response, NextFunction, Request } from 'express';
+import { AuthRequest } from '../middleware/auth';
+import { prisma } from '../config/database';
+import { successResponse, ApiError } from '../utils/response';
+import { createPlanSchema } from '../utils/validators';
+
+import { getNavaratriOffer, isOfferActive } from '../config/offerConfig';
+
+export async function syncPromotionalPlan() {
+  try {
+    const offer = getNavaratriOffer();
+    const active = isOfferActive(offer);
+
+    // Sync primary plan (plan_deepavali_free)
+    await prisma.listingPlan.upsert({
+      where: { id: offer.planId },
+      update: {
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+      create: {
+        id: offer.planId,
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+    });
+
+    // Also sync legacy plan_navaratri_free as alias so older references don't break
+    await prisma.listingPlan.upsert({
+      where: { id: 'plan_navaratri_free' },
+      update: {
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+      create: {
+        id: 'plan_navaratri_free',
+        name: offer.planName,
+        price: offer.price,
+        durationDays: offer.durationDays,
+        description: offer.description,
+        features: offer.features,
+        isActive: active,
+        sortOrder: 0,
+      },
+    });
+  } catch (err) {
+    console.warn('[syncPromotionalPlan] Failed to sync promo plan:', err);
+  }
+}
+
+export async function listPlans(req: Request, res: Response, next: NextFunction) {
+  try {
+    await syncPromotionalPlan();
+    // Return plans excluding the redundant legacy alias if present
+    const plans = await prisma.listingPlan.findMany({
+      where: { isActive: true, NOT: { id: 'plan_navaratri_free' } },
+      orderBy: { sortOrder: 'asc' },
+    });
+    res.json(successResponse(plans));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getPlan(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (req.params.id === 'plan_navaratri_free' || req.params.id === 'plan_deepavali_free') {
+      const offer = getNavaratriOffer();
+      if (!isOfferActive(offer)) {
+        throw new ApiError(404, 'Deepavali Free Offer Plan has expired');
+      }
+    }
+    const plan = await prisma.listingPlan.findUnique({ where: { id: req.params.id } });
+    if (!plan) throw new ApiError(404, 'Plan not found');
+    res.json(successResponse(plan));
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Admin-only
+export async function createPlan(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const data = createPlanSchema.parse(req.body);
+    const plan = await prisma.listingPlan.create({ data });
+    res.status(201).json(successResponse(plan, 'Plan created'));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updatePlan(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const data = createPlanSchema.partial().parse(req.body);
+    const plan = await prisma.listingPlan.update({ where: { id: req.params.id }, data });
+    res.json(successResponse(plan, 'Plan updated'));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deletePlan(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    await prisma.listingPlan.update({ where: { id: req.params.id }, data: { isActive: false } });
+    res.json(successResponse(null, 'Plan deactivated'));
+  } catch (error) {
+    next(error);
+  }
+}

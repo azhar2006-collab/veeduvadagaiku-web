@@ -1,0 +1,63 @@
+import axios from 'axios';
+import { useAuthStore } from '../store/authStore';
+
+// Normalize base API URL
+const getApiBaseUrl = () => {
+  let url = import.meta.env.VITE_API_URL;
+  if (!url) {
+    if (
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ) {
+      return 'http://localhost:5000';
+    }
+    // In production, use same-origin relative URLs so Vercel proxies /api requests to Railway server-to-server with ZERO CORS issues!
+    return '';
+  }
+  url = url.trim();
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  return url.replace(/\/$/, '');
+};
+
+const api = axios.create({
+  baseURL: getApiBaseUrl(),
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    let token = localStorage.getItem('vv_token');
+    if (!token) {
+      token = useAuthStore.getState().token;
+      if (token) {
+        localStorage.setItem('vv_token', token);
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Don't loop redirect if already on login/register/public routes
+      const path = window.location.pathname;
+      if (!path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/admin/login')) {
+        localStorage.removeItem('vv_token');
+        localStorage.removeItem('vv_user');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;

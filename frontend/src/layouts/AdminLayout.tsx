@@ -1,0 +1,82 @@
+import React from 'react';
+import { Outlet, Navigate, Link } from 'react-router-dom';
+import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
+import { useAuth } from '../hooks/useAuth';
+import {
+  LayoutDashboard,
+  Clock,
+  Building2,
+  Users,
+  ShieldCheck,
+  CreditCard,
+  Layers,
+  MessageSquare,
+  Home,
+  Wrench,
+} from 'lucide-react';
+
+export const AdminLayout: React.FC = () => {
+  const { isAuthenticated, isAdmin } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  const items: SidebarItem[] = [
+    { label: 'Admin Overview', href: '/admin/dashboard', icon: LayoutDashboard },
+    { label: 'Pending Approvals', href: '/admin/pending', icon: Clock },
+    { label: 'Home Services', href: '/admin/pending?tab=services', icon: Wrench },
+    { label: 'Manage Properties', href: '/admin/properties', icon: Building2 },
+    { label: 'Manage Owners', href: '/admin/owners', icon: ShieldCheck },
+    { label: 'Manage Users', href: '/admin/users', icon: Users },
+    { label: 'Payments', href: '/admin/payments', icon: CreditCard },
+    { label: 'Listing Plans', href: '/admin/plans', icon: Layers },
+    { label: 'All Enquiries', href: '/admin/enquiries', icon: MessageSquare },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      {/* Admin Top Header */}
+      <header className="bg-[#060D1E] text-white border-b border-slate-800 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-2">
+              <img
+                src="/logo.png"
+                alt="Veedu Vadagaikku Chennai"
+                className="h-10 sm:h-12 w-auto object-contain rounded-lg drop-shadow-sm hover:scale-105 transition"
+              />
+            </Link>
+            <span className="text-slate-700">|</span>
+            <span className="text-xs font-extrabold text-amber-400 uppercase tracking-widest bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/20">
+              Admin Portal
+            </span>
+          </div>
+          <Link
+            to="/"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 text-xs font-semibold text-gray-300 hover:text-white bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700 transition"
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>View Live Website</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Admin Area */}
+      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <DashboardSidebar title="Super Admin" items={items} />
+          <div className="flex-1 min-w-0">
+            <Outlet />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
