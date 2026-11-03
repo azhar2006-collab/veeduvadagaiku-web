@@ -65,18 +65,20 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
     .map((img) => img.imageUrl)
     .filter((url): url is string => Boolean(url && url.trim() && !url.includes('indian-properties')));
 
-  // Combined candidates
+  // Uploaded server images are canonical. Amenities and local storage are
+  // fallbacks because they can contain backup copies of those same uploads.
   const allCandidates: string[] = [];
-  if (localImg && localImg.startsWith('data:image/')) {
-    allCandidates.push(localImg);
-  }
-  for (const a of amenityImages) {
-    if (a.startsWith('data:image/') && !allCandidates.includes(a)) {
-      allCandidates.push(a);
+  if (serverImages.length > 0) {
+    allCandidates.push(...serverImages);
+  } else {
+    for (const a of amenityImages) {
+      if (a.startsWith('data:image/') && !allCandidates.includes(a)) {
+        allCandidates.push(a);
+      }
     }
-  }
-  for (const s of serverImages) {
-    if (!allCandidates.includes(s)) allCandidates.push(s);
+    if (localImg && localImg.startsWith('data:image/') && !allCandidates.includes(localImg)) {
+      allCandidates.push(localImg);
+    }
   }
 
   // Filter out any that errored on load
