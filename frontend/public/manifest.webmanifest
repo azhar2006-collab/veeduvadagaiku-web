@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "Veedu Vadagaikku Chennai",
+  "short_name": "Veedu Vadagaikku",
+  "description": "Property owner alerts and rental listings in Chennai.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0B2545",
+  "icons": [
+    {
+      "src": "/logo-emblem.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
