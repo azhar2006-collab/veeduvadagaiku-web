@@ -579,7 +579,25 @@ export async function getProperty(req: Request, res: Response, next: NextFunctio
       });
     }
 
-    res.json(successResponse(property));
+    // Owner phone numbers are private contact details. Only include them in
+    // the public detail response after the visitor has authenticated with a
+    // verified mobile number; hiding them in the UI alone is not sufficient.
+    const propertyForResponse = {
+      ...property,
+      owner: property.owner
+        ? {
+            ...property.owner,
+            user: property.owner.user
+              ? {
+                  ...property.owner.user,
+                  mobile: user?.mobile ? property.owner.user.mobile : null,
+                }
+              : property.owner.user,
+          }
+        : property.owner,
+    };
+
+    res.json(successResponse(propertyForResponse));
   } catch (error) {
     next(error);
   }
