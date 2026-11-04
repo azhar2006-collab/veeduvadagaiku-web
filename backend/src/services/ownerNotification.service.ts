@@ -62,39 +62,43 @@ export async function notifyPropertyView(
 }
 
 export async function ensureOwnerNotificationTables(): Promise<void> {
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS "OwnerNotification" (
-      "id" TEXT NOT NULL PRIMARY KEY,
-      "ownerId" TEXT NOT NULL REFERENCES "Owner"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-      "propertyId" TEXT REFERENCES "Property"("id") ON DELETE SET NULL ON UPDATE CASCADE,
-      "title" TEXT NOT NULL,
-      "body" TEXT NOT NULL,
-      "href" TEXT NOT NULL,
-      "visitorKey" TEXT NOT NULL,
-      "visitDate" DATE NOT NULL,
-      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "readAt" TIMESTAMP(3)
-    )
-  `);
-  await prisma.$executeRawUnsafe(`
-    CREATE UNIQUE INDEX IF NOT EXISTS "OwnerNotification_propertyId_visitorKey_visitDate_key"
-    ON "OwnerNotification"("propertyId", "visitorKey", "visitDate")
-  `);
-  await prisma.$executeRawUnsafe(`
-    CREATE INDEX IF NOT EXISTS "OwnerNotification_ownerId_createdAt_idx"
-    ON "OwnerNotification"("ownerId", "createdAt")
-  `);
-  await prisma.$executeRawUnsafe(`
-    CREATE TABLE IF NOT EXISTS "NotificationPushToken" (
-      "id" TEXT NOT NULL PRIMARY KEY,
-      "ownerId" TEXT NOT NULL REFERENCES "Owner"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-      "token" TEXT NOT NULL UNIQUE,
-      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updatedAt" TIMESTAMP(3) NOT NULL
-    )
-  `);
-  await prisma.$executeRawUnsafe(`
-    CREATE INDEX IF NOT EXISTS "NotificationPushToken_ownerId_idx"
-    ON "NotificationPushToken"("ownerId")
-  `);
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "OwnerNotification" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "ownerId" TEXT NOT NULL REFERENCES "Owner"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        "propertyId" TEXT REFERENCES "Property"("id") ON DELETE SET NULL ON UPDATE CASCADE,
+        "title" TEXT NOT NULL,
+        "body" TEXT NOT NULL,
+        "href" TEXT NOT NULL,
+        "visitorKey" TEXT NOT NULL,
+        "visitDate" DATE NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "readAt" TIMESTAMP(3)
+      )
+    `);
+    await prisma.$executeRawUnsafe(`
+      CREATE UNIQUE INDEX IF NOT EXISTS "OwnerNotification_propertyId_visitorKey_visitDate_key"
+      ON "OwnerNotification"("propertyId", "visitorKey", "visitDate")
+    `);
+    await prisma.$executeRawUnsafe(`
+      CREATE INDEX IF NOT EXISTS "OwnerNotification_ownerId_createdAt_idx"
+      ON "OwnerNotification"("ownerId", "createdAt")
+    `);
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "NotificationPushToken" (
+        "id" TEXT NOT NULL PRIMARY KEY,
+        "ownerId" TEXT NOT NULL REFERENCES "Owner"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+        "token" TEXT NOT NULL UNIQUE,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL
+      )
+    `);
+    await prisma.$executeRawUnsafe(`
+      CREATE INDEX IF NOT EXISTS "NotificationPushToken_ownerId_idx"
+      ON "NotificationPushToken"("ownerId")
+    `);
+  } catch (err) {
+    console.warn('[Database] Could not verify/create notification tables via raw SQL:', err);
+  }
 }
