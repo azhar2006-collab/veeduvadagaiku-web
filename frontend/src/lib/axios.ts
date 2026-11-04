@@ -3,6 +3,16 @@ import { useAuthStore } from '../store/authStore';
 
 // Normalize base API URL
 const getApiBaseUrl = () => {
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isVercelHostedApp =
+    hostname === 'veeduvadagaikkuchennai.com' ||
+    hostname.endsWith('.veeduvadagaikkuchennai.com') ||
+    (hostname.endsWith('.vercel.app') && hostname.includes('veeduvadagaiku'));
+
+  // Vercel rewrites /api and /uploads to the Voroa backend. Keep browser
+  // requests same-origin there so a stale VITE_API_URL cannot bypass the proxy.
+  if (isVercelHostedApp) return '';
+
   let url = import.meta.env.VITE_API_URL;
   if (!url) {
     if (
