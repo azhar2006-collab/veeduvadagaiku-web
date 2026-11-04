@@ -558,7 +558,44 @@ export async function getProperty(req: Request, res: Response, next: NextFunctio
     // Increment view count
     await prisma.property.update({ where: { id }, data: { viewCount: { increment: 1 } } });
 
-    res.json(successResponse(property));
+    // Notify an owner once per visitor/property/day. Never notify owners about
+    // their own views, and keep page loading independent of push delivery.
+    if (property.status === 'PUBLISHED' && user?.id !== property.owner.userId && user?.role !== 'ADMIN') {
+      const suppliedVisitorId = req.get('x-visit-id')?.slice(0, 128);
+      const visitorIdentity = user?.id || suppliedVisitorId || `${req.ip}:${req.get('user-agent') || ''}`;
+      const visitorKey = createHash('sha256')
+        .update(`${process.env.JWT_SECRET || 'vv-property-views'}:${visitorIdentity}`)
+        .digest('hex');
+      const visitDate = new Date();
+      visitDate.setUTCHours(0, 0, 0, 0);
+      void notifyPropertyView(
+        { id: property.id, ownerId: property.ownerId, title: property.title },
+        visitorKey,
+        visitDate
+      ).catch((notificationError) => {
+        console.warn('[Notifications] Could not record property view:', notificationError);
+      });
+    }
+
+    // Owner phone numbers are private contact details. Only include them in
+    // the public detail response after the visitor has authenticated with a
+    // verified mobile number; hiding them in the UI alone is not sufficient.
+    const propertyForResponse = {
+      ...property,
+      owner: property.owner
+        ? {
+            ...property.owner,
+            user: property.owner.user
+              ? {
+                  ...property.owner.user,
+                  mobile: user?.mobile ? property.owner.user.mobile : null,
+                }
+              : property.owner.user,
+          }
+        : property.owner,
+    };
+
+    res.json(successResponse(propertyForResponse));
   } catch (error) {
     next(error);
   }
