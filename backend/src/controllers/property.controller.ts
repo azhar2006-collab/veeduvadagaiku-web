@@ -1,5 +1,4 @@
 import { Response, NextFunction, Request } from 'express';
-import { createHash } from 'crypto';
 import { AuthRequest } from '../middleware/auth';
 import { prisma } from '../config/database';
 import { successResponse, paginatedResponse, ApiError } from '../utils/response';
@@ -11,6 +10,7 @@ import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { renewPropertyListing } from '../services/validity.service';
+import { createHash } from 'crypto';
 import { notifyPropertyView } from '../services/ownerNotification.service';
 
 // ─── Public Endpoints ───────────────────────────────────────────────
@@ -574,7 +574,7 @@ export async function getProperty(req: Request, res: Response, next: NextFunctio
         { id: property.id, ownerId: property.ownerId, title: property.title },
         visitorKey,
         visitDate
-      ).catch((notificationError) => {
+      ).catch((notificationError: any) => {
         console.warn('[Notifications] Could not record property view:', notificationError);
       });
     }
