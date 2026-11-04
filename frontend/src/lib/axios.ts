@@ -59,6 +59,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      try { useAuthStore.getState().logout(); } catch {}
+
       // Don't loop redirect if already on login/register/public routes
       const path = window.location.pathname;
       if (!path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/admin/login')) {
