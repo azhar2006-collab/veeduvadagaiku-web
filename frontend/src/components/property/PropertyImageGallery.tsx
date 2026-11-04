@@ -33,16 +33,12 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
       createdAt: new Date().toISOString(),
     }));
 
-  // 2. Filter out any default stock photos — only show real uploaded images
-  const validImages = [
-    ...amenityImages,
-    ...(images || []).filter(
-      (img) =>
-        img.imageUrl &&
-        !img.imageUrl.includes('indian-properties') &&
-        !amenityImages.some((ai) => ai.imageUrl === img.imageUrl)
-    ),
-  ];
+  // Uploaded image records are the canonical gallery. Amenity markers are a
+  // legacy fallback, and can contain a backup copy of those same uploads.
+  const uploadedImages = (images || []).filter(
+    (img) => img.imageUrl && !img.imageUrl.includes('indian-properties')
+  );
+  const validImages = uploadedImages.length > 0 ? uploadedImages : amenityImages;
 
   if (validImages.length === 0) {
     return (
@@ -89,11 +85,11 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
 
         {/* Counter Badge */}
         <div className="absolute bottom-4 right-4 z-20 px-3 py-1 bg-black/70 backdrop-blur-md text-white text-xs font-semibold rounded-full">
-          {selectedIndex + 1} / {images.length}
+          {selectedIndex + 1} / {validImages.length}
         </div>
 
         {/* Navigation Arrows */}
-        {images.length > 1 && (
+        {validImages.length > 1 && (
           <>
             <button
               onClick={handlePrev}
@@ -114,9 +110,9 @@ export const PropertyImageGallery: React.FC<PropertyImageGalleryProps> = ({
       </div>
 
       {/* Thumbnails strip */}
-      {images.length > 1 && (
+      {validImages.length > 1 && (
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-          {images.map((img, idx) => {
+          {validImages.map((img, idx) => {
             const thumbUrl = getImageUrl(img.imageUrl);
             return (
               <button

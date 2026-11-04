@@ -3,6 +3,7 @@ import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Navbar } from '../components/common/Navbar';
 import { Footer } from '../components/common/Footer';
 import { DashboardSidebar, SidebarItem } from '../components/dashboard/DashboardSidebar';
+import { OwnerNotificationBell } from '../components/dashboard/OwnerNotificationBell';
 import { useAuth } from '../hooks/useAuth';
 import { LayoutDashboard, Building2, PlusCircle, MessageSquare, UserCheck } from 'lucide-react';
 
@@ -34,6 +35,9 @@ export const OwnerLayout: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           <DashboardSidebar title="Property Owner" items={items} />
           <div className="flex-1 min-w-0">
+            <div className="mb-4">
+              <OwnerNotificationBell />
+            </div>
             <Outlet />
           </div>
         </div>

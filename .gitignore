@@ -12,7 +12,11 @@ node_modules/
 
 # Firebase Service Account Credentials
 *firebase-adminsdk*.json
+veeduvadagaiku-*.json
 *.json.key
+
+# Sub-repositories
+client-upload/
 
 # API Key exports / sensitive CSVs
 *.csv
