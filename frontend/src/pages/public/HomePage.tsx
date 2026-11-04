@@ -313,7 +313,7 @@ export const HomePage: React.FC = () => {
               </Link>
 
               <Link
-                to="/wanted-spaces/specify"
+                to="/wanted-spaces"
                 className="flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-[#E8DFC8] bg-white hover:bg-[#FAF4E6] hover:border-[#C5A059] text-gray-800 hover:text-[#9A7818] font-bold text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all shadow-2xs active:scale-[0.97] group"
               >
                 <Search className="w-4 h-4 sm:w-[17px] sm:h-[17px] text-[#C5A059] shrink-0" strokeWidth={2} />

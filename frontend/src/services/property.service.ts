@@ -14,7 +14,16 @@ export const propertyService = {
   },
 
   getPropertyById: async (id: string) => {
-    const res = await api.get<ApiResponse<Property>>(`/api/properties/${id}`);
+    let visitId = sessionStorage.getItem('vv_property_visit_id');
+    if (!visitId) {
+      visitId = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      sessionStorage.setItem('vv_property_visit_id', visitId);
+    }
+    const res = await api.get<ApiResponse<Property>>(`/api/properties/${id}`, {
+      headers: { 'X-Visit-Id': visitId },
+    });
     return res.data;
   },
 

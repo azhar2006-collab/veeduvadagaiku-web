@@ -27,7 +27,7 @@ export const getImageUrl = (url?: string | null, fallback = ''): string => {
      window.location.hostname !== 'localhost' &&
      window.location.hostname !== '127.0.0.1'
       ? ''
-      : 'https://veeduvadagaiku-web-production.up.railway.app')
+      : 'https://veeduvadagaiku-api.getvoroa.com')
   ).replace(/\/$/, '');
 
   // Missing https:// protocol on domain strings (e.g. veeduvadagaiku-web-production.up.railway.app/uploads/...)

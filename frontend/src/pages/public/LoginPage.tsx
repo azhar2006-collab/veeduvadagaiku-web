@@ -58,6 +58,12 @@ export const LoginPage: React.FC = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
         <div className="bg-white py-8 px-6 sm:px-10 rounded-3xl shadow-xl border border-gray-100 space-y-6">
+          {searchParams.get('redirect') === '/wanted-spaces/specify' && role === 'USER' && (
+            <p className="rounded-xl border border-[#E8DFC8] bg-[#FAF7F0] px-4 py-3 text-xs leading-relaxed text-gray-700">
+              Wanted Specify posting is for user accounts. Please sign in with a separate user account; your existing owner account will remain view-only.
+            </p>
+          )}
+
           {/* Role selection tab */}
           <div>
             <label className="block text-[11px] font-extrabold uppercase text-gray-400 tracking-wider mb-2">

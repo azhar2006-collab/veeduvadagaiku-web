@@ -65,8 +65,9 @@ const AdminPropertyImagesViewer: React.FC<AdminPropertyImagesViewerProps> = ({
     .map((img) => img.imageUrl)
     .filter((url): url is string => Boolean(url && url.trim() && !url.includes('indian-properties')));
 
-  // Uploaded server images are canonical. Amenities and local storage are
-  // fallbacks because they can contain backup copies of those same uploads.
+  // Server images are the canonical uploads. The local-storage and amenity
+  // copies are backups of those uploads, so only use them when no server
+  // images are available; otherwise the same photo appears twice.
   const allCandidates: string[] = [];
   if (serverImages.length > 0) {
     allCandidates.push(...serverImages);

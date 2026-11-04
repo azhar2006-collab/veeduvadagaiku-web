@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { Search, MapPin, IndianRupee, Maximize2, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { listWantedSpaces, WantedSpace } from '../../services/wantedSpace.service';
@@ -21,6 +22,13 @@ const CATEGORY_LABELS: Record<string, string> = {
 const CATEGORIES = Object.entries(CATEGORY_LABELS).map(([key, label]) => ({ key, label }));
 
 export default function WantedSpacesDirectoryPage() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const isOwnerViewing = !!user && user.role !== 'USER';
+  const startUserPostingLogin = () => {
+    logout();
+    navigate('/login?role=USER&redirect=%2Fwanted-spaces%2Fspecify');
+  };
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [city, setCity] = useState('');
@@ -38,7 +46,7 @@ export default function WantedSpacesDirectoryPage() {
         page,
         limit: 12,
       }),
-    staleTime: 30_000,
+    staleTime: 0,
   });
 
   const spaces: WantedSpace[] = data?.data || [];
@@ -46,13 +54,33 @@ export default function WantedSpacesDirectoryPage() {
   const totalPages = Math.ceil(total / 12);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#FBF8F2]">
       {/* Hero */}
-      <div className="bg-[#0B3B60] text-white py-10 px-4">
+      <div className="bg-[#FBF8F2] text-slate-900 py-10 px-4">
         <div className="max-w-5xl mx-auto">
-          <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
-          <p className="text-white/60 text-sm mb-6">Browse requirements posted by people looking for spaces to rent or lease.</p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div>
+              <p className="text-xs font-semibold text-amber-600 uppercase tracking-widest mb-1">தேவை · REQUIREMENTS</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-1">Wanted Specify</h1>
+              <p className="text-slate-600 text-sm">Browse requirements posted by people looking for spaces to rent or lease.</p>
+            </div>
+            {isOwnerViewing ? (
+              <button
+                type="button"
+                onClick={startUserPostingLogin}
+                className="inline-flex items-center justify-center gap-2 self-start sm:self-auto bg-white hover:bg-[#FAF4E6] text-slate-900 text-sm font-semibold px-4 py-2.5 rounded-xl border border-[#C5A059] transition-colors whitespace-nowrap"
+              >
+                Log in as user to post
+              </button>
+            ) : (
+              <Link
+                to="/wanted-spaces/specify"
+                className="inline-flex items-center justify-center gap-2 self-start sm:self-auto bg-white hover:bg-[#FAF4E6] text-slate-900 text-sm font-semibold px-4 py-2.5 rounded-xl border border-[#C5A059] transition-colors whitespace-nowrap"
+              >
+                + Post Wanted Specify
+              </Link>
+            )}
+          </div>
           {/* Search */}
           <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2 max-w-xl">
             <Search className="w-4 h-4 text-gray-400" />
@@ -100,12 +128,6 @@ export default function WantedSpacesDirectoryPage() {
             <option value="EITHER">Either</option>
           </select>
 
-          <Link
-            to="/wanted-spaces/specify"
-            className="ml-auto bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold px-4 py-1.5 rounded-full transition-colors"
-          >
-            + Post Requirement
-          </Link>
         </div>
       </div>
 
@@ -120,9 +142,15 @@ export default function WantedSpacesDirectoryPage() {
         ) : spaces.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 text-lg">No requirements found.</p>
-            <Link to="/wanted-spaces/specify" className="mt-4 inline-block text-amber-600 font-semibold underline">
-              Post the first requirement
-            </Link>
+            {isOwnerViewing ? (
+              <button type="button" onClick={startUserPostingLogin} className="mt-4 inline-block text-amber-600 font-semibold underline">
+                Log in as user to post
+              </button>
+            ) : (
+              <Link to="/wanted-spaces/specify" className="mt-4 inline-block text-amber-600 font-semibold underline">
+                Post the first requirement
+              </Link>
+            )}
           </div>
         ) : (
           <>
@@ -223,4 +251,3 @@ function WantedCard({ space }: { space: WantedSpace }) {
     </Link>
   );
 }
-
